@@ -1,0 +1,1233 @@
+<!doctype html><html lang="uk"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Швидкість і рівновага</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: робочий зошит на сітці точок; один блок-екран за раз, липка панель балів; лабораторії — прилад (сцена + графік) поруч із пультом керування */
+:root{
+  --bg:#eceff3; --dot:#cfd6df; --paper:#ffffff; --ink:#18212e; --muted:#5a6575; --line:#d5dbe3;
+  --u16:#0e7469; --u16-soft:#e0f2ef;           /* Урок 16 — швидкість */
+  --u17:#b24f17; --u17-soft:#fbeadf;           /* Урок 17 — рівновага (колір NO₂) */
+  --accent:#1d4f91; --accent-soft:#e3ecf8;
+  --ok:#1b7f4c; --ok-soft:#e2f3e9; --bad:#bf3a2a; --bad-soft:#fbe8e4; --warn:#9a6410; --warn-soft:#fcf1dc;
+  --display:"Onest",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --body:"Onest",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{background:var(--bg)}
+body{font-family:var(--body);font-size:16px;line-height:1.5;color:var(--ink);background-color:var(--bg);
+  background-image:radial-gradient(var(--dot) 1.1px,transparent 1.2px);background-size:22px 22px;min-height:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:960px;margin:0 auto;display:flex;align-items:center;gap:12px;padding-block:10px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.tb-title{min-width:0;flex:1}
+.tb-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb-name{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.score{display:flex;align-items:baseline;gap:4px;background:var(--ink);color:#fff;border-radius:12px;padding:6px 12px;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.score b{font-size:22px;line-height:1}
+.score span{font-size:12px;opacity:.75}
+.score.bump{animation:bump .5s ease}
+@keyframes bump{40%{transform:scale(1.15);background:var(--ok)}}
+.progress{height:4px;background:var(--line)}
+.progress i{display:block;height:100%;width:0;background:var(--accent);transition:width .4s ease}
+
+main{max-width:960px;margin:0 auto;padding-block:20px 48px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.screen{display:flex;flex-direction:column;gap:16px;animation:enter .35s ease both}
+@keyframes enter{from{opacity:.4;transform:translateY(6px)}}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:20px;min-width:0}
+h1,h2{font-family:var(--display);font-weight:800;text-wrap:balance;margin:0;letter-spacing:-.02em}
+h1{font-size:clamp(28px,6.4vw,44px);line-height:1.05}
+h2{font-size:clamp(20px,4.4vw,26px);line-height:1.15}
+h3{font-size:17px;margin:0;font-weight:700}
+p{margin:0}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lesson{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.04em;border-radius:999px;padding:3px 10px;width:max-content}
+.lesson.l16{background:var(--u16-soft);color:var(--u16)}
+.lesson.l17{background:var(--u17-soft);color:var(--u17)}
+.lead{color:var(--muted);max-width:64ch}
+.instr{display:flex;gap:10px;align-items:flex-start;background:var(--accent-soft);border-radius:12px;padding:12px 14px;color:#153a6b;font-size:15px}
+.instr::before{content:"i";flex:none;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font:600 13px/22px var(--mono);text-align:center}
+.eq{font-family:var(--mono);font-weight:500;white-space:nowrap}
+.eqline{font-family:var(--mono);font-weight:600;font-size:15px;background:#f4f6f9;border:1px solid var(--line);border-radius:10px;padding:8px 12px;overflow-wrap:anywhere}
+
+.btn{appearance:none;border:0;border-radius:12px;min-height:50px;padding:12px 20px;font:600 16px/1.2 var(--body);cursor:pointer;
+  background:var(--accent);color:#fff;transition:transform .12s ease,background .2s,opacity .2s;touch-action:manipulation}
+.btn:hover{background:#163f75}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn.ghost{background:var(--paper);color:var(--ink);border:1.5px solid var(--line)}
+.btn.ghost:hover{border-color:var(--accent);background:var(--accent-soft)}
+.btn.big{min-height:56px;font-size:17px;padding-inline:26px}
+.btn.go{background:var(--u16)}
+.btn.go:hover{background:#0a5a52}
+.btn:focus-visible,.opt:focus-visible,.seg button:focus-visible,select:focus-visible,input:focus-visible,.arr button:focus-visible,.tabs button:focus-visible{outline:3px solid #f2b705;outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row.end{justify-content:flex-end}
+.spacer{flex:1}
+input[type=text]{font:500 17px var(--body);padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:#fff;color:var(--ink);min-height:50px;width:100%}
+select{font:500 15px var(--body);padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:#fff;color:var(--ink);min-height:46px;width:100%}
+
+/* start */
+.hero{display:grid;grid-template-columns:1.25fr 1fr;gap:20px;align-items:center}
+.hero svg{width:100%;height:auto;max-width:340px;justify-self:center}
+.plan{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.blocks-list{display:grid;gap:4px;margin:0;padding:0;list-style:none}
+.blocks-list li{display:flex;gap:12px;align-items:baseline;padding:9px 0;border-bottom:1px dashed var(--line)}
+.blocks-list li:last-child{border-bottom:0}
+.blocks-list .n{font-family:var(--mono);font-weight:600;min-width:22px}
+.l16c .n{color:var(--u16)} .l17c .n{color:var(--u17)}
+.blocks-list .pts{margin-left:auto;font-family:var(--mono);font-size:13px;color:var(--muted);white-space:nowrap}
+.field{display:grid;gap:6px}
+.field label{font-weight:600;font-size:14px}
+
+/* questions */
+.q{display:flex;flex-direction:column;gap:12px}
+.q + .q{border-top:1px solid var(--line);padding-top:18px}
+.q-head{display:flex;gap:10px;align-items:baseline}
+.q-num{font-family:var(--mono);font-size:13px;color:#fff;background:var(--accent);border-radius:7px;padding:2px 8px;flex:none}
+.q-prompt{font-weight:600;font-size:17px}
+.q-pts{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;appearance:none;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:13px 14px 13px 46px;font:500 15.5px/1.4 var(--body);color:var(--ink);cursor:pointer;position:relative;min-height:52px}
+.opt::before{content:"";position:absolute;left:14px;top:50%;width:20px;height:20px;margin-top:-10px;border-radius:50%;border:2px solid #9aa6b5;background:#fff}
+.opt.sq::before{border-radius:5px}
+.opt:hover{border-color:var(--accent)}
+.opt.sel{border-color:var(--accent);background:var(--accent-soft)}
+.opt.sel::before{border-color:var(--accent);box-shadow:inset 0 0 0 4px #fff;background:var(--accent)}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.right::before{border-color:var(--ok);background:var(--ok);box-shadow:inset 0 0 0 4px var(--ok-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt.wrong::before{border-color:var(--bad);background:var(--bad);box-shadow:inset 0 0 0 4px var(--bad-soft)}
+.opt.missed{border-color:var(--ok);border-style:dashed}
+.opt:disabled{cursor:default}
+.match{display:grid;gap:10px}
+.match-row{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:10px;align-items:center;padding:8px 10px;border-radius:12px;border:1.5px solid var(--line);background:#fff}
+.match-row.right{border-color:var(--ok);background:var(--ok-soft)}
+.match-row.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.match-label{font-weight:500}
+.fix{grid-column:1/-1;font-size:14px;color:var(--bad)}
+.fb{border-radius:12px;padding:12px 14px;font-size:15px;display:grid;gap:4px}
+.fb.good{background:var(--ok-soft);color:#11502f}
+.fb.bad{background:var(--bad-soft);color:#7a2618}
+.fb.info{background:var(--warn-soft);color:#6a4308}
+.calc{display:grid;grid-template-columns:minmax(0,220px) auto;gap:10px;align-items:center}
+.unit{font-family:var(--mono);font-weight:600;font-size:16px}
+.formula-hint{font-family:var(--mono);font-size:14px;background:#f4f6f9;border-radius:10px;padding:10px 12px;border:1px solid var(--line)}
+.req{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px}
+.req-t{color:var(--muted);font-weight:600;margin-right:2px}
+.chip{border-radius:999px;padding:3px 10px;background:#f1f3f6;border:1px solid var(--line);color:var(--muted);font-family:var(--mono);font-size:12px}
+.chip.done{background:var(--ok-soft);border-color:#9fd3b6;color:#11502f}
+.order{display:grid;gap:8px}
+.order-row{display:grid;grid-template-columns:150px minmax(0,1fr);gap:10px;align-items:center}
+.order-row span{font-weight:600;font-size:14px}
+
+/* arrows (b3) */
+.arrlist{display:grid;gap:8px}
+.arr{display:flex;flex-wrap:wrap;align-items:center;gap:10px;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff}
+.arr .eqs{font-family:var(--mono);font-weight:500;font-size:15px;flex:1 1 260px;min-width:0;overflow-wrap:anywhere}
+.arr .slot{display:inline-block;min-width:34px;text-align:center;border-bottom:2px solid var(--accent);color:var(--accent);font-weight:600}
+.arr .pick{display:flex;gap:6px}
+.arr button{appearance:none;border:1.5px solid var(--line);background:#fff;border-radius:10px;min-height:44px;padding:6px 12px;font:600 14px var(--body);cursor:pointer;color:var(--ink)}
+.arr button b{font-family:var(--mono);font-size:17px;margin-right:4px}
+.arr button.on{border-color:var(--accent);background:var(--accent-soft)}
+.arr.right{border-color:var(--ok);background:var(--ok-soft)}
+.arr.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.arr .why{flex-basis:100%;font-size:13.5px;color:var(--muted)}
+
+/* labs */
+.lab{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:16px;align-items:start}
+.bench{background:linear-gradient(#f9fbfc,#eef2f5);border:1px solid var(--line);border-radius:16px;padding:10px;display:grid;gap:8px;min-width:0}
+.bench svg,.bench canvas.scene{display:block;width:100%;height:auto}
+canvas.chart{display:block;width:100%;height:170px;background:#fff;border:1px solid var(--line);border-radius:10px}
+.readouts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.readouts.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+.ro{background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px 8px;min-width:0}
+.ro small{display:block;font-size:11.5px;color:var(--muted);line-height:1.2}
+.ro b{font-family:var(--mono);font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.controls{display:grid;gap:12px}
+.ctl{display:grid;gap:6px}
+.ctl > span{font-weight:600;font-size:13.5px;color:var(--muted)}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{appearance:none;border:1.5px solid var(--line);background:#fff;border-radius:10px;min-height:42px;padding:6px 12px;font:600 14.5px var(--body);color:var(--ink);cursor:pointer;flex:1 1 auto}
+.seg button.on{border-color:var(--accent);background:var(--accent);color:#fff}
+.seg button:disabled{opacity:.45;cursor:not-allowed}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:14px;height:4px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.legend .dotk{width:12px;height:12px;border-radius:50%}
+.tabs{display:flex;gap:6px}
+.tabs button{appearance:none;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:5px 12px;font:600 13px var(--body);cursor:pointer;color:var(--ink)}
+.tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.status{font-size:14.5px;border-radius:12px;padding:10px 12px;background:#f3f6f8;border:1px solid var(--line)}
+.status.ok{background:var(--ok-soft);border-color:#9fd3b6;color:#11502f}
+.status.move{background:var(--warn-soft);border-color:#ecd09b;color:#6a4308}
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;font-size:14px;width:100%}
+th,td{border-bottom:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}
+th{font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+td.num{font-family:var(--mono);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.empty{color:var(--muted);font-size:14px;padding:10px 0}
+.step-card{display:grid;gap:12px}
+.lockmsg{font-size:13.5px;color:var(--muted)}
+
+/* final */
+.grade{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.grade-num{font-family:var(--display);font-weight:800;font-size:76px;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums}
+.grade-num small{font-size:28px;color:var(--muted)}
+.bars{display:grid;gap:8px}
+.bar-row{display:grid;grid-template-columns:minmax(0,1fr) 120px 48px;gap:10px;align-items:center;font-size:14px}
+.bar{height:10px;background:var(--line);border-radius:5px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:5px}
+.bar-row b{font-family:var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.mist{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.mist li{border-left:4px solid var(--bad);background:var(--bad-soft);border-radius:0 10px 10px 0;padding:10px 12px;font-size:14.5px}
+.mist li b{display:block}
+.sent{display:flex;gap:10px;align-items:center;font-weight:600;border-radius:12px;padding:12px 14px}
+.sent.ok{background:var(--ok-soft);color:#11502f}
+.sent.no{background:var(--warn-soft);color:#6a4308}
+.cardimg{max-width:100%;border:1px solid var(--line);border-radius:10px;display:block}
+.foot{margin-top:24px;text-align:center;font-size:13px;color:var(--muted)}
+.linkbtn{appearance:none;border:0;background:none;color:var(--accent);font:600 13px var(--body);text-decoration:underline;cursor:pointer;padding:6px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;font-weight:600;z-index:20;max-width:calc(100% - 32px)}
+
+@media (max-width:760px){
+  .hero{grid-template-columns:1fr}
+  .hero svg{max-width:260px;order:-1}
+  .plan{grid-template-columns:1fr}
+  .lab{grid-template-columns:1fr}
+  .match-row{grid-template-columns:1fr}
+  .bar-row{grid-template-columns:minmax(0,1fr) 70px 44px}
+  .card{padding:16px}
+  .readouts.four{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .order-row{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="tb-title">
+      <div class="tb-eyebrow">Хімія · 11 клас · уроки 16–17</div>
+      <div class="tb-name" id="tbName">Швидкість і рівновага</div>
+    </div>
+    <div class="score" aria-live="polite" id="score"><b id="scoreNum">0</b><span>/ 12 балів</span></div>
+  </div>
+  <div class="progress"><i id="progress"></i></div>
+</header>
+
+<main>
+
+<section class="screen" id="s-start">
+  <div class="card hero">
+    <div style="display:grid;gap:14px">
+      <div class="eyebrow">Інтерактивний аркуш із симуляціями</div>
+      <h1>Швидкість і рівновага</h1>
+      <p class="lead">Проведеш досліди у віртуальній лабораторії: виміряєш, як швидкість реакції залежить від природи речовин, концентрації, температури й каталізатора, а потім змістиш хімічну рівновагу в шприці з бурим газом. Наприкінці отримаєш оцінку за 12-бальною шкалою і картку роботи.</p>
+    </div>
+    <svg viewBox="0 0 340 220" aria-hidden="true">
+      <rect x="40" y="20" width="280" height="160" rx="10" fill="#ffffff" stroke="#d5dbe3"/>
+      <g stroke="#e6eaef"><line x1="40" y1="60" x2="320" y2="60"/><line x1="40" y1="100" x2="320" y2="100"/><line x1="40" y1="140" x2="320" y2="140"/></g>
+      <path d="M50,40 C90,95 130,118 190,122 S290,124 312,124" fill="none" stroke="#1d4f91" stroke-width="4" stroke-linecap="round"/>
+      <path d="M50,170 C90,145 130,130 190,125 S290,124 312,124" fill="none" stroke="#b24f17" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="312" cy="124" r="6" fill="#18212e"/>
+      <text x="54" y="34" font-family="IBM Plex Mono, monospace" font-size="13" fill="#1d4f91">v→</text>
+      <text x="54" y="160" font-family="IBM Plex Mono, monospace" font-size="13" fill="#b24f17">v←</text>
+      <text x="230" y="114" font-family="IBM Plex Mono, monospace" font-size="12" fill="#18212e">v→ = v←</text>
+      <text x="300" y="200" font-family="IBM Plex Mono, monospace" font-size="12" fill="#5a6575" text-anchor="end">час →</text>
+    </svg>
+  </div>
+  <div class="plan">
+    <div class="card" style="display:grid;gap:10px">
+      <span class="lesson l16">Урок 16</span>
+      <h3>Швидкість хімічної реакції</h3>
+      <ol class="blocks-list l16c">
+        <li><span class="n">1</span><span>Швидкість реакції і чинники</span><span class="pts">2 бали</span></li>
+        <li><span class="n">2</span><span>Лабораторія: вимірюємо швидкість</span><span class="pts">4 бали</span></li>
+      </ol>
+    </div>
+    <div class="card" style="display:grid;gap:10px">
+      <span class="lesson l17">Урок 17</span>
+      <h3>Оборотні процеси. Хімічна рівновага</h3>
+      <ol class="blocks-list l17c">
+        <li><span class="n">3</span><span>Оборотні й необоротні реакції</span><span class="pts">2 бали</span></li>
+        <li><span class="n">4</span><span>Лабораторія: зміщуємо рівновагу</span><span class="pts">3 бали</span></li>
+        <li><span class="n">5</span><span>Принцип Ле Шательє у промисловості</span><span class="pts">1 бал</span></li>
+      </ol>
+    </div>
+  </div>
+  <div class="card" style="display:grid;gap:12px">
+    <div class="field">
+      <label for="nameInput">Прізвище та ім'я або твій код учня</label>
+      <input type="text" id="nameInput" autocomplete="name" placeholder="Наприклад: Коваленко Марія" maxlength="60">
+    </div>
+    <div class="field">
+      <label for="clsInput">Клас</label>
+      <select id="clsInput" style="font:inherit;font-size:16px;padding:12px;border-radius:12px;width:100%"><option value="">— обери клас —</option><option>11-А</option><option>11-Б</option><option>Інший</option></select>
+    </div>
+    <p class="lead" style="font-size:14px">Числа в задачах і властивості реакцій у лабораторії в кожного учня свої, тож відповіді доведеться отримати з власних дослідів.</p>
+    <div class="row end"><button class="btn big" id="startBtn" disabled>Почати</button></div>
+  </div>
+</section>
+
+<section class="screen" id="s-b1" hidden>
+  <div class="card" style="display:grid;gap:14px">
+    <span class="lesson l16">Урок 16 · Блок 1 з 5 · 2 бали</span>
+    <h2>Швидкість реакції і чинники</h2>
+    <div class="instr">Середня швидкість реакції показує, на скільки змінюється концентрація речовини за одиницю часу: v = ΔC / Δt, моль/(л·с). Розв'яжи задачу і з'єднай приклади з чинниками.</div>
+    <div id="b1q"></div>
+  </div>
+  <div class="row end"><button class="btn big" data-next="b2" id="next-b1" disabled>Далі: лабораторія</button></div>
+</section>
+
+<section class="screen" id="s-b2" hidden>
+  <div class="card" style="display:grid;gap:12px">
+    <span class="lesson l16">Урок 16 · Блок 2 з 5 · 4 бали</span>
+    <h2>Лабораторія: вимірюємо швидкість</h2>
+    <div class="instr">Обери реакцію й умови, натисни «Почати дослід». Газ збирається в шприц; коли його об'єм досягне 40 мл, час автоматично запишеться в журнал. Відповіді на завдання 2.1–2.4 отримай з власних вимірювань.</div>
+  </div>
+  <div class="lab">
+    <div class="bench">
+      <div class="eqline" id="rlEq"></div>
+      <svg viewBox="0 0 360 220" id="rlScene" role="img" aria-label="Колба з реакційною сумішшю і газовий шприц"></svg>
+      <div class="readouts">
+        <div class="ro"><small>Час досліду</small><b id="roT">0 с</b></div>
+        <div class="ro"><small>Об'єм газу</small><b id="roV">0 мл</b></div>
+        <div class="ro"><small>Швидкість зараз</small><b id="roR">0 мл/с</b></div>
+      </div>
+      <canvas class="chart" id="rlChart" aria-label="Графік об'єму газу від часу"></canvas>
+    </div>
+    <div class="card controls" id="rlControls"></div>
+  </div>
+  <div class="card" style="display:grid;gap:10px">
+    <h3>Журнал вимірювань</h3>
+    <div class="tbl-wrap"><table id="journal"></table></div>
+  </div>
+  <div class="card" style="display:grid;gap:14px">
+    <h3>Завдання за результатами дослідів</h3>
+    <div id="b2q"></div>
+  </div>
+  <div class="row end"><button class="btn big" data-next="b3" id="next-b2" disabled>Далі: урок 17</button></div>
+</section>
+
+<section class="screen" id="s-b3" hidden>
+  <div class="card" style="display:grid;gap:14px">
+    <span class="lesson l17">Урок 17 · Блок 3 з 5 · 2 бали</span>
+    <h2>Оборотні й необоротні реакції</h2>
+    <div class="instr">Необоротні реакції йдуть до кінця в одному напрямку, оборотні — одночасно в прямому і зворотному. Постав у кожне рівняння правильну стрілку.</div>
+    <div id="b3q"></div>
+  </div>
+  <div class="row end"><button class="btn big" data-next="b4" id="next-b3" disabled>Далі: лабораторія рівноваги</button></div>
+</section>
+
+<section class="screen" id="s-b4" hidden>
+  <div class="card" style="display:grid;gap:12px">
+    <span class="lesson l17">Урок 17 · Блок 4 з 5 · 3 бали</span>
+    <h2>Лабораторія: зміщуємо рівновагу</h2>
+    <div class="instr">У шприці — суміш бурого NO₂ і безбарвного N₂O₄ у стані рівноваги. Перед кожною дією спрогнозуй, куди зміститься рівновага, а потім проведи дослід і перевір. Бал дається за правильний прогноз.</div>
+    <div class="eqline">2NO₂ (бурий) ⇌ N₂O₄ (безбарвний), ΔH &lt; 0</div>
+  </div>
+  <div class="lab">
+    <div class="bench">
+      <canvas class="scene" id="eqScene" width="720" height="400" aria-label="Шприц із сумішшю газів"></canvas>
+      <div class="legend"><span><i class="dotk" style="background:#9b3d0f"></i>NO₂</span><span><i class="dotk" style="background:#eef0f2;border:1.5px solid #8a8f96"></i>N₂O₄ (дві частинки разом)</span></div>
+      <div class="readouts four">
+        <div class="ro"><small>[NO₂], моль/л</small><b id="eqC1">—</b></div>
+        <div class="ro"><small>[N₂O₄], моль/л</small><b id="eqC2">—</b></div>
+        <div class="ro"><small>v→, моль/(л·с)</small><b id="eqVF">—</b></div>
+        <div class="ro"><small>v←, моль/(л·с)</small><b id="eqVR">—</b></div>
+      </div>
+      <div class="status" id="eqStatus">—</div>
+      <div class="row"><div class="tabs" role="tablist"><button class="on" data-tab="c">Концентрації</button><button data-tab="v">Швидкості</button></div><span class="spacer"></span><div class="legend" id="eqLegend"></div></div>
+      <canvas class="chart" id="eqChart" aria-label="Графік у часі"></canvas>
+    </div>
+    <div class="card" style="display:grid;gap:14px">
+      <div id="eqSteps" class="step-card"></div>
+      <div id="eqFree" class="controls"></div>
+    </div>
+  </div>
+  <div class="row end"><button class="btn big" data-next="b5" id="next-b4" disabled>Далі: принцип Ле Шательє</button></div>
+</section>
+
+<section class="screen" id="s-b5" hidden>
+  <div class="card" style="display:grid;gap:14px">
+    <span class="lesson l17">Урок 17 · Блок 5 з 5 · 1 бал</span>
+    <h2>Принцип Ле Шательє у промисловості</h2>
+    <div class="instr">Якщо на систему в стані рівноваги подіяти ззовні, рівновага зміщується в напрямку, що послаблює цю дію. Застосуй принцип до синтезу амоніаку.</div>
+    <div id="b5q"></div>
+  </div>
+  <div class="row end"><button class="btn big" id="finishBtn" disabled>Завершити роботу</button></div>
+</section>
+
+<section class="screen" id="s-final" hidden></section>
+
+<section class="screen" id="s-teacher" hidden>
+  <div class="card" style="display:grid;gap:14px">
+    <div class="eyebrow">Для вчителя</div>
+    <h2>Результати учнів</h2>
+    <p class="lead" id="tStatus">Завантаження…</p>
+    <div class="row"><button class="btn ghost" id="tRefresh">Оновити</button><button class="btn ghost" id="tCsv" disabled>Завантажити таблицю (CSV)</button><span class="spacer"></span><button class="btn" id="tBack">До аркуша</button></div>
+    <div class="tbl-wrap"><table id="tTable"></table></div>
+  </div>
+</section>
+
+<div class="foot"><button class="linkbtn" id="teacherLink" hidden>Результати учнів (для вчителя)</button></div>
+</main>
+
+<script>
+/* ==== РОЗМІЩЕННЯ НА ВЛАСНОМУ САЙТІ (Netlify) ====
+   Вкажіть адресу Firebase Realtime Database, напр.
+   "https://назва-проєкту-default-rtdb.europe-west1.firebasedatabase.app".
+   Результати записуватимуться у вузол /kinetics11. Порожній рядок — вимкнено. */
+const FIREBASE_DB_URL = "https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const FB_NODE = "results/kinetics11";
+
+/* ---------- утиліти ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const pick = a => a[Math.floor(Math.random() * a.length)];
+function shuffle(arr) { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function fmt(x, sig = 3) { if (!isFinite(x)) return '—'; if (x === 0) return '0'; return String(Number(x.toPrecision(sig))).replace('.', ','); }
+const dec = x => String(x).replace('.', ',');
+function parseNum(s) { const m = String(s).replace(/\s/g, '').match(/-?\d+(?:[.,]\d+)?/); return m ? parseFloat(m[0].replace(',', '.')) : NaN; }
+function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { } }
+function toast(msg) { const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 2400); }
+function mix(c1, c2, k) { const p = c => [1, 3, 5].map(i => parseInt(c.slice(i, i + 2), 16)); const a = p(c1), b = p(c2); return '#' + a.map((v, i) => Math.round(v + (b[i] - v) * k).toString(16).padStart(2, '0')).join(''); }
+
+/* ---------- платформа ---------- */
+let db = null, user = null, uid = null, downloads = null;
+const platformReady = (async () => {
+  if (!window.claude || !window.claude.use) return;
+  try {
+    const [d, u, dl] = await Promise.all([claude.use('db'), claude.use('user'), claude.use('downloads')]);
+    db = d; user = u; downloads = dl;
+    if (user) { try { uid = await user.id(); } catch (e) { } }
+    if (user && user.isOwner && user.isOwner()) $('#teacherLink').hidden = false;
+  } catch (e) { }
+})();
+/* результати вчитель переглядає на results.html */
+async function saveFile(filename, data) {
+  await platformReady;
+  if (downloads) { try { await downloads.save({ filename, data }); return 'saved'; } catch (e) { return e && e.code === 'declined' ? 'declined' : 'unavailable'; } }
+  if (!window.claude) {
+    const url = URL.createObjectURL(data instanceof Blob ? data : new Blob([data]));
+    const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 5000); return 'saved';
+  }
+  return 'unavailable';
+}
+async function sendResults(rec) {
+  await platformReady; let ok = false;
+  if (db && uid) {
+    try {
+      const ref = db.doc('results/' + uid); const snap = await ref.get();
+      const prev = snap.exists ? (snap.data().attempts || []) : [];
+      await ref.set({ attempts: prev.concat([rec]).slice(-80), updatedAt: Date.now() }); ok = true;
+    } catch (e) { }
+  }
+  if (FIREBASE_DB_URL) {
+    try { const r = await fetch(FIREBASE_DB_URL.replace(/\/$/, '') + '/' + FB_NODE + '.json', { method: 'POST', body: JSON.stringify(rec) }); ok = ok || r.ok; } catch (e) { }
+  }
+  return ok;
+}
+async function priorAttempts(name) {
+  let n = parseInt(lsGet('k11_att_' + name.toLowerCase()) || '0', 10) || 0;
+  await platformReady;
+  if (db && uid) {
+    try { const snap = await db.doc('results/' + uid).get(); if (snap.exists) n = Math.max(n, (snap.data().attempts || []).filter(a => (a.name || '').toLowerCase() === name.toLowerCase()).length); } catch (e) { }
+  }
+  return n;
+}
+
+/* ---------- стан ---------- */
+const S = {};
+function genRand() {
+  let calc;
+  for (let guard = 0; guard < 500; guard++) {
+    const v = pick([5, 8, 10, 12, 15, 20, 25, 30, 40]), t = pick([10, 15, 20, 25, 40, 50]);
+    const dc = v * t; if (dc < 100 || dc > 900) continue;
+    const c1 = pick([600, 700, 800, 900, 1000, 1200, 1500]); const c2 = c1 - dc; if (c2 < 50) continue;
+    calc = { v: v / 1000, t, c1: c1 / 1000, c2: c2 / 1000 }; break;
+  }
+  return { calc, cPair: pick([[0.5, 1], [0.5, 2], [1, 2]]), tPair: pick([[20, 30], [30, 40], [20, 40], [30, 50]]), gamma: pick([2, 3, 4]) };
+}
+function resetState(keep) {
+  const name = keep ? S.name : '', attempt = keep ? S.attempt : 0;
+  Object.assign(S, { name, attempt, startTs: Date.now(), scores: { b1: 0, b2: 0, b3: 0, b4: 0, b5: 0 }, answered: {}, mistakes: [], r: genRand() });
+}
+resetState(false);
+const totalScore = () => Object.values(S.scores).reduce((a, b) => a + b, 0);
+function addPoint(block) {
+  S.scores[block]++; $('#scoreNum').textContent = totalScore();
+  const sc = $('#score'); sc.classList.remove('bump'); void sc.offsetWidth; sc.classList.add('bump');
+}
+const BLOCKS = [['b1', 'Швидкість реакції і чинники', 2, 16], ['b2', 'Лабораторія: вимірюємо швидкість', 4, 16], ['b3', 'Оборотні й необоротні реакції', 2, 17], ['b4', 'Лабораторія: зміщуємо рівновагу', 3, 17], ['b5', 'Принцип Ле Шательє', 1, 17]];
+const BLOCK_QS = { b1: ['q11', 'q12'], b2: ['t1', 't2', 't3', 't4'], b3: ['q31', 'q32'], b4: ['e1', 'e2', 'e3'], b5: ['q51'] };
+function markAnswered(id, block) {
+  S.answered[id] = true;
+  const all = BLOCK_QS[block].every(q => S.answered[q]);
+  if (block === 'b5') $('#finishBtn').disabled = !all; else $('#next-' + block).disabled = !all;
+}
+
+/* ---------- навігація ---------- */
+const ORDER = ['start', 'b1', 'b2', 'b3', 'b4', 'b5', 'final'];
+const LABELS = { start: 'Початок', b1: 'Блок 1 · Швидкість реакції', b2: 'Блок 2 · Лабораторія швидкості', b3: 'Блок 3 · Оборотні реакції', b4: 'Блок 4 · Лабораторія рівноваги', b5: 'Блок 5 · Принцип Ле Шательє', final: 'Результат', teacher: 'Результати учнів' };
+function show(id) {
+  $$('.screen').forEach(s => s.hidden = s.id !== 's-' + id);
+  $('#tbName').textContent = (S.name ? S.name + ' · ' : '') + LABELS[id];
+  const i = ORDER.indexOf(id);
+  $('#progress').style.width = (i < 0 ? 100 : (i / (ORDER.length - 1)) * 100) + '%';
+  window.scrollTo({ top: 0, behavior: RM ? 'auto' : 'smooth' });
+  if (id === 'b2') { rlDrawScene(); drawRlChart(); }
+  if (id === 'b4') eqStart(); else eqStop();
+  if (id !== 'b2') rlStop(false);
+}
+$$('[data-next]').forEach(b => b.addEventListener('click', () => show(b.dataset.next)));
+
+/* ---------- конструктори завдань ---------- */
+function qShell(host, q) {
+  const w = document.createElement('div'); w.className = 'q';
+  w.innerHTML = `<div class="q-head"><span class="q-num">${q.num}</span><span class="q-prompt">${q.prompt}</span><span class="q-pts">1 бал</span></div>`;
+  host.appendChild(w); return w;
+}
+function feedback(w, ok, text) {
+  const d = document.createElement('div'); d.className = 'fb ' + (ok ? 'good' : 'bad');
+  d.innerHTML = `<b>${ok ? 'Правильно, +1 бал.' : 'Неправильно.'}</b><span>${text}</span>`; w.appendChild(d);
+}
+function finishQ(q, ok, mistakeText, explain, w) {
+  if (ok) addPoint(q.block); else S.mistakes.push({ where: q.where, text: mistakeText, expl: explain });
+  feedback(w, ok, explain); markAnswered(q.id, q.block);
+}
+const watchers = [];
+function reqUI(w, req) {
+  const box = document.createElement('div'); box.className = 'req'; w.appendChild(box);
+  return () => {
+    const items = req();
+    box.innerHTML = '<span class="req-t">Потрібні досліди:</span>' + items.map(i => `<span class="chip ${i.done ? 'done' : ''}">${i.done ? '✓' : '○'} ${i.label}</span>`).join('');
+    return items.every(i => i.done);
+  };
+}
+function mcQ(host, q) {
+  const w = qShell(host, q);
+  const reqOk = q.req ? reqUI(w, q.req) : () => true;
+  const opts = document.createElement('div'); opts.className = 'opts'; w.appendChild(opts);
+  let sel = -1; const items = shuffle(q.options);
+  const foot = document.createElement('div'); foot.className = 'row end';
+  const chk = document.createElement('button'); chk.className = 'btn'; chk.textContent = 'Перевірити'; chk.disabled = true;
+  const refresh = () => { if (!chk.isConnected) return; chk.disabled = !(reqOk() && sel >= 0); };
+  items.forEach((o, i) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'opt'; b.innerHTML = o.t;
+    b.addEventListener('click', () => { sel = i; $$('.opt', opts).forEach((x, j) => x.classList.toggle('sel', j === i)); refresh(); });
+    opts.appendChild(b);
+  });
+  foot.appendChild(chk); w.appendChild(foot);
+  if (q.req) watchers.push(refresh); refresh();
+  chk.addEventListener('click', () => {
+    const ok = items[sel].ok;
+    $$('.opt', opts).forEach((x, j) => { x.disabled = true; x.classList.remove('sel'); if (items[j].ok) x.classList.add('right'); else if (j === sel) x.classList.add('wrong'); });
+    foot.remove();
+    finishQ(q, ok, 'Обрано: «' + items[sel].t.replace(/<[^>]+>/g, '') + '»', q.explain, w);
+  });
+}
+function msQ(host, q) {
+  const w = qShell(host, q);
+  const opts = document.createElement('div'); opts.className = 'opts'; w.appendChild(opts);
+  const items = shuffle(q.options); const sel = new Set();
+  const foot = document.createElement('div'); foot.className = 'row end';
+  const chk = document.createElement('button'); chk.className = 'btn'; chk.textContent = 'Перевірити'; chk.disabled = true;
+  items.forEach((o, i) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'opt sq'; b.innerHTML = o.t; b.setAttribute('aria-pressed', 'false');
+    b.addEventListener('click', () => { sel.has(i) ? sel.delete(i) : sel.add(i); b.classList.toggle('sel', sel.has(i)); b.setAttribute('aria-pressed', sel.has(i)); chk.disabled = !sel.size; });
+    opts.appendChild(b);
+  });
+  foot.appendChild(chk); w.appendChild(foot);
+  chk.addEventListener('click', () => {
+    let ok = true;
+    $$('.opt', opts).forEach((x, j) => {
+      x.disabled = true; x.classList.remove('sel'); const s = sel.has(j);
+      if (items[j].ok && s) x.classList.add('right'); else if (!items[j].ok && s) { x.classList.add('wrong'); ok = false; } else if (items[j].ok && !s) { x.classList.add('missed'); ok = false; }
+    });
+    foot.remove();
+    finishQ(q, ok, 'Обрано: ' + [...sel].map(j => '«' + items[j].t + '»').join(', '), q.explain, w);
+  });
+}
+function matchQ(host, q) {
+  const w = qShell(host, q);
+  const box = document.createElement('div'); box.className = 'match'; w.appendChild(box);
+  const choices = shuffle([...new Set(q.rows.map(r => r.ans))]);
+  const foot = document.createElement('div'); foot.className = 'row end';
+  const chk = document.createElement('button'); chk.className = 'btn'; chk.textContent = 'Перевірити'; chk.disabled = true;
+  const sels = q.rows.map((r, k) => {
+    const row = document.createElement('div'); row.className = 'match-row';
+    row.innerHTML = `<div class="match-label">${r.label}</div>`;
+    const s = document.createElement('select'); s.id = q.id + '_' + k; s.setAttribute('aria-label', r.label);
+    s.innerHTML = `<option value="">— обери чинник —</option>` + choices.map(c => `<option>${esc(c)}</option>`).join('');
+    s.addEventListener('change', () => chk.disabled = sels.some(x => !x.s.value));
+    row.appendChild(s); box.appendChild(row); return { s, row, r };
+  });
+  foot.appendChild(chk); w.appendChild(foot);
+  chk.addEventListener('click', () => {
+    let all = true; const wrongs = [];
+    sels.forEach(({ s, row, r }) => {
+      const ok = s.value === r.ans; s.disabled = true; row.classList.add(ok ? 'right' : 'wrong');
+      if (!ok) { all = false; wrongs.push(r.short + ' → ' + s.value); const fx = document.createElement('div'); fx.className = 'fix'; fx.textContent = 'Правильно: ' + r.ans; row.appendChild(fx); }
+    });
+    foot.remove();
+    finishQ(q, all, 'Помилкові пари: ' + wrongs.join('; '), q.explain, w);
+  });
+}
+function numQ(host, q) {
+  const w = qShell(host, q);
+  if (q.extra) w.insertAdjacentHTML('beforeend', q.extra);
+  const reqOk = q.req ? reqUI(w, q.req) : () => true;
+  w.insertAdjacentHTML('beforeend', `<div class="calc"><input type="text" inputmode="decimal" id="in_${q.id}" autocomplete="off" placeholder="${q.ph || 'відповідь'}"><span class="unit">${q.unit || ''}</span></div>`);
+  const inp = $('#in_' + q.id, w);
+  const foot = document.createElement('div'); foot.className = 'row end';
+  const chk = document.createElement('button'); chk.className = 'btn'; chk.textContent = 'Перевірити'; chk.disabled = true;
+  foot.appendChild(chk); w.appendChild(foot);
+  const refresh = () => { if (!chk.isConnected) return; chk.disabled = !(reqOk() && inp.value.trim() && isFinite(parseNum(inp.value))); };
+  inp.addEventListener('input', refresh);
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter' && !chk.disabled) chk.click(); });
+  if (q.req) watchers.push(refresh); refresh();
+  chk.addEventListener('click', () => {
+    const v = parseNum(inp.value); const ok = q.check(v);
+    inp.disabled = true; foot.remove();
+    finishQ(q, ok, 'Твоя відповідь: ' + inp.value.trim() + (q.unit ? ' ' + q.unit : ''), typeof q.explain === 'function' ? q.explain() : q.explain, w);
+  });
+}
+function onJournal() { watchers.forEach(f => f()); }
+
+/* ---------- БЛОК 1 ---------- */
+function buildB1() {
+  const c = S.r.calc;
+  numQ($('#b1q'), {
+    id: 'q11', num: '1.1', block: 'b1', where: 'Блок 1, задача на середню швидкість',
+    prompt: `У реакції <span class="eq">H₂(г) + I₂(г) → 2HI(г)</span> концентрація водню за ${c.t} с зменшилась з ${dec(c.c1)} до ${dec(c.c2)} моль/л. Обчисли середню швидкість реакції.`,
+    unit: 'моль/(л·с)', ph: '0,000',
+    check: v => Math.abs(v - c.v) < 1e-6,
+    explain: `v = (C₁ − C₂) / Δt = (${dec(c.c1)} − ${dec(c.c2)}) / ${c.t} = ${dec(Math.round((c.c1 - c.c2) * 1000) / 1000)} / ${c.t} = ${dec(c.v)} моль/(л·с).`,
+  });
+  matchQ($('#b1q'), {
+    id: 'q12', num: '1.2', block: 'b1', where: 'Блок 1, чинники швидкості',
+    prompt: 'З\'єднай кожен приклад із чинником, що впливає на швидкість реакції.',
+    rows: [
+      { label: 'Продукти зберігають у холодильнику, щоб вони довше не псувалися', short: 'Холодильник', ans: 'Температура' },
+      { label: 'Дрова для розпалювання багаття дрібно розколюють', short: 'Дрібні дрова', ans: 'Площа поверхні дотику (подрібнення)' },
+      { label: 'Ферменти слини прискорюють розщеплення крохмалю', short: 'Ферменти', ans: 'Каталізатор' },
+      { label: 'У чистому кисні жаринка спалахує, а на повітрі лише тліє', short: 'Чистий кисень', ans: 'Концентрація' },
+      { label: 'Натрій бурхливо реагує з водою, а залізо за звичайних умов — дуже повільно', short: 'Натрій і залізо', ans: 'Природа реагентів' },
+    ],
+    explain: 'Холод сповільнює реакції псування; подрібнення збільшує площу поверхні дотику; ферменти — біологічні каталізатори; у чистому кисні його концентрація вища, ніж у повітрі; натрій активніший за залізо — це природа реагентів.',
+  });
+}
+
+/* ---------- БЛОК 2: лабораторія швидкості ---------- */
+const METALS = { Mg: { name: 'магній', k: 0.06, color: '#c9cdd3', edge: '#8d949c' }, Zn: { name: 'цинк', k: 0.012, color: '#aab6c1', edge: '#6d7a86' }, Fe: { name: 'залізо', k: 0.0035, color: '#6f747b', edge: '#43474c' } };
+const VMAX = 60;
+const RL = { p: { rx: 'metal', metal: 'Zn', form: 'gran', c: 1, T: 20, cat: false }, speed: 10, run: null, journal: [], bubbles: [], raf: null, last: 0 };
+function kOf(p) {
+  const tf = Math.pow(S.r.gamma, (p.T - 20) / 10);
+  if (p.rx === 'h2o2') return 0.0006 * tf * (p.cat ? 250 : 1);
+  return METALS[p.metal].k * (p.form === 'powder' ? 4 : 1) * p.c * tf;
+}
+function condStr(p) {
+  if (p.rx === 'h2o2') return p.cat ? `H₂O₂ + MnO₂ (маса MnO₂: 0,5 г до і 0,5 г після), ${p.T} °C` : `H₂O₂ без каталізатора, ${p.T} °C`;
+  return `${p.metal}, ${p.form === 'gran' ? 'гранули' : 'порошок'}, c(HCl) = ${dec(p.c)} моль/л, ${p.T} °C`;
+}
+function eqStr(p) {
+  if (p.rx === 'h2o2') return p.cat ? '2H₂O₂ —(MnO₂)→ 2H₂O + O₂↑' : '2H₂O₂ → 2H₂O + O₂↑';
+  return `${p.metal} + 2HCl → ${p.metal}Cl₂ + H₂↑`;
+}
+const GROUPS = [
+  { key: 'rx', label: 'Реакція', opts: [['metal', 'Метал + HCl'], ['h2o2', 'Розклад H₂O₂']] },
+  { key: 'metal', label: 'Метал', opts: [['Mg', 'Mg'], ['Zn', 'Zn'], ['Fe', 'Fe']], show: p => p.rx === 'metal' },
+  { key: 'form', label: 'Форма металу', opts: [['gran', 'гранули'], ['powder', 'порошок']], show: p => p.rx === 'metal' },
+  { key: 'c', label: 'Концентрація HCl, моль/л', opts: [[0.5, '0,5'], [1, '1'], [2, '2']], show: p => p.rx === 'metal' },
+  { key: 'cat', label: 'Каталізатор MnO₂', opts: [[false, 'без каталізатора'], [true, 'додати 0,5 г']], show: p => p.rx === 'h2o2' },
+  { key: 'T', label: 'Температура водяної бані, °C', opts: [[20, '20'], [30, '30'], [40, '40'], [50, '50']] },
+];
+function buildRlControls() {
+  const box = $('#rlControls');
+  box.innerHTML = GROUPS.map(g => `<div class="ctl" data-g="${g.key}"><span>${g.label}</span><div class="seg">${g.opts.map((o, i) => `<button type="button" data-k="${g.key}" data-i="${i}">${o[1]}</button>`).join('')}</div></div>`).join('') +
+    `<div class="ctl"><span>Швидкість відтворення</span><div class="seg" id="speedSeg">${[1, 10, 100].map(s => `<button type="button" data-speed="${s}">×${s}</button>`).join('')}</div></div>
+    <div class="row"><button class="btn go big" id="rlStart" style="flex:1">Почати дослід</button><button class="btn ghost" id="rlStopBtn" disabled>Зупинити</button></div>
+    <div class="status" id="rlStatus">Обери умови й почни дослід.</div>`;
+  box.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.k) { if (RL.run) return; const g = GROUPS.find(x => x.key === b.dataset.k); RL.p[g.key] = g.opts[+b.dataset.i][0]; syncRl(); }
+    else if (b.dataset.speed) { RL.speed = +b.dataset.speed; syncRl(); }
+  });
+  $('#rlStart').onclick = rlStartRun;
+  $('#rlStopBtn').onclick = () => rlStop(true);
+  syncRl();
+}
+function syncRl() {
+  GROUPS.forEach(g => {
+    const el = $(`.ctl[data-g="${g.key}"]`); el.hidden = g.show ? !g.show(RL.p) : false;
+    $$('button', el).forEach(b => { b.classList.toggle('on', g.opts[+b.dataset.i][0] === RL.p[g.key]); b.disabled = !!RL.run; });
+  });
+  $$('#speedSeg button').forEach(b => b.classList.toggle('on', +b.dataset.speed === RL.speed));
+  $('#rlStart').disabled = !!RL.run; $('#rlStopBtn').disabled = !RL.run;
+  $('#rlEq').textContent = eqStr(RL.p);
+  if (!RL.run) rlDrawScene();
+}
+/* сцена */
+const SC = { solids: '' };
+function solidsSVG(p) {
+  const r = (() => { let a = 7; return () => (a = (a * 9301 + 49297) % 233280) / 233280; })();
+  if (p.rx === 'h2o2') {
+    if (!p.cat) return '';
+    let s = ''; for (let i = 0; i < 46; i++) s += `<circle cx="${(70 + r() * 70).toFixed(1)}" cy="${(190 + r() * 4).toFixed(1)}" r="${(1 + r() * 1.1).toFixed(1)}" fill="#2a2523"/>`; return s;
+  }
+  const m = METALS[p.metal];
+  if (p.form === 'gran') return [[78, 189, 7, 5], [93, 191, 6, 4.5], [106, 188, 7.5, 5.5], [120, 191, 6, 4.5], [133, 189, 6.5, 5]].map(([x, y, rx, ry]) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="${m.color}" stroke="${m.edge}" stroke-width="1"/><ellipse cx="${x - 2}" cy="${y - 2}" rx="${rx * .35}" ry="${ry * .3}" fill="#fff" opacity=".55"/>`).join('');
+  let s = ''; for (let i = 0; i < 70; i++) s += `<circle cx="${(68 + r() * 74).toFixed(1)}" cy="${(189 + r() * 5).toFixed(1)}" r="${(1.1 + r() * 1.2).toFixed(1)}" fill="${m.color}" stroke="${m.edge}" stroke-width=".5"/>`; return s;
+}
+function rlDrawScene() {
+  const p = RL.run ? RL.run.p : RL.p;
+  const V = RL.run ? RL.run.V : 0;
+  const bath = mix('#cde5f4', '#f6c3a6', (p.T - 20) / 30);
+  const liquid = p.rx === 'h2o2' ? '#e9f4f8' : '#dcecf6';
+  const merc = 30 + (p.T - 20) / 30 * 55;
+  const px = 206 + V * 1.8;
+  const gasName = p.rx === 'h2o2' ? 'O₂' : 'H₂';
+  const bubbles = RL.bubbles.map(b => `<circle cx="${b.x.toFixed(1)}" cy="${b.y.toFixed(1)}" r="${b.r}" fill="#ffffff" stroke="#8fb3c8" stroke-width=".8" opacity=".9"/>`).join('');
+  const ticks = [0, 10, 20, 30, 40, 50, 60].map(m => `<line x1="${206 + m * 1.8}" y1="50" x2="${206 + m * 1.8}" y2="${m % 20 === 0 ? 57 : 54}" stroke="#7f8d99" stroke-width="1"/>${m % 20 === 0 ? `<text x="${206 + m * 1.8}" y="45" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" fill="#5a6575">${m}</text>` : ''}`).join('');
+  $('#rlScene').innerHTML = `
+  <defs><clipPath id="flaskClip"><path d="M95,80 L60,185 Q58,197 70,197 L140,197 Q152,197 150,185 L115,80 Z"/></clipPath></defs>
+  <rect x="34" y="104" width="142" height="104" rx="10" fill="${bath}" opacity=".75" stroke="#9fb0bd"/>
+  <rect x="12" y="98" width="9" height="94" rx="4.5" fill="#fff" stroke="#8a97a3"/>
+  <rect x="14.5" y="${188 - merc}" width="4" height="${merc}" fill="#c9372c"/>
+  <circle cx="16.5" cy="197" r="8" fill="#c9372c" stroke="#8a97a3"/>
+  <text x="16" y="90" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="#18212e">${p.T} °C</text>
+  <g clip-path="url(#flaskClip)"><rect x="50" y="128" width="110" height="80" fill="${liquid}"/><rect x="50" y="127" width="110" height="2" fill="#ffffff" opacity=".8"/>${solidsSVG(p)}${bubbles}</g>
+  <path d="M95,80 L60,185 Q58,197 70,197 L140,197 Q152,197 150,185 L115,80" fill="none" stroke="#6f8796" stroke-width="2.6" stroke-linejoin="round"/>
+  <line x1="95" y1="80" x2="95" y2="40" stroke="#6f8796" stroke-width="2.6"/><line x1="115" y1="80" x2="115" y2="40" stroke="#6f8796" stroke-width="2.6"/>
+  <rect x="91" y="32" width="28" height="12" rx="2" fill="#8a5a3c"/>
+  <path d="M105,32 V18 H188 V62 H200" fill="none" stroke="#9aa7b3" stroke-width="3.2" stroke-linejoin="round"/>
+  <rect x="200" y="50" width="122" height="24" rx="4" fill="#ffffff" fill-opacity=".7" stroke="#7f8d99" stroke-width="1.6"/>
+  <rect x="206" y="52" width="${(V * 1.8).toFixed(1)}" height="20" fill="#d9efe9"/>
+  ${ticks}
+  <rect x="${px.toFixed(1)}" y="51" width="5" height="22" fill="#3d4652"/>
+  <rect x="${(px + 5).toFixed(1)}" y="60" width="30" height="4" fill="#3d4652"/>
+  <rect x="${(px + 35).toFixed(1)}" y="53" width="4" height="18" rx="1" fill="#3d4652"/>
+  <text x="262" y="92" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="#18212e">${gasName}: ${fmt(V, 3)} мл</text>
+  <text x="262" y="106" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" fill="#5a6575">газовий шприц</text>`;
+}
+function rlStartRun() {
+  if (RL.run) return;
+  const p = { ...RL.p }; const k = kOf(p);
+  RL.run = { p, k, t40: Math.log(3) / k, tEnd: Math.log(4) / k, t: 0, V: 0, recorded: false, acc: 0, hist: [[0, 0]] };
+  RL.bubbles = [];
+  $('#rlStatus').textContent = 'Дослід триває… Спостерігай за бульбашками і шприцом.';
+  syncRl(); RL.last = performance.now(); bringIntoView($('#rlScene'));
+  cancelAnimationFrame(RL.raf); RL.raf = requestAnimationFrame(rlFrame);
+}
+function rlStop(byUser) {
+  if (!RL.run) return;
+  const run = RL.run; RL.run = null; cancelAnimationFrame(RL.raf);
+  RL.lastRun = run;
+  if (byUser && !run.recorded) $('#rlStatus').textContent = 'Дослід зупинено до того, як виділилось 40 мл газу. Час не записано.';
+  RL.bubbles = []; syncRl(); RL.view = run; rlDrawSceneFinal(run); drawRlChart();
+}
+function rlDrawSceneFinal(run) { RL.run = run; rlDrawScene(); RL.run = null; }
+function rlFrame(now) {
+  const run = RL.run; if (!run) return;
+  const dt = Math.min(0.05, (now - RL.last) / 1000); RL.last = now;
+  run.t = Math.min(run.tEnd, run.t + dt * RL.speed);
+  run.V = VMAX * (1 - Math.exp(-run.k * run.t));
+  const rate = VMAX * run.k * Math.exp(-run.k * run.t);
+  const lh = run.hist[run.hist.length - 1];
+  if (run.t - lh[0] > run.tEnd / 300) run.hist.push([run.t, run.V]);
+  // бульбашки: частота відображає справжню швидкість реакції
+  if (run.t < run.tEnd) {
+    run.acc += Math.min(45, rate * 6) * dt;
+    while (run.acc >= 1) {
+      run.acc -= 1;
+      const x = run.p.rx === 'h2o2' && !run.p.cat ? 70 + Math.random() * 70 : 72 + Math.random() * 66;
+      const y = run.p.rx === 'h2o2' && !run.p.cat ? 140 + Math.random() * 50 : 186;
+      RL.bubbles.push({ x, y, r: (1.6 + Math.random() * 1.8).toFixed(1), vy: 45 + Math.random() * 35 });
+    }
+  }
+  RL.bubbles.forEach(b => { b.y -= b.vy * dt; b.x += Math.sin(b.y / 7) * .25; });
+  RL.bubbles = RL.bubbles.filter(b => b.y > 130).slice(-160);
+  if (!run.recorded && run.t >= run.t40) {
+    run.recorded = true;
+    RL.journal.push({ n: RL.journal.length + 1, p: run.p, t40: run.t40 });
+    renderJournal(); onJournal();
+    $('#rlStatus').innerHTML = `<b>40 мл газу виділилось за ${fmt(run.t40)} с.</b> Результат записано в журнал.` + (run.p.rx === 'h2o2' && run.p.cat ? ' Маса MnO₂ після досліду — 0,5 г, як і до досліду.' : '');
+    $('#rlStatus').className = 'status ok';
+    setTimeout(() => { const s = $('#rlStatus'); if (s) s.className = 'status'; }, 2500);
+  }
+  $('#roT').textContent = fmt(run.t) + ' с';
+  $('#roV').textContent = fmt(run.V) + ' мл';
+  $('#roR').textContent = fmt(rate) + ' мл/с';
+  rlDrawScene(); drawRlChart();
+  if (run.t >= run.tEnd) { rlStop(false); return; }
+  RL.raf = requestAnimationFrame(rlFrame);
+}
+function renderJournal() {
+  const t = $('#journal');
+  if (!RL.journal.length) { t.innerHTML = '<tbody><tr><td class="empty">Поки що немає вимірювань. Проведи перший дослід.</td></tr></tbody>'; return; }
+  t.innerHTML = `<thead><tr><th>№</th><th>Реакція й умови</th><th style="text-align:right">t (40 мл), с</th><th style="text-align:right">v̄ = 40 / t, мл/с</th></tr></thead><tbody>` +
+    RL.journal.map(r => `<tr><td class="num">${r.n}</td><td>${condStr(r.p)}</td><td class="num">${fmt(r.t40)}</td><td class="num">${fmt(40 / r.t40)}</td></tr>`).join('') + '</tbody>';
+}
+/* графіки */
+function niceStep(range, n = 4) { const raw = range / n; const mag = Math.pow(10, Math.floor(Math.log10(raw))); const f = raw / mag; return (f < 1.5 ? 1 : f < 3 ? 2 : f < 7 ? 5 : 10) * mag; }
+function drawChart(cv, series, o) {
+  const dpr = window.devicePixelRatio || 1; const W = cv.clientWidth, H = cv.clientHeight; if (!W) return;
+  if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+  const c = cv.getContext('2d'); c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, W, H);
+  const L = 46, R = 10, T = 12, B = 28; const pw = W - L - R, ph = H - T - B;
+  const X = x => L + (x - o.xmin) / (o.xmax - o.xmin) * pw, Y = y => T + ph - (y - o.ymin) / (o.ymax - o.ymin) * ph;
+  c.font = '11px "IBM Plex Mono", monospace'; c.fillStyle = '#5a6575'; c.strokeStyle = '#e4e8ee'; c.lineWidth = 1;
+  const ys = niceStep(o.ymax - o.ymin); c.textAlign = 'right'; c.textBaseline = 'middle';
+  for (let y = o.ymin; y <= o.ymax + 1e-9; y += ys) { c.beginPath(); c.moveTo(L, Y(y)); c.lineTo(W - R, Y(y)); c.stroke(); c.fillText(fmt(y, 3), L - 6, Y(y)); }
+  const xs = niceStep(o.xmax - o.xmin, 5); c.textAlign = 'center'; c.textBaseline = 'top';
+  for (let x = Math.ceil(o.xmin / xs) * xs; x <= o.xmax + 1e-9; x += xs) { c.beginPath(); c.moveTo(X(x), T); c.lineTo(X(x), T + ph); c.stroke(); c.fillText(fmt(x, 3), X(x), T + ph + 6); }
+  c.strokeStyle = '#9aa6b5'; c.beginPath(); c.moveTo(L, T); c.lineTo(L, T + ph); c.lineTo(W - R, T + ph); c.stroke();
+  if (o.hline != null) { c.setLineDash([4, 4]); c.strokeStyle = '#9a6410'; c.beginPath(); c.moveTo(L, Y(o.hline)); c.lineTo(W - R, Y(o.hline)); c.stroke(); c.setLineDash([]); c.fillStyle = '#9a6410'; c.textAlign = 'left'; c.textBaseline = 'bottom'; c.fillText(o.hlabel || '', L + 4, Y(o.hline) - 2); }
+  series.forEach(s => {
+    if (!s.pts.length) return; c.strokeStyle = s.color; c.lineWidth = s.w || 2.5; c.lineJoin = 'round'; c.beginPath();
+    s.pts.forEach(([x, y], i) => { const px = X(x), py = Y(Math.min(o.ymax, Math.max(o.ymin, y))); i ? c.lineTo(px, py) : c.moveTo(px, py); }); c.stroke();
+    const [lx, ly] = s.pts[s.pts.length - 1]; c.fillStyle = s.color; c.beginPath(); c.arc(X(lx), Y(Math.min(o.ymax, ly)), 3.5, 0, 7); c.fill();
+  });
+  c.fillStyle = '#5a6575'; c.textAlign = 'left'; c.textBaseline = 'top'; c.fillText(o.ylabel || '', L + 4, T + 2);
+  c.textAlign = 'right'; c.textBaseline = 'bottom'; c.fillText(o.xlabel || '', W - R - 2, T + ph - 3);
+}
+function drawRlChart() {
+  const run = RL.run || RL.lastRun;
+  const cv = $('#rlChart'); if (!cv || cv.offsetParent === null) return;
+  if (!run) { drawChart(cv, [], { xmin: 0, xmax: 100, ymin: 0, ymax: 60, ylabel: 'V, мл', xlabel: 't, с', hline: 40, hlabel: '40 мл' }); return; }
+  const pts = []; for (let i = 0; i <= 80; i++) { const t = run.t * i / 80; pts.push([t, VMAX * (1 - Math.exp(-run.k * t))]); }
+  drawChart(cv, [{ pts, color: '#0e7469' }], { xmin: 0, xmax: run.tEnd * 1.05, ymin: 0, ymax: 60, ylabel: 'V, мл', xlabel: 't, с', hline: 40, hlabel: '40 мл' });
+}
+const has = pred => RL.journal.some(r => pred(r.p));
+function buildB2() {
+  const host = $('#b2q');
+  const isStd = (p, metal) => p.rx === 'metal' && p.metal === metal && p.form === 'gran' && p.c === 1 && p.T === 20;
+  /* 2.1 природа реагентів */
+  (function () {
+    const q = { id: 't1', num: '2.1', block: 'b2', where: 'Блок 2, природа реагентів', prompt: 'Природа реагентів. Проведи досліди з магнієм, цинком і залізом (гранули, c(HCl) = 1 моль/л, 20 °C). Розташуй метали за зменшенням швидкості реакції.' };
+    const w = qShell(host, q);
+    const reqOk = reqUI(w, () => ['Mg', 'Zn', 'Fe'].map(m => ({ label: `${m}, гранули, 1 моль/л, 20 °C`, done: has(p => isStd(p, m)) })));
+    const box = document.createElement('div'); box.className = 'order';
+    const places = ['1 — найшвидше', '2', '3 — найповільніше'];
+    box.innerHTML = places.map((pl, i) => `<div class="order-row"><span>${pl}</span><select id="t1_${i}" aria-label="Місце ${i + 1}"><option value="">— метал —</option><option value="Mg">магній Mg</option><option value="Zn">цинк Zn</option><option value="Fe">залізо Fe</option></select></div>`).join('');
+    w.appendChild(box);
+    const foot = document.createElement('div'); foot.className = 'row end';
+    const chk = document.createElement('button'); chk.className = 'btn'; chk.textContent = 'Перевірити'; foot.appendChild(chk); w.appendChild(foot);
+    const sels = $$('select', box);
+    const refresh = () => { if (!chk.isConnected) return; const v = sels.map(s => s.value); chk.disabled = !(reqOk() && v.every(Boolean) && new Set(v).size === 3); };
+    sels.forEach(s => s.addEventListener('change', refresh)); watchers.push(refresh); refresh();
+    chk.onclick = () => {
+      const v = sels.map(s => s.value); const ok = v.join() === 'Mg,Zn,Fe';
+      sels.forEach(s => s.disabled = true); foot.remove();
+      finishQ(q, ok, 'Твій порядок: ' + v.join(' > '), 'Що активніший метал, то швидше він реагує з кислотою: Mg > Zn > Fe (так вони розташовані й у ряду активності). Швидкість залежить від природи реагентів.', w);
+    };
+  })();
+  /* 2.2 концентрація */
+  const [a, b] = S.r.cPair;
+  numQ(host, {
+    id: 't2', num: '2.2', block: 'b2', where: 'Блок 2, вплив концентрації', unit: 'раз(и)', ph: 'у скільки разів',
+    prompt: `Концентрація. Проведи досліди з цинком (гранули, 20 °C) за c(HCl) = ${dec(a)} і ${dec(b)} моль/л. У скільки разів зросла швидкість реакції?`,
+    extra: '<div class="formula-hint">Швидкість обернено пропорційна часу: v₂ / v₁ = t₁ / t₂</div>',
+    req: () => [a, b].map(c => ({ label: `Zn, гранули, ${dec(c)} моль/л, 20 °C`, done: has(p => p.rx === 'metal' && p.metal === 'Zn' && p.form === 'gran' && p.T === 20 && p.c === c) })),
+    check: v => Math.abs(v - b / a) / (b / a) <= 0.04,
+    explain: () => `v₂ / v₁ = t₁ / t₂ = ${b / a}. Концентрацію збільшили в ${b / a} рази — і швидкість зросла в ${b / a} рази: для реакції твердої речовини з розчином v = k·c(HCl) (закон діючих мас; концентрація твердого цинку у вираз не входить).`,
+  });
+  /* 2.3 температура */
+  const [T1, T2] = S.r.tPair; const g = S.r.gamma; const n = (T2 - T1) / 10;
+  numQ(host, {
+    id: 't3', num: '2.3', block: 'b2', where: 'Блок 2, температурний коефіцієнт', unit: '', ph: 'γ',
+    prompt: `Температура. Проведи досліди з цинком (гранули, c(HCl) = 1 моль/л) за ${T1} °C і ${T2} °C. Обчисли температурний коефіцієнт швидкості γ.`,
+    extra: `<div class="formula-hint">Правило Вант-Гоффа: v₂ / v₁ = γ<sup>(T₂ − T₁)/10</sup>; v₂ / v₁ = t₁ / t₂</div>`,
+    req: () => [T1, T2].map(T => ({ label: `Zn, гранули, 1 моль/л, ${T} °C`, done: has(p => p.rx === 'metal' && p.metal === 'Zn' && p.form === 'gran' && p.c === 1 && p.T === T) })),
+    check: v => Math.abs(v - g) <= 0.15,
+    explain: () => `t₁ / t₂ = v₂ / v₁ = ${fmt(Math.pow(g, n))}. Показник степеня (T₂ − T₁)/10 = ${n}, тому γ${n > 1 ? ` = ${n === 2 ? '√' : '∛'}${fmt(Math.pow(g, n))}` : ''} = ${g}. Тобто з підвищенням температури на кожні 10 °C швидкість цієї реакції зростає в ${g} рази.`,
+  });
+  /* 2.4 каталізатор */
+  mcQ(host, {
+    id: 't4', num: '2.4', block: 'b2', where: 'Блок 2, каталізатор',
+    prompt: 'Каталізатор. Обери реакцію розкладу H₂O₂ і проведи досліди без каталізатора та з MnO₂ за однакової температури. Який висновок правильний?',
+    req: () => {
+      const temps = [20, 30, 40, 50].filter(T => has(p => p.rx === 'h2o2' && !p.cat && p.T === T) && has(p => p.rx === 'h2o2' && p.cat && p.T === T));
+      return [{ label: 'H₂O₂ без каталізатора', done: has(p => p.rx === 'h2o2' && !p.cat) }, { label: 'H₂O₂ + MnO₂', done: has(p => p.rx === 'h2o2' && p.cat) }, { label: 'за однакової температури', done: temps.length > 0 }];
+    },
+    options: [
+      { t: 'MnO₂ у багато разів прискорює розклад H₂O₂, а сам після реакції залишається незмінним', ok: true },
+      { t: 'MnO₂ реагує з H₂O₂ і повністю витрачається, тому газ виділяється швидше', ok: false },
+      { t: 'MnO₂ збільшує загальний об\'єм кисню, що може виділитися', ok: false },
+      { t: 'Каталізатор не впливає на швидкість, він лише змінює колір розчину', ok: false },
+    ],
+    explain: 'Каталізатор прискорює реакцію, але не витрачається: маса MnO₂ до і після досліду однакова. Об\'єм кисню визначає кількість H₂O₂, а не каталізатор — каталізатор змінює лише швидкість.',
+  });
+}
+
+/* ---------- БЛОК 3 ---------- */
+function buildB3() {
+  (function arrowQ() {
+    const q = { id: 'q31', num: '3.1', block: 'b3', where: 'Блок 3, оборотні й необоротні реакції', prompt: 'Постав у кожне рівняння стрілку: → (необоротна) або ⇌ (оборотна).' };
+    const w = qShell($('#b3q'), q);
+    const rows = shuffle([
+      { l: 'N₂ + 3H₂', r: '2NH₃', rev: true, why: 'оборотна: за тих самих умов амоніак частково розкладається на азот і водень' },
+      { l: 'AgNO₃ + NaCl', r: 'AgCl + NaNO₃', rev: false, why: 'необоротна: утворюється осад AgCl' },
+      { l: 'Na₂CO₃ + 2HCl', r: '2NaCl + H₂O + CO₂', rev: false, why: 'необоротна: виділяється газ CO₂' },
+      { l: 'NaOH + HCl', r: 'NaCl + H₂O', rev: false, why: 'необоротна: утворюється вода — малодисоційована речовина' },
+      { l: '2SO₂ + O₂', r: '2SO₃', rev: true, why: 'оборотна: SO₃ частково розкладається на SO₂ і O₂' },
+      { l: 'H₂ + I₂', r: '2HI', rev: true, why: 'оборотна: гідроген йодид частково розкладається на H₂ та I₂' },
+    ]);
+    const list = document.createElement('div'); list.className = 'arrlist'; w.appendChild(list);
+    const ans = rows.map(() => null);
+    const foot = document.createElement('div'); foot.className = 'row end';
+    const chk = document.createElement('button'); chk.className = 'btn'; chk.textContent = 'Перевірити'; chk.disabled = true; foot.appendChild(chk);
+    rows.forEach((r, i) => {
+      const d = document.createElement('div'); d.className = 'arr';
+      d.innerHTML = `<span class="eqs">${r.l} <span class="slot">?</span> ${r.r}</span><span class="pick"><button type="button" data-v="0"><b>→</b>необоротна</button><button type="button" data-v="1"><b>⇌</b>оборотна</button></span>`;
+      $$('.pick button', d).forEach(b => b.onclick = () => {
+        ans[i] = b.dataset.v === '1'; $$('.pick button', d).forEach(x => x.classList.toggle('on', x === b));
+        $('.slot', d).textContent = ans[i] ? '⇌' : '→'; chk.disabled = ans.some(a => a === null);
+      });
+      list.appendChild(d);
+    });
+    w.appendChild(foot);
+    chk.onclick = () => {
+      let all = true; const wrong = [];
+      $$('.arr', list).forEach((d, i) => {
+        const ok = ans[i] === rows[i].rev; if (!ok) { all = false; wrong.push(rows[i].l + ' … ' + rows[i].r); }
+        d.classList.add(ok ? 'right' : 'wrong'); $$('.pick button', d).forEach(b => b.disabled = true);
+        $('.slot', d).textContent = rows[i].rev ? '⇌' : '→';
+        d.insertAdjacentHTML('beforeend', `<span class="why">${rows[i].why}</span>`);
+      });
+      foot.remove();
+      finishQ(q, all, 'Помилки в рівняннях: ' + wrong.join('; '), 'Реакції йдуть до кінця (необоротні), якщо утворюється осад, газ або малодисоційована речовина, наприклад вода. Синтез амоніаку, окиснення SO₂ і утворення HI — типові оборотні реакції.', w);
+    };
+  })();
+  mcQ($('#b3q'), {
+    id: 'q32', num: '3.2', block: 'b3', where: 'Блок 3, стан хімічної рівноваги',
+    prompt: 'Яке твердження про стан хімічної рівноваги правильне?',
+    options: [
+      { t: 'Швидкості прямої і зворотної реакцій однакові, концентрації речовин не змінюються, але обидві реакції тривають', ok: true },
+      { t: 'Обидві реакції припиняються, тому концентрації речовин більше не змінюються', ok: false },
+      { t: 'Концентрації вихідних речовин і продуктів реакції стають однаковими', ok: false },
+      { t: 'Пряма реакція весь час іде швидше за зворотну', ok: false },
+    ],
+    explain: 'Хімічна рівновага — динамічна: пряма і зворотна реакції не зупиняються, але йдуть з однаковою швидкістю (v→ = v←), тому концентрації сталі. Самі концентрації при цьому не обов\'язково однакові.',
+  });
+}
+
+/* ---------- БЛОК 4: лабораторія рівноваги ---------- */
+const KT = [[0, 30], [25, 6], [50, 1.5], [80, 0.35]];
+function Kof(T) { for (let i = 0; i < KT.length - 1; i++) { const [t1, k1] = KT[i], [t2, k2] = KT[i + 1]; if (T <= t2) { const f = (T - t1) / (t2 - t1); return Math.exp(Math.log(k1) + f * (Math.log(k2) - Math.log(k1))); } } return KT[KT.length - 1][1]; }
+const EQ = { T: 25, vf: 1, vfT: 1, cat: false, n1: 0, n2: 0, t: 0, hist: [], parts: [], tab: 'c', raf: null, last: 0, step: 0, free: false, sampleT: 0, cur: {} };
+function eqSetEquilibrium() { const ct = 1 / EQ.vf, K = Kof(EQ.T); const c = (-1 + Math.sqrt(1 + 8 * K * ct)) / (4 * K); EQ.n1 = c * EQ.vf; EQ.n2 = (1 - EQ.n1) / 2; }
+function eqReset() { EQ.T = 25; EQ.vf = EQ.vfT = 1; EQ.cat = false; eqSetEquilibrium(); EQ.hist = []; EQ.t = 0; EQ.sampleT = 0; eqInitParts(); }
+function eqRates() { const c1 = EQ.n1 / EQ.vf, c2 = EQ.n2 / EQ.vf; const kr = 0.04 * Math.pow(2, (EQ.T - 25) / 10) * (EQ.cat ? 5 : 1); const kf = Kof(EQ.T) * kr; return { c1, c2, vF: kf * c1 * c1, vR: kr * c2 }; }
+function eqStepSim(dt) {
+  const h = 0.005; let n = Math.ceil(dt / h);
+  while (n-- > 0) {
+    EQ.vf += (EQ.vfT - EQ.vf) * Math.min(1, h * 5);
+    const r = eqRates(); let d = (r.vF - r.vR) * EQ.vf * h;
+    if (d > EQ.n1 / 2) d = EQ.n1 / 2; if (-d > EQ.n2) d = -EQ.n2;
+    EQ.n2 += d; EQ.n1 -= 2 * d; EQ.t += h;
+  }
+  EQ.cur = eqRates();
+  if (EQ.t - EQ.sampleT >= 0.1) { EQ.sampleT = EQ.t; EQ.hist.push({ t: EQ.t, ...EQ.cur }); if (EQ.hist.length > 700) EQ.hist.shift(); }
+}
+const NATOM = 24;
+function eqInitParts() {
+  EQ.parts = []; const want2 = Math.round(EQ.n2 * NATOM);
+  for (let i = 0; i < want2; i++) EQ.parts.push(newPart(2));
+  for (let i = 0; i < NATOM - 2 * want2; i++) EQ.parts.push(newPart(1));
+}
+function newPart(t, u, v) { const a = Math.random() * 6.28; return { t, u: u ?? Math.random(), v: v ?? Math.random(), vx: Math.cos(a) * .25, vy: Math.sin(a) * .35, rot: Math.random() * 6.28, flash: 0 }; }
+function eqReconcile() {
+  const want2 = Math.max(0, Math.min(12, Math.round(EQ.n2 * NATOM)));
+  let have2 = EQ.parts.filter(p => p.t === 2).length;
+  while (have2 < want2) {
+    const ones = shuffle(EQ.parts.filter(p => p.t === 1)); if (ones.length < 2) break;
+    const [a, b] = ones; EQ.parts = EQ.parts.filter(p => p !== a && p !== b);
+    const np = newPart(2, (a.u + b.u) / 2, (a.v + b.v) / 2); np.flash = 1; EQ.parts.push(np); have2++;
+  }
+  while (have2 > want2) {
+    const p2 = pick(EQ.parts.filter(p => p.t === 2)); EQ.parts = EQ.parts.filter(p => p !== p2);
+    const a = newPart(1, Math.max(0, p2.u - .03), p2.v), b = newPart(1, Math.min(1, p2.u + .03), p2.v); a.flash = b.flash = 1; EQ.parts.push(a, b); have2--;
+  }
+}
+function eqDrawScene() {
+  const cv = $('#eqScene'); const c = cv.getContext('2d');
+  const W = 360, H = 200; c.setTransform(cv.width / W, 0, 0, cv.height / H, 0, 0); c.clearRect(0, 0, W, H);
+  // фон / баня
+  const T = EQ.T;
+  if (T !== 25) {
+    const col = T < 25 ? '#d3eaf8' : mix('#f8e2d4', '#f2ae8c', (T - 25) / 55);
+    c.fillStyle = col; c.strokeStyle = '#9fb0bd'; c.lineWidth = 1.5; roundRect(c, 18, 96, 324, 92, 10); c.fill(); c.stroke();
+    c.fillStyle = '#33424e'; c.font = '10px "IBM Plex Mono", monospace'; c.fillText(T < 25 ? 'лід із водою' : 'гаряча вода', 28, 180);
+    if (T < 25) { c.fillStyle = 'rgba(255,255,255,.85)'; c.strokeStyle = '#a8c7dc'; [[60, 150], [120, 160], [210, 152], [280, 162]].forEach(([x, y]) => { roundRect(c, x, y, 16, 14, 3); c.fill(); c.stroke(); }); }
+    else { c.strokeStyle = 'rgba(120,130,140,.5)'; c.lineWidth = 2; for (let i = 0; i < 4; i++) { const x = 70 + i * 60, ph = (EQ.t * 1.5 + i) % 1; c.globalAlpha = 1 - ph; c.beginPath(); c.moveTo(x, 92 - ph * 14); c.quadraticCurveTo(x - 6, 84 - ph * 14, x, 76 - ph * 14); c.stroke(); } c.globalAlpha = 1; }
+  }
+  // шприц
+  const x0 = 46, L0 = 128, gasLen = L0 * EQ.vf, px = x0 + gasLen; const y0 = 70, h = 50;
+  c.fillStyle = 'rgba(255,255,255,.75)'; c.strokeStyle = '#7f8d99'; c.lineWidth = 2; roundRect(c, 36, y0 - 2, 290, h + 4, 6); c.fill(); c.stroke();
+  c.fillStyle = '#7f8d99'; c.fillRect(24, y0 + h / 2 - 6, 12, 12); c.fillStyle = '#3d4652'; c.fillRect(18, y0 + h / 2 - 9, 6, 18);
+  const c1 = EQ.n1 / EQ.vf; const alpha = 0.92 * (1 - Math.exp(-1.7 * c1));
+  c.fillStyle = `rgba(155,61,15,${alpha.toFixed(3)})`; c.fillRect(x0 - 8, y0, gasLen + 8, h);
+  // шкала
+  c.strokeStyle = '#9aa6b5'; c.lineWidth = 1; c.fillStyle = '#5a6575'; c.font = '8px "IBM Plex Mono", monospace'; c.textAlign = 'center';
+  for (let i = 0; i <= 4; i++) { const x = x0 + i * 64; c.beginPath(); c.moveTo(x, y0 - 2); c.lineTo(x, y0 + 6); c.stroke(); c.fillText(['0', '½V₀', 'V₀', '1½V₀', '2V₀'][i], x, y0 - 6); }
+  // частинки
+  EQ.parts.forEach(p => {
+    const x = x0 + 6 + p.u * Math.max(1, gasLen - 12), y = y0 + 7 + p.v * (h - 14);
+    if (p.flash > 0) { c.fillStyle = `rgba(242,183,5,${(p.flash * .6).toFixed(2)})`; c.beginPath(); c.arc(x, y, 9, 0, 7); c.fill(); }
+    if (p.t === 1) { c.fillStyle = '#9b3d0f'; c.strokeStyle = '#5e2307'; c.lineWidth = .8; c.beginPath(); c.arc(x, y, 4.2, 0, 7); c.fill(); c.stroke(); }
+    else {
+      const dx = Math.cos(p.rot) * 3.6, dy = Math.sin(p.rot) * 3.6; c.fillStyle = '#eef0f2'; c.strokeStyle = '#8a8f96'; c.lineWidth = 1;
+      [[x - dx, y - dy], [x + dx, y + dy]].forEach(([a, b]) => { c.beginPath(); c.arc(a, b, 3.8, 0, 7); c.fill(); c.stroke(); });
+    }
+  });
+  // поршень
+  c.fillStyle = '#3d4652'; c.fillRect(px, y0 + 1, 7, h - 2); c.fillRect(px + 7, y0 + h / 2 - 3, 352 - px - 14, 6); c.fillRect(342, y0 + h / 2 - 16, 6, 32);
+  c.textAlign = 'left'; c.fillStyle = '#18212e'; c.font = '600 11px "IBM Plex Mono", monospace';
+  c.fillText(`T = ${T} °C`, 36, 28); c.fillText(`V = ${EQ.vfT === 1 ? 'V₀' : EQ.vfT < 1 ? '½V₀' : '2V₀'}`, 130, 28); c.fillText(EQ.cat ? 'каталізатор: є' : 'каталізатор: немає', 210, 28);
+  c.font = '10px "IBM Plex Mono", monospace'; c.fillStyle = '#5a6575'; c.fillText(`частинок: NO₂ — ${EQ.parts.filter(p => p.t === 1).length}, N₂O₄ — ${EQ.parts.filter(p => p.t === 2).length}`, 36, 46);
+}
+function inView(el) { const r = el.getBoundingClientRect(); return r.top >= 60 && r.bottom <= innerHeight; }
+function bringIntoView(el) { if (!inView(el)) el.scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'center' }); }
+function roundRect(c, x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
+function eqDrawChart() {
+  const cv = $('#eqChart'); if (cv.offsetParent === null) return;
+  const t1 = EQ.t, t0 = Math.max(0, t1 - 40); const hs = EQ.hist.filter(h => h.t >= t0);
+  if (EQ.tab === 'c') {
+    const ymax = Math.max(0.6, ...hs.map(h => Math.max(h.c1, h.c2))) * 1.1;
+    drawChart(cv, [{ pts: hs.map(h => [h.t, h.c1]), color: '#9b3d0f' }, { pts: hs.map(h => [h.t, h.c2]), color: '#5b6b7c' }], { xmin: t0, xmax: Math.max(t0 + 40, t1), ymin: 0, ymax, ylabel: 'C, моль/л', xlabel: 't, с' });
+  } else {
+    const ymax = Math.max(0.02, ...hs.map(h => Math.max(h.vF, h.vR))) * 1.15;
+    drawChart(cv, [{ pts: hs.map(h => [h.t, h.vF]), color: '#1d4f91' }, { pts: hs.map(h => [h.t, h.vR]), color: '#c2561a', w: 2 }], { xmin: t0, xmax: Math.max(t0 + 40, t1), ymin: 0, ymax, ylabel: 'v, моль/(л·с)', xlabel: 't, с' });
+  }
+}
+function eqLegend() {
+  $('#eqLegend').innerHTML = EQ.tab === 'c' ? '<span><i style="background:#9b3d0f"></i>[NO₂]</span><span><i style="background:#5b6b7c"></i>[N₂O₄]</span>' : '<span><i style="background:#1d4f91"></i>v→ пряма</span><span><i style="background:#c2561a"></i>v← зворотна</span>';
+}
+$$('.tabs button').forEach(b => b.onclick = () => { EQ.tab = b.dataset.tab; $$('.tabs button').forEach(x => x.classList.toggle('on', x === b)); eqLegend(); eqDrawChart(); });
+function eqFrame(now) {
+  const dt = Math.min(0.05, (now - EQ.last) / 1000); EQ.last = now;
+  eqStepSim(dt); eqReconcile();
+  EQ.parts.forEach(p => {
+    p.u += p.vx * dt * (128 / Math.max(40, 128 * EQ.vf)); p.v += p.vy * dt; p.rot += dt * 1.5; p.flash = Math.max(0, p.flash - dt * 1.4);
+    if (p.u < 0) { p.u = 0; p.vx = Math.abs(p.vx); } if (p.u > 1) { p.u = 1; p.vx = -Math.abs(p.vx); }
+    if (p.v < 0) { p.v = 0; p.vy = Math.abs(p.vy); } if (p.v > 1) { p.v = 1; p.vy = -Math.abs(p.vy); }
+  });
+  const r = EQ.cur;
+  $('#eqC1').textContent = fmt(r.c1); $('#eqC2').textContent = fmt(r.c2); $('#eqVF').textContent = fmt(r.vF); $('#eqVR').textContent = fmt(r.vR);
+  const st = $('#eqStatus'); const diff = (r.vF - r.vR) / Math.max(r.vF, r.vR, 1e-9);
+  if (Math.abs(diff) < 0.03 && Math.abs(EQ.vf - EQ.vfT) < 0.01) { st.className = 'status ok'; st.textContent = 'Рівновагу встановлено: v→ = v←, концентрації не змінюються.'; }
+  else { st.className = 'status move'; st.textContent = diff > 0 ? 'Рівновага зміщується вправо: v→ > v←, утворюється N₂O₄.' : 'Рівновага зміщується вліво: v← > v→, утворюється NO₂.'; }
+  eqDrawScene(); eqDrawChart();
+  EQ.raf = requestAnimationFrame(eqFrame);
+}
+function eqStart() { cancelAnimationFrame(EQ.raf); EQ.last = performance.now(); eqLegend(); EQ.raf = requestAnimationFrame(eqFrame); }
+function eqStop() { cancelAnimationFrame(EQ.raf); EQ.raf = null; }
+const PRED = { right: 'Зміститься вправо — у бік N₂O₄', left: 'Зміститься вліво — у бік NO₂', none: 'Не зміститься' };
+const STEPS = [
+  { id: 'e1', q: 'Шприц із сумішшю переносять у гарячу воду (80 °C). Що станеться з рівновагою?', act: () => { EQ.T = 80; }, right: 'left',
+    obs: 'Суміш помітно потемнішала: NO₂ стало більше.',
+    explain: 'Пряма реакція екзотермічна (ΔH < 0), отже зворотна — ендотермічна. Нагрівання за принципом Ле Шательє зміщує рівновагу в бік ендотермічної реакції, тобто вліво.' },
+  { id: 'e2', q: 'Поршень швидко засувають, і об\'єм суміші зменшується вдвічі (тиск зростає). Що станеться з рівновагою?', act: () => { EQ.vfT = 0.5; }, right: 'right',
+    obs: 'Одразу після стискання колір став темнішим (концентрація зросла), а потім трохи посвітлішав: частина NO₂ перетворилася на N₂O₄.',
+    explain: 'Зліва 2 моль газів, справа — 1 моль. Підвищення тиску зміщує рівновагу в бік меншої кількості молекул газів, тобто вправо.' },
+  { id: 'e3', q: 'До рівноважної суміші додають каталізатор. Що станеться з рівновагою?', act: () => { EQ.cat = true; }, right: 'none',
+    obs: 'Колір і концентрації не змінилися, а обидві швидкості, v→ і v←, однаково зросли (див. вкладку «Швидкості»).',
+    explain: 'Каталізатор однаково прискорює пряму і зворотну реакції, тому рівновага не зміщується. Він лише пришвидшує її встановлення.' },
+];
+function renderStep() {
+  const box = $('#eqSteps');
+  if (EQ.step >= STEPS.length) {
+    box.innerHTML = `<div class="fb good"><b>Усі три прогнози перевірено.</b><span>Тепер можеш вільно експериментувати: змінюй температуру, об'єм і каталізатор та спостерігай за кольором і графіками.</span></div>`;
+    EQ.free = true; renderFree(); return;
+  }
+  const s = STEPS[EQ.step]; let sel = null;
+  box.innerHTML = `<div class="q-head"><span class="q-num">4.${EQ.step + 1}</span><span class="q-prompt">${s.q}</span><span class="q-pts">1 бал</span></div>
+  <p class="lead" style="font-size:14px">Спочатку зроби прогноз, потім натисни кнопку — і перевір його на досліді.</p>
+  <div class="opts">${Object.entries(PRED).map(([k, t]) => `<button type="button" class="opt" data-k="${k}">${t}</button>`).join('')}</div>
+  <div class="row end"><button class="btn go" id="eqRun" disabled>Провести дослід</button></div>`;
+  $$('.opt', box).forEach(b => b.onclick = () => { sel = b.dataset.k; $$('.opt', box).forEach(x => x.classList.toggle('sel', x === b)); $('#eqRun').disabled = false; });
+  $('#eqRun').onclick = async () => {
+    $$('.opt', box).forEach(x => x.disabled = true); $('#eqRun').closest('.row').remove();
+    s.act();
+    bringIntoView($('#eqScene'));
+    box.insertAdjacentHTML('beforeend', '<div class="status move" id="eqWatch">Спостерігай за шприцом і графіком…</div>');
+    await new Promise(r => setTimeout(r, RM ? 300 : 3500));
+    $('#eqWatch')?.remove();
+    const ok = sel === s.right;
+    $$('.opt', box).forEach(x => { x.classList.remove('sel'); if (x.dataset.k === s.right) x.classList.add('right'); else if (x.dataset.k === sel) x.classList.add('wrong'); });
+    if (ok) addPoint('b4'); else S.mistakes.push({ where: 'Блок 4, крок ' + (EQ.step + 1), text: 'Прогноз: «' + PRED[sel] + '»', expl: s.explain });
+    box.insertAdjacentHTML('beforeend', `<div class="fb ${ok ? 'good' : 'bad'}"><b>${ok ? 'Прогноз правильний, +1 бал.' : 'Прогноз неправильний. Правильно: ' + PRED[s.right].toLowerCase() + '.'}</b><span>${s.obs}</span><span>${s.explain}</span></div>
+    <div class="row end"><button class="btn" id="eqNext">${EQ.step < STEPS.length - 1 ? 'Наступний крок' : 'До вільних дослідів'}</button></div>`);
+    markAnswered(s.id, 'b4');
+    setTimeout(() => { const f = box.querySelector('.fb'); if (f) bringIntoView(f); }, RM ? 0 : 400);
+    $('#eqNext').onclick = () => { EQ.step++; if (EQ.step < STEPS.length) { eqReset(); toast('Суміш повернуто до початкових умов: 25 °C, V₀, без каталізатора'); } renderStep(); };
+  };
+}
+function renderFree() {
+  const box = $('#eqFree');
+  const dis = EQ.free ? '' : 'disabled';
+  box.innerHTML = `<h3>Вільні досліди</h3>${EQ.free ? '' : '<p class="lockmsg">Відкриються після трьох прогнозів.</p>'}
+  <div class="ctl"><span>Температура, °C</span><div class="seg" id="fT">${[0, 25, 50, 80].map(t => `<button type="button" data-v="${t}" ${dis} class="${EQ.T === t ? 'on' : ''}">${t}</button>`).join('')}</div></div>
+  <div class="ctl"><span>Об'єм (тиск)</span><div class="seg" id="fV">${[[0.5, '½V₀ — тиск зростає'], [1, 'V₀'], [2, '2V₀ — тиск спадає']].map(([v, t]) => `<button type="button" data-v="${v}" ${dis} class="${EQ.vfT === v ? 'on' : ''}">${t}</button>`).join('')}</div></div>
+  <div class="ctl"><span>Каталізатор</span><div class="seg" id="fC"><button type="button" data-v="0" ${dis} class="${!EQ.cat ? 'on' : ''}">без</button><button type="button" data-v="1" ${dis} class="${EQ.cat ? 'on' : ''}">з каталізатором</button></div></div>
+  <div class="row"><button class="btn ghost" id="fReset" ${dis}>Початкові умови</button></div>`;
+  if (!EQ.free) return;
+  $$('#fT button').forEach(b => b.onclick = () => { EQ.T = +b.dataset.v; renderFree(); });
+  $$('#fV button').forEach(b => b.onclick = () => { EQ.vfT = +b.dataset.v; renderFree(); });
+  $$('#fC button').forEach(b => b.onclick = () => { EQ.cat = b.dataset.v === '1'; renderFree(); });
+  $('#fReset').onclick = () => { eqReset(); renderFree(); };
+}
+function buildB4() { EQ.step = 0; EQ.free = false; eqReset(); renderStep(); renderFree(); }
+
+/* ---------- БЛОК 5 ---------- */
+function buildB5() {
+  msQ($('#b5q'), {
+    id: 'q51', num: '5.1', block: 'b5', where: 'Блок 5, синтез амоніаку',
+    prompt: 'Синтез амоніаку: <span class="eq">N₂(г) + 3H₂(г) ⇌ 2NH₃(г), ΔH &lt; 0</span>. Обери всі способи, що зміщують рівновагу в бік утворення амоніаку.',
+    options: [
+      { t: 'підвищити тиск', ok: true }, { t: 'знизити температуру', ok: true }, { t: 'виводити амоніак із реакційної суміші', ok: true }, { t: 'збільшити концентрацію азоту', ok: true },
+      { t: 'додати каталізатор', ok: false }, { t: 'знизити тиск', ok: false }, { t: 'підвищити температуру', ok: false },
+    ],
+    explain: 'Підвищення тиску (зліва 4 моль газів, справа 2), зниження температури (пряма реакція екзотермічна), збільшення концентрації N₂ чи H₂ і виведення NH₃ зміщують рівновагу вправо. Каталізатор рівноваги не зміщує, лише прискорює її встановлення. У промисловості температуру надто не знижують, бо тоді реакція йде дуже повільно, — тому застосовують каталізатор.',
+  });
+}
+
+/* ---------- побудова / рестарт ---------- */
+function buildAll() {
+  watchers.length = 0;
+  ['b1q', 'b2q', 'b3q', 'b5q'].forEach(id => $('#' + id).innerHTML = '');
+  RL.journal = []; RL.lastRun = null; renderJournal();
+  buildB1(); buildB2(); buildB3(); buildB4(); buildB5();
+  ['b1', 'b2', 'b3', 'b4'].forEach(b => $('#next-' + b).disabled = true); $('#finishBtn').disabled = true;
+  $('#scoreNum').textContent = '0';
+}
+buildRlControls(); buildAll(); rlDrawScene();
+window.addEventListener('resize', () => { drawRlChart(); });
+
+/* ---------- старт ---------- */
+const nameInput = $('#nameInput');
+const clsInput = $('#clsInput');
+const canStart = () => $('#startBtn').disabled = nameInput.value.trim().length < 3 || !clsInput.value;
+nameInput.addEventListener('input', canStart); clsInput.addEventListener('change', canStart);
+nameInput.addEventListener('keydown', e => { if (e.key === 'Enter' && !$('#startBtn').disabled) $('#startBtn').click(); });
+$('#startBtn').addEventListener('click', async () => {
+  S.name = nameInput.value.trim().replace(/\s+/g, ' '); S.cls = clsInput.value;
+  $('#startBtn').disabled = true;
+  S.attempt = (await priorAttempts(S.name)) + 1; S.startTs = Date.now();
+  show('b1');
+});
+
+/* ---------- фінал ---------- */
+$('#finishBtn').addEventListener('click', finishAll);
+function fmtDur(sec) { const m = Math.floor(sec / 60), s = sec % 60; return `${m} хв ${String(s).padStart(2, '0')} с`; }
+async function finishAll() {
+  const dur = Math.round((Date.now() - S.startTs) / 1000); const total = totalScore();
+  lsSet('k11_att_' + S.name.toLowerCase(), String(S.attempt));
+  const rec = { name: S.name, cls: S.cls || '', score: total, max: 12, ts: Date.now(), attempt: S.attempt, finishedAt: new Date().toISOString(), durationSec: dur, blocks: { ...S.scores }, total, grade: total,
+    experiments: RL.journal.length, variant: { gamma: S.r.gamma, cPair: S.r.cPair, tPair: S.r.tPair }, mistakes: S.mistakes.map(m => m.where + ': ' + m.text) };
+  const f = $('#s-final');
+  f.innerHTML = `
+  <div class="card" style="display:grid;gap:16px">
+    <div class="eyebrow">Роботу завершено · спроба ${S.attempt}</div>
+    <div class="grade"><div class="grade-num">${total}<small> / 12</small></div><div style="display:grid;gap:4px"><h2>${esc(S.name)}</h2><p class="lead">Оцінка за 12-бальною шкалою · час: ${fmtDur(dur)} · дослідів у журналі: ${RL.journal.length}</p></div></div>
+    <div class="bars">${BLOCKS.map(([k, n, m, l]) => `<div class="bar-row"><span>${n}</span><span class="bar"><i style="width:${S.scores[k] / m * 100}%;background:${l === 16 ? 'var(--u16)' : 'var(--u17)'}"></i></span><b>${S.scores[k]}/${m}</b></div>`).join('')}</div>
+    <div class="sent no" id="sentBox">Надсилаю результат…</div>
+  </div>
+  <div class="card" style="display:grid;gap:10px"><h3>Помилки та пояснення</h3>
+    ${S.mistakes.length ? `<ul class="mist">${S.mistakes.map(m => `<li><b>${m.where}</b>${esc(m.text)}<br>${m.expl}</li>`).join('')}</ul>` : '<p class="fb good"><b>Жодної помилки. Чудова робота!</b></p>'}
+  </div>
+  <div class="card" style="display:grid;gap:12px"><h3>Картка роботи</h3>
+    <p class="lead">Завантаж картку з результатом і прикріпи її до завдання в Google Classroom.</p>
+    <img class="cardimg" id="cardImg" alt="Картка роботи з результатами">
+    <div class="row"><button class="btn" id="dlCard">Завантажити картку (PNG)</button><span class="lead" id="dlNote" style="font-size:14px"></span></div>
+  </div>
+  <div class="row end"><button class="btn ghost big" id="again">Пройти ще раз</button></div>`;
+  show('final');
+  $('#again').onclick = restart;
+  let cardBlob = null;
+  makeCard(rec).then(b => { cardBlob = b; if (b) $('#cardImg').src = URL.createObjectURL(b); });
+  $('#dlCard').onclick = async () => {
+    if (!cardBlob) return;
+    const r = await saveFile(`Швидкість_і_рівновага_${S.name.replace(/[^\p{L}\p{N}-]+/gu, '_')}_спроба${S.attempt}.png`, cardBlob);
+    $('#dlNote').textContent = r === 'saved' ? 'Картку збережено.' : r === 'declined' ? 'Збереження скасовано.' : 'Тут завантаження недоступне: натисни й утримуй зображення картки, щоб зберегти його.';
+  };
+  const ok = await sendResults(rec); const sb = $('#sentBox');
+  if (ok) { sb.className = 'sent ok'; sb.textContent = 'Твій результат надіслано вчителю ✔'; }
+  else { sb.className = 'sent no'; sb.textContent = 'Автоматично надіслати результат не вдалося. Завантаж картку роботи нижче й прикріпи її в Google Classroom — так учитель побачить твій результат.'; }
+}
+async function makeCard(rec) {
+  try { await document.fonts.ready; } catch (e) { }
+  const W = 1080, pad = 64; const c = document.createElement('canvas'); const ctx = c.getContext('2d');
+  ctx.font = '500 25px "Onest", sans-serif';
+  const wrap = (t, maxW) => { const words = t.split(' '); let line = '', out = []; words.forEach(w => { const test = line ? line + ' ' + w : w; if (ctx.measureText(test).width > maxW && line) { out.push(line); line = w; } else line = test; }); if (line) out.push(line); return out; };
+  const lines = []; S.mistakes.forEach(m => lines.push(...wrap('• ' + m.where + ': ' + m.text, W - pad * 2)));
+  const H = 760 + Math.max(1, lines.length) * 36 + 110; c.width = W; c.height = H;
+  ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = '#18212e'; ctx.fillRect(0, 0, W, 170);
+  ctx.fillStyle = '#9fc2ee'; ctx.font = '500 23px "IBM Plex Mono", monospace'; ctx.fillText('ХІМІЯ · 11 КЛАС · УРОКИ 16–17', pad, 66);
+  ctx.fillStyle = '#ffffff'; ctx.font = '800 50px "Onest", sans-serif'; ctx.fillText('Швидкість і рівновага', pad, 132);
+  ctx.fillStyle = '#18212e'; ctx.font = '700 40px "Onest", sans-serif'; ctx.fillText(rec.name, pad, 250);
+  ctx.fillStyle = '#5a6575'; ctx.font = '500 25px "Onest", sans-serif'; const dt = new Date(rec.finishedAt);
+  ctx.fillText(`Спроба ${rec.attempt} · ${dt.toLocaleDateString('uk-UA')} ${dt.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' })} · час: ${fmtDur(rec.durationSec)}`, pad, 296);
+  ctx.fillText(`Дослідів у журналі: ${rec.experiments}`, pad, 334);
+  ctx.textAlign = 'right'; ctx.fillStyle = '#1d4f91'; ctx.font = '800 130px "Onest", sans-serif'; ctx.fillText(String(rec.total), W - pad - 100, 330);
+  ctx.fillStyle = '#5a6575'; ctx.font = '700 40px "Onest", sans-serif'; ctx.fillText('/ 12', W - pad, 330); ctx.textAlign = 'left';
+  let y = 420;
+  BLOCKS.forEach(([k, n, m, l]) => {
+    ctx.fillStyle = l === 16 ? '#0e7469' : '#b24f17'; ctx.font = '600 20px "IBM Plex Mono", monospace'; ctx.fillText('У' + l, pad, y);
+    ctx.fillStyle = '#18212e'; ctx.font = '500 25px "Onest", sans-serif'; ctx.fillText(n, pad + 60, y);
+    ctx.fillStyle = '#d5dbe3'; ctx.fillRect(600, y - 18, 280, 14); ctx.fillStyle = l === 16 ? '#0e7469' : '#b24f17'; ctx.fillRect(600, y - 18, 280 * S.scores[k] / m, 14);
+    ctx.fillStyle = '#18212e'; ctx.font = '600 25px "IBM Plex Mono", monospace'; ctx.textAlign = 'right'; ctx.fillText(`${S.scores[k]}/${m}`, W - pad, y); ctx.textAlign = 'left';
+    y += 52;
+  });
+  y += 40; ctx.fillStyle = '#18212e'; ctx.font = '700 30px "Onest", sans-serif'; ctx.fillText('Помилки', pad, y); y += 46;
+  ctx.font = '500 25px "Onest", sans-serif';
+  if (!lines.length) { ctx.fillStyle = '#1b7f4c'; ctx.fillText('Помилок немає', pad, y); }
+  else { ctx.fillStyle = '#7a2618'; lines.forEach(l => { ctx.fillText(l, pad, y); y += 36; }); }
+  ctx.fillStyle = '#5a6575'; ctx.font = '500 21px "Onest", sans-serif'; ctx.fillText('Прикріпи цю картку до завдання в Google Classroom.', pad, H - 46);
+  return await new Promise(r => c.toBlob(r, 'image/png'));
+}
+function restart() {
+  S.attempt += 1; resetState(true); buildAll(); show('b1');
+}
+
+/* ---------- вчитель ---------- */
+let tRows = [];
+async function loadTeacher() {
+  show('teacher'); $('#tStatus').textContent = 'Завантаження…';
+  await platformReady; tRows = []; const src = [];
+  if (db && user && user.isOwner && user.isOwner()) { try { const qs = await db.collection('results').get(); qs.docs.forEach(d => (d.data().attempts || []).forEach(a => tRows.push(a))); src.push('аркуш'); } catch (e) { } }
+  if (FIREBASE_DB_URL) { try { const r = await fetch(FIREBASE_DB_URL.replace(/\/$/, '') + '/' + FB_NODE + '.json'); const j = await r.json(); if (j) Object.values(j).forEach(a => tRows.push(a)); src.push('Firebase'); } catch (e) { } }
+  tRows.sort((a, b) => (b.finishedAt || '').localeCompare(a.finishedAt || ''));
+  if (!src.length) { $('#tStatus').textContent = 'Результати бачить лише власник аркуша. Відкрий аркуш зі свого облікового запису.'; $('#tTable').innerHTML = ''; return; }
+  $('#tStatus').textContent = tRows.length ? `Спроб: ${tRows.length}. Найновіші — зверху.` : 'Поки що немає жодної завершеної спроби.';
+  $('#tCsv').disabled = !tRows.length;
+  $('#tTable').innerHTML = `<thead><tr><th>Учень</th><th>Спроба</th><th>Б1</th><th>Б2</th><th>Б3</th><th>Б4</th><th>Б5</th><th>Оцінка</th><th>Дослідів</th><th>Помилки</th><th>Час</th><th>Дата</th></tr></thead><tbody>` +
+    tRows.map(r => `<tr><td>${esc(r.name)}</td><td class="num">${r.attempt}</td>${['b1', 'b2', 'b3', 'b4', 'b5'].map(k => `<td class="num">${r.blocks ? r.blocks[k] : ''}</td>`).join('')}<td class="num"><b>${r.total}</b></td><td class="num">${r.experiments ?? ''}</td><td>${(r.mistakes || []).map(esc).join('<br>') || '—'}</td><td class="num">${fmtDur(r.durationSec || 0)}</td><td>${new Date(r.finishedAt).toLocaleString('uk-UA')}</td></tr>`).join('') + '</tbody>';
+}
+$('#teacherLink').onclick = loadTeacher; $('#tRefresh').onclick = loadTeacher;
+$('#tBack').onclick = () => show(S.name ? 'b1' : 'start');
+$('#tCsv').onclick = async () => {
+  const head = ['Учень', 'Спроба', 'Блок 1', 'Блок 2', 'Блок 3', 'Блок 4', 'Блок 5', 'Оцінка', 'Дослідів', 'Помилки', 'Час, с', 'Дата'];
+  const q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+  const rows = tRows.map(r => [r.name, r.attempt, r.blocks?.b1, r.blocks?.b2, r.blocks?.b3, r.blocks?.b4, r.blocks?.b5, r.total, r.experiments, (r.mistakes || []).join('; '), r.durationSec, r.finishedAt].map(q).join(';'));
+  const res = await saveFile('Швидкість_і_рівновага_результати.csv', new Blob(['﻿' + [head.map(q).join(';')].concat(rows).join('\r\n')], { type: 'text/csv' }));
+  if (res !== 'saved') toast(res === 'declined' ? 'Збереження скасовано' : 'Завантаження тут недоступне');
+};
+if (location.hash === '#vchytel') loadTeacher();
+</script>
+
+</body></html>
