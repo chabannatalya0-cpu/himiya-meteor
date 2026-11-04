@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Діагностувальна робота «Розчини» · 9 клас</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700;800&display=swap">
+<style>
+/* Layout: exam-room page — start card, then a sticky timer strip over the embedded Google Form; overlays for "you left the test" and "time is up". Single calm light look. */
+:root{
+  color-scheme: light;
+  --bg:#eef3f8; --card:#fff; --ink:#13243a; --muted:#53657c; --line:#d3dfea;
+  --blue:#2463d6; --blue-deep:#173f8f; --ok:#16955b; --warn:#e48a0e; --bad:#d23a52;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--blue-deep)}
+.wrap{max-width:820px;margin:0 auto;padding-block:20px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:14px}
+h1{font-family:var(--f-display);font-size:clamp(22px,5vw,30px);line-height:1.15;margin:0;color:var(--blue-deep);text-wrap:balance}
+.tag{align-self:flex-start;background:#e3ecfb;color:var(--blue-deep);font-weight:800;font-size:13px;border-radius:999px;padding:4px 12px}
+ul.rules{margin:0;padding-left:20px;display:grid;gap:6px}
+label.lbl{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--muted)}
+input[type=text],select{font:inherit;font-size:16px;padding:11px 13px;border-radius:12px;border:2px solid var(--line);background:#fff;color:var(--ink);width:100%}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid #ffc531;outline-offset:2px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:520px){.grid2{grid-template-columns:1fr}}
+.btn{font-family:var(--f-display);font-size:17px;border:0;border-radius:14px;padding:14px 22px;cursor:pointer;color:#fff;background:var(--blue);box-shadow:0 5px 0 var(--blue-deep)}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--blue-deep)}
+.btn.green{background:var(--ok);box-shadow:0 5px 0 #0c6a3e}
+.btn.ghost{background:#fff;color:var(--blue-deep);border:2px solid var(--line);box-shadow:none;font-size:15px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.err{color:var(--bad);font-weight:700;margin:0}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between;
+  background:var(--blue-deep);color:#fff;border-radius:0 0 16px 16px;padding:10px 16px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.bar .who{font-weight:700;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.timer{font-family:var(--f-mono);font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;background:rgba(255,255,255,.12);border-radius:12px;padding:4px 12px}
+.timer.warn{background:var(--warn);color:#2a1700}
+.timer.bad{background:var(--bad);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.75}}
+.bar .exits{font-size:14px;font-weight:700;opacity:.9}
+.formbox{background:#fff;border-radius:16px;overflow:hidden;border:1px solid var(--line)}
+.formbox iframe{display:block;width:100%;height:2200px;border:0}
+.overlay{position:fixed;inset:0;z-index:20;background:rgba(10,20,40,.72);display:flex;align-items:center;justify-content:center;
+  padding:20px max(16px,env(safe-area-inset-right,0px)) 20px max(16px,env(safe-area-inset-left,0px))}
+.overlay .card{max-width:520px;width:100%;text-align:center;align-items:center}
+.overlay .big{font-size:56px;line-height:1}
+.overlay h2{font-family:var(--f-display);font-size:22px;margin:0}
+.overlay.warnbox .card{border:3px solid var(--bad)}
+.steps{text-align:left;margin:0;padding-left:20px;display:grid;gap:6px}
+.note{font-size:14px;color:var(--muted);margin:0}
+@media (prefers-reduced-motion:reduce){.timer.bad{animation:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap" id="startView">
+  <section class="card">
+    <span class="tag">Хімія · 9 клас · тема «Розчини»</span>
+    <h1>Діагностувальна робота «Розчини»</h1>
+    <ul class="rules">
+      <li><b>Час виконання: 40 хвилин.</b> Таймер запуститься, щойно натиснеш «Почати роботу». Зупинити його не можна.</li>
+      <li>Після цього в тебе буде <b>ще 5 хвилин</b>, щоб прикріпити фото розв'язків у завданні Google Класу.</li>
+      <li><b>Не виходь зі сторінки</b> і не перемикай вкладки. Кожен вихід фіксується, і вчитель бачить, скільки разів і як надовго ти залишав роботу.</li>
+      <li>Перезавантаження сторінки таймер не скидає, а теж фіксується.</li>
+      <li>🔴 Використання ШІ не допускається.</li>
+    </ul>
+    <div class="grid2">
+      <div><label class="lbl" for="pname">Прізвище та ім'я</label><input type="text" id="pname" maxlength="60" autocomplete="name" placeholder="Іваненко Олена"></div>
+      <div><label class="lbl" for="pcls">Клас</label><select id="pcls"><option value="">— обери —</option><option>9-А</option><option>9-Б</option></select></div>
+    </div>
+    <p class="err" id="err" hidden></p>
+    <div class="row"><button class="btn" id="startBtn" type="button">Почати роботу</button></div>
+    <p class="note">Підготуй заздалегідь зошит, ручку й калькулятор.</p>
+  </section>
+</div>
+
+<div id="testView" hidden>
+  <div class="bar">
+    <span class="who" id="who"></span>
+    <span class="exits" id="exitsInfo">Виходів: 0</span>
+    <span class="timer" id="timer" role="timer" aria-live="off">40:00</span>
+  </div>
+  <div class="wrap">
+    <div class="formbox"><iframe id="form" title="Діагностувальна робота «Розчини»" loading="eager"></iframe></div>
+    <section class="card">
+      <b>Надіслав(-ла) форму?</b>
+      <p class="note" style="margin:0">Натисни кнопку нижче, щоб зупинити таймер, і переходь до завантаження фото розв'язків.</p>
+      <div class="row"><button class="btn green" id="doneBtn" type="button">Я надіслав(-ла) форму ✓</button></div>
+    </section>
+  </div>
+</div>
+
+<div class="overlay warnbox" id="warn" hidden>
+  <div class="card">
+    <div class="big">⚠️</div>
+    <h2>Ти залишав(-ла) сторінку роботи</h2>
+    <p id="warnText"></p>
+    <p class="note">Вчитель бачить кількість і тривалість виходів. Таймер не зупинявся.</p>
+    <button class="btn" id="warnOk" type="button">Повернутися до роботи</button>
+  </div>
+</div>
+
+<div class="overlay" id="endView" hidden>
+  <div class="card">
+    <div class="big" id="endIcon">📸</div>
+    <h2 id="endTitle">Роботу завершено</h2>
+    <p id="endText"></p>
+    <div class="timer" id="photoTimer">05:00</div>
+    <ol class="steps">
+      <li>Сфотографуй усі сторінки з розв'язками задач 9–12.</li>
+      <li>Відкрий це завдання в <b>Google Класі</b>.</li>
+      <li>Натисни <b>«Додати або створити» → «Файл»</b>, прикріпи фото.</li>
+      <li>Натисни <b>«Здати»</b>.</li>
+    </ol>
+  </div>
+</div>
+
+<script>
+const FORM_URL="https://docs.google.com/forms/d/e/1FAIpQLSeZ1TJeBj95E8Zyerg-JOhrNP_e0ka8X5rkgP7FZndsopMABg/viewform?embedded=true";
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="rozchyny9";
+const TEST_MIN=40, PHOTO_MIN=5;
+const $=id=>document.getElementById(id);
+const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let S=null, tick=null, awayFrom=null;
+
+function log(kind,extra={}){
+  if(!S) return;
+  const rec={name:S.name,cls:S.cls,score:0,max:0,ts:{".sv":"timestamp"},kind,sid:S.sid,exits:S.exits,awaySec:Math.round(S.away),...extra};
+  try{fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec),keepalive:true}).catch(()=>{})}catch(e){}
+}
+const mmss=s=>{s=Math.max(0,Math.ceil(s));return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")};
+
+function start(resume){
+  $("startView").hidden=true; $("testView").hidden=false;
+  $("who").textContent=`${S.name} · ${S.cls}`; $("exitsInfo").textContent=`Виходів: ${S.exits}`;
+  $("form").src=FORM_URL;
+  if(!resume) log("start"); else { S.reloads=(S.reloads||0)+1; save(); log("reload",{reloads:S.reloads}); }
+  tick=setInterval(update,500); update();
+}
+function save(){store.set("rozchyny9-session",S)}
+function update(){
+  const left=S.startedAt+TEST_MIN*60000-Date.now();
+  const t=$("timer"); t.textContent=mmss(left/1000);
+  t.classList.toggle("warn",left<=5*60000&&left>60000); t.classList.toggle("bad",left<=60000);
+  if(left<=0) finish("timeout");
+}
+function finish(reason){
+  if(S.done){showEnd();return}
+  S.done=reason; S.endedAt=Date.now(); save(); clearInterval(tick);
+  log("end",{reason,minutes:Math.round((S.endedAt-S.startedAt)/60000)});
+  showEnd();
+}
+function showEnd(){
+  $("form").src="about:blank"; $("testView").hidden=true; $("startView").hidden=true; $("warn").hidden=true; $("endView").hidden=false;
+  if(S.done==="timeout"){$("endIcon").textContent="⏰";$("endTitle").textContent="Час вийшов";
+    $("endText").textContent="40 хвилин минуло, форму закрито. Якщо ти встиг(-ла) натиснути «Надіслати» у формі, відповіді збережено. Тепер прикріпи фото розв'язків:";}
+  else {$("endTitle").textContent="Роботу завершено";$("endText").textContent="Молодець! Тепер прикріпи фото розв'язків:";}
+  const until=S.endedAt+PHOTO_MIN*60000;
+  const pt=()=>{const l=until-Date.now();$("photoTimer").textContent=mmss(l/1000);$("photoTimer").classList.toggle("bad",l<=60000);if(l<=0){$("photoTimer").textContent="00:00";clearInterval(pi)}};
+  const pi=setInterval(pt,500); pt();
+}
+// Фіксація виходів: перемикання вкладки або згортання вікна
+function leave(){ if(!S||S.done||awayFrom) return; awayFrom=Date.now(); }
+function back(){
+  if(!S||S.done||!awayFrom) return;
+  const sec=(Date.now()-awayFrom)/1000; awayFrom=null;
+  if(sec<1.5) return; // випадкове миготіння фокусу
+  S.exits++; S.away+=sec; save(); $("exitsInfo").textContent=`Виходів: ${S.exits}`;
+  log("exit",{sec:Math.round(sec)});
+  $("warnText").textContent=`Це вже ${S.exits}-й вихід. Тебе не було ${mmss(sec)} хв.`; $("warn").hidden=false;
+}
+document.addEventListener("visibilitychange",()=>document.hidden?leave():back());
+// втрата фокусу вікна, але не клік усередині форми
+window.addEventListener("blur",()=>setTimeout(()=>{if(document.activeElement!==$("form")) leave()},0));
+window.addEventListener("focus",back);
+$("warnOk").onclick=()=>{$("warn").hidden=true};
+
+$("startBtn").onclick=()=>{
+  const name=$("pname").value.trim(),cls=$("pcls").value;
+  if(name.length<3||!cls){$("err").hidden=false;$("err").textContent="Впиши прізвище, ім'я та обери клас.";return}
+  S={name:name.slice(0,60),cls,sid:Date.now().toString(36)+Math.random().toString(36).slice(2,7),startedAt:Date.now(),exits:0,away:0,reloads:0,done:null};
+  save(); start(false);
+};
+$("doneBtn").onclick=()=>finish("done");
+
+// Відновлення після перезавантаження: таймер не скидається
+(function(){const old=store.get("rozchyny9-session");
+  if(old&&old.startedAt&&Date.now()-old.startedAt<(TEST_MIN+PHOTO_MIN+30)*60000){S=old; if(S.done) showEnd(); else start(true);}
+})();
+</script>
+</body>
+</html>
