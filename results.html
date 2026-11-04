@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Метеоритний дощ · результати</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Russo+One&family=Nunito:wght@500;700;800&family=JetBrains+Mono:wght@600;800&display=swap">
+<style>
+:root{--bg:#f4f5fb;--card:#fff;--ink:#161a3a;--muted:#5d6488;--line:#dfe2f0;--acc:#e8672a;--ok:#11875d;--bad:#c9314a;
+ --f-display:"Russo One","Arial Black",sans-serif;--f-body:"Nunito",system-ui,sans-serif;--f-mono:"JetBrains Mono",Consolas,monospace}
+@media (prefers-color-scheme:dark){:root{--bg:#0b1030;--card:#141a4a;--ink:#eef1ff;--muted:#a7add6;--line:#2c3480;--acc:#ff8a3d;--ok:#3ee6a4;--bad:#ff5a6e}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+.stack{display:flex;flex-direction:column;gap:16px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 16px;display:flex;flex-direction:column;gap:16px}
+h1{font-family:var(--f-display);font-weight:400;font-size:clamp(22px,4vw,30px);margin:0;color:var(--acc)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+input,select,button{font:inherit;font-size:15px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+input{flex:1;min-width:180px}
+button{cursor:pointer;font-weight:800}
+button.main{background:var(--acc);color:#fff;border-color:var(--acc)}
+.muted{color:var(--muted)}
+.err{color:var(--bad);font-weight:700;margin:0}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.kpi .n{font-family:var(--f-mono);font-size:26px;font-weight:800;font-variant-numeric:tabular-nums}
+.kpi .t{color:var(--muted);font-size:13px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-family:var(--f-mono);font-weight:800;border:1px solid var(--line);border-radius:999px;padding:4px 10px;background:var(--bg)}
+.chip small{font-family:var(--f-body);color:var(--muted);font-weight:700}
+.tbl{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);cursor:pointer;white-space:nowrap}
+td.mono{font-family:var(--f-mono)}
+.pill{display:inline-block;border-radius:999px;padding:2px 9px;font-weight:800;font-size:13px}
+.pill.g{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok)}
+.pill.m{background:color-mix(in srgb,var(--acc) 18%,transparent);color:var(--acc)}
+.pill.b{background:color-mix(in srgb,var(--bad) 18%,transparent);color:var(--bad)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Хімічний метеоритний дощ · результати учнів</h1>
+
+  <section class="card" id="login">
+    <p class="muted" style="margin-top:0">Увійдіть тим email і паролем, що й у «Яскравих аркушах» (акаунт Firebase).</p>
+    <form class="row" id="lf">
+      <input type="email" id="em" placeholder="Email" autocomplete="username" required>
+      <input type="password" id="pw" placeholder="Пароль" autocomplete="current-password" required>
+      <button class="main" type="submit">Увійти</button>
+    </form>
+    <p class="err" id="lerr" hidden></p>
+  </section>
+
+  <div id="app" class="stack" hidden>
+    <section class="card row">
+      <label>Клас <select id="fcls"><option value="">усі</option></select></label>
+      <label>Показувати <select id="fview"><option value="best">найкращу спробу учня</option><option value="all">усі спроби</option></select></label>
+      <button id="reload">Оновити</button>
+      <button id="csv">Завантажити CSV</button>
+      <span class="muted" id="upd"></span>
+    </section>
+    <section class="kpis">
+      <div class="card kpi"><div class="n" id="kStud">0</div><div class="t">учнів зіграли</div></div>
+      <div class="card kpi"><div class="n" id="kTries">0</div><div class="t">спроб усього</div></div>
+      <div class="card kpi"><div class="n" id="kAcc">0%</div><div class="t">середня влучність</div></div>
+      <div class="card kpi"><div class="n" id="kWin">0</div><div class="t">дійшли до перемоги (30 збитих)</div></div>
+    </section>
+    <section class="card">
+      <strong>Елементи, у яких найчастіше помиляються</strong>
+      <p class="muted" style="margin:4px 0 10px">Скільки учнів хоч раз помилилися з цим елементом. Варто повторити на початку уроку.</p>
+      <div class="chips" id="hard"></div>
+    </section>
+    <section class="card tbl">
+      <table>
+        <thead><tr>
+          <th data-k="name">Учень</th><th data-k="cls">Клас</th><th data-k="mode">Режим</th>
+          <th data-k="score">Збито</th><th data-k="acc">Влучність</th><th data-k="points">Бали</th>
+          <th data-k="tries">Спроб</th><th data-k="mistakes">Помилки</th><th data-k="ts">Коли</th>
+        </tr></thead>
+        <tbody id="tb"></tbody>
+      </table>
+    </section>
+  </div>
+</div>
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const API_KEY="AIzaSyAGOncvJIlGaJu14uqEWy6rQxdF7-pQYUI";
+const GAME_ID="meteor7";
+const $=id=>document.getElementById(id);
+let token=null,all=[],sortK="name",sortDir=1;
+
+async function signIn(email,password){
+  const r=await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`,
+    {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password,returnSecureToken:true})});
+  const j=await r.json(); if(!r.ok) throw new Error(j.error&&j.error.message||"LOGIN");
+  return j.idToken;
+}
+async function ensureGame(){
+  // Дозвіл учням надсилати результати: правила бази приймають результати лише для «відкритого» аркуша
+  const r=await fetch(`${FIREBASE_URL}/worksheets/${GAME_ID}.json?auth=${token}`);
+  const cur=await r.json();
+  if(!cur) await fetch(`${FIREBASE_URL}/worksheets/${GAME_ID}.json?auth=${token}`,{method:"PUT",
+    body:JSON.stringify({title:"Гра «Хімічний метеоритний дощ» (7 клас, § 6)",subject:"Хімія · 7 клас · §6",open:true,game:true,created:Date.now(),exercises:[]})});
+}
+async function load(){
+  $("upd").textContent="Завантажую…";
+  const r=await fetch(`${FIREBASE_URL}/results/${GAME_ID}.json?auth=${token}`);
+  if(!r.ok){$("upd").textContent="Не вдалося прочитати результати ("+r.status+")";return}
+  const d=await r.json()||{};
+  all=Object.values(d).map(x=>({...x,acc:+x.acc||0,score:+x.score||0,points:+x.points||0,ts:+x.ts||0}));
+  const classes=[...new Set(all.map(x=>x.cls).filter(Boolean))].sort();
+  const sel=$("fcls"),keep=sel.value; sel.innerHTML='<option value="">усі</option>'+classes.map(c=>`<option>${esc(c)}</option>`).join(""); sel.value=keep;
+  $("upd").textContent="Оновлено о "+new Date().toLocaleTimeString("uk-UA",{hour:"2-digit",minute:"2-digit"});
+  render();
+}
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const key=x=>(x.name||"").trim().toLowerCase()+"|"+(x.cls||"");
+function rows(){
+  const f=$("fcls").value; const list=all.filter(x=>!f||x.cls===f);
+  const tries={}; list.forEach(x=>tries[key(x)]=(tries[key(x)]||0)+1);
+  let out;
+  if($("fview").value==="best"){
+    const best={}; list.forEach(x=>{const k=key(x),b=best[k]; if(!b||x.score>b.score||(x.score===b.score&&x.acc>b.acc)) best[k]=x}); out=Object.values(best);
+  } else out=list.slice();
+  out.forEach(x=>x.tries=tries[key(x)]);
+  out.sort((a,b)=>{const A=a[sortK],B=b[sortK]; return (typeof A==="number"?A-B:String(A||"").localeCompare(String(B||""),"uk"))*sortDir});
+  return {list,out};
+}
+function render(){
+  const {list,out}=rows();
+  const studs=new Set(list.map(key));
+  $("kStud").textContent=studs.size; $("kTries").textContent=list.length;
+  $("kAcc").textContent=(list.length?Math.round(list.reduce((s,x)=>s+x.acc,0)/list.length):0)+"%";
+  $("kWin").textContent=new Set(list.filter(x=>x.win).map(key)).size;
+  const cnt={}; studs.forEach(k=>{const set=new Set(); list.filter(x=>key(x)===k).forEach(x=>(x.mistakes||"").split(" ").filter(Boolean).forEach(s=>set.add(s))); set.forEach(s=>cnt[s]=(cnt[s]||0)+1)});
+  const hard=Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,12);
+  $("hard").innerHTML=hard.length?hard.map(([s,n])=>`<span class="chip">${esc(s)} <small>${n} уч.</small></span>`).join(""):'<span class="muted">Поки немає даних</span>';
+  $("tb").innerHTML=out.length?out.map(x=>{const p=x.acc>=85?"g":x.acc>=60?"m":"b";
+    return `<tr><td><strong>${esc(x.name)}</strong></td><td>${esc(x.cls)}</td><td>${esc(x.mode)}</td>
+    <td class="mono">${x.score} / ${esc(x.max)}${x.win?" 🏆":""}</td><td><span class="pill ${p}">${x.acc}%</span></td>
+    <td class="mono">${x.points}</td><td class="mono">${x.tries}</td><td class="mono">${esc(x.mistakes||"—")}</td>
+    <td class="muted">${x.ts?new Date(x.ts).toLocaleString("uk-UA",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}):""}</td></tr>`}).join("")
+    :'<tr><td colspan="9" class="muted">Ще ніхто не зіграв. Коли учні завершать гру, їхні результати з\'являться тут.</td></tr>';
+}
+function csv(){
+  const {out}=rows(); const h=["Учень","Клас","Режим","Збито","З","Влучність %","Бали","Спроб","Помилки","Дата"];
+  const lines=[h].concat(out.map(x=>[x.name,x.cls,x.mode,x.score,x.max,x.acc,x.points,x.tries,x.mistakes,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]));
+  const text="﻿"+lines.map(r=>r.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(";")).join("\r\n");
+  const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([text],{type:"text/csv"})); a.download="meteor-rezultaty.csv"; a.click();
+}
+$("lf").addEventListener("submit",async e=>{e.preventDefault(); $("lerr").hidden=true;
+  try{ token=await signIn($("em").value.trim(),$("pw").value); await ensureGame();
+    $("login").hidden=true; $("app").hidden=false; load(); setInterval(load,60000);
+  }catch(err){ $("lerr").hidden=false; $("lerr").textContent=/PASSWORD|EMAIL|CREDENTIAL/.test(err.message)?"Неправильний email або пароль.":"Не вдалося увійти: "+err.message; }});
+$("fcls").onchange=render; $("fview").onchange=render; $("reload").onclick=load; $("csv").onclick=csv;
+document.querySelectorAll("th").forEach(th=>th.onclick=()=>{const k=th.dataset.k; sortDir=sortK===k?-sortDir:(["score","acc","points","tries","ts"].includes(k)?-1:1); sortK=k; render()});
+</script>
+</body>
+</html>

@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>*{box-sizing:border-box}html,body{margin:0}[hidden]{display:none!important}</style>
+<title>Хімічний метеоритний дощ</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Russo+One&family=Nunito:wght@500;700;800&family=JetBrains+Mono:wght@600;800&display=swap">
+<style>
+/* Layout: full-screen night sky "game field" over a planet horizon, HUD on top, 4 answer pads at the bottom. Single deliberate dark theme. */
+:root{
+  color-scheme: dark;
+  --sky:#0b1030; --sky2:#1a1550; --ink:#eef1ff; --muted:#a7add6;
+  --rock:#7a4b2e; --rock-hi:#c98a52; --fire:#ff8a3d; --fire2:#ffd25e;
+  --ok:#3ee6a4; --bad:#ff5a6e; --pad:#1d2463; --pad-hi:#2b3590; --line:#3a4398;
+  --f-display:"Russo One","Arial Black",system-ui,sans-serif;
+  --f-body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+html,body{height:100%}
+body{background:var(--sky);color:var(--ink);font-family:var(--f-body);overflow:hidden}
+.app{position:relative;height:100%;display:flex;flex-direction:column;
+  background:radial-gradient(120% 80% at 50% 0%,var(--sky2) 0%,var(--sky) 60%);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+#stars{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.hud{position:relative;z-index:3;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding-block:12px 6px}
+.hud .chip{font-family:var(--f-mono);font-size:15px;background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.hud .lives{letter-spacing:2px}
+.field{position:relative;z-index:2;flex:1;min-height:200px}
+.planet{position:absolute;left:-10%;right:-10%;bottom:-60px;height:110px;border-radius:50% 50% 0 0;
+  background:radial-gradient(60% 120% at 50% 0%,#3b7be0 0%,#1d3f8f 45%,#122658 100%);
+  box-shadow:0 -10px 40px rgba(80,140,255,.35)}
+.planet.hit{animation:shake .35s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.meteor{position:absolute;left:50%;top:0;width:118px;height:118px;margin-left:-59px;will-change:transform}
+.meteor .tail{position:absolute;left:50%;bottom:60%;width:46px;height:120px;margin-left:-23px;border-radius:50%;
+  background:linear-gradient(to top,var(--fire2),var(--fire) 35%,rgba(255,138,61,0));filter:blur(4px);opacity:.85}
+.meteor .rock{position:absolute;inset:0;border-radius:46% 54% 50% 50%/52% 46% 54% 48%;
+  background:radial-gradient(circle at 35% 30%,var(--rock-hi),var(--rock) 60%,#4a2a18);
+  box-shadow:inset -10px -12px 0 rgba(0,0,0,.25),0 0 30px rgba(255,138,61,.55);
+  display:grid;place-items:center;text-align:center;padding:8px}
+.meteor .txt{font-family:var(--f-display);color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.45);line-height:1.05}
+.meteor .txt.sym{font-size:52px}
+.meteor .txt.word{font-size:19px}
+.meteor.boom .rock{animation:boom .45s forwards}
+.meteor.boom .tail{opacity:0}
+@keyframes boom{to{transform:scale(1.8);opacity:0;filter:brightness(2)}}
+.meteor.wrong .rock{box-shadow:0 0 0 4px var(--bad),0 0 40px var(--bad)}
+.toast{position:absolute;left:50%;top:14px;transform:translateX(-50%);z-index:4;max-width:min(92%,520px);text-align:center;
+  font-weight:800;font-size:17px;padding:10px 16px;border-radius:14px;background:rgba(11,16,48,.92);border:2px solid var(--line)}
+.toast.ok{border-color:var(--ok);color:var(--ok)}
+.toast.bad{border-color:var(--bad);color:#ffd0d6}
+.toast b{font-family:var(--f-mono);color:var(--fire2)}
+.pads{position:relative;z-index:3;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding-block:10px max(14px,env(safe-area-inset-bottom,0px))}
+.pad{font-family:var(--f-body);font-weight:800;font-size:clamp(17px,4.4vw,22px);color:var(--ink);background:var(--pad);
+  border:2px solid var(--line);border-radius:16px;padding:14px 10px;cursor:pointer;min-height:58px;display:flex;align-items:center;justify-content:center;gap:10px;transition:background .15s,transform .08s}
+.pad:hover{background:var(--pad-hi)}
+.pad:active{transform:translateY(2px)}
+.pad:focus-visible{outline:3px solid var(--fire2);outline-offset:2px}
+.pad .k{font-family:var(--f-mono);font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:1px 6px}
+.pad.mono .v{font-family:var(--f-mono);font-size:1.25em}
+.pad.ok{background:var(--ok);color:#06281b;border-color:var(--ok)}
+.pad.bad{background:var(--bad);border-color:var(--bad)}
+@media (min-width:760px){.pads{grid-template-columns:repeat(4,minmax(0,1fr))}}
+/* Screens */
+.screen{position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;overflow:auto;
+  background:rgba(8,11,36,.82);backdrop-filter:blur(3px);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px}
+.panel{width:min(100%,560px);background:#141a4a;border:2px solid var(--line);border-radius:22px;padding:24px;display:flex;flex-direction:column;gap:16px}
+h1{font-family:var(--f-display);font-weight:400;font-size:clamp(26px,6vw,36px);line-height:1.1;margin:0;text-wrap:balance;
+  background:linear-gradient(90deg,var(--fire2),var(--fire));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{margin:0;color:var(--muted);line-height:1.5}
+.lbl{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.modes{display:grid;gap:8px}
+.mode{display:flex;gap:12px;align-items:center;text-align:left;background:var(--pad);border:2px solid var(--line);border-radius:14px;padding:12px 14px;color:var(--ink);font-family:var(--f-body);cursor:pointer}
+.mode[aria-pressed="true"]{border-color:var(--fire);background:#2a2460}
+.mode .ex{font-family:var(--f-mono);font-weight:800;color:var(--fire2);min-width:92px;font-size:15px}
+.mode .d{font-weight:700;font-size:16px}
+.mode .s{display:block;font-weight:500;font-size:13px;color:var(--muted)}
+.mode:focus-visible,.btn:focus-visible,input:focus-visible{outline:3px solid var(--fire2);outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+input[type=text]{flex:1;min-width:0;font:inherit;font-size:16px;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:#0e1440;color:var(--ink)}
+.btn{font-family:var(--f-display);font-size:20px;letter-spacing:.03em;border:0;border-radius:14px;padding:14px 22px;cursor:pointer;color:#2a1200;
+  background:linear-gradient(180deg,var(--fire2),var(--fire));box-shadow:0 6px 0 #a24a12}
+.btn:active{transform:translateY(3px);box-shadow:0 3px 0 #a24a12}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line);box-shadow:none;font-size:16px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.stat{background:#0e1440;border:1px solid var(--line);border-radius:14px;padding:10px;text-align:center}
+.stat .n{font-family:var(--f-mono);font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--fire2)}
+.stat .t{font-size:12px;color:var(--muted)}
+.mist{margin:0;padding:0;list-style:none;display:grid;gap:6px;max-height:220px;overflow:auto}
+.mist li{display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px;align-items:center;background:#0e1440;border-radius:10px;padding:8px 10px}
+.mist .sy{font-family:var(--f-mono);font-weight:800;font-size:20px;color:var(--fire2);text-align:center}
+.mist small{color:var(--muted)}
+.cert{border:2px dashed var(--line);border-radius:14px;padding:12px 14px;line-height:1.5}
+.cert b{color:var(--fire2)}
+.note{font-size:13px;color:var(--muted);margin:0}
+select{flex:1;min-width:0;font:inherit;font-size:16px;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:#0e1440;color:var(--ink)}
+select:focus-visible{outline:3px solid var(--fire2);outline-offset:2px}
+.err{margin:0;color:#ffd0d6;font-weight:700}
+.send{margin:0;font-weight:700;padding:10px 12px;border-radius:12px;background:#0e1440;border:1px solid var(--line)}
+.send.ok{color:var(--ok);border-color:var(--ok)}
+.send.bad{color:#ffd0d6;border-color:var(--bad)}
+@media (prefers-reduced-motion:reduce){.planet.hit,.meteor.boom .rock{animation:none}.meteor .tail{display:none}}
+</style>
+
+</head>
+<body>
+<div class="app" id="app">
+  <canvas id="stars" aria-hidden="true"></canvas>
+  <div class="hud" role="status" aria-live="polite">
+    <span class="chip" id="hScore">Бали: 0</span>
+    <span class="chip" id="hLevel">Рівень 1</span>
+    <span class="chip" id="hStreak">Серія: 0</span>
+    <span class="chip lives" id="hLives" aria-label="Щити планети">🛡🛡🛡</span>
+  </div>
+  <div class="field" id="field">
+    <div class="planet" id="planet"></div>
+  </div>
+  <div class="pads" id="pads"></div>
+
+  <section class="screen" id="startScreen">
+    <div class="panel">
+      <span class="lbl">Хімія · 7 клас · § 6</span>
+      <h1>Хімічний метеоритний дощ</h1>
+      <p class="lead">На планету падають метеорити з хімічними елементами. Збивай кожен, натискаючи правильну відповідь, поки він не впав. Помилка або пропущений метеорит забирає один щит. Щитів три.</p>
+      <span class="lbl">Обери режим</span>
+      <div class="modes" id="modes">
+        <button class="mode" data-mode="s2n" aria-pressed="true"><span class="ex">Fe → ?</span><span class="d">Символ → назва<span class="s">Бачиш символ, обираєш назву елемента</span></span></button>
+        <button class="mode" data-mode="n2s" aria-pressed="false"><span class="ex">Ферум → ?</span><span class="d">Назва → символ<span class="s">Бачиш назву, обираєш символ</span></span></button>
+        <button class="mode" data-mode="say" aria-pressed="false"><span class="ex">H → «аш»</span><span class="d">Як читається у формулі?<span class="s">Обираєш, як вимовляють символ</span></span></button>
+        <button class="mode" data-mode="mix" aria-pressed="false"><span class="ex">Мікс</span><span class="d">Усе разом<span class="s">Для тих, хто вже впевнений</span></span></button>
+      </div>
+      <div class="row">
+        <label class="lbl" for="pname" style="flex-basis:100%">Прізвище та ім'я</label>
+        <input type="text" id="pname" autocomplete="name" maxlength="60" placeholder="Наприклад: Іваненко Олена">
+      </div>
+      <div class="row">
+        <label class="lbl" for="pcls" style="flex-basis:100%">Клас</label>
+        <select id="pcls"><option value="">— обери клас —</option><option>7-А</option><option>7-Б</option><option>7-В</option><option>Інший</option></select>
+      </div>
+      <p class="err" id="startErr" hidden>Впиши прізвище, ім'я та обери клас, щоб твій результат дійшов до вчителя.</p>
+      <div class="row"><button class="btn" id="startBtn">Старт</button></div>
+      <p class="note">24 елементи з Таблиці 1 підручника. На комп'ютері можна відповідати клавішами 1–4.</p>
+    </div>
+  </section>
+
+  <section class="screen" id="endScreen" hidden>
+    <div class="panel">
+      <span class="lbl" id="endMode"></span>
+      <h1 id="endTitle">Планету захищено!</h1>
+      <div class="stats">
+        <div class="stat"><div class="n" id="eScore">0</div><div class="t">бали</div></div>
+        <div class="stat"><div class="n" id="eAcc">0%</div><div class="t">влучність</div></div>
+        <div class="stat"><div class="n" id="eBest">0</div><div class="t">найдовша серія</div></div>
+      </div>
+      <div class="cert" id="cert"></div>
+      <div id="mistBlock">
+        <span class="lbl">Повтори ці елементи</span>
+        <ul class="mist" id="mist"></ul>
+      </div>
+      <p class="send" id="sendState">Надсилаю результат учителю…</p>
+      <div class="row">
+        <button class="btn" id="againBtn">Ще раз</button>
+        <button class="btn ghost" id="menuBtn">Змінити режим</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+// Таблиця 1, § 6 (Григорович, Недоруб «Хімія. 7 клас»): назва, латинська назва, символ, вимова у формулі
+const EL=[
+ ["Алюміній","Aluminium","Al","алюміній"],["Аргентум","Argentum","Ag","аргентум"],["Барій","Barium","Ba","барій"],
+ ["Бром","Bromium","Br","бром"],["Гідроген","Hydrogenium","H","аш"],["Йод","Iodum","I","йод"],
+ ["Калій","Kalium","K","калій"],["Кальцій","Calcium","Ca","кальцій"],["Карбон","Carboneum","C","це"],
+ ["Купрум","Cuprum","Cu","купрум"],["Магній","Magnesium","Mg","магній"],["Меркурій","Hydrargyrum","Hg","гідраргірум"],
+ ["Натрій","Natrium","Na","натрій"],["Нікол","Niccolum","Ni","нікель"],["Нітроген","Nitrogenium","N","ен"],
+ ["Оксиген","Oxygenium","O","о"],["Плюмбум","Plumbum","Pb","плюмбум"],["Силіцій","Silicium","Si","силіцій"],
+ ["Сульфур","Sulfur","S","ес"],["Ферум","Ferrum","Fe","ферум"],["Флуор","Fluorum","F","флуор"],
+ ["Фосфор","Phosphorus","P","пе"],["Хлор","Chlorum","Cl","хлор"],["Цинк","Zincum","Zn","цинк"]
+].map(([n,l,s,v])=>({n,l,s,v}));
+// Пари, які учні найчастіше плутають — підставляємо їх як «пастки»
+const TRAPS={H:["Hg","He"],Hg:["H","Ag"],Ag:["Au","Al"],Al:["Ag"],C:["Ca","Cl","Cu"],Ca:["C","K","Cu"],Cu:["C","Ca"],Cl:["C","Ca"],
+ K:["Ca","Na"],Na:["N","K"],N:["Na","Ni"],Ni:["N","Na"],S:["Si","Zn"],Si:["S"],F:["Fe","P"],Fe:["F"],P:["Pb","F"],Pb:["P"],
+ Mg:["Hg"],Zn:["S"],O:["H"],Ba:["Br"],Br:["Ba"],I:["H"]};
+const SAY_POOL=["аш","це","о","ен","ес","пе","ферум","купрум","аргентум","гідраргірум","нікель","натрій","калій","кальцій","силіцій","плюмбум","хлор","флуор","магній","цинк","бром","йод","барій","алюміній","гелій","нікол","меркурій","ка","ге"];
+
+const $=id=>document.getElementById(id);
+const field=$("field"),pads=$("pads"),planet=$("planet");
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+let mode="s2n",st,raf=null,cur=null,locked=false,toastEl=null;
+
+const MODE_NAME={s2n:"Символ → назва",n2s:"Назва → символ",say:"Як читається у формулі",mix:"Мікс"};
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const bySym=s=>EL.find(e=>e.s===s);
+
+function pickElement(){
+  // слабкі елементи (з помилками) з'являються частіше
+  if(st.bag.length===0) st.bag=shuffle(EL.slice());
+  if(st.weak.length && Math.random()<.35){const s=st.weak[Math.random()*st.weak.length|0]; const e=bySym(s); if(e&&e!==st.last) return e;}
+  let e=st.bag.pop(); if(e===st.last&&st.bag.length) e=st.bag.pop(); return e;
+}
+function buildQuestion(){
+  const e=pickElement(); st.last=e;
+  const m=mode==="mix"?["s2n","n2s","say"][Math.random()*3|0]:mode;
+  const traps=(TRAPS[e.s]||[]).map(bySym).filter(Boolean);
+  const others=shuffle(EL.filter(x=>x!==e&&!traps.includes(x)));
+  const wrongEls=shuffle(traps).slice(0,2).concat(others).slice(0,3);
+  let shown,shownCls,opts,correct,mono=false;
+  if(m==="s2n"){shown=e.s;shownCls="sym";correct=e.n;opts=wrongEls.map(x=>x.n)}
+  else if(m==="n2s"){shown=e.n;shownCls="word";correct=e.s;mono=true;
+    const fake={Hg:"Me",Ag:"Ar",Cu:"Ku",K:"Ka",Pb:"Pl",Fe:"F",Na:"N",Si:"S",C:"K",N:"Ni",S:"Su",P:"F",F:"Fl"};
+    opts=wrongEls.map(x=>x.s); if(fake[e.s]&&!opts.includes(fake[e.s])&&fake[e.s]!==e.s) opts[2]=fake[e.s];}
+  else {shown=e.s;shownCls="sym";correct=e.v;
+    const pool=shuffle(SAY_POOL.filter(v=>v!==e.v&&v!==e.n.toLowerCase()));
+    const near={H:["гідроген","ге"],C:["карбон","ка"],O:["оксиген","ох"],N:["нітроген","ен-ен"],S:["сульфур","ес-ес"],P:["фосфор","ре"],Hg:["меркурій","аш-ге"],Ni:["нікол","ні"]};
+    opts=(near[e.s]||[]).concat(pool).filter((v,i,a)=>a.indexOf(v)===i&&v!==e.v).slice(0,3);}
+  opts=shuffle(opts.concat(correct));
+  return {e,m,shown,shownCls,correct,opts,mono};
+}
+function renderPads(q){
+  pads.innerHTML="";
+  q.opts.forEach((o,i)=>{
+    const b=document.createElement("button");
+    b.className="pad"+(q.mono?" mono":""); b.type="button"; b.dataset.v=o;
+    b.innerHTML=`<span class="k">${i+1}</span><span class="v"></span>`; b.querySelector(".v").textContent=o;
+    b.addEventListener("click",()=>answer(o,b));
+    pads.appendChild(b);
+  });
+}
+function spawn(){
+  if(st.lives<=0) return;
+  locked=false;
+  const q=buildQuestion(); cur=q;
+  const m=document.createElement("div"); m.className="meteor";
+  m.innerHTML=`<div class="tail"></div><div class="rock"><span class="txt ${q.shownCls}"></span></div>`;
+  m.querySelector(".txt").textContent=q.shown;
+  const w=field.clientWidth; const x=(Math.random()-.5)*Math.max(0,w-150);
+  m.style.left=`calc(50% + ${x}px)`;
+  field.appendChild(m); q.el=m; q.y=-130; q.t0=performance.now();
+  renderPads(q);
+}
+function speed(){return (reduce?.55:.75)*(1+ (st.level-1)*.22)} // px за кадр-еквівалент (16 мс)
+function loop(t){
+  raf=requestAnimationFrame(loop);
+  if(!cur||locked) {st.prev=t;return}
+  const dt=Math.min(50,t-(st.prev||t)); st.prev=t;
+  cur.y+=speed()*dt/16*(field.clientHeight/420);
+  cur.el.style.transform=`translateY(${cur.y}px)`;
+  if(cur.y>field.clientHeight-140){ miss(null) }
+}
+function toast(html,cls){
+  if(toastEl) toastEl.remove();
+  toastEl=document.createElement("div"); toastEl.className="toast "+cls; toastEl.innerHTML=html; field.appendChild(toastEl);
+}
+function explain(e){return `<b>${e.s}</b> — ${e.n} (лат. ${e.l}), у формулі читаємо «${e.v}»`}
+function hud(){
+  $("hScore").textContent="Бали: "+st.score; $("hLevel").textContent="Рівень "+st.level;
+  $("hStreak").textContent="Серія: "+st.streak; $("hLives").textContent="🛡".repeat(st.lives)+"·".repeat(3-st.lives);
+}
+function answer(v,btn){
+  if(!cur||locked) return; locked=true;
+  st.total++;
+  if(v===cur.correct){
+    st.right++; st.streak++; st.best=Math.max(st.best,st.streak);
+    const bonus=Math.max(0,Math.round(10*(1-cur.y/field.clientHeight)));
+    st.score+=10+bonus+(st.streak>=5?5:0);
+    btn.classList.add("ok"); cur.el.classList.add("boom");
+    st.weak=st.weak.filter(s=>s!==cur.e.s);
+    toast(st.streak>=5?`Серія ${st.streak}! +5 бонус`:"Збито!","ok");
+    if(st.right%6===0){st.level++; toast(`Рівень ${st.level}: метеорити падають швидше!`,"ok")}
+    next(550);
+  } else miss(btn);
+  hud();
+}
+function miss(btn){
+  locked=true; st.lives--; st.streak=0;
+  if(btn===null) st.total++;
+  if(btn) btn.classList.add("bad");
+  [...pads.children].forEach(b=>{if(b.dataset.v===cur.correct) b.classList.add("ok")});
+  cur.el.classList.add("wrong");
+  if(!reduce){planet.classList.remove("hit");void planet.offsetWidth;planet.classList.add("hit")}
+  if(!st.weak.includes(cur.e.s)) st.weak.push(cur.e.s);
+  if(!st.mistakes.includes(cur.e)) st.mistakes.push(cur.e);
+  toast((btn?"Не влучив! ":"Метеорит упав! ")+explain(cur.e),"bad");
+  hud();
+  next(2200);
+}
+function next(ms){
+  const old=cur; setTimeout(()=>{ old&&old.el.remove(); if(st.lives<=0||st.right>=30) end(); else spawn(); },ms);
+}
+function start(){
+  st={score:0,level:1,lives:3,streak:0,best:0,right:0,total:0,bag:[],weak:[],mistakes:[],last:null,prev:0};
+  field.querySelectorAll(".meteor,.toast").forEach(n=>n.remove());
+  $("startScreen").hidden=true; $("endScreen").hidden=true; hud();
+  cancelAnimationFrame(raf); raf=requestAnimationFrame(loop); spawn();
+}
+function end(){
+  cancelAnimationFrame(raf); cur=null; pads.innerHTML="";
+  const acc=st.total?Math.round(st.right/st.total*100):0;
+  const win=st.right>=30;
+  $("endTitle").textContent=win?"Планету захищено!":"Щити вичерпано";
+  $("endMode").textContent="Режим: "+MODE_NAME[mode];
+  $("eScore").textContent=st.score; $("eAcc").textContent=acc+"%"; $("eBest").textContent=st.best;
+  const name=($("pname").value||"").trim()||"Учень / учениця";
+  const d=new Date().toLocaleDateString("uk-UA");
+  $("cert").innerHTML=`<b></b><br>Режим «${MODE_NAME[mode]}» · збито ${st.right} із ${st.total} · ${acc}% · ${d}`;
+  $("cert").querySelector("b").textContent=name;
+  const ul=$("mist"); ul.innerHTML="";
+  st.mistakes.forEach(e=>{const li=document.createElement("li");
+    li.innerHTML=`<span class="sy">${e.s}</span><span><strong>${e.n}</strong> · читаємо «${e.v}»<br><small>лат. ${e.l}</small></span>`; ul.appendChild(li)});
+  $("mistBlock").hidden=st.mistakes.length===0;
+  $("endScreen").hidden=false;
+  sendResult(acc);
+}
+// ── Надсилання результату в Firebase (той самий проєкт, що й «Яскраві аркуші») ──
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const GAME_ID="meteor7"; // вузол worksheets/meteor7 створює сторінка вчителя при першому вході
+async function sendResult(acc){
+  const box=$("sendState"); box.className="send"; box.textContent="Надсилаю результат учителю…";
+  const rec={name:$("pname").value.trim().slice(0,60),cls:$("pcls").value.slice(0,20),
+    score:st.right,max:st.total,points:st.score,acc,best:st.best,mode:MODE_NAME[mode],
+    win:st.right>=30,mistakes:st.mistakes.map(e=>e.s).join(" "),ts:{".sv":"timestamp"}};
+  try{
+    const r=await fetch(`${FIREBASE_URL}/results/${GAME_ID}.json`,{method:"POST",body:JSON.stringify(rec)});
+    if(!r.ok) throw new Error(r.status);
+    box.className="send ok"; box.textContent="✓ Результат отримано вчителем. Можеш зіграти ще раз, щоб покращити його.";
+  }catch(e){
+    box.className="send bad"; box.textContent="Не вдалося надіслати результат. Перевір інтернет і натисни «Ще раз», або зроби знімок цього екрана й прикріпи до завдання.";
+  }
+}
+// керування
+$("modes").addEventListener("click",ev=>{const b=ev.target.closest(".mode"); if(!b) return; mode=b.dataset.mode;
+  document.querySelectorAll(".mode").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"))});
+$("startBtn").onclick=()=>{
+  const ok=$("pname").value.trim().length>=3&&$("pcls").value;
+  $("startErr").hidden=!!ok; if(ok) start();
+};
+$("againBtn").onclick=start;
+$("menuBtn").onclick=()=>{$("endScreen").hidden=true;$("startScreen").hidden=false};
+try{const s=localStorage.getItem("meteor-name"); if(s) $("pname").value=s; const c=localStorage.getItem("meteor-cls"); if(c) $("pcls").value=c}catch(e){}
+$("pname").addEventListener("change",()=>{try{localStorage.setItem("meteor-name",$("pname").value)}catch(e){}});
+$("pcls").addEventListener("change",()=>{try{localStorage.setItem("meteor-cls",$("pcls").value)}catch(e){}});
+addEventListener("keydown",ev=>{ if(document.activeElement&&document.activeElement.tagName==="INPUT") return;
+  const n=+ev.key; if(n>=1&&n<=4&&pads.children[n-1]) pads.children[n-1].click(); });
+// зорі
+(function(){const c=$("stars"),x=c.getContext("2d");function draw(){const r=devicePixelRatio||1;c.width=c.clientWidth*r;c.height=c.clientHeight*r;
+  x.clearRect(0,0,c.width,c.height);for(let i=0;i<140;i++){x.globalAlpha=.3+Math.random()*.7;x.fillStyle="#fff";
+  const s=Math.random()*1.6*r;x.fillRect(Math.random()*c.width,Math.random()*c.height,s,s)}}
+  draw(); addEventListener("resize",draw)})();
+</script>
+
+</body>
+</html>
