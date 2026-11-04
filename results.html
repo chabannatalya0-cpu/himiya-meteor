@@ -92,6 +92,7 @@ const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.fireba
 const API_KEY="AIzaSyAGOncvJIlGaJu14uqEWy6rQxdF7-pQYUI";
 const STATIONS=["Обладнання","Ризики","Рівняння","Хід роботи","Збирання","Виявлення","Каталізатори","Висновок"];
 const WORKS=[
+  {id:"kolobig8",label:"8 кл. · Колообіг Оксигену",title:"Колообіг Оксигену в природі (8 клас)",subject:"Хімія · 8 клас · §11"},
   {id:"kysen8",label:"8 кл. · НД №1 «Одержання кисню»",title:"Навчальне дослідження № 1 «Одержання кисню» (8 клас)",subject:"Хімія · 8 клас · §9"},
   {id:"meteor7",label:"7 кл. · Гра «Метеоритний дощ»",title:"Гра «Хімічний метеоритний дощ» (7 клас, § 6)",subject:"Хімія · 7 клас · §6"}
 ];
@@ -162,6 +163,18 @@ function render(){
         <div><b>Самооцінка</b>${esc(x.reflection||"—")}</div></div></details></td>
       <td class="muted">${when(x)}</td></tr>`}).join("")
       :'<tr><td colspan="7" class="muted">Ще ніхто не здав роботу. Коли учні натиснуть «Здати роботу», вони з\'являться тут.</td></tr>';
+  } else if(work.id==="kolobig8"){
+    $("kAvg").textContent=best.length?(best.reduce((s,x)=>s+x.score,0)/best.length).toFixed(1):"0"; $("kAvgT").textContent="середній бал (з 12)";
+    $("kTop").textContent=best.filter(x=>x.score>=10).length; $("kTopT").textContent="учнів мають 10–12 балів";
+    const cnt={}; best.forEach(x=>(x.mistakes||"").split("; ").filter(Boolean).forEach(m=>cnt[m]=(cnt[m]||0)+1));
+    $("hardTitle").textContent="Процеси, які учні найчастіше ставили не туди"; $("hardHint").textContent="Скільки учнів помилилися з цією карткою під час першої перевірки (найкращі спроби).";
+    const hard=Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,12);
+    $("hard").innerHTML=hard.length?hard.map(([m,n])=>`<span class="chip">${esc(m)} <small>${n} уч.</small></span>`).join(""):'<span class="muted">Поки немає даних</span>';
+    $("th").innerHTML=`<tr><th data-k="name">Учень</th><th data-k="cls">Клас</th><th data-k="score">Бали</th><th>Місії 1 · 2 · 3</th><th data-k="tries">Спроб</th><th>Помилки під час першої перевірки</th><th data-k="ts">Коли</th></tr>`;
+    $("tb").innerHTML=out.length?out.map(x=>{const p=x.score>=10?"g":x.score>=7?"m":"b";
+      return `<tr><td><strong>${esc(x.name)}</strong></td><td>${esc(x.cls)}</td><td><span class="pill ${p}">${x.score} / 12</span></td>
+      <td class="mono">${esc(x.parts)}</td><td class="mono">${x.tries}</td><td>${esc(x.mistakes||"—")}</td><td class="muted">${when(x)}</td></tr>`}).join("")
+      :'<tr><td colspan="7" class="muted">Ще ніхто не здав роботу. Коли учні натиснуть «Здати роботу», вони з\'являться тут.</td></tr>';
   } else {
     $("kAvg").textContent=(list.length?Math.round(list.reduce((s,x)=>s+x.acc,0)/list.length):0)+"%"; $("kAvgT").textContent="середня влучність";
     $("kTop").textContent=new Set(list.filter(x=>x.win).map(key)).size; $("kTopT").textContent="дійшли до перемоги (30 збитих)";
@@ -182,6 +195,8 @@ function csv(){
   const {out}=rows(); let lines;
   if(work.id==="kysen8"){lines=[["Учень","Клас","Бали (з 12)",...STATIONS,"Спроб","Рівняння","Каталізатори","Найефективніший","Найменш ефективний","Висновок","Самооцінка","Дата"]]
     .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.tries,x.equation,x.catalysts,x.most,x.least,x.conclusion,x.reflection,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
+  else if(work.id==="kolobig8"){lines=[["Учень","Клас","Бали (з 12)","Місія 1 (з 6)","Місія 2 (з 3)","Місія 3 (з 3)","Спроб","Помилки","Дата"]]
+    .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.tries,x.mistakes,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else lines=[["Учень","Клас","Режим","Збито","З","Влучність %","Бали","Спроб","Помилки","Дата"]]
     .concat(out.map(x=>[x.name,x.cls,x.mode,x.score,x.max,x.acc,x.points,x.tries,x.mistakes,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]));
   const text="﻿"+lines.map(r=>r.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(";")).join("\r\n");

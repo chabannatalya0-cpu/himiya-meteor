@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Колообіг Оксигену · 8 клас</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;800&display=swap">
+<style>
+/* Layout: one column of three "missions"; mission 1 is a living diagram — atmosphere O₂ in the centre, an orange "takes O₂" field and a green "returns O₂" field on either side, the card bank below. One bright look on purpose (for pupils). */
+:root{
+  color-scheme: light;
+  --sky:#eaf6ff; --card:#ffffff; --ink:#10233a; --muted:#4e6178; --line:#cfe1ee;
+  --o2:#1aa3e8; --o2-deep:#0b6fb0; --take:#ff7a1a; --take-bg:#fff1e5; --give:#1fae63; --give-bg:#e5f8ee; --none:#8a7ad6; --none-bg:#f1eefe;
+  --sun:#ffc531; --bad:#e8456b;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--sky);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45}
+.wrap{max-width:900px;margin:0 auto;padding-block:20px 60px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:18px}
+.hero{border-radius:26px;padding:24px 22px;color:#fff;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#1fae63 0%,#0b8f8a 45%,#0b6fb0 100%);box-shadow:0 10px 0 #075a72}
+.hero .tag{display:inline-block;background:var(--sun);color:#3a2a00;font-weight:800;font-size:13px;border-radius:999px;padding:4px 12px}
+.hero h1{font-family:var(--f-display);font-size:clamp(26px,6vw,40px);line-height:1.08;margin:12px 0 8px;text-wrap:balance}
+.hero p{margin:0;max-width:56ch}
+.hero .ring{position:absolute;right:-40px;top:-40px;width:200px;height:200px;border-radius:50%;border:18px dashed rgba(255,255,255,.18);animation:spin 40s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.panel{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.panel h2{margin:0;font-family:var(--f-display);font-size:19px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.panel h2 .n{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:var(--o2);color:#fff;font-size:16px;flex:none}
+.panel h2 .pts{margin-left:auto;font-family:var(--f-mono);font-size:13px;color:var(--o2-deep);background:#e2f4fd;border-radius:999px;padding:4px 10px}
+.panel p{margin:0}
+.hint{color:var(--muted);font-size:14px}
+label.lbl{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--muted)}
+input[type=text],select{font:inherit;font-size:16px;padding:11px 13px;border-radius:12px;border:2px solid var(--line);background:#fff;color:var(--ink);width:100%}
+input:focus-visible,select:focus-visible,button:focus-visible,.card:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:520px){.grid2{grid-template-columns:1fr}}
+
+/* Diagram */
+.cycle{display:grid;grid-template-columns:minmax(0,1fr) 150px minmax(0,1fr);gap:12px;align-items:stretch}
+.atm{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center}
+.atm .ball{width:128px;height:128px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-size:34px;color:#fff;
+  background:radial-gradient(circle at 35% 30%,#7fd3ff,var(--o2) 55%,var(--o2-deep));box-shadow:0 0 0 10px rgba(26,163,232,.15),0 0 0 22px rgba(26,163,232,.07)}
+.atm small{font-weight:700;color:var(--muted);font-size:13px;line-height:1.3}
+.arrows{font-family:var(--f-mono);font-weight:800;font-size:14px;display:flex;gap:10px;justify-content:center}
+.arrows .t{color:var(--take)} .arrows .g{color:var(--give)}
+@media (max-width:700px){.cycle{grid-template-columns:1fr}.atm{order:-1;flex-direction:row}.atm .ball{width:84px;height:84px;font-size:24px;box-shadow:0 0 0 6px rgba(26,163,232,.15)}}
+.zone{border:3px dashed var(--line);border-radius:20px;padding:12px;min-height:170px;display:flex;flex-direction:column;gap:8px;transition:background .15s,border-color .15s}
+.zone .zh{font-weight:800;font-size:15px;display:flex;gap:8px;align-items:center}
+.zone .zh .ic{font-size:22px}
+.zone .zs{font-size:13px;color:var(--muted);margin-top:-6px}
+.zone .drop{display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;flex:1;min-height:60px}
+.zone.take{border-color:#ffc79c;background:var(--take-bg)} .zone.take .zh{color:#b04d00}
+.zone.give{border-color:#9fe0bd;background:var(--give-bg)} .zone.give .zh{color:#0d7a43}
+.zone.none{border-color:#cfc6f5;background:var(--none-bg);min-height:110px} .zone.none .zh{color:#5a48b5}
+.zone.over{border-style:solid;filter:brightness(.97)}
+.zone.pickable{cursor:pointer}
+.bank{border:2px solid var(--line);border-radius:20px;padding:12px;background:#f7fbfe;display:flex;flex-direction:column;gap:8px}
+.bank .drop{display:flex;flex-wrap:wrap;gap:8px;min-height:52px}
+.card{font:inherit;font-weight:700;font-size:15px;background:#fff;color:var(--ink);border:2px solid #bcd3e3;border-radius:14px;padding:9px 12px;cursor:grab;
+  touch-action:none;user-select:none;display:inline-flex;gap:8px;align-items:center;box-shadow:0 3px 0 #bcd3e3;text-align:left}
+.card .e{font-size:20px}
+.card.sel{border-color:var(--o2);box-shadow:0 3px 0 var(--o2);background:#eaf7fe}
+.card.ok{border-color:var(--give);box-shadow:0 3px 0 var(--give);background:#e9fbf1}
+.card.no{border-color:var(--bad);box-shadow:0 3px 0 var(--bad);background:#fdecf0}
+.card.eq{font-family:var(--f-mono);font-size:14px}
+.ghost{position:fixed;z-index:50;pointer-events:none;transform:translate(-50%,-50%) rotate(-3deg);opacity:.92}
+
+/* Stage 2: equations on arrows */
+.slots{display:grid;gap:12px}
+.slot{display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px;align-items:center;border-radius:18px;padding:12px;border:3px dashed var(--line)}
+.slot .lab{font-weight:800;display:flex;gap:8px;align-items:center}
+.slot .lab .e{font-size:26px}
+.slot .drop{min-height:52px;display:flex;align-items:center;border-radius:12px;background:rgba(255,255,255,.7)}
+.slot.s-resp{background:var(--take-bg);border-color:#ffc79c}
+.slot.s-burn{background:#fff4dc;border-color:#ffd77a}
+.slot.s-photo{background:var(--give-bg);border-color:#9fe0bd}
+@media (max-width:560px){.slot{grid-template-columns:1fr}}
+/* Stage 3 */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:560px){.two{grid-template-columns:1fr}}
+
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{font-family:var(--f-display);font-size:17px;border:0;border-radius:16px;padding:14px 20px;cursor:pointer;color:#3a1600;
+  background:linear-gradient(180deg,var(--sun),var(--take));box-shadow:0 6px 0 #b14a00}
+.btn:active{transform:translateY(3px);box-shadow:0 3px 0 #b14a00}
+.btn.blue{color:#fff;background:linear-gradient(180deg,#46b9f2,var(--o2-deep));box-shadow:0 6px 0 #084d7c}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.msg{font-weight:700;padding:10px 12px;border-radius:12px}
+.msg.ok{background:#e3f8ee;color:#0d6b40}.msg.bad{background:#fde7ec;color:#9b1c38}.msg.info{background:#eef6fb;color:var(--o2-deep)}
+.res{background:var(--card);border:3px solid var(--give);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:12px}
+.res .big{font-family:var(--f-display);font-size:48px;color:var(--give);line-height:1}
+.res ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.res li{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed var(--line);padding:4px 0}
+.res li b{font-family:var(--f-mono)}
+.fact{background:#fff6dc;border:2px dashed var(--sun);border-radius:16px;padding:12px 14px;font-size:15px}
+@media (prefers-reduced-motion:reduce){.hero .ring{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="ring" aria-hidden="true"></div>
+    <span class="tag">Хімія · 8 клас · § 11 · с. 94–99</span>
+    <h1>Колообіг Оксигену в природі</h1>
+    <p>Збери схему колообігу: перетягни кожну картку на її місце. На телефоні можна торкнутися картки, а потім зони. Три місії, разом 12 балів. Бали зараховуються з першої перевірки, а помилки потім можна виправити.</p>
+  </header>
+
+  <section class="panel" id="who">
+    <h2><span class="n">👤</span>Дослідник / дослідниця</h2>
+    <div class="grid2">
+      <div><label class="lbl" for="pname">Прізвище та ім'я</label><input type="text" id="pname" maxlength="60" autocomplete="name" placeholder="Іваненко Олена"></div>
+      <div><label class="lbl" for="pcls">Клас</label><select id="pcls"><option value="">— обери —</option><option>8-А</option><option>8-Б</option><option>8-В</option><option>Інший</option></select></div>
+    </div>
+  </section>
+
+  <!-- Місія 1 -->
+  <section class="panel" id="m1">
+    <h2><span class="n">1</span>Хто забирає кисень, а хто його повертає?<span class="pts">6 балів</span></h2>
+    <p>Розподіли процеси: які <b>витрачають</b> кисень з атмосфери, які <b>утворюють</b> його, а які на вміст кисню <b>не впливають</b>.</p>
+    <div class="cycle">
+      <div class="zone take" data-z="take"><div class="zh"><span class="ic">🔥</span>Витрачають O₂</div><div class="zs">O₂ → CO₂ + H₂O</div><div class="drop"></div></div>
+      <div class="atm"><div class="ball">O₂</div><small>Атмосфера:<br>близько 21 % кисню</small><div class="arrows"><span class="t">← забирають</span></div><div class="arrows"><span class="g">повертають →</span></div></div>
+      <div class="zone give" data-z="give"><div class="zh"><span class="ic">🌿</span>Утворюють O₂</div><div class="zs">CO₂ + H₂O → O₂</div><div class="drop"></div></div>
+    </div>
+    <div class="zone none" data-z="none"><div class="zh"><span class="ic">⚪</span>Не впливають на вміст кисню</div><div class="drop"></div></div>
+    <div class="bank" data-z="bank"><span class="lbl">Картки</span><div class="drop"></div></div>
+    <div class="row"><button class="btn blue" type="button" data-check="1">Перевірити</button><span class="msg info" data-msg="1" hidden></span></div>
+  </section>
+
+  <!-- Місія 2 -->
+  <section class="panel" id="m2" hidden>
+    <h2><span class="n">2</span>Рівняння на стрілках колообігу<span class="pts">3 бали</span></h2>
+    <p>Кожен процес має своє сумарне рівняння. Постав рівняння до відповідного процесу.</p>
+    <div class="slots">
+      <div class="slot s-resp zone" data-z="resp"><div class="lab"><span class="e">🫁</span>Дихання</div><div class="drop"></div></div>
+      <div class="slot s-burn zone" data-z="burn"><div class="lab"><span class="e">🔥</span>Горіння природного газу</div><div class="drop"></div></div>
+      <div class="slot s-photo zone" data-z="photo"><div class="lab"><span class="e">☀️</span>Фотосинтез</div><div class="drop"></div></div>
+    </div>
+    <div class="bank" data-z="bank"><span class="lbl">Рівняння</span><div class="drop"></div></div>
+    <div class="row"><button class="btn blue" type="button" data-check="2">Перевірити</button><span class="msg info" data-msg="2" hidden></span></div>
+  </section>
+
+  <!-- Місія 3 -->
+  <section class="panel" id="m3" hidden>
+    <h2><span class="n">3</span>Природа чи людина?<span class="pts">3 бали</span></h2>
+    <p>За таблицею із завдання 123 (с. 98) розподіли шляхи витрачання кисню на <b>природні</b> й <b>антропогенні</b>, тобто спричинені діяльністю людини.</p>
+    <div class="two">
+      <div class="zone give" data-z="nat"><div class="zh"><span class="ic">🌍</span>Природні</div><div class="drop"></div></div>
+      <div class="zone take" data-z="ant"><div class="zh"><span class="ic">🏭</span>Антропогенні</div><div class="drop"></div></div>
+    </div>
+    <div class="bank" data-z="bank"><span class="lbl">Картки</span><div class="drop"></div></div>
+    <div class="row"><button class="btn blue" type="button" data-check="3">Перевірити</button><span class="msg info" data-msg="3" hidden></span></div>
+    <div class="fact">💡 Близько 90 % усього кисню, що утворюється на Землі під час фотосинтезу, виділяють зелені водорості морів і океанів, а не ліси.</div>
+  </section>
+
+  <p class="msg bad" id="err" hidden></p>
+  <div class="row"><button class="btn" id="next" type="button" disabled>Далі →</button></div>
+
+  <section class="res" id="res" hidden>
+    <span class="lbl">Твій результат</span>
+    <div class="big" id="total">0 / 12</div>
+    <ul id="breakdown"></ul>
+    <div class="msg info" id="send">Надсилаю роботу вчителю…</div>
+  </section>
+</div>
+
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="kolobig8";
+const $=id=>document.getElementById(id);
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+
+// Картки (за § 11, мал. 11.2 і таблицею завдання 123)
+const M1=[["🐾","Дихання тварин і людей","take"],["🌱","Дихання рослин","take"],["🍂","Гниття решток організмів","take"],["🌲","Лісові пожежі","take"],
+ ["🏭","Спалювання палива на ТЕС","take"],["🚗","Робота двигунів автомобілів","take"],["🌋","Виверження вулканів","take"],["⚙️","Виплавляння сталі","take"],
+ ["🌳","Фотосинтез наземних рослин","give"],["🦠","Фотосинтез водоростей","give"],["💧","Випаровування води","none"],["🧊","Танення льодовиків","none"]];
+const M2=[["","C₆H₁₂O₆ + 6O₂ = 6CO₂ + 6H₂O + енергія","resp"],["","CH₄ + 2O₂ = CO₂ + 2H₂O","burn"],["","6CO₂ + 6H₂O + hν = C₆H₁₂O₆ + 6O₂↑","photo"]];
+const M3=[["🐾","Дихання тварин і мікроорганізмів","nat"],["🍂","Гниття органічних речовин","nat"],["🌲","Лісові пожежі","nat"],
+ ["🏭","Спалювання пального на електростанціях","ant"],["✈️","Авто- й авіатранспорт","ant"],["⚙️","Виплавляння металів","ant"]];
+const STAGES=[{el:"m1",cards:M1,max:6,single:false},{el:"m2",cards:M2,max:3,single:true},{el:"m3",cards:M3,max:3,single:false}];
+const score=[null,null,null], wrong=[[],[],[]];
+let stage=0, sel=null;
+
+function mkCard(e,t,ans,eq){const b=document.createElement("button");b.type="button";b.className="card"+(eq?" eq":"");b.dataset.ans=ans;b.dataset.t=t;
+  b.innerHTML=(e?`<span class="e">${e}</span>`:"")+`<span></span>`;b.lastChild.textContent=t;return b}
+STAGES.forEach((s,i)=>{const bank=$(s.el).querySelector('.bank .drop');shuffle(s.cards.slice()).forEach(([e,t,a])=>bank.appendChild(mkCard(e,t,a,i===1)))});
+
+// Перетягування (миша і дотик) + режим «торкнись картки, потім зони»
+let drag=null;
+document.addEventListener("pointerdown",ev=>{
+  const c=ev.target.closest(".card"); if(!c||c.closest("[data-locked]")) return;
+  drag={c,x:ev.clientX,y:ev.clientY,moved:false,ghost:null,id:ev.pointerId};
+});
+document.addEventListener("pointermove",ev=>{
+  if(!drag||ev.pointerId!==drag.id) return;
+  if(!drag.moved&&Math.hypot(ev.clientX-drag.x,ev.clientY-drag.y)<8) return;
+  if(!drag.moved){drag.moved=true;drag.ghost=drag.c.cloneNode(true);drag.ghost.classList.add("ghost");document.body.appendChild(drag.ghost);drag.c.style.opacity=".35";}
+  drag.ghost.style.left=ev.clientX+"px";drag.ghost.style.top=ev.clientY+"px";
+  document.querySelectorAll(".zone.over").forEach(z=>z.classList.remove("over"));
+  const z=zoneAt(ev.clientX,ev.clientY); if(z) z.classList.add("over");
+  ev.preventDefault();
+},{passive:false});
+document.addEventListener("pointerup",ev=>{
+  if(!drag||ev.pointerId!==drag.id) return;
+  const d=drag; drag=null;
+  document.querySelectorAll(".zone.over").forEach(z=>z.classList.remove("over"));
+  if(d.moved){d.ghost.remove();d.c.style.opacity="";const z=zoneAt(ev.clientX,ev.clientY);if(z) place(d.c,z);}
+  else{ select(d.c===sel?null:d.c); }
+});
+document.addEventListener("pointercancel",()=>{if(drag){drag.ghost&&drag.ghost.remove();drag.c.style.opacity="";drag=null}});
+function zoneAt(x,y){const el=document.elementFromPoint(x,y);if(!el)return null;const z=el.closest(".zone,.bank");if(!z)return null;
+  return z.closest(".panel")===$(STAGES[stage].el)?z:null}
+function select(c){if(sel)sel.classList.remove("sel");sel=c;if(sel)sel.classList.add("sel");
+  document.querySelectorAll(".zone,.bank").forEach(z=>z.classList.toggle("pickable",!!sel))}
+document.addEventListener("click",ev=>{
+  if(!sel) return; if(ev.target.closest(".card")) return;
+  const z=ev.target.closest(".zone,.bank"); if(z&&z.closest(".panel")===$(STAGES[stage].el)){place(sel,z);}
+});
+// клавіатура: Enter на картці — вибрати; Enter на зоні — покласти
+document.addEventListener("keydown",ev=>{if(ev.key!=="Enter"&&ev.key!==" ")return;const c=ev.target.closest&&ev.target.closest(".card");
+  if(c){ev.preventDefault();select(c===sel?null:c)}});
+document.querySelectorAll(".zone,.bank").forEach(z=>{z.tabIndex=0;z.addEventListener("keydown",ev=>{if((ev.key==="Enter"||ev.key===" ")&&sel&&ev.target===z){ev.preventDefault();place(sel,z)}})});
+
+function place(c,z){
+  const drop=z.querySelector(".drop"); const s=STAGES[stage];
+  if(s.single&&z.dataset.z!=="bank"){const old=drop.querySelector(".card");if(old&&old!==c) $(s.el).querySelector(".bank .drop").appendChild(old);}
+  drop.appendChild(c); c.classList.remove("ok","no"); select(null); refresh();
+}
+function refresh(){
+  const s=STAGES[stage], left=$(s.el).querySelectorAll(".bank .card").length;
+  $(s.el).querySelector("[data-check]").disabled=left>0;
+}
+document.querySelectorAll("[data-check]").forEach(b=>b.onclick=()=>check(+b.dataset.check-1));
+function check(i){
+  const s=STAGES[i], cards=[...$(s.el).querySelectorAll(".zone .card")];
+  let right=0; cards.forEach(c=>{const ok=c.closest(".zone").dataset.z===c.dataset.ans;c.classList.toggle("ok",ok);c.classList.toggle("no",!ok);if(ok)right++});
+  const pts=s.max*right/cards.length;
+  const m=$(s.el).querySelector("[data-msg]"); m.hidden=false;
+  if(score[i]===null){score[i]=pts; wrong[i]=cards.filter(c=>c.classList.contains("no")).map(c=>c.dataset.t); $("next").disabled=false;}
+  if(right===cards.length){m.className="msg ok";m.textContent=`✓ Усе правильно! Зараховано: ${fmt(score[i])} з ${s.max}.`;}
+  else {m.className="msg bad";m.textContent=`Правильно ${right} з ${cards.length}. Зараховано: ${fmt(score[i])} з ${s.max}. Перетягни червоні картки й перевір ще раз, щоб розібратися.`;}
+}
+const fmt=x=>String(Math.round(x*10)/10).replace(".",",");
+
+$("next").onclick=()=>{
+  const name=$("pname").value.trim(),cls=$("pcls").value;
+  if(name.length<3||!cls){$("err").hidden=false;$("err").textContent="Впиши прізвище, ім'я та обери клас на початку сторінки.";$("who").scrollIntoView({behavior:"smooth"});return}
+  $("err").hidden=true;
+  if(score[stage]===null) return;
+  if(stage<2){ $(STAGES[stage].el).setAttribute("data-locked",""); stage++; $(STAGES[stage].el).hidden=false; $("next").disabled=true;
+    if(stage===2) $("next").textContent="Здати роботу ✓"; refresh(); $(STAGES[stage].el).scrollIntoView({behavior:"smooth"}); return; }
+  finish();
+};
+let sent=false;
+async function finish(){
+  $(STAGES[2].el).setAttribute("data-locked","");
+  const raw=score.reduce((a,b)=>a+b,0), total=Math.round(raw);
+  $("total").textContent=`${total} / 12`;
+  const names=["Хто забирає і хто повертає O₂","Рівняння процесів","Природа чи людина"];
+  $("breakdown").innerHTML=names.map((n,i)=>`<li><span>${i+1}. ${n}</span><b>${fmt(score[i])} / ${STAGES[i].max}</b></li>`).join("");
+  $("res").hidden=false; $("next").disabled=true; $("res").scrollIntoView({behavior:"smooth"});
+  if(sent) return;
+  const rec={name:$("pname").value.trim().slice(0,60),cls:$("pcls").value,score:total,max:12,ts:{".sv":"timestamp"},
+    parts:score.map(fmt).join(" "),mistakes:wrong.flat().join("; ")};
+  try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec)});
+    if(!r.ok) throw new Error(r.status); sent=true; $("send").className="msg ok"; $("send").textContent="✓ Роботу отримано вчителем. Молодець!";
+  }catch(e){$("send").className="msg bad";$("send").textContent="Не вдалося надіслати. Перевір інтернет і натисни «Здати роботу» ще раз.";$("next").disabled=false;}
+}
+refresh();
+</script>
+</body>
+</html>
