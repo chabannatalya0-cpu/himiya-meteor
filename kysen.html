@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Одержання кисню · НД №1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;800&display=swap">
+<style>
+/* Layout: a bright lab notebook — one column of numbered "stations" (the real order of the investigation), sticky progress strip, O₂ bubbles rising in the background. One bright look on purpose (for pupils). */
+:root{
+  color-scheme: light;
+  --paper:#f2fbff; --card:#ffffff; --ink:#0f2238; --muted:#4e6178; --line:#cfe3f1;
+  --o2:#1aa3e8; --o2-deep:#0b6fb0; --flame:#ff7a1a; --leaf:#22b26b; --berry:#e8456b; --sun:#ffc531;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5}
+#bubbles{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding-block:20px 60px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:18px}
+.hero{background:linear-gradient(135deg,var(--o2) 0%,var(--o2-deep) 100%);color:#fff;border-radius:26px;padding:24px 22px;position:relative;overflow:hidden;
+  box-shadow:0 10px 0 #08507f}
+.hero .tag{display:inline-block;background:var(--sun);color:#3a2a00;font-weight:800;font-size:13px;border-radius:999px;padding:4px 12px}
+.hero h1{font-family:var(--f-display);font-size:clamp(26px,6vw,40px);line-height:1.08;margin:12px 0 8px;text-wrap:balance}
+.hero p{margin:0;max-width:52ch;opacity:.95}
+.hero .formula{position:absolute;right:-6px;bottom:-18px;font-family:var(--f-display);font-size:120px;opacity:.14;line-height:1}
+.hero .row{margin-top:16px}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:rgba(242,251,255,.92);backdrop-filter:blur(6px);border-radius:14px;padding:8px 12px;
+  display:flex;align-items:center;gap:12px;border:1px solid var(--line)}
+.bar .track{flex:1;height:10px;border-radius:999px;background:var(--line);overflow:hidden}
+.bar .fill{height:100%;width:0;background:linear-gradient(90deg,var(--leaf),var(--o2));transition:width .3s}
+.bar .t{font-family:var(--f-mono);font-weight:800;font-size:14px;white-space:nowrap}
+.st{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.st.done{border-color:var(--leaf)}
+.st h2{margin:0;font-family:var(--f-display);font-size:19px;line-height:1.25;display:flex;gap:12px;align-items:flex-start}
+.st h2 .n{flex:none;width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:var(--o2);color:#fff;font-size:16px}
+.st h2 .pts{margin-left:auto;flex:none;font-family:var(--f-mono);font-size:13px;color:var(--o2-deep);background:#e2f4fd;border-radius:999px;padding:4px 10px;white-space:nowrap}
+.st p{margin:0}
+.hint{color:var(--muted);font-size:14px}
+label.lbl{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--muted)}
+input[type=text],select,textarea{font:inherit;font-size:16px;padding:11px 13px;border-radius:12px;border:2px solid var(--line);background:#fff;color:var(--ink);width:100%}
+textarea{min-height:96px;resize:vertical}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:520px){.grid2{grid-template-columns:1fr}}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;font-weight:700;font-size:15px;border:2px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:8px 14px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--o2);border-color:var(--o2);color:#fff}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;border:2px solid var(--line);border-radius:14px;padding:10px 12px;cursor:pointer;background:#fff}
+.opt input{margin-top:4px;accent-color:var(--o2);width:18px;height:18px;flex:none}
+.opt:has(input:checked){border-color:var(--o2);background:#eaf7fe}
+.q{display:flex;flex-direction:column;gap:8px}
+.q>b{font-weight:700}
+/* equation */
+.eq{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 10px;font-family:var(--f-mono);font-size:24px;font-weight:800;
+  background:#0f2238;color:#fff;border-radius:18px;padding:22px 12px}
+.eq select{width:auto;font-family:var(--f-mono);font-weight:800;font-size:20px;padding:4px 6px;background:#1d3a5c;color:#fff;border-color:#3b5d84}
+.eq .arrow{display:flex;flex-direction:column;align-items:center;gap:2px}
+.eq .arrow select{font-size:15px}
+.eq .arrow span{font-size:30px;line-height:1}
+.eq sub{font-size:.65em}
+/* order */
+.order{list-style:none;margin:0;padding:0;display:grid;gap:8px;counter-reset:s}
+.order li{display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:10px;align-items:center;border:2px solid var(--line);border-radius:14px;padding:8px 10px;background:#fff;counter-increment:s}
+.order li::before{content:counter(s);font-family:var(--f-mono);font-weight:800;color:#fff;background:var(--flame);border-radius:10px;width:32px;height:32px;display:grid;place-items:center}
+.order .mv{display:flex;gap:4px}
+.order button{font:inherit;font-weight:800;width:38px;height:38px;border-radius:10px;border:2px solid var(--line);background:#f4f9fc;cursor:pointer;color:var(--ink)}
+/* catalyst table */
+.tbl{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.rate{display:flex;gap:4px}
+.rate button{font:inherit;font-size:13px;font-weight:800;border:2px solid var(--line);background:#fff;border-radius:10px;padding:5px 8px;cursor:pointer;white-space:nowrap;color:var(--ink)}
+.rate button[aria-pressed="true"]{background:var(--leaf);border-color:var(--leaf);color:#fff}
+td.c input{accent-color:var(--berry);width:18px;height:18px}
+.btn{font-family:var(--f-display);font-size:18px;border:0;border-radius:16px;padding:15px 22px;cursor:pointer;color:#3a1600;
+  background:linear-gradient(180deg,var(--sun),var(--flame));box-shadow:0 6px 0 #b14a00}
+.btn:active{transform:translateY(3px);box-shadow:0 3px 0 #b14a00}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.btn.ghost{background:#fff;border:2px solid #fff;color:var(--o2-deep);box-shadow:none;font-size:15px;text-decoration:none;display:inline-block}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.err{color:var(--berry);font-weight:700;margin:0}
+.res{background:var(--card);border:3px solid var(--leaf);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:12px}
+.res .big{font-family:var(--f-display);font-size:48px;color:var(--leaf);line-height:1}
+.res ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.res li{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed var(--line);padding:4px 0}
+.res li b{font-family:var(--f-mono)}
+.send{font-weight:700;padding:10px 12px;border-radius:12px;background:#eef6fb}
+.send.ok{background:#e3f8ee;color:#0d6b40}
+.send.bad{background:#fde7ec;color:#9b1c38}
+.fact{background:#fff6dc;border:2px dashed var(--sun);border-radius:16px;padding:12px 14px;font-size:15px}
+@media (prefers-reduced-motion:reduce){#bubbles{display:none}}
+</style>
+</head>
+<body>
+<canvas id="bubbles" aria-hidden="true"></canvas>
+<div class="wrap">
+
+  <header class="hero">
+    <span class="tag">Хімія · 8 клас · § 9 · с. 78–82</span>
+    <h1>Навчальне дослідження № 1 «Одержання кисню»</h1>
+    <p>Мета: дослідити способи одержання, збирання та виявлення кисню. Переглянь відео, відкрий підручник на с. 78 і виконай завдання на всіх станціях. Максимум 12 балів.</p>
+    <div class="row">
+      <a class="btn ghost" href="https://ua.izzi.digital/DOS/1265662/1265733.html#block-14820891" target="_blank" rel="noopener">▶ Переглянути відео</a>
+    </div>
+    <div class="formula" aria-hidden="true">O₂</div>
+  </header>
+
+  <div class="bar"><div class="track"><div class="fill" id="fill"></div></div><span class="t" id="prog">0 / 8 станцій</span></div>
+
+  <section class="st" id="s0">
+    <h2><span class="n">👤</span>Дослідник / дослідниця</h2>
+    <div class="grid2">
+      <div><label class="lbl" for="pname">Прізвище та ім'я</label><input type="text" id="pname" maxlength="60" autocomplete="name" placeholder="Іваненко Олена"></div>
+      <div><label class="lbl" for="pcls">Клас</label>
+        <select id="pcls"><option value="">— обери —</option><option>8-А</option><option>8-Б</option><option>8-В</option><option>Інший</option></select></div>
+    </div>
+  </section>
+
+  <section class="st" data-st="1">
+    <h2><span class="n">1</span>Готуємо обладнання<span class="pts">1 бал</span></h2>
+    <p>Познач <b>усе</b>, що знадобиться для досліду. Будь уважним: у списку є зайве.</p>
+    <div class="chips" id="equip"></div>
+  </section>
+
+  <section class="st" data-st="2">
+    <h2><span class="n">2</span>Визначаємо ризики<span class="pts">1 бал</span></h2>
+    <p>Які дії <b>безпечні</b> під час роботи з розчином гідроген пероксиду та спиртівкою? Обери всі правильні.</p>
+    <div class="opts" id="safety"></div>
+  </section>
+
+  <section class="st" data-st="3">
+    <h2><span class="n">3</span>Записуємо рівняння реакції<span class="pts">2 бали</span></h2>
+    <p>Кисень одержують розкладанням гідроген пероксиду. Добери коефіцієнти та умову над стрілкою.</p>
+    <div class="eq" aria-label="Рівняння реакції">
+      <select id="k1" aria-label="Коефіцієнт перед H2O2"><option value="">?</option><option>1</option><option>2</option><option>3</option><option>4</option></select>
+      <span>H<sub>2</sub>O<sub>2</sub></span>
+      <span class="arrow"><select id="cat" aria-label="Умова реакції"><option value="">умова?</option><option>MnO₂</option><option>H₂O</option><option>O₂</option><option>NaCl</option></select><span>→</span></span>
+      <select id="k2" aria-label="Коефіцієнт перед H2O"><option value="">?</option><option>1</option><option>2</option><option>3</option><option>4</option></select>
+      <span>H<sub>2</sub>O</span><span>+</span>
+      <select id="k3" aria-label="Коефіцієнт перед O2"><option value="">?</option><option>1</option><option>2</option><option>3</option><option>4</option></select>
+      <span>O<sub>2</sub>↑</span>
+    </div>
+    <p class="hint">Коефіцієнт 1 у рівнянні не пишуть, але тут його треба обрати.</p>
+  </section>
+
+  <section class="st" data-st="4">
+    <h2><span class="n">4</span>Відновлюємо хід роботи<span class="pts">2 бали</span></h2>
+    <p>Кроки частини I перемішалися. Розстав їх у правильному порядку стрілками ▲▼.</p>
+    <ol class="order" id="order"></ol>
+  </section>
+
+  <section class="st" data-st="5">
+    <h2><span class="n">5</span>Збираємо кисень<span class="pts">2 бали</span></h2>
+    <div class="q" id="q5a"><b>а) Збираємо витісненням повітря. Як треба тримати хімічну склянку і чому?</b></div>
+    <div class="q" id="q5b"><b>б) Чому кисень можна збирати витісненням води?</b></div>
+  </section>
+
+  <section class="st" data-st="6">
+    <h2><span class="n">6</span>Виявляємо кисень<span class="pts">1 бал</span></h2>
+    <div class="q" id="q6"><b>Тліючу скіпку внесли в пробірку з киснем. Що спостерігаємо і про яку властивість кисню це свідчить?</b></div>
+  </section>
+
+  <section class="st" data-st="7">
+    <h2><span class="n">7</span>Порівнюємо каталізатори (частина II)<span class="pts">2 бали</span></h2>
+    <p>За відео оціни, як швидко виділяються бульбашки газу з кожним зразком. Познач у стовпчиках найефективніший ✦ і найменш ефективний ✧ каталізатор.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Зразок</th><th>Швидкість реакції</th><th>✦</th><th>✧</th></tr></thead>
+      <tbody id="catBody"></tbody>
+    </table></div>
+    <div class="q" id="q7"><b>За якою ознакою ти зробив(-ла) висновок, що гідроген пероксид розкладається?</b></div>
+  </section>
+
+  <section class="st" data-st="8">
+    <h2><span class="n">8</span>Висновок і рефлексія<span class="pts">1 бал</span></h2>
+    <label class="lbl" for="concl">Висновок: як одержали, зібрали й виявили кисень; що з'ясували про каталізатори</label>
+    <textarea id="concl" maxlength="1200" placeholder="Кисень ми одержали…"></textarea>
+    <p class="hint">Щоб отримати бал, напиши щонайменше 2–3 речення своїми словами. Вчитель прочитає твій висновок.</p>
+    <label class="lbl">Як я оцінюю свою роботу</label>
+    <div class="chips" id="refl">
+      <button class="chip" type="button" data-v="Усе зрозуміло, можу пояснити іншим">🟢 Усе зрозуміло</button>
+      <button class="chip" type="button" data-v="Майже все зрозуміло, є питання">🟡 Є питання</button>
+      <button class="chip" type="button" data-v="Було складно, потрібна допомога">🔴 Потрібна допомога</button>
+    </div>
+  </section>
+
+  <div class="fact">💡 Каталізатор каталаза міститься в сирій картоплі, печінці й листках рослин. Вона розкладає гідроген пероксид, що утворюється в клітинах, і захищає їх.</div>
+
+  <p class="err" id="err" hidden></p>
+  <div class="row"><button class="btn" id="submit" type="button">Здати роботу</button></div>
+
+  <section class="res" id="res" hidden>
+    <span class="lbl">Твій результат</span>
+    <div class="big" id="total">0 / 12</div>
+    <ul id="breakdown"></ul>
+    <div class="send" id="send">Надсилаю роботу вчителю…</div>
+    <p class="hint">Бал за висновок вчитель може змінити після перевірки.</p>
+  </section>
+</div>
+
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="kysen8";
+const $=id=>document.getElementById(id);
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+
+// 1. Обладнання (за підручником, с. 78)
+const EQUIP=[["Конічна колба",1],["Корок із газовідвідною трубкою",1],["Пробірка",1],["Кристалізатор",1],["Хімічна склянка",1],["Деревна скіпка",1],["Спиртівка",1],["Аркуш паперу",1],
+  ["Ступка з товкачиком",0],["Термометр",0],["Порцелянова чаша",0],["Лійка",0]];
+shuffle(EQUIP).forEach(([t,ok])=>{const b=document.createElement("button");b.type="button";b.className="chip";b.textContent=t;b.dataset.ok=ok;b.setAttribute("aria-pressed","false");
+  b.onclick=()=>{b.setAttribute("aria-pressed",b.getAttribute("aria-pressed")==="true"?"false":"true");upd()};$("equip").appendChild(b)});
+
+// 2. Безпека
+const SAFE=[["Працювати в захисних окулярах і рукавичках",1],["Якщо розчин потрапив на шкіру, змити великою кількістю води й повідомити вчителя",1],
+ ["Гасити спиртівку, накриваючи полум'я ковпачком",1],["Не підносити колбу до обличчя, запах визначати рухом руки",1],
+ ["Запалювати спиртівку від іншої спиртівки",0],["Дмухнути на полум'я спиртівки, щоб загасити",0],["Скуштувати розчин, щоб переконатися, що це гідроген пероксид",0]];
+shuffle(SAFE).forEach(([t,ok],i)=>{const l=document.createElement("label");l.className="opt";l.innerHTML=`<input type="checkbox" data-ok="${ok}"><span></span>`;l.querySelector("span").textContent=t;$("safety").appendChild(l)});
+
+// 4. Порядок (частина I, с. 80–81)
+const STEPS=["Насипати в конічну колбу дрібку манган(IV) оксиду (або сухих дріжджів)",
+ "Налити 30–40 мл 3 % розчину гідроген пероксиду й одразу закрити колбу корком із газовідвідною трубкою",
+ "Занурити кінець газовідвідної трубки на дно хімічної склянки й прикрити її аркушем паперу",
+ "Запалити скіпку від спиртівки, загасити, щоб вона тліла",
+ "Піднести тліючу скіпку до краю склянки й переконатися, що склянка заповнилася киснем",
+ "Перенести газовідвідну трубку в пробірку з водою, перевернуту в кристалізаторі",
+ "Закрити пробірку з киснем, дістати, перевернути й внести тліючу скіпку"];
+function drawOrder(list){const ol=$("order");ol.innerHTML="";list.forEach((t,i)=>{const li=document.createElement("li");li.dataset.t=t;
+  li.innerHTML=`<span></span><span class="mv"><button type="button" aria-label="Вище">▲</button><button type="button" aria-label="Нижче">▼</button></span>`;
+  li.querySelector("span").textContent=t;const [up,dn]=li.querySelectorAll("button");
+  up.onclick=()=>move(i,-1);dn.onclick=()=>move(i,1);ol.appendChild(li)})}
+let order=shuffle(STEPS.slice()); while(order.every((t,i)=>t===STEPS[i])) order=shuffle(order); let moved=false;
+function move(i,d){const j=i+d;if(j<0||j>=order.length)return;[order[i],order[j]]=[order[j],order[i]];moved=true;drawOrder(order);
+  $("order").children[j].querySelectorAll("button")[d<0?0:1].focus();upd()}
+drawOrder(order);
+
+// 5–7. Питання з вибором
+function radio(box,name,items){shuffle(items).forEach(([t,ok])=>{const l=document.createElement("label");l.className="opt";
+  l.innerHTML=`<input type="radio" name="${name}" data-ok="${ok}"><span></span>`;l.querySelector("span").textContent=t;$(box).appendChild(l)});
+  $(box).addEventListener("change",upd)}
+radio("q5a","q5a",[["Отвором догори, бо кисень трохи важчий за повітря",1],["Отвором донизу, бо кисень легший за повітря",0],["Отвором догори, бо кисень легший за повітря",0],["Будь-як, бо кисень має таку саму густину, як повітря",0]]);
+radio("q5b","q5b",[["Кисень малорозчинний у воді",1],["Кисень добре розчиняється у воді",0],["Кисень важчий за воду",0],["Кисень реагує з водою",0]]);
+radio("q6","q6",[["Скіпка яскраво спалахує: кисень підтримує горіння",1],["Скіпка гасне: кисень не підтримує горіння",0],["Чути хлопок: кисень горить",0],["Нічого не відбувається: кисень інертний",0]]);
+radio("q7","q7",[["Виділяються бульбашки газу",1],["Змінюється колір розчину",0],["Випадає осад",0],["Розчин замерзає",0]]);
+
+// 7. Таблиця каталізаторів
+const SAMPLES=["Манган(IV) оксид","Сухі дріжджі","Сира картопля","Сира морква","Сирий буряк","Листок алое","Сире м'ясо"];
+const RATES=["немає","повільно","помірно","бурхливо"];
+SAMPLES.forEach((s,i)=>{const tr=document.createElement("tr");
+  tr.innerHTML=`<td></td><td><div class="rate">${RATES.map(r=>`<button type="button" aria-pressed="false" data-r="${r}">${r}</button>`).join("")}</div></td>
+  <td class="c"><input type="radio" name="most" value="${i}" aria-label="Найефективніший"></td><td class="c"><input type="radio" name="least" value="${i}" aria-label="Найменш ефективний"></td>`;
+  tr.firstChild.textContent=s;
+  tr.querySelectorAll(".rate button").forEach(b=>b.onclick=()=>{tr.querySelectorAll(".rate button").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));upd()});
+  $("catBody").appendChild(tr)});
+$("catBody").addEventListener("change",upd);
+
+// 8. Рефлексія
+$("refl").querySelectorAll(".chip").forEach(b=>{b.setAttribute("aria-pressed","false");b.onclick=()=>{$("refl").querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));upd()}});
+document.addEventListener("input",upd);$("safety").addEventListener("change",upd);
+
+// Оцінювання
+function grade(){
+  const p={};
+  const eq=[...$("equip").children]; p[1]=eq.every(b=>(b.getAttribute("aria-pressed")==="true")===(b.dataset.ok==="1"))?1:0;
+  const sf=[...$("safety").querySelectorAll("input")]; p[2]=sf.every(x=>x.checked===(x.dataset.ok==="1"))?1:0;
+  const k1=$("k1").value,k2=$("k2").value,k3=$("k3").value;
+  p[3]=(k1==="2"&&k2==="2"&&k3==="1"?1:0)+($("cat").value==="MnO₂"?1:0);
+  const right=order.filter((t,i)=>t===STEPS[i]).length; p[4]=right===STEPS.length?2:right>=4?1:0;
+  const r=n=>{const c=document.querySelector(`input[name="${n}"]:checked`);return c&&c.dataset.ok==="1"?1:0};
+  p[5]=r("q5a")+r("q5b"); p[6]=r("q6");
+  const rows=[...$("catBody").children], rated=rows.every(tr=>tr.querySelector('[aria-pressed="true"]'));
+  const most=document.querySelector('input[name="most"]:checked'),least=document.querySelector('input[name="least"]:checked');
+  p[7]=(rated&&most&&least&&most.value!==least.value?1:0)+r("q7");
+  const c=$("concl").value.trim(); p[8]=c.length>=80&&c.split(/[.!?]/).filter(x=>x.trim().length>5).length>=2?1:0;
+  return p;
+}
+function stationDone(n){
+  switch(n){
+    case 1:return [...$("equip").children].some(b=>b.getAttribute("aria-pressed")==="true");
+    case 2:return !!$("safety").querySelector("input:checked");
+    case 3:return $("k1").value&&$("k2").value&&$("k3").value&&$("cat").value;
+    case 4:return moved;
+    case 5:return document.querySelector('input[name="q5a"]:checked')&&document.querySelector('input[name="q5b"]:checked');
+    case 6:return !!document.querySelector('input[name="q6"]:checked');
+    case 7:return [...$("catBody").children].every(tr=>tr.querySelector('[aria-pressed="true"]'))&&document.querySelector('input[name="most"]:checked')&&document.querySelector('input[name="least"]:checked')&&document.querySelector('input[name="q7"]:checked');
+    case 8:return $("concl").value.trim().length>=30;
+  }
+}
+function upd(){let d=0;document.querySelectorAll(".st[data-st]").forEach(s=>{const ok=!!stationDone(+s.dataset.st);s.classList.toggle("done",ok);if(ok)d++});
+  $("fill").style.width=(d/8*100)+"%";$("prog").textContent=`${d} / 8 станцій`}
+upd();
+
+const NAMES={1:"Обладнання",2:"Ризики",3:"Рівняння реакції",4:"Хід роботи",5:"Збирання кисню",6:"Виявлення кисню",7:"Каталізатори",8:"Висновок"};
+const MAX={1:1,2:1,3:2,4:2,5:2,6:1,7:2,8:1};
+let sent=false;
+$("submit").onclick=async()=>{
+  const name=$("pname").value.trim(),cls=$("pcls").value;
+  const missing=[...Array(8)].map((_,i)=>i+1).filter(n=>!stationDone(n));
+  if(name.length<3||!cls){showErr("Впиши прізвище, ім'я та обери клас на початку картки.");$("s0").scrollIntoView({behavior:"smooth"});return}
+  if(missing.length){showErr("Ще не виконано станції: "+missing.join(", ")+".");document.querySelector(`.st[data-st="${missing[0]}"]`).scrollIntoView({behavior:"smooth"});return}
+  $("err").hidden=true;
+  const p=grade(),total=Object.values(p).reduce((a,b)=>a+b,0);
+  $("total").textContent=`${total} / 12`;
+  $("breakdown").innerHTML="";Object.keys(NAMES).forEach(n=>{const li=document.createElement("li");li.innerHTML=`<span>${n}. ${NAMES[n]}</span><b>${p[n]} / ${MAX[n]}</b>`;$("breakdown").appendChild(li)});
+  $("res").hidden=false;$("res").scrollIntoView({behavior:"smooth"});
+  if(sent){$("send").className="send ok";$("send").textContent="✓ Робота вже надіслана вчителю.";return}
+  $("submit").disabled=true;
+  const rows=[...$("catBody").children].map((tr,i)=>`${SAMPLES[i]}: ${tr.querySelector('[aria-pressed="true"]').dataset.r}`);
+  const rec={name:name.slice(0,60),cls,score:total,max:12,ts:{".sv":"timestamp"},
+    parts:Object.keys(NAMES).map(n=>p[n]).join(" "),
+    equation:`${$("k1").value}H2O2 —${$("cat").value}→ ${$("k2").value}H2O + ${$("k3").value}O2`,
+    catalysts:rows.join("; "),most:SAMPLES[+document.querySelector('input[name="most"]:checked').value],least:SAMPLES[+document.querySelector('input[name="least"]:checked').value],
+    conclusion:$("concl").value.trim().slice(0,1200),reflection:($("refl").querySelector('[aria-pressed="true"]')||{}).dataset?.v||""};
+  try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec)});
+    if(!r.ok) throw new Error(r.status); sent=true;
+    $("send").className="send ok";$("send").textContent="✓ Роботу отримано вчителем. Молодець!";
+  }catch(e){$("submit").disabled=false;$("send").className="send bad";$("send").textContent="Не вдалося надіслати. Перевір інтернет і натисни «Здати роботу» ще раз.";}
+};
+function showErr(t){$("err").hidden=false;$("err").textContent=t}
+
+// Бульбашки O₂
+(function(){const c=$("bubbles");if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;const x=c.getContext("2d");let W,H,B=[];
+  function rs(){W=c.width=innerWidth;H=c.height=innerHeight}rs();addEventListener("resize",rs);
+  for(let i=0;i<26;i++)B.push({x:Math.random(),y:Math.random(),r:4+Math.random()*14,s:.15+Math.random()*.4});
+  (function f(){x.clearRect(0,0,W,H);B.forEach(b=>{b.y-=b.s/H*3;if(b.y<-.05){b.y=1.05;b.x=Math.random()}
+    x.beginPath();x.arc(b.x*W,b.y*H,b.r,0,7);x.strokeStyle="rgba(26,163,232,.28)";x.lineWidth=2;x.stroke();x.fillStyle="rgba(26,163,232,.06)";x.fill()});requestAnimationFrame(f)})()})();
+</script>
+</body>
+</html>

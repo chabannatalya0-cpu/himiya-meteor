@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Метеоритний дощ · результати</title>
+<title>Результати учнів · хімія</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Russo+One&family=Nunito:wght@500;700;800&family=JetBrains+Mono:wght@600;800&display=swap">
 <style>
 :root{--bg:#f4f5fb;--card:#fff;--ink:#161a3a;--muted:#5d6488;--line:#dfe2f0;--acc:#e8672a;--ok:#11875d;--bad:#c9314a;
@@ -12,9 +12,9 @@
 @media (prefers-color-scheme:dark){:root{--bg:#0b1030;--card:#141a4a;--ink:#eef1ff;--muted:#a7add6;--line:#2c3480;--acc:#ff8a3d;--ok:#3ee6a4;--bad:#ff5a6e}}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-.stack{display:flex;flex-direction:column;gap:16px}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px}
-.wrap{max-width:1100px;margin:0 auto;padding:24px 16px;display:flex;flex-direction:column;gap:16px}
+.wrap{max-width:1150px;margin:0 auto;padding:24px 16px;display:flex;flex-direction:column;gap:16px}
+.stack{display:flex;flex-direction:column;gap:16px}
 h1{font-family:var(--f-display);font-weight:400;font-size:clamp(22px,4vw,30px);margin:0;color:var(--acc)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
@@ -22,6 +22,8 @@ input,select,button{font:inherit;font-size:15px;padding:10px 12px;border-radius:
 input{flex:1;min-width:180px}
 button{cursor:pointer;font-weight:800}
 button.main{background:var(--acc);color:#fff;border-color:var(--acc)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tabs button[aria-pressed="true"]{background:var(--acc);color:#fff;border-color:var(--acc)}
 .muted{color:var(--muted)}
 .err{color:var(--bad);font-weight:700;margin:0}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
@@ -39,11 +41,14 @@ td.mono{font-family:var(--f-mono)}
 .pill.g{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok)}
 .pill.m{background:color-mix(in srgb,var(--acc) 18%,transparent);color:var(--acc)}
 .pill.b{background:color-mix(in srgb,var(--bad) 18%,transparent);color:var(--bad)}
+details summary{cursor:pointer;color:var(--acc);font-weight:800}
+.work{display:grid;gap:6px;margin-top:8px;max-width:60ch}
+.work div b{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>Хімічний метеоритний дощ · результати учнів</h1>
+  <h1>Результати учнів · хімія</h1>
 
   <section class="card" id="login">
     <p class="muted" style="margin-top:0">Увійдіть тим email і паролем, що й у «Яскравих аркушах» (акаунт Firebase).</p>
@@ -56,108 +61,137 @@ td.mono{font-family:var(--f-mono)}
   </section>
 
   <div id="app" class="stack" hidden>
-    <section class="card row">
-      <label>Клас <select id="fcls"><option value="">усі</option></select></label>
-      <label>Показувати <select id="fview"><option value="best">найкращу спробу учня</option><option value="all">усі спроби</option></select></label>
-      <button id="reload">Оновити</button>
-      <button id="csv">Завантажити CSV</button>
-      <span class="muted" id="upd"></span>
+    <section class="card stack" style="gap:12px">
+      <div class="tabs" id="tabs"></div>
+      <div class="row">
+        <label>Клас <select id="fcls"><option value="">усі</option></select></label>
+        <label>Показувати <select id="fview"><option value="best">найкращу спробу учня</option><option value="all">усі спроби</option></select></label>
+        <button id="reload">Оновити</button>
+        <button id="csv">Завантажити CSV</button>
+        <span class="muted" id="upd"></span>
+      </div>
     </section>
     <section class="kpis">
-      <div class="card kpi"><div class="n" id="kStud">0</div><div class="t">учнів зіграли</div></div>
+      <div class="card kpi"><div class="n" id="kStud">0</div><div class="t">учнів здали</div></div>
       <div class="card kpi"><div class="n" id="kTries">0</div><div class="t">спроб усього</div></div>
-      <div class="card kpi"><div class="n" id="kAcc">0%</div><div class="t">середня влучність</div></div>
-      <div class="card kpi"><div class="n" id="kWin">0</div><div class="t">дійшли до перемоги (30 збитих)</div></div>
+      <div class="card kpi"><div class="n" id="kAvg">0</div><div class="t" id="kAvgT">середній результат</div></div>
+      <div class="card kpi"><div class="n" id="kTop">0</div><div class="t" id="kTopT">найвищий результат</div></div>
     </section>
     <section class="card">
-      <strong>Елементи, у яких найчастіше помиляються</strong>
-      <p class="muted" style="margin:4px 0 10px">Скільки учнів хоч раз помилилися з цим елементом. Варто повторити на початку уроку.</p>
+      <strong id="hardTitle"></strong>
+      <p class="muted" style="margin:4px 0 10px" id="hardHint"></p>
       <div class="chips" id="hard"></div>
     </section>
     <section class="card tbl">
-      <table>
-        <thead><tr>
-          <th data-k="name">Учень</th><th data-k="cls">Клас</th><th data-k="mode">Режим</th>
-          <th data-k="score">Збито</th><th data-k="acc">Влучність</th><th data-k="points">Бали</th>
-          <th data-k="tries">Спроб</th><th data-k="mistakes">Помилки</th><th data-k="ts">Коли</th>
-        </tr></thead>
-        <tbody id="tb"></tbody>
-      </table>
+      <table><thead id="th"></thead><tbody id="tb"></tbody></table>
     </section>
   </div>
 </div>
 <script>
 const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
 const API_KEY="AIzaSyAGOncvJIlGaJu14uqEWy6rQxdF7-pQYUI";
-const GAME_ID="meteor7";
+const STATIONS=["Обладнання","Ризики","Рівняння","Хід роботи","Збирання","Виявлення","Каталізатори","Висновок"];
+const WORKS=[
+  {id:"kysen8",label:"8 кл. · НД №1 «Одержання кисню»",title:"Навчальне дослідження № 1 «Одержання кисню» (8 клас)",subject:"Хімія · 8 клас · §9"},
+  {id:"meteor7",label:"7 кл. · Гра «Метеоритний дощ»",title:"Гра «Хімічний метеоритний дощ» (7 клас, § 6)",subject:"Хімія · 7 клас · §6"}
+];
 const $=id=>document.getElementById(id);
-let token=null,all=[],sortK="name",sortDir=1;
+let token=null,all=[],work=WORKS[0],sortK="name",sortDir=1;
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const key=x=>(x.name||"").trim().toLowerCase()+"|"+(x.cls||"");
 
 async function signIn(email,password){
   const r=await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`,
     {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password,returnSecureToken:true})});
-  const j=await r.json(); if(!r.ok) throw new Error(j.error&&j.error.message||"LOGIN");
-  return j.idToken;
+  const j=await r.json(); if(!r.ok) throw new Error(j.error&&j.error.message||"LOGIN"); return j.idToken;
 }
-async function ensureGame(){
-  // Дозвіл учням надсилати результати: правила бази приймають результати лише для «відкритого» аркуша
-  const r=await fetch(`${FIREBASE_URL}/worksheets/${GAME_ID}.json?auth=${token}`);
-  const cur=await r.json();
-  if(!cur) await fetch(`${FIREBASE_URL}/worksheets/${GAME_ID}.json?auth=${token}`,{method:"PUT",
-    body:JSON.stringify({title:"Гра «Хімічний метеоритний дощ» (7 клас, § 6)",subject:"Хімія · 7 клас · §6",open:true,game:true,created:Date.now(),exercises:[]})});
+// Кожна робота має бути «відкритим аркушем» у базі, інакше правила не приймуть результати учнів
+async function ensureWorks(){
+  for(const w of WORKS){
+    const r=await fetch(`${FIREBASE_URL}/worksheets/${w.id}.json?auth=${token}`); const cur=await r.json();
+    if(!cur) await fetch(`${FIREBASE_URL}/worksheets/${w.id}.json?auth=${token}`,{method:"PUT",
+      body:JSON.stringify({title:w.title,subject:w.subject,open:true,game:true,created:Date.now(),exercises:[]})});
+  }
+}
+function tabs(){
+  $("tabs").innerHTML=""; WORKS.forEach(w=>{const b=document.createElement("button");b.type="button";b.textContent=w.label;
+    b.setAttribute("aria-pressed",w===work?"true":"false");b.onclick=()=>{work=w;sortK="name";sortDir=1;tabs();load()};$("tabs").appendChild(b)});
 }
 async function load(){
   $("upd").textContent="Завантажую…";
-  const r=await fetch(`${FIREBASE_URL}/results/${GAME_ID}.json?auth=${token}`);
+  const r=await fetch(`${FIREBASE_URL}/results/${work.id}.json?auth=${token}`);
   if(!r.ok){$("upd").textContent="Не вдалося прочитати результати ("+r.status+")";return}
   const d=await r.json()||{};
   all=Object.values(d).map(x=>({...x,acc:+x.acc||0,score:+x.score||0,points:+x.points||0,ts:+x.ts||0}));
   const classes=[...new Set(all.map(x=>x.cls).filter(Boolean))].sort();
-  const sel=$("fcls"),keep=sel.value; sel.innerHTML='<option value="">усі</option>'+classes.map(c=>`<option>${esc(c)}</option>`).join(""); sel.value=keep;
+  const sel=$("fcls"),keep=sel.value; sel.innerHTML='<option value="">усі</option>'+classes.map(c=>`<option>${esc(c)}</option>`).join(""); sel.value=classes.includes(keep)?keep:"";
   $("upd").textContent="Оновлено о "+new Date().toLocaleTimeString("uk-UA",{hour:"2-digit",minute:"2-digit"});
   render();
 }
-const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const key=x=>(x.name||"").trim().toLowerCase()+"|"+(x.cls||"");
 function rows(){
   const f=$("fcls").value; const list=all.filter(x=>!f||x.cls===f);
   const tries={}; list.forEach(x=>tries[key(x)]=(tries[key(x)]||0)+1);
   let out;
-  if($("fview").value==="best"){
-    const best={}; list.forEach(x=>{const k=key(x),b=best[k]; if(!b||x.score>b.score||(x.score===b.score&&x.acc>b.acc)) best[k]=x}); out=Object.values(best);
-  } else out=list.slice();
+  if($("fview").value==="best"){const best={};list.forEach(x=>{const k=key(x),b=best[k];if(!b||x.score>b.score||(x.score===b.score&&x.acc>b.acc))best[k]=x});out=Object.values(best)}
+  else out=list.slice();
   out.forEach(x=>x.tries=tries[key(x)]);
-  out.sort((a,b)=>{const A=a[sortK],B=b[sortK]; return (typeof A==="number"?A-B:String(A||"").localeCompare(String(B||""),"uk"))*sortDir});
+  out.sort((a,b)=>{const A=a[sortK],B=b[sortK];return (typeof A==="number"?A-B:String(A||"").localeCompare(String(B||""),"uk"))*sortDir});
   return {list,out};
 }
+const when=x=>x.ts?new Date(x.ts).toLocaleString("uk-UA",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}):"";
 function render(){
-  const {list,out}=rows();
-  const studs=new Set(list.map(key));
+  const {list,out}=rows(); const studs=new Set(list.map(key));
   $("kStud").textContent=studs.size; $("kTries").textContent=list.length;
-  $("kAcc").textContent=(list.length?Math.round(list.reduce((s,x)=>s+x.acc,0)/list.length):0)+"%";
-  $("kWin").textContent=new Set(list.filter(x=>x.win).map(key)).size;
-  const cnt={}; studs.forEach(k=>{const set=new Set(); list.filter(x=>key(x)===k).forEach(x=>(x.mistakes||"").split(" ").filter(Boolean).forEach(s=>set.add(s))); set.forEach(s=>cnt[s]=(cnt[s]||0)+1)});
-  const hard=Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,12);
-  $("hard").innerHTML=hard.length?hard.map(([s,n])=>`<span class="chip">${esc(s)} <small>${n} уч.</small></span>`).join(""):'<span class="muted">Поки немає даних</span>';
-  $("tb").innerHTML=out.length?out.map(x=>{const p=x.acc>=85?"g":x.acc>=60?"m":"b";
-    return `<tr><td><strong>${esc(x.name)}</strong></td><td>${esc(x.cls)}</td><td>${esc(x.mode)}</td>
-    <td class="mono">${x.score} / ${esc(x.max)}${x.win?" 🏆":""}</td><td><span class="pill ${p}">${x.acc}%</span></td>
-    <td class="mono">${x.points}</td><td class="mono">${x.tries}</td><td class="mono">${esc(x.mistakes||"—")}</td>
-    <td class="muted">${x.ts?new Date(x.ts).toLocaleString("uk-UA",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}):""}</td></tr>`}).join("")
-    :'<tr><td colspan="9" class="muted">Ще ніхто не зіграв. Коли учні завершать гру, їхні результати з\'являться тут.</td></tr>';
+  const best=Object.values(list.reduce((m,x)=>{const k=key(x);if(!m[k]||x.score>m[k].score)m[k]=x;return m},{}));
+  if(work.id==="kysen8"){
+    $("kAvg").textContent=best.length?(best.reduce((s,x)=>s+x.score,0)/best.length).toFixed(1):"0"; $("kAvgT").textContent="середній бал (з 12)";
+    $("kTop").textContent=best.filter(x=>x.score>=10).length; $("kTopT").textContent="учнів мають 10–12 балів";
+    const sum=Array(8).fill(0),mx=[1,1,2,2,2,1,2,1];
+    best.forEach(x=>(x.parts||"").split(" ").forEach((v,i)=>sum[i]+=(+v||0)));
+    $("hardTitle").textContent="Станції, з якими клас впорався найгірше"; $("hardHint").textContent="Частка набраних балів за станцією (найкращі спроби учнів).";
+    const st=STATIONS.map((n,i)=>[n,best.length?Math.round(sum[i]/(mx[i]*best.length)*100):0]).sort((a,b)=>a[1]-b[1]);
+    $("hard").innerHTML=best.length?st.map(([n,p])=>`<span class="chip">${esc(n)} <small>${p}%</small></span>`).join(""):'<span class="muted">Поки немає даних</span>';
+    $("th").innerHTML=`<tr><th data-k="name">Учень</th><th data-k="cls">Клас</th><th data-k="score">Бали</th><th>За станціями 1–8</th><th data-k="tries">Спроб</th><th>Робота учня</th><th data-k="ts">Коли</th></tr>`;
+    $("tb").innerHTML=out.length?out.map(x=>{const p=x.score>=10?"g":x.score>=7?"m":"b";
+      return `<tr><td><strong>${esc(x.name)}</strong></td><td>${esc(x.cls)}</td><td><span class="pill ${p}">${x.score} / 12</span></td>
+      <td class="mono">${esc(x.parts)}</td><td class="mono">${x.tries}</td>
+      <td><details><summary>Відкрити</summary><div class="work">
+        <div><b>Рівняння</b>${esc(x.equation)}</div>
+        <div><b>Каталізатори</b>${esc(x.catalysts)}<br>Найефективніший: ${esc(x.most)} · найменш: ${esc(x.least)}</div>
+        <div><b>Висновок</b>${esc(x.conclusion)}</div>
+        <div><b>Самооцінка</b>${esc(x.reflection||"—")}</div></div></details></td>
+      <td class="muted">${when(x)}</td></tr>`}).join("")
+      :'<tr><td colspan="7" class="muted">Ще ніхто не здав роботу. Коли учні натиснуть «Здати роботу», вони з\'являться тут.</td></tr>';
+  } else {
+    $("kAvg").textContent=(list.length?Math.round(list.reduce((s,x)=>s+x.acc,0)/list.length):0)+"%"; $("kAvgT").textContent="середня влучність";
+    $("kTop").textContent=new Set(list.filter(x=>x.win).map(key)).size; $("kTopT").textContent="дійшли до перемоги (30 збитих)";
+    const cnt={}; studs.forEach(k=>{const set=new Set();list.filter(x=>key(x)===k).forEach(x=>(x.mistakes||"").split(" ").filter(Boolean).forEach(s=>set.add(s)));set.forEach(s=>cnt[s]=(cnt[s]||0)+1)});
+    $("hardTitle").textContent="Елементи, у яких найчастіше помиляються"; $("hardHint").textContent="Скільки учнів хоч раз помилилися з цим елементом. Варто повторити на початку уроку.";
+    const hard=Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,12);
+    $("hard").innerHTML=hard.length?hard.map(([s,n])=>`<span class="chip">${esc(s)} <small>${n} уч.</small></span>`).join(""):'<span class="muted">Поки немає даних</span>';
+    $("th").innerHTML=`<tr><th data-k="name">Учень</th><th data-k="cls">Клас</th><th data-k="mode">Режим</th><th data-k="score">Збито</th><th data-k="acc">Влучність</th><th data-k="points">Бали</th><th data-k="tries">Спроб</th><th data-k="mistakes">Помилки</th><th data-k="ts">Коли</th></tr>`;
+    $("tb").innerHTML=out.length?out.map(x=>{const p=x.acc>=85?"g":x.acc>=60?"m":"b";
+      return `<tr><td><strong>${esc(x.name)}</strong></td><td>${esc(x.cls)}</td><td>${esc(x.mode)}</td>
+      <td class="mono">${x.score} / ${esc(x.max)}${x.win?" 🏆":""}</td><td><span class="pill ${p}">${x.acc}%</span></td>
+      <td class="mono">${x.points}</td><td class="mono">${x.tries}</td><td class="mono">${esc(x.mistakes||"—")}</td><td class="muted">${when(x)}</td></tr>`}).join("")
+      :'<tr><td colspan="9" class="muted">Ще ніхто не зіграв. Коли учні завершать гру, їхні результати з\'являться тут.</td></tr>';
+  }
+  document.querySelectorAll("#th th[data-k]").forEach(th=>th.onclick=()=>{const k=th.dataset.k;sortDir=sortK===k?-sortDir:(["score","acc","points","tries","ts"].includes(k)?-1:1);sortK=k;render()});
 }
 function csv(){
-  const {out}=rows(); const h=["Учень","Клас","Режим","Збито","З","Влучність %","Бали","Спроб","Помилки","Дата"];
-  const lines=[h].concat(out.map(x=>[x.name,x.cls,x.mode,x.score,x.max,x.acc,x.points,x.tries,x.mistakes,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]));
+  const {out}=rows(); let lines;
+  if(work.id==="kysen8"){lines=[["Учень","Клас","Бали (з 12)",...STATIONS,"Спроб","Рівняння","Каталізатори","Найефективніший","Найменш ефективний","Висновок","Самооцінка","Дата"]]
+    .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.tries,x.equation,x.catalysts,x.most,x.least,x.conclusion,x.reflection,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
+  else lines=[["Учень","Клас","Режим","Збито","З","Влучність %","Бали","Спроб","Помилки","Дата"]]
+    .concat(out.map(x=>[x.name,x.cls,x.mode,x.score,x.max,x.acc,x.points,x.tries,x.mistakes,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]));
   const text="﻿"+lines.map(r=>r.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(";")).join("\r\n");
-  const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([text],{type:"text/csv"})); a.download="meteor-rezultaty.csv"; a.click();
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type:"text/csv"}));a.download=work.id+"-rezultaty.csv";a.click();
 }
-$("lf").addEventListener("submit",async e=>{e.preventDefault(); $("lerr").hidden=true;
-  try{ token=await signIn($("em").value.trim(),$("pw").value); await ensureGame();
-    $("login").hidden=true; $("app").hidden=false; load(); setInterval(load,60000);
-  }catch(err){ $("lerr").hidden=false; $("lerr").textContent=/PASSWORD|EMAIL|CREDENTIAL/.test(err.message)?"Неправильний email або пароль.":"Не вдалося увійти: "+err.message; }});
-$("fcls").onchange=render; $("fview").onchange=render; $("reload").onclick=load; $("csv").onclick=csv;
-document.querySelectorAll("th").forEach(th=>th.onclick=()=>{const k=th.dataset.k; sortDir=sortK===k?-sortDir:(["score","acc","points","tries","ts"].includes(k)?-1:1); sortK=k; render()});
+$("lf").addEventListener("submit",async e=>{e.preventDefault();$("lerr").hidden=true;
+  try{token=await signIn($("em").value.trim(),$("pw").value);await ensureWorks();
+    $("login").hidden=true;$("app").hidden=false;tabs();load();setInterval(load,60000);
+  }catch(err){$("lerr").hidden=false;$("lerr").textContent=/PASSWORD|EMAIL|CREDENTIAL/.test(err.message)?"Неправильний email або пароль.":"Не вдалося увійти: "+err.message}});
+$("fcls").onchange=render;$("fview").onchange=render;$("reload").onclick=load;$("csv").onclick=csv;
 </script>
 </body>
 </html>
