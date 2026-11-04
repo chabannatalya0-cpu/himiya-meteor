@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Хімічна рівновага · робочий аркуш</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;800&display=swap">
+<style>
+/* Layout: a paper worksheet that follows the lesson: 8 numbered sections in the order of the explanation, each checked on its own. Colour code shared with the presentation: blue = forward (→), orange = reverse (←), green = equilibrium. White sheet on a soft grid. */
+:root{
+  color-scheme: light;
+  --bg:#f3f6fb; --paper:#ffffff; --ink:#15233b; --muted:#56637d; --line:#d9e1ee;
+  --fwd:#2563eb; --bwd:#ea580c; --eq:#16a34a; --gold:#f59f00; --bad:#dc2626;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:28px 28px;color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:860px;margin:0 auto;padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
+.head{background:var(--paper);border:2px solid var(--ink);border-radius:20px;padding:20px;box-shadow:6px 6px 0 var(--ink);display:flex;flex-direction:column;gap:10px}
+.head .tag{align-self:flex-start;font-weight:800;font-size:13px;border-radius:999px;padding:4px 12px;background:#e7efff;color:var(--fwd)}
+.head h1{margin:0;font-family:var(--f-display);font-size:clamp(24px,5.5vw,38px);line-height:1.08;text-wrap:balance}
+.head h1 .arr{color:var(--eq)}
+.code{display:flex;flex-wrap:wrap;gap:8px;font-weight:700;font-size:14px}
+.code span{border-radius:10px;padding:4px 10px;border:2px solid}
+.code .f{color:var(--fwd);border-color:var(--fwd)} .code .b{color:var(--bwd);border-color:var(--bwd)} .code .e{color:var(--eq);border-color:var(--eq)}
+label.lbl,.lbl{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--muted)}
+input[type=text],select,textarea{font:inherit;font-size:16px;padding:10px 12px;border-radius:12px;border:2px solid var(--line);background:#fff;color:var(--ink);width:100%}
+textarea{min-height:96px;resize:vertical}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:540px){.grid2{grid-template-columns:1fr}}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:rgba(243,246,251,.95);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:14px;padding:8px 12px;display:flex;gap:12px;align-items:center}
+.bar .track{flex:1;height:10px;border-radius:999px;background:var(--line);overflow:hidden}
+.bar .fill{height:100%;width:0;background:linear-gradient(90deg,var(--fwd),var(--eq));transition:width .3s}
+.bar .t{font-family:var(--f-mono);font-weight:800;font-size:14px;white-space:nowrap}
+.sec{background:var(--paper);border:2px solid var(--line);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.sec.checked{border-color:var(--eq)}
+.sec h2{margin:0;font-family:var(--f-display);font-size:18px;line-height:1.25;display:flex;gap:12px;align-items:flex-start}
+.sec h2 .n{flex:none;width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:var(--ink);color:#fff;font-size:15px}
+.sec h2 .pts{margin-left:auto;flex:none;font-family:var(--f-mono);font-size:12.5px;color:var(--fwd);background:#e7efff;border-radius:999px;padding:4px 10px;white-space:nowrap}
+.sec p{margin:0}
+.hint{color:var(--muted);font-size:14px}
+.rx{font-family:var(--f-mono);font-weight:800;font-size:clamp(15px,2.5vw,18px);background:#f6f8fc;border:1px solid var(--line);border-radius:12px;padding:10px 12px;overflow-x:auto;white-space:nowrap}
+.rows{display:grid;gap:8px}
+.r{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;border:2px solid var(--line);border-radius:12px;padding:8px 10px}
+.r .rx{background:none;border:0;padding:0}
+.r.ok{border-color:var(--eq);background:#effbf3} .r.no{border-color:var(--bad);background:#fdf1f1}
+.seg{display:inline-flex;border:2px solid var(--line);border-radius:10px;overflow:hidden;flex-wrap:wrap}
+.seg button{font:inherit;font-weight:700;font-size:14px;border:0;background:#fff;padding:7px 11px;cursor:pointer;color:var(--ink)}
+.seg button+button{border-left:2px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.seg button[data-v="f"][aria-pressed="true"]{background:var(--fwd)} .seg button[data-v="b"][aria-pressed="true"]{background:var(--bwd)} .seg button[data-v="n"][aria-pressed="true"]{background:var(--eq)}
+.txt{font-size:17px;line-height:2.2}
+.txt select{width:auto;display:inline-block;padding:4px 8px;font-size:15.5px;font-weight:700;margin:0 2px}
+.txt select.ok{border-color:var(--eq);background:#effbf3} .txt select.no{border-color:var(--bad);background:#fdf1f1}
+.rule{border:2px dashed var(--eq);border-radius:14px;padding:12px 14px;background:#f3fcf6}
+.graph{background:#fbfcfe;border:1px solid var(--line);border-radius:14px;padding:8px}
+.graph svg{width:100%;height:auto;display:block}
+.q{display:flex;flex-direction:column;gap:6px}
+.q>b{font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;font-weight:700;font-size:15px;border:2px solid var(--line);background:#fff;color:var(--ink);border-radius:12px;padding:8px 12px;cursor:pointer;font-family:var(--f-mono)}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.chip.ok{border-color:var(--eq);box-shadow:0 0 0 2px var(--eq) inset} .chip.no{border-color:var(--bad);box-shadow:0 0 0 2px var(--bad) inset}
+.tbl{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:520px}
+th,td{border:1px solid var(--line);padding:8px;text-align:left;vertical-align:middle}
+th{background:#f6f8fc;font-size:13px}
+td select{padding:6px 8px;font-size:15px}
+td select.ok{border-color:var(--eq);background:#effbf3} td select.no{border-color:var(--bad);background:#fdf1f1}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{font-family:var(--f-display);font-size:16px;border:0;border-radius:14px;padding:12px 18px;cursor:pointer;color:#fff;background:var(--ink);box-shadow:0 4px 0 #000}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #000}
+.btn.green{background:var(--eq);box-shadow:0 4px 0 #0e6b31}
+.btn.big{font-size:18px;padding:14px 24px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.msg{font-weight:700;padding:10px 12px;border-radius:12px}
+.msg.ok{background:#e8f8ee;color:#166534}.msg.bad{background:#fdecec;color:#991b1b}.msg.info{background:#e7efff;color:var(--fwd)}
+.err{color:var(--bad);font-weight:700;margin:0}
+.res{background:var(--paper);border:3px solid var(--eq);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.res .big{font-family:var(--f-display);font-size:48px;line-height:1;color:var(--eq)}
+.res ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.res li{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed var(--line);padding:4px 0}
+.res li b{font-family:var(--f-mono)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="head">
+    <span class="tag">Хімія · 11 клас · § 11 · робочий аркуш уроку</span>
+    <h1>Хімічна рівновага <span class="arr">⇌</span> принцип Ле Шательє</h1>
+    <p style="margin:0">Заповнюй аркуш разом із поясненням учителя: після кожної частини уроку виконай відповідний розділ і натисни «Перевірити розділ». Бали зараховуються з першої перевірки. Разом 12 балів.</p>
+    <div class="code"><span class="f">→ пряма реакція</span><span class="b">← зворотна реакція</span><span class="e">⇌ рівновага</span></div>
+    <div class="grid2">
+      <div><label class="lbl" for="pname">Прізвище та ім'я</label><input type="text" id="pname" maxlength="60" autocomplete="name" placeholder="Іваненко Олена"></div>
+      <div><label class="lbl" for="pcls">Клас</label><select id="pcls"><option value="">— обери —</option><option>11-А</option><option>11-Б</option><option>Інший</option></select></div>
+    </div>
+  </header>
+
+  <div class="bar"><div class="track"><div class="fill" id="fill"></div></div><span class="t" id="prog">0 / 8 розділів</span></div>
+
+  <!-- 1 -->
+  <section class="sec" data-s="1">
+    <h2><span class="n">1</span>Оборотна чи необоротна?<span class="pts">2 бали</span></h2>
+    <p>Необоротні реакції перебігають до кінця: утворюється осад, газ або вода. Оборотні одночасно перебігають у двох напрямках. Визнач тип кожної реакції.</p>
+    <div class="rows" id="s1"></div>
+  </section>
+
+  <!-- 2 -->
+  <section class="sec" data-s="2">
+    <h2><span class="n">2</span>Що таке хімічна рівновага?<span class="pts">2 бали</span></h2>
+    <p>Заповни пропуски.</p>
+    <div class="txt" id="s2"></div>
+  </section>
+
+  <!-- 3 -->
+  <section class="sec" data-s="3">
+    <h2><span class="n">3</span>Читаємо графік швидкостей<span class="pts">1 бал</span></h2>
+    <div class="graph"><svg viewBox="0 0 520 250" role="img" aria-label="Графік зміни швидкостей прямої та зворотної реакцій з часом">
+      <line x1="50" y1="215" x2="505" y2="215" stroke="#15233b" stroke-width="2"/><line x1="50" y1="215" x2="50" y2="15" stroke="#15233b" stroke-width="2"/>
+      <text x="500" y="238" font-size="13" text-anchor="end" fill="#56637d" font-family="Golos Text,sans-serif">час</text>
+      <text x="16" y="25" font-size="13" fill="#56637d" font-family="Golos Text,sans-serif">v</text>
+      <path d="M52 30 C 140 70, 200 115, 260 118 L 500 118" fill="none" stroke="#15233b" stroke-width="4"/>
+      <path d="M52 212 C 140 170, 200 125, 260 120 L 500 120" fill="none" stroke="#15233b" stroke-width="4" stroke-dasharray="10 7"/>
+      <text x="70" y="55" font-size="16" font-weight="800" fill="#15233b" font-family="JetBrains Mono,monospace">крива 1</text>
+      <text x="75" y="196" font-size="16" font-weight="800" fill="#15233b" font-family="JetBrains Mono,monospace">крива 2</text>
+      <g font-family="JetBrains Mono,monospace" font-size="13" font-weight="800" fill="#56637d">
+        <line x1="130" y1="215" x2="130" y2="222" stroke="#15233b"/><text x="130" y="236" text-anchor="middle">t₁</text>
+        <line x1="260" y1="215" x2="260" y2="222" stroke="#15233b"/><text x="260" y="236" text-anchor="middle">t₂</text>
+        <line x1="400" y1="215" x2="400" y2="222" stroke="#15233b"/><text x="400" y="236" text-anchor="middle">t₃</text>
+      </g></svg></div>
+    <div class="q" id="s3a"><b>а) Яка крива показує швидкість прямої реакції?</b></div>
+    <div class="q" id="s3b"><b>б) З якого моменту в системі встановилася рівновага?</b></div>
+  </section>
+
+  <!-- 4 -->
+  <section class="sec" data-s="4">
+    <h2><span class="n">4</span>Принцип Ле Шательє<span class="pts">1 бал</span></h2>
+    <p>Відновлюй формулювання з підручника.</p>
+    <div class="txt rule" id="s4"></div>
+  </section>
+
+  <!-- 5 -->
+  <section class="sec" data-s="5">
+    <h2><span class="n">5</span>Ампула з NO₂: куди зміститься рівновага?<span class="pts">3 бали</span></h2>
+    <div class="rx">2NO₂ (бурий газ) ⇌ N₂O₄ (безбарвний газ); ΔH = −58 кДж/моль</div>
+    <p class="hint">Для кожної зміни умов визнач напрямок зміщення і як зміниться колір суміші.</p>
+    <div class="tbl"><table><thead><tr><th>Зміна умов</th><th>Рівновага зміщується</th><th>Колір суміші</th></tr></thead><tbody id="s5"></tbody></table></div>
+  </section>
+
+  <!-- 6 -->
+  <section class="sec" data-s="6">
+    <h2><span class="n">6</span>Коли тиск не впливає?<span class="pts">1 бал</span></h2>
+    <p>Познач <b>усі</b> реакції, рівновагу яких <b>не можна</b> змістити зміною тиску. Пам'ятай: тверді речовини (тв.) не враховують.</p>
+    <div class="chips" id="s6"></div>
+  </section>
+
+  <!-- 7 -->
+  <section class="sec" data-s="7">
+    <h2><span class="n">7</span>Ти — технолог заводу<span class="pts">1 бал</span></h2>
+    <div class="rx">2SO₂(г.) + O₂(г.) ⇌ 2SO₃(г.); ΔH &lt; 0</div>
+    <p>Обери умови, які збільшать вихід SO₃.</p>
+    <div class="tbl"><table><tbody id="s7"></tbody></table></div>
+  </section>
+
+  <!-- 8 -->
+  <section class="sec" data-s="8">
+    <h2><span class="n">8</span>Розгадка уроку<span class="pts">1 бал</span></h2>
+    <label class="lbl" for="s8">Поясни своїми словами: чому ампула з NO₂ у гарячій воді буріє, а в льоду світлішає?</label>
+    <textarea id="s8" maxlength="1200" placeholder="Під час нагрівання рівновага зміщується…"></textarea>
+    <p class="hint">Щоб отримати бал, напиши щонайменше 2 речення й згадай, яка реакція екзо-, а яка ендотермічна. Учитель прочитає твою відповідь.</p>
+  </section>
+
+  <p class="err" id="err" hidden></p>
+  <div class="row"><button class="btn green big" id="submit" type="button">Здати аркуш</button></div>
+
+  <section class="res" id="res" hidden>
+    <span class="lbl">Твій результат</span>
+    <div class="big" id="total">0 / 12</div>
+    <ul id="breakdown"></ul>
+    <div class="msg info" id="send">Надсилаю аркуш учителю…</div>
+  </section>
+</div>
+
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="arkush_rivn11";
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const fmt=x=>String(Math.round(x*100)/100).replace(".",",");
+const score={},firstWrong={};
+
+function seg(opts,onPick){const s=document.createElement("span");s.className="seg";
+  opts.forEach(([v,t])=>{const b=document.createElement("button");b.type="button";b.dataset.v=v;b.textContent=t;b.setAttribute("aria-pressed","false");
+    b.onclick=()=>{if(s.closest(".locked-item"))return;s.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));s.dataset.a=v;onPick&&onPick();upd()};s.appendChild(b)});return s}
+function sel(opts,ok){const s=document.createElement("select");s.dataset.ok=ok;s.innerHTML=`<option value="">…</option>`+opts.map(o=>`<option>${o}</option>`).join("");s.onchange=upd;return s}
+
+/* 1 */
+const S1=shuffle([["HCl + NaOH → NaCl + H₂O","n"],["AgNO₃ + NaCl → AgCl↓ + NaNO₃","n"],["Na₂CO₃ + 2HCl → 2NaCl + H₂O + CO₂↑","n"],
+ ["N₂ + 3H₂ ⇌ 2NH₃","o"],["2SO₂ + O₂ ⇌ 2SO₃","o"],["H₂ + I₂ ⇌ 2HI","o"]]);
+S1.forEach(([rx,ok])=>{const r=document.createElement("div");r.className="r";r.dataset.ok=ok;r.innerHTML=`<span class="rx"></span>`;r.firstChild.textContent=rx;
+  r.appendChild(seg([["o","оборотна"],["n","необоротна"]]));$("s1").appendChild(r)});
+
+/* 2 */
+const W2=["рівні","динамічною","не припиняються","сталими","зовнішні умови"];
+const T2=[["Хімічна рівновага — це стан системи, за якого швидкості прямої та зворотної реакцій ",0,"."],
+ [" Рівновага є ",1,": реакції ",2,","],[" але концентрації всіх речовин залишаються ",3,"."],[" Рівновага зберігається, доки не змінюються ",4,"."]];
+const D2=shuffle(W2.concat(["нульовими","статичною","зупиняються"]));
+T2.forEach(part=>part.forEach(x=>{if(typeof x==="number") $("s2").appendChild(sel(D2,W2[x])); else $("s2").appendChild(document.createTextNode(x))}));
+
+/* 3 */
+$("s3a").appendChild(seg([["1","крива 1"],["2","крива 2"]]));
+$("s3b").appendChild(seg([["t1","з t₁"],["t2","з t₂"],["t3","з t₃"]]));
+
+/* 4 */
+const W4=["ззовні","будь-яку умову","послаблення"];
+const D4=shuffle(W4.concat(["зсередини","посилення","лише температуру"]));
+[["Якщо на рівноважну систему впливати ",0,", змінюючи "],[1," рівноваги (температуру, тиск, концентрацію компонентів), то рівновага зміщується в бік прискорення процесів, спрямованих на ",2," зовнішнього впливу."]]
+ .forEach(part=>part.forEach(x=>{if(typeof x==="number") $("s4").appendChild(sel(D4,W4[x])); else $("s4").appendChild(document.createTextNode(x))}));
+
+/* 5 */
+const S5=[["Нагрівання","b","темнішає"],["Охолодження","f","світлішає"],["Підвищення тиску","f",null],
+ ["Зниження тиску","b",null],["Додали N₂O₄","b","темнішає"],["Додали каталізатор","n","не змінюється"]];
+const DIRS=[["f","→ вправо"],["b","← вліво"],["n","не зміщується"]];
+S5.forEach(([c,d,col])=>{const tr=document.createElement("tr");tr.innerHTML=`<td></td><td></td><td></td>`;tr.children[0].textContent=c;
+  const s=document.createElement("select");s.dataset.ok=d;s.innerHTML=`<option value="">…</option>`+DIRS.map(([v,t])=>`<option value="${v}">${t}</option>`).join("");s.onchange=upd;tr.children[1].appendChild(s);
+  if(col) tr.children[2].appendChild(sel(["темнішає","світлішає","не змінюється"],col)); else {tr.children[2].textContent="—";tr.children[2].className="hint"}
+  $("s5").appendChild(tr)});
+
+/* 6 */
+shuffle([["H₂ + I₂ ⇌ 2HI",1],["FeO(тв.) + CO ⇌ Fe(тв.) + CO₂",1],["N₂ + O₂ ⇌ 2NO",1],["N₂ + 3H₂ ⇌ 2NH₃",0],["CaCO₃(тв.) ⇌ CaO(тв.) + CO₂",0],["2NO₂ ⇌ N₂O₄",0]])
+ .forEach(([t,ok])=>{const b=document.createElement("button");b.type="button";b.className="chip";b.textContent=t;b.dataset.ok=ok;b.setAttribute("aria-pressed","false");
+  b.onclick=()=>{if(b.closest(".locked-item"))return;b.setAttribute("aria-pressed",b.getAttribute("aria-pressed")!=="true");upd()};$("s6").appendChild(b)});
+
+/* 7 */
+[["Температура","нижча","вища","нижча"],["Тиск","вищий","нижчий","вищий"],["Концентрація O₂","збільшити","зменшити","збільшити"],["Каталізатор V₂O₅","лише прискорює встановлення рівноваги","зміщує рівновагу вправо","лише прискорює встановлення рівноваги"]]
+ .forEach(([c,a,b,ok])=>{const tr=document.createElement("tr");tr.innerHTML=`<td style="font-weight:700"></td><td></td>`;tr.children[0].textContent=c;tr.children[1].appendChild(sel(shuffle([a,b]),ok));$("s7").appendChild(tr)});
+
+/* кнопки перевірки */
+document.querySelectorAll(".sec").forEach(sec=>{const n=+sec.dataset.s;if(n===8)return;
+  const row=document.createElement("div");row.className="row";row.innerHTML=`<button class="btn" type="button">Перевірити розділ</button><span class="msg" hidden></span>`;
+  row.firstChild.onclick=()=>check(n);sec.appendChild(row)});
+$("s8").addEventListener("input",upd);
+
+const MAX={1:2,2:2,3:1,4:1,5:3,6:1,7:1,8:1};
+function grade(n){
+  const sec=document.querySelector(`.sec[data-s="${n}"]`);let right=0,total=0;const mark=(el,ok)=>{el.classList.toggle("ok",ok);el.classList.toggle("no",!ok)};
+  if(n===1){sec.querySelectorAll(".r").forEach(r=>{total++;const ok=r.querySelector(".seg").dataset.a===r.dataset.ok;mark(r,ok);if(ok)right++})}
+  else if(n===3){total=2;const a=$("s3a").querySelector(".seg").dataset.a==="1",b=$("s3b").querySelector(".seg").dataset.a==="t2";right=(a?1:0)+(b?1:0);
+    [$("s3a"),$("s3b")].forEach((q,i)=>{q.querySelector(".seg").style.boxShadow=`0 0 0 3px ${[a,b][i]?"var(--eq)":"var(--bad)"}`})}
+  else if(n===6){sec.querySelectorAll(".chip").forEach(c=>{total++;const ok=(c.getAttribute("aria-pressed")==="true")===(c.dataset.ok==="1");if(ok)right++;
+    if(c.getAttribute("aria-pressed")==="true"||c.dataset.ok==="1") mark(c,ok)})}
+  else{sec.querySelectorAll("select").forEach(s=>{total++;const ok=s.value===s.dataset.ok;mark(s,ok);if(ok)right++})}
+  let pts=MAX[n]*right/total; if(n===6&&right<total) pts=Math.max(0,pts-.34);
+  return {pts,right,total};
+}
+function filled(n){
+  const sec=document.querySelector(`.sec[data-s="${n}"]`);
+  if(n===1) return [...sec.querySelectorAll(".seg")].every(s=>s.dataset.a);
+  if(n===3) return !!($("s3a").querySelector(".seg").dataset.a&&$("s3b").querySelector(".seg").dataset.a);
+  if(n===6) return !!sec.querySelector('.chip[aria-pressed="true"]');
+  if(n===8) return $("s8").value.trim().length>=30;
+  return [...sec.querySelectorAll("select")].every(s=>s.value);
+}
+function check(n){
+  const sec=document.querySelector(`.sec[data-s="${n}"]`),m=sec.querySelector(".msg");m.hidden=false;
+  if(!filled(n)){m.className="msg bad";m.textContent="Спершу дай відповіді на все в цьому розділі.";return}
+  const g=grade(n);
+  if(score[n]===undefined){score[n]=g.pts;sec.classList.add("checked")}
+  if(g.right===g.total){m.className="msg ok";m.textContent=`✓ Усе правильно! Зараховано: ${fmt(score[n])} з ${MAX[n]}.`}
+  else{m.className="msg bad";m.textContent=`Правильно ${g.right} з ${g.total}. Зараховано: ${fmt(score[n])} з ${MAX[n]}. Виправ червоне й перевір ще раз, щоб розібратися.`}
+  upd();
+}
+function upd(){let d=0;for(let n=1;n<=8;n++){if(n===8?filled(8):score[n]!==undefined)d++}
+  $("fill").style.width=(d/8*100)+"%";$("prog").textContent=`${d} / 8 розділів`}
+upd();
+
+const NAMES={1:"Оборотна чи необоротна",2:"Що таке рівновага",3:"Графік швидкостей",4:"Принцип Ле Шательє",5:"Ампула з NO₂",6:"Коли тиск не впливає",7:"Технолог заводу",8:"Розгадка уроку"};
+let sent=false;
+$("submit").onclick=async()=>{
+  const name=$("pname").value.trim(),cls=$("pcls").value;
+  if(name.length<3||!cls){showErr("Впиши прізвище, ім'я та обери клас угорі аркуша.");scrollTo({top:0,behavior:"smooth"});return}
+  const miss=[1,2,3,4,5,6,7].filter(n=>score[n]===undefined);if(!filled(8))miss.push(8);
+  if(miss.length){showErr("Ще не перевірено розділи: "+miss.join(", ")+".");document.querySelector(`.sec[data-s="${miss[0]}"]`).scrollIntoView({behavior:"smooth"});return}
+  $("err").hidden=true;
+  const c=$("s8").value.trim();score[8]=c.length>=60&&c.split(/[.!?]/).filter(x=>x.trim().length>5).length>=2?1:0;
+  const raw=Object.values(score).reduce((a,b)=>a+b,0),total=Math.min(12,Math.round(raw));
+  $("total").textContent=`${total} / 12`;
+  $("breakdown").innerHTML=Object.keys(NAMES).map(n=>`<li><span>${n}. ${NAMES[n]}</span><b>${fmt(score[n])} / ${MAX[n]}</b></li>`).join("");
+  $("res").hidden=false;$("res").scrollIntoView({behavior:"smooth"});
+  if(sent){$("send").className="msg ok";$("send").textContent="✓ Аркуш уже надіслано вчителю.";return}
+  $("submit").disabled=true;
+  const rec={name:name.slice(0,60),cls,score:total,max:12,ts:{".sv":"timestamp"},parts:Object.keys(NAMES).map(n=>fmt(score[n])).join(" "),conclusion:c.slice(0,1200)};
+  try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec)});
+    if(!r.ok) throw new Error(r.status);sent=true;$("send").className="msg ok";$("send").textContent="✓ Аркуш отримано вчителем. Молодець!";
+  }catch(e){$("submit").disabled=false;$("send").className="msg bad";$("send").textContent="Не вдалося надіслати. Перевір інтернет і натисни «Здати аркуш» ще раз.";}
+};
+function showErr(t){$("err").hidden=false;$("err").textContent=t}
+</script>
+</body>
+</html>

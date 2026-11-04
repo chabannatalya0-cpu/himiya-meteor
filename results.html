@@ -92,6 +92,7 @@ const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.fireba
 const API_KEY="AIzaSyAGOncvJIlGaJu14uqEWy6rQxdF7-pQYUI";
 const STATIONS=["Обладнання","Ризики","Рівняння","Хід роботи","Збирання","Виявлення","Каталізатори","Висновок"];
 const WORKS=[
+  {id:"arkush_rivn11",label:"11 кл. · Робочий аркуш «Рівновага»",title:"Робочий аркуш «Хімічна рівновага» (11 клас)",subject:"Хімія · 11 клас · §11"},
   {id:"kinetics11",label:"11 кл. · Швидкість і рівновага",title:"Інтерактивний аркуш «Швидкість і рівновага» (11 клас)",subject:"Хімія · 11 клас · уроки 16–17"},
   {id:"vyhid11",label:"11 кл. · Задачі на вихід продукту",title:"Тренажер задач на відносний вихід продукту (11 клас)",subject:"Хімія · 11 клас · §12"},
   {id:"rivnovaga11",label:"11 кл. · Зміщення рівноваги",title:"Тренажер «Куди зміститься рівновага?» (11 клас)",subject:"Хімія · 11 клас · §11"},
@@ -197,6 +198,19 @@ function render(){
         <div><b>Самооцінка</b>${esc(x.reflection||"—")}</div></div></details></td>
       <td class="muted">${when(x)}</td></tr>`}).join("")
       :'<tr><td colspan="7" class="muted">Ще ніхто не здав роботу. Коли учні натиснуть «Здати роботу», вони з\'являться тут.</td></tr>';
+  } else if(work.id==="arkush_rivn11"){
+    const AS=["Оборотні/необоротні","Що таке рівновага","Графік швидкостей","Принцип Ле Шательє","Ампула з NO₂","Коли тиск не впливає","Технолог заводу","Розгадка"],AM=[2,2,1,1,3,1,1,1];
+    $("kAvg").textContent=best.length?(best.reduce((s,x)=>s+x.score,0)/best.length).toFixed(1):"0"; $("kAvgT").textContent="середній бал (з 12)";
+    $("kTop").textContent=best.filter(x=>x.score>=10).length; $("kTopT").textContent="учнів мають 10–12 балів";
+    const sum=Array(8).fill(0); best.forEach(x=>(x.parts||"").split(" ").forEach((v,i)=>sum[i]+=(parseFloat(String(v).replace(",","."))||0)));
+    $("hardTitle").textContent="Розділи, які варто пояснити ще раз"; $("hardHint").textContent="Частка набраних балів за розділом (перша перевірка, найкращі спроби учнів).";
+    const st=AS.map((n,i)=>[n,best.length?Math.round(sum[i]/(AM[i]*best.length)*100):0]).sort((a,b)=>a[1]-b[1]);
+    $("hard").innerHTML=best.length?st.map(([n,v])=>`<span class="chip">${esc(n)} <small>${v}%</small></span>`).join(""):'<span class="muted">Поки немає даних</span>';
+    $("th").innerHTML=`<tr><th data-k="name">Учень</th><th data-k="cls">Клас</th><th data-k="score">Бали</th><th>Розділи 1–8</th><th data-k="tries">Спроб</th><th>Розгадка уроку</th><th data-k="ts">Коли</th></tr>`;
+    $("tb").innerHTML=out.length?out.map(x=>{const p=x.score>=10?"g":x.score>=7?"m":"b";
+      return `<tr><td><strong>${esc(x.name)}</strong></td><td>${esc(x.cls)}</td><td><span class="pill ${p}">${x.score} / 12</span></td>
+      <td class="mono">${esc(x.parts)}</td><td class="mono">${x.tries}</td><td><details><summary>Відкрити</summary><div class="work"><div>${esc(x.conclusion)}</div></div></details></td><td class="muted">${when(x)}</td></tr>`}).join("")
+      :'<tr><td colspan="7" class="muted">Ще ніхто не здав аркуш.</td></tr>';
   } else if(work.id==="kinetics11"){
     const KB=[["b1","Швидкість і чинники",2],["b2","Лаб.: швидкість",4],["b3","Оборотні реакції",2],["b4","Лаб.: рівновага",3],["b5","Ле Шательє",1]];
     $("kAvg").textContent=best.length?(best.reduce((s,x)=>s+x.score,0)/best.length).toFixed(1):"0"; $("kAvgT").textContent="середній бал (з 12)";
@@ -297,6 +311,8 @@ function csv(){
     lines=[["Учень","Клас","Почав","Завершив","Тривалість, хв","Виходів","Поза тестом, с","Перезавантажень","Статус"]].concat(sessions().map(r=>[r.name,r.cls,t(r.start),t(r.end),r.minutes??"",r.exits,r.away,r.reloads,!r.end?"не завершив":r.reason==="timeout"?"час вийшов":"завершив"]));}
   else if(work.id==="kysen8"){lines=[["Учень","Клас","Бали (з 12)",...STATIONS,"Спроб","Рівняння","Каталізатори","Найефективніший","Найменш ефективний","Висновок","Самооцінка","Дата"]]
     .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.tries,x.equation,x.catalysts,x.most,x.least,x.conclusion,x.reflection,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
+  else if(work.id==="arkush_rivn11"){lines=[["Учень","Клас","Бали (з 12)","Р1","Р2","Р3","Р4","Р5","Р6","Р7","Р8","Спроб","Розгадка уроку","Дата"]]
+    .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.tries,x.conclusion,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="kinetics11"){lines=[["Учень","Клас","Бали (з 12)","Б1 (з 2)","Б2 (з 4)","Б3 (з 2)","Б4 (з 3)","Б5 (з 1)","Дослідів","Час, хв","Спроб","Помилки","Дата"]]
     .concat(out.map(x=>{const b=x.blocks||{};return [x.name,x.cls,x.score,b.b1,b.b2,b.b3,b.b4,b.b5,x.experiments,x.durationSec?Math.round(x.durationSec/60):"",x.tries,(x.mistakes||[]).join(" | "),x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]}))}
   else if(work.id==="vyhid11"){lines=[["Учень","Клас","Бали (з 12)","З.1","З.2","З.3","З.4","З.5","З.6","Помилки за кроками","Спроб","Дата"]]
