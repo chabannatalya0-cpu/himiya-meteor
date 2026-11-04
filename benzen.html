@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Бензен · 10 клас</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;800&display=swap">
+<style>
+/* Layout: one column. Top: molecule lab (own rotating model + Molecule Atlas), then 7 numbered stations; station 5 is a reaction bench (reagent shelf → flask → product). Bright single look (for pupils), violet "aromatic ring" accent. */
+:root{
+  color-scheme: light;
+  --bg:#f5f3ff; --card:#fff; --ink:#1b1638; --muted:#5b587a; --line:#e0dcf5;
+  --ring:#7c3aed; --ring-deep:#5521b5; --teal:#0ea5a4; --amber:#f59e0b; --ok:#16a34a; --bad:#e11d48;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:860px;margin:0 auto;padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:18px}
+.hero{border-radius:26px;padding:24px 22px;color:#fff;position:relative;overflow:hidden;background:linear-gradient(135deg,#7c3aed 0%,#5521b5 55%,#0e7490 100%);box-shadow:0 10px 0 #3b1784}
+.hero .tag{display:inline-block;background:#fde68a;color:#3a2a00;font-weight:800;font-size:13px;border-radius:999px;padding:4px 12px}
+.hero h1{font-family:var(--f-display);font-size:clamp(26px,6vw,40px);line-height:1.08;margin:12px 0 8px;text-wrap:balance}
+.hero p{margin:0;max-width:58ch}
+.hero svg{position:absolute;right:-20px;bottom:-30px;width:190px;height:190px;opacity:.18}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:rgba(245,243,255,.93);backdrop-filter:blur(6px);border-radius:14px;padding:8px 12px;display:flex;align-items:center;gap:12px;border:1px solid var(--line)}
+.bar .track{flex:1;height:10px;border-radius:999px;background:var(--line);overflow:hidden}
+.bar .fill{height:100%;width:0;background:linear-gradient(90deg,var(--teal),var(--ring));transition:width .3s}
+.bar .t{font-family:var(--f-mono);font-weight:800;font-size:14px;white-space:nowrap}
+.st{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.st.done{border-color:var(--ok)}
+.st h2{margin:0;font-family:var(--f-display);font-size:19px;line-height:1.25;display:flex;gap:12px;align-items:flex-start}
+.st h2 .n{flex:none;width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:var(--ring);color:#fff;font-size:16px}
+.st h2 .pts{margin-left:auto;flex:none;font-family:var(--f-mono);font-size:13px;color:var(--ring-deep);background:#ede9fe;border-radius:999px;padding:4px 10px;white-space:nowrap}
+.st p{margin:0}
+.hint{color:var(--muted);font-size:14px}
+label.lbl,.lbl{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--muted)}
+input[type=text],select,textarea{font:inherit;font-size:16px;padding:11px 13px;border-radius:12px;border:2px solid var(--line);background:#fff;color:var(--ink);width:100%}
+textarea{min-height:96px;resize:vertical}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:560px){.grid2{grid-template-columns:1fr}}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;font-weight:700;font-size:15px;border:2px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:8px 14px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ring);border-color:var(--ring);color:#fff}
+.chip.mono{font-family:var(--f-mono)}
+/* Molecule lab */
+.lab{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+@media (max-width:720px){.lab{grid-template-columns:1fr}}
+.model{background:radial-gradient(circle at 50% 40%,#2a1f5c,#120d2b);border-radius:18px;position:relative;aspect-ratio:1;overflow:hidden;touch-action:none;cursor:grab}
+.model canvas{width:100%;height:100%;display:block}
+.model .ctl{position:absolute;left:10px;right:10px;bottom:10px;display:flex;gap:6px;flex-wrap:wrap}
+.model .ctl button{font:inherit;font-size:13px;font-weight:700;border-radius:999px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);color:#fff;padding:6px 10px;cursor:pointer}
+.model .ctl button[aria-pressed="true"]{background:#fde68a;color:#3a2a00;border-color:#fde68a}
+.model .cap{position:absolute;top:10px;left:12px;color:#d9d3ff;font-size:13px;font-weight:600}
+.formulas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.formulas figure{margin:0;background:#faf9ff;border:1px solid var(--line);border-radius:14px;padding:8px;text-align:center}
+.formulas figcaption{font-size:12.5px;color:var(--muted);font-weight:600;line-height:1.3}
+.formulas svg{width:100%;height:auto;max-height:120px}
+.atlas{border-radius:18px;overflow:hidden;border:2px solid var(--line);background:#fff}
+.atlas iframe{display:block;width:100%;height:520px;border:0}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.link{font-weight:800;color:var(--ring-deep)}
+/* statements / options */
+.tf{display:grid;gap:8px}
+.tfr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;border:2px solid var(--line);border-radius:14px;padding:10px 12px;background:#fff}
+.seg{display:inline-flex;border:2px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{font:inherit;font-weight:700;font-size:14px;border:0;background:#fff;padding:7px 12px;cursor:pointer;color:var(--ink)}
+.seg button+button{border-left:2px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--ring);color:#fff}
+.figs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:560px){.figs{grid-template-columns:1fr}}
+.figs .f{border:2px solid var(--line);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:8px;background:#fff}
+.figs svg{width:100%;height:120px}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;border:2px solid var(--line);border-radius:14px;padding:10px 12px;cursor:pointer;background:#fff}
+.opt input{margin-top:4px;accent-color:var(--ring);width:18px;height:18px;flex:none}
+.opt:has(input:checked){border-color:var(--ring);background:#f5f0ff}
+/* Reaction bench */
+.bench{display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:14px;align-items:start}
+@media (max-width:640px){.bench{grid-template-columns:1fr}}
+.mission{background:#fff7e6;border:2px dashed var(--amber);border-radius:16px;padding:12px 14px;font-weight:700}
+.mission small{display:block;font-weight:600;color:var(--muted)}
+.shelf{display:flex;flex-direction:column;gap:8px}
+.flask{border-radius:18px;background:#f3f0ff;border:2px solid var(--line);padding:10px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.flask svg{width:120px;height:150px}
+.flask .liq{transition:fill .5s}
+.eqout{font-family:var(--f-mono);font-weight:800;font-size:17px;background:#1b1638;color:#fff;border-radius:14px;padding:14px;text-align:center;line-height:1.6}
+.eqout small{display:block;font-family:var(--f-body);font-weight:600;font-size:13px;color:#cfc8f7}
+.mlist{display:flex;gap:6px;flex-wrap:wrap}
+.mlist span{font-size:13px;font-weight:800;border-radius:999px;padding:4px 10px;background:#ede9fe;color:var(--ring-deep)}
+.mlist span.ok{background:#dcfce7;color:#166534}
+.mlist span.cur{background:var(--amber);color:#3a2a00}
+.btn{font-family:var(--f-display);font-size:17px;border:0;border-radius:16px;padding:14px 20px;cursor:pointer;color:#fff;background:linear-gradient(180deg,#9b6bff,var(--ring));box-shadow:0 6px 0 var(--ring-deep)}
+.btn:active{transform:translateY(3px);box-shadow:0 3px 0 var(--ring-deep)}
+.btn.warm{color:#3a1600;background:linear-gradient(180deg,#fde68a,var(--amber));box-shadow:0 6px 0 #b45309}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.msg{font-weight:700;padding:10px 12px;border-radius:12px}
+.msg.ok{background:#dcfce7;color:#166534}.msg.bad{background:#ffe4e6;color:#9f1239}.msg.info{background:#ede9fe;color:var(--ring-deep)}
+/* compare table */
+.cmp{display:grid;gap:8px}
+.cmpr{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:center}
+.cmpr.h{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.cmpr select{padding:8px 10px;font-size:15px}
+@media (max-width:560px){.cmpr{grid-template-columns:1fr 1fr}.cmpr>span:first-child{grid-column:1/-1;font-weight:700}}
+.res{background:var(--card);border:3px solid var(--ok);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:12px}
+.res .big{font-family:var(--f-display);font-size:48px;color:var(--ok);line-height:1}
+.res ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.res li{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed var(--line);padding:4px 0}
+.res li b{font-family:var(--f-mono)}
+.err{color:var(--bad);font-weight:700;margin:0}
+.fact{background:#ecfeff;border:2px dashed var(--teal);border-radius:16px;padding:12px 14px;font-size:15px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <span class="tag">Хімія · 10 клас · § 11 · с. 67–72</span>
+    <h1>Бензен — найпростіший ароматичний вуглеводень</h1>
+    <p>Розглянь молекулу бензену, проведи реакції в конструкторі й виконай завдання на всіх станціях. Максимум 12 балів. Підручник: О. Григорович «Хімія. 10 клас».</p>
+    <svg viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,8 86,29 86,71 50,92 14,71 14,29" fill="none" stroke="#fff" stroke-width="6"/><circle cx="50" cy="50" r="22" fill="none" stroke="#fff" stroke-width="6"/></svg>
+  </header>
+
+  <div class="bar"><div class="track"><div class="fill" id="fill"></div></div><span class="t" id="prog">0 / 7 станцій</span></div>
+
+  <section class="st" id="who">
+    <h2><span class="n">👤</span>Учень / учениця</h2>
+    <div class="grid2">
+      <div><label class="lbl" for="pname">Прізвище та ім'я</label><input type="text" id="pname" maxlength="60" autocomplete="name" placeholder="Іваненко Олена"></div>
+      <div><label class="lbl" for="pcls">Клас</label><select id="pcls"><option value="">— обери —</option><option>10-А</option><option>10-Б</option><option>Інший</option></select></div>
+    </div>
+  </section>
+
+  <!-- Лабораторія моделей -->
+  <section class="st">
+    <h2><span class="n">🔬</span>Лабораторія моделей</h2>
+    <p>Покрути молекулу пальцем або мишкою. Увімкни «π-хмару», щоб побачити, чому всі зв'язки в кільці однакові.</p>
+    <div class="lab">
+      <div class="model" id="model">
+        <span class="cap">C₆H₆ · правильний шестикутник, кути 120°</span>
+        <canvas id="cv" aria-label="Модель молекули бензену, яку можна обертати"></canvas>
+        <div class="ctl">
+          <button type="button" id="bCloud" aria-pressed="false">π-хмара</button>
+          <button type="button" id="bKek" aria-pressed="false">Подвійні зв'язки (Кекуле)</button>
+          <button type="button" id="bSpin" aria-pressed="true">Обертання</button>
+        </div>
+      </div>
+      <div class="formulas" aria-label="Способи зображення формули бензену">
+        <figure><div id="fFull"></div><figcaption>Повна структурна</figcaption></figure>
+        <figure><div id="fKek"></div><figcaption>Скорочена (Кекуле)</figcaption></figure>
+        <figure><div id="fRing"></div><figcaption>З колом (ароматичний зв'язок)</figcaption></figure>
+      </div>
+    </div>
+    <div class="atlas"><iframe src="https://www.symmetriachem.com/molecule-atlas?m=benzene" title="Molecule Atlas: бензен" loading="lazy"></iframe></div>
+    <div class="row"><span class="hint">Якщо атлас вище не показується:</span><a class="link" href="https://www.symmetriachem.com/molecule-atlas?m=benzene" target="_blank" rel="noopener">відкрити Molecule Atlas у новій вкладці ↗</a></div>
+  </section>
+
+  <!-- 1 -->
+  <section class="st" data-st="1">
+    <h2><span class="n">1</span>Будова молекули<span class="pts">2 бали</span></h2>
+    <p>Правда чи ні?</p>
+    <div class="tf" id="tf"></div>
+  </section>
+
+  <!-- 2 -->
+  <section class="st" data-st="2">
+    <h2><span class="n">2</span>Кекуле чи кільце?<span class="pts">1 бал</span></h2>
+    <p>Підпиши кожне зображення формули бензену.</p>
+    <div class="figs" id="figs"></div>
+  </section>
+
+  <!-- 3 -->
+  <section class="st" data-st="3">
+    <h2><span class="n">3</span>Ароматичні чи ні?<span class="pts">1 бал</span></h2>
+    <p>Познач <b>усі ароматичні</b> сполуки, тобто ті, що містять бензенове ядро.</p>
+    <div class="chips" id="arom"></div>
+  </section>
+
+  <!-- 4 -->
+  <section class="st" data-st="4">
+    <h2><span class="n">4</span>Фізичні властивості<span class="pts">1 бал</span></h2>
+    <p>Познач <b>усі</b> властивості, що стосуються бензену.</p>
+    <div class="chips" id="phys"></div>
+  </section>
+
+  <!-- 5 -->
+  <section class="st" data-st="5">
+    <h2><span class="n">5</span>Конструктор реакцій бензену<span class="pts">4 бали</span></h2>
+    <p>Виконай 4 замовлення лабораторії: обери реагент і умови, проведи реакцію й визнач її тип. За кожне замовлення 1 бал з першої спроби, 0,5 бала з другої.</p>
+    <div class="mlist" id="mlist"></div>
+    <div class="mission" id="mission"></div>
+    <div class="bench">
+      <div class="shelf">
+        <span class="lbl">Реагент</span><div class="chips" id="reag"></div>
+        <span class="lbl">Умови / каталізатор</span><div class="chips" id="cond"></div>
+        <div class="row"><button class="btn warm" type="button" id="run">Провести реакцію</button></div>
+      </div>
+      <div class="flask">
+        <svg viewBox="0 0 120 150" aria-hidden="true"><path d="M45 8h30v40l35 75a12 12 0 0 1-11 17H21a12 12 0 0 1-11-17l35-75z" fill="#fff" stroke="#5b587a" stroke-width="3"/><path class="liq" id="liq" d="M30 88h60l19 37a8 8 0 0 1-7 11H18a8 8 0 0 1-7-11z" fill="#e9e5ff"/><circle cx="48" cy="112" r="4" fill="#fff" opacity=".7"/><circle cx="66" cy="102" r="3" fill="#fff" opacity=".7"/></svg>
+        <span class="hint" id="flaskTxt">C₆H₆ у колбі</span>
+      </div>
+    </div>
+    <div class="eqout" id="eqout" hidden></div>
+    <div id="typeBox" hidden>
+      <span class="lbl">Тип цієї реакції</span>
+      <div class="chips" id="types"></div>
+    </div>
+    <div class="msg info" id="rmsg" hidden></div>
+  </section>
+
+  <!-- 6 -->
+  <section class="st" data-st="6">
+    <h2><span class="n">6</span>Етен чи бензен?<span class="pts">2 бали</span></h2>
+    <p>Заповни порівняльну таблицю.</p>
+    <div class="cmp" id="cmp">
+      <div class="cmpr h"><span>Ознака</span><span>Етен C₂H₄</span><span>Бензен C₆H₆</span></div>
+    </div>
+    <div class="opts" id="det"><b>Завдання 171. Як розрізнити бензен і гексен, маючи бром і залізний порошок?</b></div>
+  </section>
+
+  <!-- 7 -->
+  <section class="st" data-st="7">
+    <h2><span class="n">7</span>Розгадка уроку<span class="pts">1 бал</span></h2>
+    <label class="lbl" for="concl">Поясни своїми словами: чому бензен, хоча він «ненасичений», не знебарвлює бромну воду?</label>
+    <textarea id="concl" maxlength="1200" placeholder="Бензен не знебарвлює бромну воду, тому що…"></textarea>
+    <p class="hint">Щоб отримати бал, напиши щонайменше 2 речення своїми словами. Вчитель прочитає твою відповідь.</p>
+  </section>
+
+  <div class="fact">💡 Бензенові фрагменти в молекулах сонцезахисних кремів поглинають ультрафіолет і перетворюють його на тепло (с. 70).</div>
+
+  <p class="err" id="err" hidden></p>
+  <div class="row"><button class="btn" id="submit" type="button">Здати роботу</button></div>
+
+  <section class="res" id="res" hidden>
+    <span class="lbl">Твій результат</span>
+    <div class="big" id="total">0 / 12</div>
+    <ul id="breakdown"></ul>
+    <div class="msg info" id="send">Надсилаю роботу вчителю…</div>
+    <p class="hint">Бал за пояснення в станції 7 вчитель може змінити після перевірки.</p>
+  </section>
+</div>
+
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="benzen10";
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const fmt=x=>String(Math.round(x*100)/100).replace(".",",");
+
+/* ---------- формули бензену (SVG) ---------- */
+function hexPts(cx,cy,r){return [...Array(6)].map((_,i)=>{const a=Math.PI/180*(60*i-90);return [cx+r*Math.cos(a),cy+r*Math.sin(a)]})}
+function svgFormula(kind){
+  const P=hexPts(60,60,kind==="full"?30:40); let s=`<svg viewBox="0 0 120 120" role="img" aria-label="Формула бензену"><g stroke="#1b1638" stroke-width="3" fill="none" stroke-linecap="round">`;
+  for(let i=0;i<6;i++){const a=P[i],b=P[(i+1)%6];s+=`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}"/>`;
+    if(kind==="kek"&&i%2===0){const k=.78,m=[60,60];const a2=[m[0]+(a[0]-m[0])*k,m[1]+(a[1]-m[1])*k],b2=[m[0]+(b[0]-m[0])*k,m[1]+(b[1]-m[1])*k];
+      const sh=.12;const p=[a2[0]+(b2[0]-a2[0])*sh,a2[1]+(b2[1]-a2[1])*sh],q=[b2[0]-(b2[0]-a2[0])*sh,b2[1]-(b2[1]-a2[1])*sh];s+=`<line x1="${p[0]}" y1="${p[1]}" x2="${q[0]}" y2="${q[1]}"/>`;}}
+  if(kind==="ring") s+=`<circle cx="60" cy="60" r="24"/>`;
+  s+="</g>";
+  if(kind==="full"){const Q=hexPts(60,60,30),O=hexPts(60,60,50);
+    s=`<svg viewBox="0 0 120 120" role="img" aria-label="Повна структурна формула бензену"><g stroke="#1b1638" stroke-width="2" stroke-linecap="round">`;
+    for(let i=0;i<6;i++){const a=Q[i],b=Q[(i+1)%6];s+=`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}"/>`;
+      if(i%2===0){const m=[60,60],k=.8;s+=`<line x1="${m[0]+(a[0]-m[0])*k+(b[0]-a[0])*.15}" y1="${m[1]+(a[1]-m[1])*k+(b[1]-a[1])*.15}" x2="${m[0]+(b[0]-m[0])*k-(b[0]-a[0])*.15}" y2="${m[1]+(b[1]-m[1])*k-(b[1]-a[1])*.15}"/>`;}
+      const o=O[i];s+=`<line x1="${a[0]+(o[0]-a[0])*.35}" y1="${a[1]+(o[1]-a[1])*.35}" x2="${a[0]+(o[0]-a[0])*.72}" y2="${a[1]+(o[1]-a[1])*.72}"/>`;}
+    s+=`</g><g font-family="JetBrains Mono,monospace" font-weight="800" font-size="11" text-anchor="middle" dominant-baseline="central">`;
+    for(let i=0;i<6;i++){const a=Q[i],o=O[i];s+=`<circle cx="${a[0]}" cy="${a[1]}" r="6.5" fill="#fff"/><text x="${a[0]}" y="${a[1]}" fill="#1b1638">C</text><text x="${o[0]}" y="${o[1]}" fill="#0e7490">H</text>`;}
+    s+="</g>";}
+  return s+"</svg>";
+}
+$("fFull").innerHTML=svgFormula("full");$("fKek").innerHTML=svgFormula("kek");$("fRing").innerHTML=svgFormula("ring");
+
+/* ---------- 3D-модель ---------- */
+(function(){
+  const cv=$("cv"),ctx=cv.getContext("2d"),box=$("model");
+  const atoms=[];for(let i=0;i<6;i++){const a=Math.PI/3*i;atoms.push({x:1.39*Math.cos(a),y:1.39*Math.sin(a),z:0,el:"C"});}
+  for(let i=0;i<6;i++){const a=Math.PI/3*i;atoms.push({x:2.48*Math.cos(a),y:2.48*Math.sin(a),z:0,el:"H"});}
+  const bonds=[];for(let i=0;i<6;i++){bonds.push([i,(i+1)%6,i%2===0]);bonds.push([i,i+6,false]);}
+  let rx=-.9,ry=.4,spin=true,cloud=false,kek=false,drag=null;
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches; if(reduce){spin=false;$("bSpin").setAttribute("aria-pressed","false")}
+  function rot(p){let {x,y,z}=p;let c=Math.cos(ry),s=Math.sin(ry);[x,z]=[x*c+z*s,-x*s+z*c];c=Math.cos(rx);s=Math.sin(rx);[y,z]=[y*c-z*s,y*s+z*c];return {x,y,z}}
+  function size(){const r=box.getBoundingClientRect(),d=devicePixelRatio||1;cv.width=r.width*d;cv.height=r.height*d;}
+  size();addEventListener("resize",size);
+  function draw(){
+    const W=cv.width,H=cv.height,sc=Math.min(W,H)/7.2,cx=W/2,cy=H/2;ctx.clearRect(0,0,W,H);
+    const P=atoms.map(a=>{const r=rot(a);return {...r,el:a.el,sx:cx+r.x*sc,sy:cy+r.y*sc}});
+    if(cloud){for(const dz of [-.55,.55]){ctx.beginPath();for(let k=0;k<=48;k++){const a=Math.PI*2*k/48;const r=rot({x:1.39*Math.cos(a),y:1.39*Math.sin(a),z:dz});const X=cx+r.x*sc,Y=cy+r.y*sc;k?ctx.lineTo(X,Y):ctx.moveTo(X,Y);}
+      ctx.closePath();ctx.lineWidth=sc*.55;ctx.strokeStyle="rgba(167,139,250,.35)";ctx.stroke();}}
+    const items=[];bonds.forEach(b=>items.push({t:"b",b,z:(P[b[0]].z+P[b[1]].z)/2}));P.forEach((p,i)=>items.push({t:"a",i,z:p.z}));
+    items.sort((a,b)=>a.z-b.z);
+    for(const it of items){
+      if(it.t==="b"){const [i,j,dbl]=it.b,a=P[i],b=P[j];ctx.strokeStyle=j>=6?"#cbd5e1":"#e9e5ff";ctx.lineWidth=sc*.12;ctx.lineCap="round";
+        ctx.beginPath();ctx.moveTo(a.sx,a.sy);ctx.lineTo(b.sx,b.sy);ctx.stroke();
+        if(kek&&dbl&&j<6){const mx=(a.sx+b.sx)/2,my=(a.sy+b.sy)/2,dx=cx-mx,dy=cy-my,L=Math.hypot(dx,dy)||1,o=sc*.32;
+          ctx.strokeStyle="#fde68a";ctx.beginPath();ctx.moveTo(a.sx+dx/L*o+(b.sx-a.sx)*.15,a.sy+dy/L*o+(b.sy-a.sy)*.15);ctx.lineTo(b.sx+dx/L*o-(b.sx-a.sx)*.15,b.sy+dy/L*o-(b.sy-a.sy)*.15);ctx.stroke();}}
+      else{const p=P[it.i],r=(p.el==="C"?.42:.28)*sc*(1+p.z*.05);const g=ctx.createRadialGradient(p.sx-r*.35,p.sy-r*.35,r*.1,p.sx,p.sy,r);
+        if(p.el==="C"){g.addColorStop(0,"#9ca3af");g.addColorStop(1,"#1f2937");}else{g.addColorStop(0,"#ffffff");g.addColorStop(1,"#cbd5e1");}
+        ctx.fillStyle=g;ctx.beginPath();ctx.arc(p.sx,p.sy,r,0,7);ctx.fill();}
+    }
+  }
+  function loop(){if(spin&&!drag){ry+=.008;}draw();requestAnimationFrame(loop)}
+  loop();
+  box.addEventListener("pointerdown",e=>{if(e.target.closest("button"))return;drag={x:e.clientX,y:e.clientY};box.setPointerCapture(e.pointerId)});
+  box.addEventListener("pointermove",e=>{if(!drag)return;ry+=(e.clientX-drag.x)*.01;rx+=(e.clientY-drag.y)*.01;drag={x:e.clientX,y:e.clientY}});
+  box.addEventListener("pointerup",()=>drag=null);box.addEventListener("pointercancel",()=>drag=null);
+  const tg=(b,f)=>b.onclick=()=>{const v=b.getAttribute("aria-pressed")!=="true";b.setAttribute("aria-pressed",v);f(v)};
+  tg($("bCloud"),v=>cloud=v);tg($("bKek"),v=>kek=v);tg($("bSpin"),v=>spin=v);
+})();
+
+/* ---------- 1. Будова ---------- */
+const TF=shuffle([["Молекула бензену плоска, атоми Карбону розташовані в кутах правильного шестикутника.",1],
+ ["Усі зв'язки між атомами Карбону в бензеновому кільці однакові (ароматичний зв'язок).",1],
+ ["Загальна формула аренів — CₙH₂ₙ₋₆.",1],
+ ["Кожний атом Карбону в бензені сполучений з двома атомами Гідрогену.",0]]);
+TF.forEach(([t,ok],i)=>{const r=document.createElement("div");r.className="tfr";r.dataset.ok=ok;
+  r.innerHTML=`<span></span><span class="seg"><button type="button" aria-pressed="false" data-v="1">правда</button><button type="button" aria-pressed="false" data-v="0">ні</button></span>`;
+  r.firstChild.textContent=t;r.querySelectorAll("button").forEach(b=>b.onclick=()=>{r.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));r.dataset.a=b.dataset.v;upd()});$("tf").appendChild(r)});
+
+/* ---------- 2. Формули ---------- */
+const FIG=shuffle([["full","Повна структурна формула"],["kek","Скорочена формула з чергуванням зв'язків (Кекуле)"],["ring","Скорочена формула з колом"]]);
+const FIGNAMES=["Повна структурна формула","Скорочена формула з чергуванням зв'язків (Кекуле)","Скорочена формула з колом"];
+FIG.forEach(([k,name],i)=>{const d=document.createElement("div");d.className="f";d.dataset.ok=name;
+  d.innerHTML=svgFormula(k)+`<select aria-label="Назва формули ${i+1}"><option value="">— обери назву —</option>${FIGNAMES.map(n=>`<option>${n}</option>`).join("")}</select>`;
+  d.querySelector("select").onchange=upd;$("figs").appendChild(d)});
+
+/* ---------- 3. Ароматичні ---------- */
+const AR=shuffle([["C₆H₆ бензен",1],["C₆H₅–CH₃ толуен",1],["C₆H₅–OH фенол",1],["C₁₀H₈ нафтален",1],["C₆H₁₄ гексан",0],["C₆H₁₂ циклогексан",0],["CH₂=CH₂ етен",0]]);
+AR.forEach(([t,ok])=>{const b=document.createElement("button");b.type="button";b.className="chip mono";b.textContent=t;b.dataset.ok=ok;b.setAttribute("aria-pressed","false");
+  b.onclick=()=>{b.setAttribute("aria-pressed",b.getAttribute("aria-pressed")!=="true");upd()};$("arom").appendChild(b)});
+
+/* ---------- 4. Фізичні властивості ---------- */
+const PH=shuffle([["безбарвна рідина",1],["специфічний «солодкуватий» запах",1],["у воді не розчиняється",1],["легший за воду",1],["токсичний",1],["добрий розчинник",1],
+ ["газ жовто-зеленого кольору",0],["добре розчиняється у воді",0],["без запаху",0],["безпечний для здоров'я",0]]);
+PH.forEach(([t,ok])=>{const b=document.createElement("button");b.type="button";b.className="chip";b.textContent=t;b.dataset.ok=ok;b.setAttribute("aria-pressed","false");
+  b.onclick=()=>{b.setAttribute("aria-pressed",b.getAttribute("aria-pressed")!=="true");upd()};$("phys").appendChild(b)});
+
+/* ---------- 5. Конструктор реакцій ---------- */
+const REAG=[["O2","O₂ кисень"],["Cl2","Cl₂ хлор"],["Br2","Br₂ бром"],["H2","H₂ водень"],["Brw","бромна вода"]];
+const COND=[["fire","підпалити"],["FeCl3","t, FeCl₃ або AlCl₃"],["FeBr3","t, FeBr₃ або AlBr₃"],["Ni","t, p, Ni (Pd, Pt)"],["none","без каталізатора"]];
+const TYPES=[["sub","заміщення"],["add","приєднання"],["ox","окиснення (горіння)"]];
+const RX={
+  "O2|fire":{eq:"2C₆H₆ + 15O₂ → 12CO₂ + 6H₂O",note:"Бензен горить кіптявим полум'ям",prod:"CO₂ і H₂O",type:"ox",color:"#fde2b8"},
+  "Cl2|FeCl3":{eq:"C₆H₆ + Cl₂ → C₆H₅Cl + HCl",note:"хлоробензен",prod:"хлоробензен",type:"sub",color:"#dcfce7"},
+  "Br2|FeBr3":{eq:"C₆H₆ + Br₂ → C₆H₅Br + HBr",note:"бромобензен",prod:"бромобензен",type:"sub",color:"#fde68a"},
+  "H2|Ni":{eq:"C₆H₆ + 3H₂ → C₆H₁₂",note:"циклогексан",prod:"циклогексан",type:"add",color:"#e0f2fe"}
+};
+const NOPE={
+  "Brw":"Бромна вода не знебарвилася: бензен не вступає з нею в реакцію. Ароматичне кільце стійке!",
+  "Br2|none":"Без каталізатора бензен з бромом не реагує. Потрібні броміди Феруму(III) чи Алюмінію.",
+  "Cl2|none":"Без каталізатора бензен з хлором не реагує. Потрібні хлориди Феруму(III) чи Алюмінію.",
+  "Cl2|FeBr3":"Для реакції з хлором використовують хлориди (FeCl₃, AlCl₃), а для брому — броміди.",
+  "Br2|FeCl3":"Для реакції з бромом використовують броміди (FeBr₃, AlBr₃), а для хлору — хлориди.",
+  "H2|none":"Бензен приєднує водень лише в жорстких умовах: нагрівання, тиск і каталізатор.",
+  "O2|none":"Щоб почалося горіння, бензен треба підпалити."
+};
+const MISSIONS=shuffle([["Br2|FeBr3","Добудь бромобензен C₆H₅Br"],["Cl2|FeCl3","Добудь хлоробензен C₆H₅Cl"],["H2|Ni","Перетвори бензен на циклогексан C₆H₁₂"],["O2|fire","Спали бензен у надлишку кисню"]]);
+let mi=0,rsel=null,csel=null,curRx=null; const mtries=[0,0,0,0],mpts=[0,0,0,0];
+function chipset(box,list,on){list.forEach(([k,t])=>{const b=document.createElement("button");b.type="button";b.className="chip";b.textContent=t;b.dataset.k=k;b.setAttribute("aria-pressed","false");
+  b.onclick=()=>{box.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",x===b));on(k)};box.appendChild(b)})}
+chipset($("reag"),REAG,k=>rsel=k); chipset($("cond"),COND,k=>csel=k);
+chipset($("types"),TYPES,k=>chooseType(k));
+function drawMissions(){
+  $("mlist").innerHTML=MISSIONS.map((m,i)=>`<span class="${i<mi?"ok":i===mi?"cur":""}">${i<mi?"✓ ":""}Замовлення ${i+1}</span>`).join("");
+  $("mission").innerHTML=mi<4?`🧪 Замовлення ${mi+1} з 4: ${MISSIONS[mi][1]}<small>Обери реагент, умови й натисни «Провести реакцію»</small>`:"🎉 Усі замовлення виконано!";
+}
+function resetBench(){rsel=csel=null;curRx=null;["reag","cond","types"].forEach(id=>$(id).querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed","false")));
+  $("typeBox").hidden=true;$("eqout").hidden=true;$("liq").setAttribute("fill","#e9e5ff");$("flaskTxt").textContent="C₆H₆ у колбі";$("run").disabled=mi>=4;}
+function say(t,c){const m=$("rmsg");m.hidden=false;m.className="msg "+c;m.textContent=t}
+function miss(){mtries[mi]++;}
+$("run").onclick=()=>{
+  if(mi>=4) return;
+  if(!rsel||!csel){say("Обери і реагент, і умови.","bad");return}
+  const key=rsel==="Brw"?"Brw":rsel+"|"+csel; const rx=RX[key];
+  if(!rx){$("eqout").hidden=true;$("typeBox").hidden=true;$("liq").setAttribute("fill","#e9e5ff");$("flaskTxt").textContent="реакція не відбулася";
+    say("✗ "+(NOPE[key]||"За цих умов реакція не відбувається."),"bad");miss();return}
+  $("liq").setAttribute("fill",rx.color);$("flaskTxt").textContent="утворилося: "+rx.prod;
+  $("eqout").hidden=false;$("eqout").innerHTML=`${rx.eq}<small>${rx.note}</small>`;
+  if(key!==MISSIONS[mi][0]){say("Реакція відбулася, але це не те, що замовили. Прочитай замовлення ще раз.","bad");miss();$("typeBox").hidden=true;curRx=null;return}
+  curRx=rx;$("typeBox").hidden=false;$("types").querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed","false"));say("Чудово, продукт отримано! Тепер визнач тип реакції.","info");
+};
+function chooseType(k){
+  if(!curRx) return;
+  if(k!==curRx.type){say("✗ Тип реакції визначено неправильно. Подумай: атом Гідрогену замінився, щось приєдналося чи речовина згоріла?","bad");miss();return}
+  mpts[mi]=mtries[mi]===0?1:mtries[mi]===1?.5:0;
+  say(`✓ Замовлення виконано! Бали: ${fmt(mpts[mi])}.`,"ok"); mi++; drawMissions(); setTimeout(resetBench,900); upd();
+}
+drawMissions();resetBench();
+
+/* ---------- 6. Порівняння ---------- */
+const CMP=[["Знебарвлює бромну воду","так","ні",["так","ні"]],
+ ["Найбільш характерні реакції","приєднання","заміщення",["приєднання","заміщення"]],
+ ["Знебарвлює розчин KMnO₄","так","ні",["так","ні"]]];
+CMP.forEach(([t,a,b,opts],i)=>{const r=document.createElement("div");r.className="cmpr";
+  r.innerHTML=`<span></span>${[a,b].map((ok,j)=>`<select data-ok="${ok}" aria-label="${t} — ${j?"бензен":"етен"}"><option value="">—</option>${opts.map(o=>`<option>${o}</option>`).join("")}</select>`).join("")}`;
+  r.firstChild.textContent=t;r.querySelectorAll("select").forEach(s=>s.onchange=upd);$("cmp").appendChild(r)});
+shuffle([["Додати бром: гексен знебарвлює його одразу, а бензен реагує лише після додавання залізного порошку (утворюється FeBr₃)",1],
+ ["Додати бром: обидві рідини знебарвлюють його одразу",0],["Додати залізний порошок без брому: бензен розчиняє залізо",0],["Додати бром: бензен знебарвлює його одразу, а гексен — лише із залізом",0]])
+ .forEach(([t,ok])=>{const l=document.createElement("label");l.className="opt";l.innerHTML=`<input type="radio" name="det" data-ok="${ok}"><span></span>`;l.querySelector("span").textContent=t;$("det").appendChild(l)});
+$("det").addEventListener("change",upd);
+document.addEventListener("input",upd);
+
+/* ---------- Оцінювання ---------- */
+function grade(){
+  const p={};
+  const tf=[...$("tf").children]; p[1]=tf.filter(r=>r.dataset.a===r.dataset.ok).length*.5;
+  const fg=[...$("figs").children]; p[2]=fg.filter(d=>d.querySelector("select").value===d.dataset.ok).length/3;
+  const ar=[...$("arom").children]; p[3]=ar.filter(b=>(b.getAttribute("aria-pressed")==="true")===(b.dataset.ok==="1")).length/ar.length; if(p[3]<1) p[3]=Math.max(0,p[3]-.3);
+  const ph=[...$("phys").children]; p[4]=ph.filter(b=>(b.getAttribute("aria-pressed")==="true")===(b.dataset.ok==="1")).length/ph.length; if(p[4]<1) p[4]=Math.max(0,p[4]-.3);
+  p[5]=mpts.reduce((a,b)=>a+b,0);
+  const sel=[...$("cmp").querySelectorAll("select")]; const det=document.querySelector('input[name="det"]:checked');
+  p[6]=sel.filter(s=>s.value===s.dataset.ok).length/sel.length*1.5+(det&&det.dataset.ok==="1"?.5:0);
+  const c=$("concl").value.trim(); p[7]=c.length>=60&&c.split(/[.!?]/).filter(x=>x.trim().length>5).length>=2?1:0;
+  return p;
+}
+function done(n){
+  switch(n){
+    case 1:return [...$("tf").children].every(r=>r.dataset.a!==undefined);
+    case 2:return [...$("figs").querySelectorAll("select")].every(s=>s.value);
+    case 3:return !!$("arom").querySelector('[aria-pressed="true"]');
+    case 4:return !!$("phys").querySelector('[aria-pressed="true"]');
+    case 5:return mi>=4;
+    case 6:return [...$("cmp").querySelectorAll("select")].every(s=>s.value)&&!!document.querySelector('input[name="det"]:checked');
+    case 7:return $("concl").value.trim().length>=30;
+  }
+}
+function upd(){let d=0;document.querySelectorAll(".st[data-st]").forEach(s=>{const ok=!!done(+s.dataset.st);s.classList.toggle("done",ok);if(ok)d++});
+  $("fill").style.width=(d/7*100)+"%";$("prog").textContent=`${d} / 7 станцій`}
+upd();
+
+const NAMES={1:"Будова молекули",2:"Кекуле чи кільце?",3:"Ароматичні чи ні?",4:"Фізичні властивості",5:"Конструктор реакцій",6:"Етен чи бензен?",7:"Розгадка уроку"};
+const MAX={1:2,2:1,3:1,4:1,5:4,6:2,7:1};
+let sent=false;
+$("submit").onclick=async()=>{
+  const name=$("pname").value.trim(),cls=$("pcls").value;
+  if(name.length<3||!cls){showErr("Впиши прізвище, ім'я та обери клас на початку сторінки.");$("who").scrollIntoView({behavior:"smooth"});return}
+  const miss=[1,2,3,4,5,6,7].filter(n=>!done(n));
+  if(miss.length){showErr("Ще не виконано станції: "+miss.join(", ")+".");document.querySelector(`.st[data-st="${miss[0]}"]`).scrollIntoView({behavior:"smooth"});return}
+  $("err").hidden=true;
+  const p=grade(),raw=Object.values(p).reduce((a,b)=>a+b,0),total=Math.min(12,Math.round(raw));
+  $("total").textContent=`${total} / 12`;
+  $("breakdown").innerHTML=Object.keys(NAMES).map(n=>`<li><span>${n}. ${NAMES[n]}</span><b>${fmt(p[n])} / ${MAX[n]}</b></li>`).join("");
+  $("res").hidden=false;$("res").scrollIntoView({behavior:"smooth"});
+  if(sent){$("send").className="msg ok";$("send").textContent="✓ Робота вже надіслана вчителю.";return}
+  $("submit").disabled=true;
+  const rec={name:name.slice(0,60),cls,score:total,max:12,ts:{".sv":"timestamp"},parts:Object.keys(NAMES).map(n=>fmt(p[n])).join(" "),
+    reactions:MISSIONS.map((m,i)=>`${m[1].replace(/^\S+\s/,"")}: ${fmt(mpts[i])} (спроб ${mtries[i]+1})`).join("; "),
+    conclusion:$("concl").value.trim().slice(0,1200)};
+  try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec)});
+    if(!r.ok) throw new Error(r.status); sent=true; $("send").className="msg ok"; $("send").textContent="✓ Роботу отримано вчителем. Молодець!";
+  }catch(e){$("submit").disabled=false;$("send").className="msg bad";$("send").textContent="Не вдалося надіслати. Перевір інтернет і натисни «Здати роботу» ще раз.";}
+};
+function showErr(t){$("err").hidden=false;$("err").textContent=t}
+</script>
+</body>
+</html>
