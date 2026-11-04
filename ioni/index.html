@@ -1,0 +1,705 @@
+<!doctype html><html lang="uk"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Йони під напругою</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: a lab bench — substance shelf on the left, the circuit in the middle, the lab notebook on the right; second tab is an equation workbench */
+:root{
+  --bg:#EDF1F0; --surface:#FFFFFF; --sunk:#F4F7F6; --ink:#15201F; --muted:#5A6A68; --line:#CCD7D5;
+  --copper:#B4632A; --graphite:#3C4645; --lamp:#F0AE34; --glass:#E9EFEE;
+  --cation:#2D6CCB; --anion:#CE3F38; --mol:#8E9C9A; --water:#9EC3D6;
+  --ok:#23825A; --okbg:#E1F2E9; --bad:#B8372F; --badbg:#F8E4E2; --warnbg:#FFF3D6;
+  --accent:#1F5F57;
+  --display:"Unbounded","Golos Text",system-ui,sans-serif;
+  --body:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1514; --surface:#162120; --sunk:#111A19; --ink:#E5EDEB; --muted:#92A4A1; --line:#2A3937;
+  --copper:#D98B50; --graphite:#7D8B89; --lamp:#FFC64F; --glass:#22302E;
+  --cation:#6EA2F4; --anion:#F17A6F; --mol:#6F7F7C; --water:#3E6A80;
+  --ok:#5CC690; --okbg:#173327; --bad:#F2897F; --badbg:#3A1F1C; --warnbg:#3A3017;
+  --accent:#6FC3B5; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1514; --surface:#162120; --sunk:#111A19; --ink:#E5EDEB; --muted:#92A4A1; --line:#2A3937;
+  --copper:#D98B50; --graphite:#7D8B89; --lamp:#FFC64F; --glass:#22302E;
+  --cation:#6EA2F4; --anion:#F17A6F; --mol:#6F7F7C; --water:#3E6A80;
+  --ok:#5CC690; --okbg:#173327; --bad:#F2897F; --badbg:#3A1F1C; --warnbg:#3A3017;
+  --accent:#6FC3B5; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.5 var(--body)}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+sub,sup{font-size:.68em;line-height:0}
+
+.top{background:var(--surface);border-bottom:1px solid var(--line)}
+.top .wrap{padding-block:22px 0;display:flex;flex-direction:column;gap:6px}
+.eyebrow{margin:0;font:500 12px/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{margin:0;font:700 clamp(26px,4.2vw,42px)/1.1 var(--display);letter-spacing:-.01em;text-wrap:balance}
+h1 .plus{color:var(--cation)} h1 .minus{color:var(--anion)}
+.tabs{display:flex;gap:4px;margin-top:14px;overflow-x:auto}
+.tab{background:none;border:0;border-bottom:3px solid transparent;padding:10px 14px 12px;font-weight:600;color:var(--muted);white-space:nowrap}
+.tab .n{font-family:var(--mono);margin-right:6px}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--copper)}
+main{padding-block:22px 48px}
+h2{margin:0;font:700 17px/1.3 var(--display)}
+h3{margin:0;font:700 15px/1.3 var(--display)}
+.hint{margin:0;color:var(--muted);font-size:14px}
+
+/* ---------- Detector ---------- */
+.det{display:grid;grid-template-columns:250px minmax(0,1fr) 300px;gap:18px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.sub-grid{display:flex;flex-direction:column;gap:6px}
+.sub{display:flex;align-items:center;gap:10px;text-align:left;background:var(--sunk);border:1px solid transparent;border-radius:8px;padding:8px 10px}
+.sub:hover{border-color:var(--line)}
+.sub[aria-pressed="true"]{border-color:var(--copper);background:var(--surface);box-shadow:inset 3px 0 0 var(--copper)}
+.sub .tx{display:flex;flex-direction:column;min-width:0;flex:1}
+.sub .nm{font-size:14px;font-weight:600;line-height:1.25}
+.sub .fm{font:500 12px/1.4 var(--mono);color:var(--muted)}
+.dot{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--line);flex:none}
+.dot.l0{background:var(--sunk);border-color:var(--mol)}
+.dot.l1{background:color-mix(in srgb,var(--lamp) 45%,transparent);border-color:var(--lamp)}
+.dot.l2{background:var(--lamp);border-color:var(--lamp)}
+
+.bench{padding:12px 12px 14px}
+.bench svg{width:100%;height:auto;display:block;max-width:560px;margin:0 auto}
+.wire{fill:none;stroke:var(--copper);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.inkline{stroke:var(--ink);fill:none}
+.beaker{fill:none;stroke:var(--ink);stroke-width:2.5;opacity:.75}
+.tick{stroke:var(--muted);stroke-width:1}
+.electrode{fill:var(--graphite)}
+.lbl{fill:var(--muted);font:500 10px var(--mono)}
+.pole{font:700 15px var(--mono)}
+.pole.p{fill:var(--anion)} .pole.m{fill:var(--cation)}
+.glass{fill:var(--glass);stroke:var(--ink);stroke-width:1.5;transition:fill .4s}
+.glass.on1{fill:color-mix(in srgb,var(--lamp) 45%,var(--glass))}
+.glass.on2{fill:var(--lamp)}
+.fil{fill:none;stroke:var(--muted);stroke-width:1.5}
+.fil.on{stroke:#8a4b00}
+.p-cat{fill:var(--cation)} .p-an{fill:var(--anion)} .p-mol{fill:var(--mol)} .p-w{fill:var(--water)}
+.p-sign{fill:#fff;font:700 8px var(--mono);text-anchor:middle;dominant-baseline:central}
+#glow{transition:opacity .5s}
+#blade{transition:all .35s}
+
+.readout{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 16px;align-items:center;border-top:1px dashed var(--line);padding-top:10px;font-size:14px}
+.lamp-state{font-weight:700}
+.legend{display:flex;flex-wrap:wrap;gap:6px 12px;color:var(--muted);font-size:13px}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend i{width:11px;height:11px;border-radius:50%;display:inline-block}
+
+.cur-name{font:700 18px/1.25 var(--display)}
+.cur-f{font:500 15px var(--mono);color:var(--muted)}
+.q{font-weight:600;font-size:15px}
+.preds{display:grid;grid-template-columns:1fr;gap:6px}
+.pred{display:flex;align-items:center;gap:10px;background:var(--sunk);border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;font-weight:600;text-align:left}
+.pred[aria-pressed="true"]{border-color:var(--ink);background:var(--surface)}
+.pred:disabled{cursor:default;opacity:.75}
+.pred .dot{width:14px;height:14px}
+.btn{border:0;border-radius:8px;padding:11px 16px;font-weight:700;background:var(--ink);color:var(--surface)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.result{border-radius:8px;padding:12px;font-size:14.5px;display:flex;flex-direction:column;gap:6px}
+.result.match{background:var(--okbg)} .result.miss{background:var(--badbg)}
+.result b.v{font-size:15px}
+.empty{color:var(--muted);font-size:14px;margin:0}
+
+.journal{margin-top:18px}
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:460px}
+th{text-align:left;font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-bottom:1.5px solid var(--line);padding:8px}
+td{border-bottom:1px solid var(--line);padding:8px;vertical-align:middle}
+td.f{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.yes{color:var(--ok);font-weight:700} .no{color:var(--bad);font-weight:700}
+.jfoot{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center}
+.concl{background:var(--warnbg);border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:8px}
+textarea,input[type=text]{width:100%;font:inherit;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:8px;padding:10px}
+textarea{min-height:84px;resize:vertical}
+
+/* ---------- Equations ---------- */
+.eqgrid{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:18px;align-items:start}
+.nav{display:flex;flex-wrap:wrap;gap:6px}
+.nv{width:36px;height:36px;border-radius:8px;border:1.5px solid var(--line);background:var(--surface);font:700 13px var(--mono)}
+.nv.cur{border-color:var(--ink);box-shadow:inset 0 -3px 0 var(--copper)}
+.nv.ok{background:var(--okbg);border-color:var(--ok);color:var(--ok)}
+.nv.shown{background:var(--warnbg)}
+.eqhead{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:center}
+.score{font:500 14px var(--mono);color:var(--muted)} .score b{color:var(--ink)}
+.equation{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;background:var(--sunk);border:1px solid var(--line);border-radius:10px;padding:18px 16px;min-height:96px}
+.formula{font:700 clamp(22px,3.4vw,30px)/1 var(--mono)}
+.arrow{font:700 24px var(--mono);color:var(--muted)}
+.terms{display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-width:0}
+.placeholder{color:var(--muted);font-size:14px;font-style:italic}
+.plus-sep{font:700 20px var(--mono);color:var(--muted)}
+.term{display:inline-flex;align-items:center;gap:2px;background:var(--surface);border:1.5px solid var(--line);border-radius:8px;padding:3px 4px}
+.term .ion{font:700 22px var(--mono);padding:0 4px}
+.term .ion.c{color:var(--cation)} .term .ion.a{color:var(--anion)}
+.coef{font:700 22px var(--mono);min-width:18px;text-align:center}
+.mini{width:26px;height:26px;border-radius:6px;border:0;background:var(--sunk);font:700 15px var(--mono);color:var(--muted);display:inline-flex;align-items:center;justify-content:center}
+.mini:hover{color:var(--ink)}
+.none-chip{font:700 16px var(--body);padding:6px 10px;background:var(--surface);border:1.5px solid var(--line);border-radius:8px}
+.balance{font:500 14px var(--mono);color:var(--muted);min-height:1.5em}
+.balance .z{color:var(--ok);font-weight:700} .balance .nz{color:var(--bad);font-weight:700}
+.bank-h{font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.bank{display:flex;flex-wrap:wrap;gap:8px}
+.tile{font:700 20px var(--mono);padding:8px 14px;border-radius:8px;background:var(--surface);border:1.5px solid var(--line);min-width:64px}
+.tile.c{color:var(--cation)} .tile.a{color:var(--anion)}
+.tile.nd{font:600 15px var(--body);color:var(--ink)}
+.tile:hover:not(:disabled){border-color:var(--ink)}
+.tile:disabled{opacity:.4;cursor:not-allowed}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+.fb{margin:0;border-radius:8px;padding:0;font-size:15px}
+.fb.ok{background:var(--okbg);padding:12px} .fb.bad{background:var(--badbg);padding:12px}
+.fb .rev{margin-top:8px}
+.algo ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14.5px}
+.algo .ex{font:500 14px var(--mono);background:var(--sunk);border-radius:8px;padding:10px;line-height:1.7}
+.final{background:var(--okbg);border:1.5px solid var(--ok)}
+.final .big{font:700 22px var(--display)}
+.stats{display:flex;flex-wrap:wrap;gap:8px 18px;font:500 14px var(--mono)}
+
+@media (max-width:1060px){
+  .det{grid-template-columns:230px minmax(0,1fr)}
+  .det .panel{grid-column:1 / -1}
+}
+@media (max-width:820px){
+  .eqgrid{grid-template-columns:1fr}
+}
+@media (max-width:680px){
+  .det{grid-template-columns:1fr}
+  .sub-grid{display:grid;grid-template-columns:1fr 1fr}
+  .sub .fm{display:none}
+}
+@media (prefers-reduced-motion:reduce){#glow,#blade,.glass{transition:none}}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Хімія · 9 клас · Електроліти й неелектроліти</p>
+    <h1>Йони під напругою <span class="plus">+</span><span class="minus">−</span></h1>
+    <nav class="tabs" role="tablist" aria-label="Розділи">
+      <button class="tab" role="tab" id="t-det" aria-selected="true" aria-controls="tab-det"><span class="n">1</span>Детектор провідності</button>
+      <button class="tab" role="tab" id="t-eq" aria-selected="false" aria-controls="tab-eq"><span class="n">2</span>Конструктор рівнянь</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- ========== DETECTOR ========== -->
+  <section id="tab-det" role="tabpanel" aria-labelledby="t-det">
+    <div class="det">
+      <aside class="card">
+        <h2>Речовини</h2>
+        <p class="hint">Обери речовину, зроби прогноз, потім замкни коло.</p>
+        <div id="subList" class="sub-grid"></div>
+      </aside>
+
+      <div class="card bench">
+        <svg id="app" viewBox="0 0 400 340" role="img" aria-label="Прилад для перевірки електропровідності: батарейка, лампочка, ключ і два графітові електроди у склянці">
+          <defs>
+            <radialGradient id="glowGrad">
+              <stop offset="0" stop-color="var(--lamp)" stop-opacity=".95"/>
+              <stop offset=".45" stop-color="var(--lamp)" stop-opacity=".35"/>
+              <stop offset="1" stop-color="var(--lamp)" stop-opacity="0"/>
+            </radialGradient>
+            <clipPath id="inside"><path d="M80 150 V312 Q80 322 90 322 H290 Q300 322 300 312 V150 Z"/></clipPath>
+          </defs>
+          <circle id="glow" cx="190" cy="32" r="78" fill="url(#glowGrad)" opacity="0"/>
+          <!-- wires -->
+          <path class="wire" d="M144 120 V56 H181"/>
+          <path class="wire" d="M199 56 H330 V64"/>
+          <path class="wire" d="M330 76 V104 H306"/>
+          <path class="wire" d="M276 104 H244 V120"/>
+          <!-- battery -->
+          <line class="inkline" x1="312" y1="66" x2="348" y2="66" stroke-width="2.5"/>
+          <line class="inkline" x1="321" y1="74" x2="339" y2="74" stroke-width="6"/>
+          <text class="lbl" x="354" y="64">+</text><text class="lbl" x="354" y="80">−</text>
+          <text class="lbl" x="300" y="46">батарейка</text>
+          <!-- switch -->
+          <circle cx="304" cy="104" r="3.5" fill="var(--ink)"/>
+          <circle cx="276" cy="104" r="3.5" fill="var(--ink)"/>
+          <line id="blade" class="inkline" x1="304" y1="104" x2="278" y2="88" stroke-width="3" stroke-linecap="round"/>
+          <text class="lbl" x="276" y="126">ключ</text>
+          <!-- bulb -->
+          <circle id="glass" class="glass" cx="190" cy="32" r="19"/>
+          <path id="fil" class="fil" d="M184 50 L184 36 Q187 28 190 36 Q193 28 196 36 L196 50"/>
+          <rect x="181" y="49" width="18" height="11" rx="2" fill="var(--muted)"/>
+          <text class="lbl" x="214" y="22">лампочка</text>
+          <!-- liquid + particles -->
+          <g clip-path="url(#inside)">
+            <rect id="liquid" x="78" y="180" width="226" height="150" fill="transparent"/>
+            <g id="parts"></g>
+          </g>
+          <!-- electrodes -->
+          <rect class="electrode" x="140" y="118" width="8" height="180" rx="2"/>
+          <rect class="electrode" x="240" y="118" width="8" height="180" rx="2"/>
+          <text class="pole p" x="124" y="140">+</text>
+          <text class="pole m" x="254" y="140">−</text>
+          <!-- beaker -->
+          <path class="beaker" d="M76 146 V312 Q76 326 90 326 H290 Q304 326 304 312 V146"/>
+          <g>
+            <line class="tick" x1="290" y1="200" x2="304" y2="200"/>
+            <line class="tick" x1="296" y1="230" x2="304" y2="230"/>
+            <line class="tick" x1="290" y1="260" x2="304" y2="260"/>
+            <line class="tick" x1="296" y1="290" x2="304" y2="290"/>
+          </g>
+          <text class="lbl" x="20" y="200">графітові</text>
+          <text class="lbl" x="20" y="213">електроди</text>
+        </svg>
+        <div class="readout">
+          <span>Лампочка: <span id="lampState" class="lamp-state">коло розімкнене</span></span>
+          <div id="legend" class="legend"></div>
+        </div>
+      </div>
+
+      <div class="card panel" id="panel"></div>
+    </div>
+
+    <div class="card journal">
+      <div class="jfoot">
+        <h2>Журнал спостережень</h2>
+        <button class="btn ghost" id="resetDet" type="button">Почати спочатку</button>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>№</th><th>Речовина</th><th>Мій прогноз</th><th>Результат</th><th>Прогноз справдився?</th></tr></thead>
+          <tbody id="jBody"></tbody>
+        </table>
+      </div>
+      <p id="jStat" class="hint"></p>
+      <div id="concl" class="concl" hidden>
+        <h3>Твій висновок</h3>
+        <label for="conclText" class="hint">Що спільного в речовинах, з якими лампочка світиться? Чому суха сіль струм не проводить, а її розчин — проводить? Напиши своїми словами.</label>
+        <textarea id="conclText" placeholder="Лампочка світиться, коли в рідині є…"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== EQUATIONS ========== -->
+  <section id="tab-eq" role="tabpanel" aria-labelledby="t-eq" hidden>
+    <div class="eqgrid">
+      <div class="card">
+        <div class="eqhead">
+          <div id="taskNav" class="nav" aria-label="Завдання"></div>
+          <div class="score">Правильно: <b id="score">0</b> з <span id="total">0</span></div>
+        </div>
+        <p class="eyebrow">Завдання <span id="tNum">1</span> · склади рівняння дисоціації</p>
+        <div class="equation">
+          <span class="formula" id="tFormula"></span>
+          <span class="arrow">→</span>
+          <div id="terms" class="terms"></div>
+        </div>
+        <div class="balance" id="balance" aria-live="polite"></div>
+        <div class="bank-h">Йони · натискай, щоб додати (повторне натискання збільшує коефіцієнт)</div>
+        <div id="bank" class="bank"></div>
+        <div class="actions">
+          <button class="btn" id="checkBtn" type="button">Перевірити</button>
+          <button class="btn ghost" id="clearBtn" type="button">Очистити</button>
+          <button class="btn ghost" id="nextBtn" type="button">Наступне →</button>
+        </div>
+        <div id="fb" class="fb" role="status"></div>
+      </div>
+
+      <aside class="card algo">
+        <h3>Алгоритм</h3>
+        <ol>
+          <li>Визнач катіон і аніон та їхні заряди.</li>
+          <li>Індекси у формулі стають коефіцієнтами перед йонами.</li>
+          <li>Перевір: сума зарядів дорівнює нулю.</li>
+        </ol>
+        <div class="ex">Ca(OH)<sub>2</sub> → Ca<sup>2+</sup> + 2OH<sup>−</sup><br>(+2) + 2·(−1) = 0 ✓</div>
+        <p class="hint">Нерозчинні основи та неелектроліти у воді не дисоціюють — для них є плитка «Не дисоціює».</p>
+      </aside>
+    </div>
+
+    <div class="card final" id="final" hidden>
+      <div class="big">Усі завдання виконано</div>
+      <div class="stats" id="finalStats"></div>
+      <label for="stuName" class="hint">Впиши прізвище та ім'я, зроби знімок екрана цієї картки й надішли вчителю.</label>
+      <input type="text" id="stuName" placeholder="Прізвище Ім'я, клас">
+    </div>
+  </section>
+</main>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+const NS='http://www.w3.org/2000/svg';
+const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+let store={};
+try{store=JSON.parse(localStorage.getItem('ion-lab-v1')||'{}')||{};}catch(e){store={};}
+function save(){try{localStorage.setItem('ion-lab-v1',JSON.stringify(store));}catch(e){}}
+
+/* ---------------- Tabs ---------------- */
+const tabs=[['t-det','tab-det'],['t-eq','tab-eq']];
+tabs.forEach(([b,p])=>$('#'+b).addEventListener('click',()=>{
+  tabs.forEach(([b2,p2])=>{const on=b2===b;$('#'+b2).setAttribute('aria-selected',on);$('#'+p2).hidden=!on;});
+}));
+
+/* ---------------- Detector data ---------------- */
+const LV=['не світиться','тьмяно','яскраво'];
+const CLEAR='rgba(120,170,200,.16)';
+const SUBS=[
+ {id:'dist',n:'Дистильована вода',f:'H<sub>2</sub>O',lv:0,tint:CLEAR,ions:[],w:14,
+  e:'У чистій воді майже немає вільних йонів, тому струм практично не проходить.'},
+ {id:'tap',n:'Вода з-під крана',f:'H<sub>2</sub>O + солі',lv:1,tint:'rgba(150,175,170,.2)',w:12,
+  ions:[{s:'2+',c:1,n:2,l:'Ca<sup>2+</sup>'},{s:'+',c:1,n:1,l:'Na<sup>+</sup>'},{s:'−',c:-1,n:3,l:'HCO<sub>3</sub><sup>−</sup>'},{s:'−',c:-1,n:1,l:'Cl<sup>−</sup>'}],
+  e:'У воді з-під крана розчинені солі (йони Ca²⁺, Na⁺, HCO₃⁻, Cl⁻). Йонів небагато, тому лампочка світиться слабко. Саме тому небезпечно користуватися електроприладами у ванній.'},
+ {id:'nacls',n:'Кухонна сіль, кристали',f:'NaCl (тв.)',lv:0,solid:true,ions:[],
+  e:'Йони Na⁺ і Cl⁻ у кристалі є, але вони закріплені у вузлах кристалічних ґраток і не можуть рухатися. Немає руху заряджених частинок — немає струму.'},
+ {id:'nacl',n:'Розчин кухонної солі',f:'NaCl (р-н)',lv:2,tint:CLEAR,w:6,
+  ions:[{s:'+',c:1,n:9,l:'Na<sup>+</sup>'},{s:'−',c:-1,n:9,l:'Cl<sup>−</sup>'}],
+  e:'Молекули води зруйнували кристал: у розчині вільно рухаються гідратовані йони Na⁺ і Cl⁻. Вони й переносять заряд. NaCl → Na⁺ + Cl⁻'},
+ {id:'naclm',n:'Розплав кухонної солі',f:'NaCl (розплав)',lv:2,tint:'rgba(240,150,60,.42)',
+  ions:[{s:'+',c:1,n:12,l:'Na<sup>+</sup>'},{s:'−',c:-1,n:12,l:'Cl<sup>−</sup>'}],
+  e:'При плавленні кристалічні ґратки руйнуються, йони стають рухливими. Тому розплав солі теж проводить струм, навіть без води.'},
+ {id:'sugar',n:'Розчин цукру',f:'C<sub>12</sub>H<sub>22</sub>O<sub>11</sub>',lv:0,tint:CLEAR,mol:9,w:6,ions:[],
+  e:'Цукор розчиняється, але його молекули не розпадаються на йони: зв\'язки в них ковалентні, малополярні. Носіїв заряду немає — це неелектроліт.'},
+ {id:'gluc',n:'Розчин глюкози',f:'C<sub>6</sub>H<sub>12</sub>O<sub>6</sub>',lv:0,tint:CLEAR,mol:10,w:6,ions:[],
+  e:'Молекули глюкози в розчині залишаються цілими, йонів не утворюється. Глюкоза — неелектроліт.'},
+ {id:'eth',n:'Етиловий спирт',f:'C<sub>2</sub>H<sub>5</sub>OH',lv:0,tint:'rgba(200,210,215,.12)',mol:14,ions:[],
+  e:'Спирт складається з молекул, які не дисоціюють на йони. Тому він не проводить струм.'},
+ {id:'naoh',n:'Розчин натрій гідроксиду',f:'NaOH',lv:2,tint:CLEAR,w:6,
+  ions:[{s:'+',c:1,n:9,l:'Na<sup>+</sup>'},{s:'−',c:-1,n:9,l:'OH<sup>−</sup>'}],
+  e:'Луг дисоціює на катіони металічного елемента та гідроксид-аніони. NaOH → Na⁺ + OH⁻'},
+ {id:'hcl',n:'Хлоридна кислота',f:'HCl (р-н)',lv:2,tint:CLEAR,w:6,
+  ions:[{s:'+',c:1,n:9,l:'H<sup>+</sup>'},{s:'−',c:-1,n:9,l:'Cl<sup>−</sup>'}],
+  e:'У молекулі HCl зв\'язок ковалентний полярний. Під дією води він розривається, утворюються йони H⁺ і Cl⁻. HCl → H⁺ + Cl⁻'},
+ {id:'cuso4',n:'Розчин купрум(II) сульфату',f:'CuSO<sub>4</sub>',lv:2,tint:'rgba(40,115,225,.42)',w:5,
+  ions:[{s:'2+',c:1,n:8,l:'Cu<sup>2+</sup>'},{s:'2−',c:-1,n:8,l:'SO<sub>4</sub><sup>2−</sup>'}],
+  e:'Сіль дисоціює на йони Cu²⁺ і SO₄²⁻. Синього кольору розчину надають гідратовані йони Cu²⁺. CuSO₄ → Cu²⁺ + SO₄²⁻'},
+ {id:'vin',n:'Оцтова кислота',f:'CH<sub>3</sub>COOH',lv:1,tint:CLEAR,mol:10,w:4,
+  ions:[{s:'+',c:1,n:2,l:'H<sup>+</sup>'},{s:'−',c:-1,n:2,l:'CH<sub>3</sub>COO<sup>−</sup>'}],
+  e:'Йони утворюються, але їх мало: більшість молекул оцтової кислоти лишаються цілими. Чому так буває — дізнаємося на наступному уроці.'}
+];
+const byId=Object.fromEntries(SUBS.map(s=>[s.id,s]));
+store.det=store.det||{order:[],res:{}};
+const D=store.det;
+let cur=null, pred=null, closed=false;
+
+/* substance list */
+function renderList(){
+  const box=$('#subList');box.innerHTML='';
+  SUBS.forEach(s=>{
+    const r=D.res[s.id];
+    const b=document.createElement('button');
+    b.type='button';b.className='sub';b.setAttribute('aria-pressed',cur===s.id);
+    b.innerHTML=`<span class="dot ${r?'l'+s.lv:''}"></span><span class="tx"><span class="nm">${s.n}</span><span class="fm">${s.f}</span></span>`;
+    b.addEventListener('click',()=>select(s.id));
+    box.appendChild(b);
+  });
+}
+
+/* particles */
+const parts=$('#parts');let P=[];
+function el(tag,a){const e=document.createElementNS(NS,tag);for(const k in a)e.setAttribute(k,a[k]);return e;}
+const BX=[88,292],BY=[188,314];
+const rnd=(a,b)=>a+Math.random()*(b-a);
+function buildParticles(s,show){
+  parts.innerHTML='';P=[];
+  const liq=$('#liquid');
+  if(s&&s.solid){
+    liq.setAttribute('fill','transparent');
+    if(!show){ // heap of crystals without showing ions
+      for(let i=0;i<34;i++){parts.appendChild(el('rect',{x:rnd(96,276),y:rnd(296,312),width:7,height:7,fill:'var(--mol)',opacity:.7,transform:`rotate(${rnd(-25,25)} 0 0)`}));}
+      return;
+    }
+    const sz=12;
+    for(let r=0;r<3;r++)for(let c=0;c<15;c++){
+      const x=94+c*sz+ (c>3?10:0)+(c>11?10:0), y=284+r*sz; // gaps around electrodes
+      if(x>288)continue;
+      const cat=(r+c)%2===0;
+      const g=el('g',{transform:`translate(${x+5},${y+5})`});
+      g.appendChild(el('circle',{r:5.2,class:cat?'p-cat':'p-an'}));
+      parts.appendChild(g);
+    }
+    return;
+  }
+  liq.setAttribute('fill',s?s.tint:'transparent');
+  if(!s||!show)return;
+  const add=(kind,label,c,cls,r)=>{
+    const g=el('g',{});
+    if(kind==='mol'){g.appendChild(el('ellipse',{rx:9,ry:5.5,class:'p-mol'}));}
+    else if(kind==='w'){g.appendChild(el('circle',{r:3.2,class:'p-w'}));}
+    else{g.appendChild(el('circle',{r:r||9,class:cls}));const t=el('text',{class:'p-sign'});t.textContent=label;g.appendChild(t);}
+    parts.appendChild(g);
+    const p={g,kind,c,x:rnd(BX[0],BX[1]),y:rnd(BY[0],BY[1]),vx:rnd(-.5,.5),vy:rnd(-.5,.5)};
+    P.push(p);place(p);
+  };
+  for(let i=0;i<(s.w||0);i++)add('w');
+  for(let i=0;i<(s.mol||0);i++)add('mol');
+  s.ions.forEach(io=>{for(let i=0;i<io.n;i++)add('ion',io.s,io.c,io.c>0?'p-cat':'p-an',io.s.length>1?10:9);});
+}
+function place(p){p.g.setAttribute('transform',`translate(${p.x.toFixed(1)},${p.y.toFixed(1)})`);}
+function tick(){
+  if(!reduce&&!$('#tab-det').hidden&&P.length){
+    const drift=closed&&cur&&byId[cur].lv>0;
+    P.forEach(p=>{
+      p.vx+=rnd(-.12,.12);p.vy+=rnd(-.12,.12);
+      const lim=p.kind==='w'?.9:.7;
+      p.vx=Math.max(-lim,Math.min(lim,p.vx));p.vy=Math.max(-lim,Math.min(lim,p.vy));
+      let dx=p.vx;
+      if(drift&&p.kind==='ion')dx+=p.c>0?.45:-.45;
+      p.x+=dx;p.y+=p.vy;
+      if(drift&&p.kind==='ion'){
+        if(p.c>0&&p.x>BX[1]){p.x=BX[0];p.y=rnd(BY[0],BY[1]);}
+        if(p.c<0&&p.x<BX[0]){p.x=BX[1];p.y=rnd(BY[0],BY[1]);}
+      }
+      if(p.x<BX[0]){p.x=BX[0];p.vx=Math.abs(p.vx);} if(p.x>BX[1]){p.x=BX[1];p.vx=-Math.abs(p.vx);}
+      if(p.y<BY[0]){p.y=BY[0];p.vy=Math.abs(p.vy);} if(p.y>BY[1]){p.y=BY[1];p.vy=-Math.abs(p.vy);}
+      place(p);
+    });
+  }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+function setCircuit(){
+  const s=cur?byId[cur]:null;
+  const lv=closed&&s?s.lv:0;
+  const bl=$('#blade');
+  bl.setAttribute('x2',278);bl.setAttribute('y2',closed?104:88);
+  $('#glow').setAttribute('opacity',[0,.45,1][lv]);
+  $('#glass').setAttribute('class','glass'+(lv?' on'+lv:''));
+  $('#fil').setAttribute('class','fil'+(lv?' on':''));
+  $('#lampState').textContent=closed?LV[lv]:'коло розімкнене';
+  const lg=$('#legend');lg.innerHTML='';
+  if(closed&&s){
+    const items=[];
+    s.ions.forEach(io=>items.push(`<span><i style="background:var(${io.c>0?'--cation':'--anion'})"></i>${io.l}</span>`));
+    if(s.solid)items.push('<span><i style="background:var(--cation)"></i>Na<sup>+</sup></span><span><i style="background:var(--anion)"></i>Cl<sup>−</sup> у ґратці</span>');
+    if(s.mol)items.push('<span><i style="background:var(--mol);border-radius:3px"></i>молекули</span>');
+    if(s.w)items.push('<span><i style="background:var(--water)"></i>H<sub>2</sub>O</span>');
+    lg.innerHTML=items.join('');
+  }
+}
+
+function select(id){
+  cur=id;const r=D.res[id];
+  pred=r?r.pred:null;closed=!!r;
+  buildParticles(byId[id],closed);
+  renderList();renderPanel();setCircuit();
+}
+
+function renderPanel(){
+  const p=$('#panel');
+  if(!cur){p.innerHTML='<h2>Прогноз</h2><p class="empty">Обери речовину зі списку ліворуч. Спершу передбач, як поведеться лампочка, а потім перевір.</p>';return;}
+  const s=byId[cur];
+  let h=`<div><div class="cur-name">${s.n}</div><div class="cur-f">${s.f}</div></div>
+  <div class="q">Як поведеться лампочка, коли замкнемо коло?</div><div class="preds">`;
+  [0,1,2].forEach(i=>{h+=`<button type="button" class="pred" data-p="${i}" aria-pressed="${pred===i}" ${closed?'disabled':''}><span class="dot l${i}"></span>${LV[i][0].toUpperCase()+LV[i].slice(1)}</button>`;});
+  h+='</div>';
+  if(!closed){h+=`<button type="button" class="btn" id="closeBtn" ${pred===null?'disabled':''}>Замкнути коло</button>`;}
+  else{
+    const ok=pred===s.lv;
+    h+=`<div class="result ${ok?'match':'miss'}"><b class="v">${ok?'Прогноз справдився ✓':'Прогноз не справдився'}</b>
+      <span>Лампочка <b>${LV[s.lv]}</b>.</span><span>${s.e}</span></div>`;
+  }
+  p.innerHTML=h;
+  p.querySelectorAll('.pred').forEach(b=>b.addEventListener('click',()=>{pred=+b.dataset.p;renderPanel();}));
+  const cb=p.querySelector('#closeBtn');
+  if(cb)cb.addEventListener('click',()=>{
+    closed=true;D.res[cur]={pred};if(!D.order.includes(cur))D.order.push(cur);save();
+    buildParticles(byId[cur],true);setCircuit();renderPanel();renderList();renderJournal();
+  });
+}
+
+function renderJournal(){
+  const tb=$('#jBody');tb.innerHTML='';
+  if(!D.order.length){tb.innerHTML='<tr><td colspan="5" class="hint">Тут з\'являтимуться твої досліди.</td></tr>';}
+  let hit=0;
+  D.order.forEach((id,i)=>{
+    const s=byId[id],r=D.res[id];if(!s||!r)return;const ok=r.pred===s.lv;if(ok)hit++;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${i+1}</td><td>${s.n}<br><span class="cur-f" style="font-size:12px">${s.f}</span></td><td>${LV[r.pred]}</td><td><b>${LV[s.lv]}</b></td><td class="${ok?'yes':'no'}">${ok?'так':'ні'}</td>`;
+    tb.appendChild(tr);
+  });
+  $('#jStat').textContent=D.order.length?`Досліджено речовин: ${D.order.length} з ${SUBS.length}. Прогнозів справдилося: ${hit}.`:'';
+  $('#concl').hidden=D.order.length<5;
+}
+$('#conclText').value=store.concl||'';
+$('#conclText').addEventListener('input',e=>{store.concl=e.target.value;save();});
+$('#resetDet').addEventListener('click',()=>{D.order=[];D.res={};save();cur=null;pred=null;closed=false;buildParticles(null,false);renderList();renderPanel();setCircuit();renderJournal();});
+
+/* ---------------- Equations ---------------- */
+const ION={
+ 'Na+':['Na<sup>+</sup>',1],'Na-':['Na<sup>−</sup>',-1,'charge'],'Cl-':['Cl<sup>−</sup>',-1],'Cl+':['Cl<sup>+</sup>',1,'charge'],
+ 'H+':['H<sup>+</sup>',1],'H-':['H<sup>−</sup>',-1,'charge'],'H2+':['H<sub>2</sub><sup>+</sup>',1,'idx'],
+ 'K+':['K<sup>+</sup>',1],'K2+':['K<sub>2</sub><sup>+</sup>',1,'idx'],
+ 'OH-':['OH<sup>−</sup>',-1],'OH2':['(OH)<sub>2</sub><sup>2−</sup>',-2,'idx'],'O2-':['O<sup>2−</sup>',-2,'split'],
+ 'NO3-':['NO<sub>3</sub><sup>−</sup>',-1],'NO33':['(NO<sub>3</sub>)<sub>3</sub><sup>3−</sup>',-3,'idx'],'N5+':['N<sup>5+</sup>',5,'split'],
+ 'SO42-':['SO<sub>4</sub><sup>2−</sup>',-2],'SO4-':['SO<sub>4</sub><sup>−</sup>',-1,'charge'],'S2-':['S<sup>2−</sup>',-2,'split'],'SO43':['(SO<sub>4</sub>)<sub>3</sub><sup>6−</sup>',-6,'idx'],
+ 'PO43-':['PO<sub>4</sub><sup>3−</sup>',-3],'P5+':['P<sup>5+</sup>',5,'split'],'Na33':['Na<sub>3</sub><sup>3+</sup>',3,'idx'],
+ 'Ca2+':['Ca<sup>2+</sup>',2],'Ca+':['Ca<sup>+</sup>',1,'charge'],'Ba2+':['Ba<sup>2+</sup>',2],'Ba+':['Ba<sup>+</sup>',1,'charge'],
+ 'Cl22':['Cl<sub>2</sub><sup>2−</sup>',-2,'idx'],'Cl33':['Cl<sub>3</sub><sup>3−</sup>',-3,'idx'],
+ 'Al3+':['Al<sup>3+</sup>',3],'Al+':['Al<sup>+</sup>',1,'charge'],'Al26':['Al<sub>2</sub><sup>6+</sup>',6,'idx'],
+ 'Fe3+':['Fe<sup>3+</sup>',3],'Fe2+':['Fe<sup>2+</sup>',2,'charge'],
+ 'Cu2+':['Cu<sup>2+</sup>',2],'Cu+':['Cu<sup>+</sup>',1,'charge'],'C4+':['C<sup>4+</sup>',4,'split']
+};
+const TRAP={
+ idx:'Індекс із формули не входить до складу йона — він стає коефіцієнтом перед йоном.',
+ charge:'Заряд одного з йонів визначено неправильно. Згадай валентність елемента або подивись заряд у таблиці розчинності.',
+ split:'Складний йон (кислотний залишок або OH⁻) у розчині не розпадається на окремі атоми.'
+};
+const NOTE={
+ acid:'Кислота: у розчині утворюються лише катіони Гідрогену H⁺ та аніони кислотного залишку.',
+ base:'Луг: утворюються катіони металічного елемента та лише гідроксид-аніони OH⁻.',
+ sal:'Сіль: утворюються катіони металічного елемента та аніони кислотного залишку.',
+ insol:'Cu(OH)₂ — нерозчинна основа, тому у воді вона не дисоціює. Це видно з таблиці розчинності.',
+ nonel:'Цукор — неелектроліт: зв\'язки в його молекулі ковалентні, йони не утворюються.'
+};
+const TASKS=[
+ {f:'NaCl',a:{'Na+':1,'Cl-':1},b:['Na+','Cl-','Na-','Cl+'],t:'sal'},
+ {f:'HCl',a:{'H+':1,'Cl-':1},b:['H+','Cl-','H-','Cl+'],t:'acid'},
+ {f:'NaOH',a:{'Na+':1,'OH-':1},b:['Na+','OH-','O2-','H+'],t:'base'},
+ {f:'KNO<sub>3</sub>',a:{'K+':1,'NO3-':1},b:['K+','NO3-','N5+','O2-'],t:'sal'},
+ {f:'HNO<sub>3</sub>',a:{'H+':1,'NO3-':1},b:['H+','NO3-','H-','O2-'],t:'acid'},
+ {f:'H<sub>2</sub>SO<sub>4</sub>',a:{'H+':2,'SO42-':1},b:['H+','H2+','SO42-','SO4-'],t:'acid'},
+ {f:'K<sub>2</sub>SO<sub>4</sub>',a:{'K+':2,'SO42-':1},b:['K+','K2+','SO42-','S2-'],t:'sal'},
+ {f:'Ca(OH)<sub>2</sub>',a:{'Ca2+':1,'OH-':2},b:['Ca2+','Ca+','OH-','OH2'],t:'base'},
+ {f:'Ba(OH)<sub>2</sub>',a:{'Ba2+':1,'OH-':2},b:['Ba2+','Ba+','OH-','H+'],t:'base'},
+ {f:'CaCl<sub>2</sub>',a:{'Ca2+':1,'Cl-':2},b:['Ca2+','Ca+','Cl-','Cl22'],t:'sal'},
+ {f:'AlCl<sub>3</sub>',a:{'Al3+':1,'Cl-':3},b:['Al3+','Al+','Cl-','Cl33'],t:'sal'},
+ {f:'Na<sub>3</sub>PO<sub>4</sub>',a:{'Na+':3,'PO43-':1},b:['Na+','Na33','PO43-','P5+'],t:'sal'},
+ {f:'Fe(NO<sub>3</sub>)<sub>3</sub>',a:{'Fe3+':1,'NO3-':3},b:['Fe3+','Fe2+','NO3-','NO33'],t:'sal'},
+ {f:'Al<sub>2</sub>(SO<sub>4</sub>)<sub>3</sub>',a:{'Al3+':2,'SO42-':3},b:['Al3+','Al26','SO42-','SO43'],t:'sal'},
+ {f:'Cu(OH)<sub>2</sub>',none:true,b:['Cu2+','Cu+','OH-'],t:'insol',
+  miss:'Перевір у таблиці розчинності, чи розчиняється ця основа у воді.'},
+ {f:'C<sub>12</sub>H<sub>22</sub>O<sub>11</sub>',none:true,b:['C4+','H+','O2-'],t:'nonel',
+  miss:'Це цукор. Згадай детектор провідності: чи світилася лампочка з розчином цукру?'}
+];
+// stable shuffled bank order per task
+TASKS.forEach((t,i)=>{const arr=t.b.slice();let seed=i*9301+49297;for(let k=arr.length-1;k>0;k--){seed=(seed*9301+49297)%233280;const j=Math.floor(seed/233280*(k+1));[arr[k],arr[j]]=[arr[j],arr[k]];}t.bank=arr;});
+
+store.eq=store.eq||{st:{},tries:{}};
+const E=store.eq;
+let ti=0;let terms=[];let noneSel=false;
+$('#total').textContent=TASKS.length;
+
+const chg=c=>{const a=Math.abs(c);return (a===1?'':a)+(c>0?'+':'−');};
+function isLocked(){return !!E.st[ti];}
+
+function renderNav(){
+  const n=$('#taskNav');n.innerHTML='';
+  TASKS.forEach((t,i)=>{
+    const b=document.createElement('button');b.type='button';
+    const st=E.st[i];
+    b.className='nv'+(i===ti?' cur':'')+(st==='ok'||st==='ok2'?' ok':'')+(st==='shown'?' shown':'');
+    b.textContent=i+1;b.setAttribute('aria-label','Завдання '+(i+1));
+    b.addEventListener('click',()=>goTask(i));n.appendChild(b);
+  });
+  $('#score').textContent=Object.values(E.st).filter(s=>s==='ok'||s==='ok2').length;
+}
+function goTask(i){
+  ti=i;const t=TASKS[i];
+  if(E.st[i]){ // show solved state
+    noneSel=!!t.none;terms=t.none?[]:Object.entries(t.a).map(([id,c])=>({id,c}));
+  }else{terms=[];noneSel=false;}
+  $('#fb').className='fb';$('#fb').innerHTML='';
+  if(E.st[i])showSolved();
+  render();
+}
+function showSolved(){
+  const t=TASKS[ti],st=E.st[ti];
+  const fb=$('#fb');fb.className='fb ok';
+  fb.innerHTML=`<b>${st==='shown'?'Правильна відповідь показана.':'Правильно ✓'}</b> ${NOTE[t.t]}`;
+}
+function render(){
+  const t=TASKS[ti];
+  $('#tNum').textContent=ti+1;
+  $('#tFormula').innerHTML=t.f;
+  const box=$('#terms');box.innerHTML='';
+  const lock=isLocked();
+  if(noneSel){
+    box.innerHTML='<span class="none-chip">не дисоціює</span>';
+    if(!lock){const x=document.createElement('button');x.type='button';x.className='mini';x.textContent='×';x.setAttribute('aria-label','Прибрати');x.onclick=()=>{noneSel=false;render();};box.appendChild(x);}
+  }else if(!terms.length){box.innerHTML='<span class="placeholder">натискай на йони нижче</span>';}
+  else terms.forEach((tm,k)=>{
+    if(k){const s=document.createElement('span');s.className='plus-sep';s.textContent='+';box.appendChild(s);}
+    const [h,c]=ION[tm.id];
+    const w=document.createElement('span');w.className='term';
+    if(lock){w.innerHTML=`<span class="coef">${tm.c>1?tm.c:''}</span><span class="ion ${c>0?'c':'a'}">${h}</span>`;}
+    else{
+      w.innerHTML=`<button type="button" class="mini" data-a="dec" aria-label="Зменшити коефіцієнт">−</button><span class="coef">${tm.c}</span><button type="button" class="mini" data-a="inc" aria-label="Збільшити коефіцієнт">+</button><span class="ion ${c>0?'c':'a'}">${h}</span><button type="button" class="mini" data-a="rm" aria-label="Прибрати йон">×</button>`;
+      w.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+        const a=b.dataset.a;
+        if(a==='inc')tm.c=Math.min(9,tm.c+1);
+        if(a==='dec'){tm.c--; if(tm.c<1)terms.splice(k,1);}
+        if(a==='rm')terms.splice(k,1);
+        render();
+      });
+    }
+    box.appendChild(w);
+  });
+  // balance
+  const bal=$('#balance');
+  if(noneSel||!terms.length){bal.innerHTML='';}
+  else{
+    let sum=0;const parts=terms.map(tm=>{const c=ION[tm.id][1];sum+=tm.c*c;return `${tm.c>1?tm.c+'·':''}(${c>0?'+':'−'}${Math.abs(c)})`;});
+    bal.innerHTML=`Сума зарядів: ${parts.join(' + ')} = <span class="${sum===0?'z':'nz'}">${sum>0?'+':sum<0?'−':''}${Math.abs(sum)}${sum===0?' ✓':''}</span>`;
+  }
+  // bank
+  const bank=$('#bank');bank.innerHTML='';
+  t.bank.forEach(id=>{
+    const [h,c]=ION[id];const b=document.createElement('button');b.type='button';
+    b.className='tile '+(c>0?'c':'a');b.innerHTML=h;b.disabled=lock;
+    b.onclick=()=>{noneSel=false;const ex=terms.find(x=>x.id===id);if(ex)ex.c=Math.min(9,ex.c+1);else terms.push({id,c:1});clearFb();render();};
+    bank.appendChild(b);
+  });
+  const nd=document.createElement('button');nd.type='button';nd.className='tile nd';nd.textContent='Не дисоціює';nd.disabled=lock;
+  nd.onclick=()=>{noneSel=true;terms=[];clearFb();render();};bank.appendChild(nd);
+  $('#checkBtn').disabled=lock;$('#clearBtn').disabled=lock;
+  renderNav();renderFinal();
+}
+function clearFb(){if(!isLocked()){const f=$('#fb');f.className='fb';f.innerHTML='';}}
+function diagnose(t){
+  if(t.none){
+    if(noneSel)return null;
+    return terms.length?t.miss:'Обери йони або плитку «Не дисоціює».';
+  }
+  if(noneSel)return 'Ця речовина — електроліт: у водному розчині вона дисоціює на йони.';
+  if(!terms.length)return 'Додай йони з банку нижче.';
+  for(const tm of terms){
+    if(!(tm.id in t.a)){const tr=ION[tm.id][2];return tr?TRAP[tr]:'Такого йона немає у складі цієї речовини.';}
+  }
+  if(terms.length<Object.keys(t.a).length)return 'Не вистачає ще одного йона: має бути і катіон, і аніон.';
+  const sum=terms.reduce((s,tm)=>s+tm.c*ION[tm.id][1],0);
+  if(sum!==0)return 'Сума зарядів не дорівнює нулю. Перевір коефіцієнти: індекси у формулі стають коефіцієнтами.';
+  for(const tm of terms){if(t.a[tm.id]!==tm.c)return 'Заряди зрівноважені, але коефіцієнти мають відповідати індексам у формулі й бути найменшими.';}
+  return null;
+}
+$('#checkBtn').addEventListener('click',()=>{
+  const t=TASKS[ti];const err=diagnose(t);const fb=$('#fb');
+  if(!err){E.st[ti]=(E.tries[ti]||0)===0?'ok':'ok2';save();showSolved();render();return;}
+  E.tries[ti]=(E.tries[ti]||0)+1;save();
+  fb.className='fb bad';fb.innerHTML=`<b>Ще не так.</b> ${err}`;
+  if(E.tries[ti]>=3){
+    const b=document.createElement('button');b.type='button';b.className='btn ghost rev';b.textContent='Показати відповідь';
+    b.onclick=()=>{E.st[ti]='shown';save();noneSel=!!t.none;terms=t.none?[]:Object.entries(t.a).map(([id,c])=>({id,c}));showSolved();render();};
+    const d=document.createElement('div');d.appendChild(b);fb.appendChild(d);
+  }
+});
+$('#clearBtn').addEventListener('click',()=>{terms=[];noneSel=false;clearFb();render();});
+$('#nextBtn').addEventListener('click',()=>{
+  let n=-1;for(let k=1;k<=TASKS.length;k++){const j=(ti+k)%TASKS.length;if(!E.st[j]){n=j;break;}}
+  goTask(n<0?(ti+1)%TASKS.length:n);
+});
+function renderFinal(){
+  const done=Object.keys(E.st).length===TASKS.length;
+  $('#final').hidden=!done;if(!done)return;
+  const v=Object.values(E.st);
+  const c=s=>v.filter(x=>x===s).length;
+  $('#finalStats').innerHTML=`<span>З першої спроби: <b>${c('ok')}</b></span><span>Після виправлень: <b>${c('ok2')}</b></span><span>Відповідь переглянуто: <b>${c('shown')}</b></span>`;
+}
+$('#stuName').value=store.name||'';
+$('#stuName').addEventListener('input',e=>{store.name=e.target.value;save();});
+
+/* init */
+renderList();renderPanel();setCircuit();renderJournal();
+goTask(0);
+})();
+</script>
+
+</body></html>
