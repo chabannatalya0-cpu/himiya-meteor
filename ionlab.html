@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Лабораторія йонного обміну</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700;800&display=swap">
+<style>
+/* Layout: lab bench (reagent shelf of dropper bottles above a wooden rack of 6 test tubes), equation strip under it; right side panel with "Завдання" and "Журнал" tabs, like a lab notebook. Bright single light look: pale bench, wood rack, glass tubes. */
+:root{
+  color-scheme: light;
+  --bg:#eef1f6; --card:#fff; --ink:#18212f; --muted:#5d6879; --line:#d9dfe9;
+  --bench:#e7ebf1; --wood:#c08552; --wood-deep:#8b5a2b; --glass:#e9f4fb; --accent:#2563eb; --accent-deep:#1d4ed8;
+  --ok:#16a34a; --bad:#dc2626; --gold:#f59e0b; --cation:#7c3aed; --anion:#059669;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15.5px;line-height:1.45}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1320px;margin:0 auto;padding-block:14px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:14px}
+header{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:flex-end;justify-content:space-between}
+.eyebrow{font:700 11px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+h1{margin:2px 0 0;font-family:var(--f-display);font-size:clamp(22px,3.6vw,32px);line-height:1.05}
+.who{font-weight:800;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 14px}
+.main{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:14px;align-items:start}
+@media (max-width:1060px){.main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.bench{background:linear-gradient(180deg,#f7f9fc 0%,var(--bench) 100%);border:1px solid var(--line);border-radius:22px;padding:14px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.lbl{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:800;color:var(--muted)}
+.hint{font-size:14px;color:var(--muted);margin:0}
+/* shelf */
+.shelf{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;background:#fff;border:1px solid var(--line);padding:8px 6px;border-radius:16px}
+@media (max-width:760px){.shelf{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.bottle{font:inherit;border:0;background:transparent;cursor:grab;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 2px;border-radius:12px;touch-action:none;color:var(--ink)}
+.bottle svg{width:46px;height:70px;filter:drop-shadow(0 3px 2px rgba(0,0,0,.12))}
+.bottle .f{font-family:var(--f-mono);font-weight:800;font-size:14px;line-height:1.1}
+.bottle .n{font-size:11px;color:var(--muted);line-height:1.15;text-align:center}
+.bottle[aria-pressed="true"]{background:#dbeafe;box-shadow:0 0 0 3px var(--accent) inset}
+.bottle.x .f{color:#b45309}
+/* rack */
+.rack{position:relative;padding:22px 8px 10px;border-bottom:14px solid var(--wood);border-radius:0 0 8px 8px;background:linear-gradient(180deg,transparent 0 62%,rgba(192,133,82,.18) 62% 100%)}
+.tubes{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;position:relative;z-index:1}
+@media (max-width:560px){.tubes{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.tube{display:flex;flex-direction:column;align-items:center;gap:4px;border-radius:14px;padding:4px 0;cursor:pointer;position:relative}
+.tube.over,.tube.target{background:rgba(37,99,235,.08);box-shadow:0 0 0 2px var(--accent) inset}
+.tube svg{width:100%;max-width:74px;height:auto;display:block}
+.tube .num{font:800 13px var(--f-mono);background:#fff;border:1px solid var(--line);border-radius:999px;padding:1px 9px}
+.tube .clr{font:inherit;font-size:12px;font-weight:700;border:1px solid var(--line);background:#fff;border-radius:8px;padding:3px 8px;cursor:pointer;color:var(--muted)}
+.tube .callout{position:absolute;top:-6px;left:50%;transform:translate(-50%,-100%);background:#fff;border:2px solid var(--accent);border-radius:10px;padding:4px 8px;font-size:12.5px;font-weight:700;width:max-content;max-width:132px;text-align:center;z-index:3;box-shadow:0 4px 10px rgba(0,0,0,.08);pointer-events:none;opacity:0;transition:opacity .3s}
+.tube .callout.on{opacity:1}
+.rackbar{height:16px;border-radius:6px;background:linear-gradient(180deg,var(--wood),var(--wood-deep));margin-top:-118px;position:relative;z-index:2;pointer-events:none;opacity:.92}
+.rackbase{height:14px;border-radius:6px;background:linear-gradient(180deg,var(--wood),var(--wood-deep));margin-top:96px}
+@media (max-width:560px){.rackbar,.rackbase{display:none}}
+.contents{font-size:12px;color:var(--muted);text-align:center;min-height:2.4em;line-height:1.2;font-family:var(--f-mono)}
+/* bubbles & animation */
+.bub{opacity:0}
+.gas .bub{animation:rise 1.4s infinite ease-in}
+@keyframes rise{0%{transform:translateY(0);opacity:0}15%{opacity:.9}100%{transform:translateY(-110px);opacity:0}}
+.drop{animation:fall .45s ease-in forwards}
+@keyframes fall{from{transform:translateY(-30px);opacity:1}to{transform:translateY(60px);opacity:0}}
+.dragghost{position:fixed;z-index:50;pointer-events:none;transform:translate(-50%,-80%);background:#fff;border:2px solid var(--accent);border-radius:12px;padding:6px 10px;font:800 15px var(--f-mono);box-shadow:0 8px 20px rgba(0,0,0,.18)}
+/* equations */
+.eqs{display:grid;gap:6px}
+.eqr{display:grid;grid-template-columns:170px minmax(0,1fr);gap:10px;align-items:baseline;background:#f6f8fb;border-radius:12px;padding:8px 10px}
+@media (max-width:560px){.eqr{grid-template-columns:1fr}}
+.eqr b{font-size:12.5px;color:var(--muted)}
+.eqr span{font-family:var(--f-mono);font-weight:700;font-size:15px;overflow-x:auto;white-space:nowrap}
+.eqr.short span{color:var(--accent-deep);font-size:17px}
+.obs{font-weight:800;font-size:16px}
+/* panel */
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#eef2f8;border-radius:14px;padding:4px}
+.tabs button{font:inherit;font-weight:800;border:0;border-radius:11px;padding:9px;background:transparent;color:var(--muted);cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--accent);color:#fff}
+.mis{border:2px solid var(--line);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.mis.done{border-color:var(--ok)}
+.mis h3{margin:0;font-size:15.5px;display:flex;gap:8px;align-items:flex-start}
+.mis h3 .st{flex:none;width:24px;height:24px;border-radius:8px;display:grid;place-items:center;background:#eef2f8;font-size:13px}
+.mis.done h3 .st{background:var(--ok);color:#fff}
+.mis h3 .pts{margin-left:auto;font:700 12px var(--f-mono);color:var(--accent-deep);background:#e8efff;border-radius:999px;padding:2px 8px;white-space:nowrap}
+.opts{display:grid;gap:6px}
+.op{font:inherit;text-align:left;border:2px solid var(--line);background:#fff;border-radius:10px;padding:7px 10px;cursor:pointer;font-family:var(--f-mono);font-weight:700;font-size:14px;color:var(--ink)}
+.op.txt{font-family:var(--f-body)}
+.op:hover:not([disabled]){border-color:var(--accent)}
+.op.ok{border-color:var(--ok);background:#ecfdf3}.op.no{border-color:var(--bad);background:#fef2f2}
+.op[disabled]{cursor:default}
+.lock{font-size:13px;color:var(--muted)}
+.journal{display:flex;flex-direction:column;gap:8px;max-height:560px;overflow:auto}
+.jr{border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:14px}
+.jr .t{font:800 12px var(--f-mono);color:var(--muted)}
+.jr .o{font-weight:800}
+.jr .s{font-family:var(--f-mono);font-weight:700;color:var(--accent-deep)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{font-family:var(--f-display);font-size:15px;border:0;border-radius:14px;padding:12px 18px;cursor:pointer;color:#fff;background:var(--accent);box-shadow:0 4px 0 var(--accent-deep)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--accent-deep)}
+.btn.ghost{background:#fff;color:var(--accent-deep);border:2px solid var(--line);box-shadow:none;font-size:14px}
+.btn.green{background:var(--ok);box-shadow:0 4px 0 #0e6b31}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+input[type=text],select{font:inherit;font-size:16px;padding:11px 13px;border-radius:12px;border:2px solid var(--line);background:#fff;color:var(--ink);width:100%}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.total{font-family:var(--f-display);font-size:28px;color:var(--ok)}
+.msg{font-weight:700;padding:9px 12px;border-radius:12px;font-size:14.5px}
+.msg.ok{background:#e8f8ee;color:#166534}.msg.bad{background:#fdecec;color:#991b1b}.msg.info{background:#e8efff;color:var(--accent-deep)}
+.overlay{position:fixed;inset:0;z-index:30;background:rgba(24,33,47,.55);display:flex;align-items:center;justify-content:center;
+  padding:20px max(16px,env(safe-area-inset-right,0px)) 20px max(16px,env(safe-area-inset-left,0px))}
+.overlay .card{max-width:520px;width:100%}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:520px){.grid2{grid-template-columns:1fr}}
+.safety{background:#fff7e6;border:2px dashed var(--gold);border-radius:14px;padding:10px 12px;font-size:14px}
+@media (prefers-reduced-motion:reduce){.gas .bub,.drop{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div><div class="eyebrow">Хімія · 9 клас · реакції йонного обміну · віртуальна лабораторія</div><h1>Лабораторія йонного обміну</h1></div>
+    <span class="who" id="who"></span>
+  </header>
+
+  <div class="main">
+    <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
+      <section class="bench">
+        <div class="row" style="justify-content:space-between"><span class="lbl">Розчини реактивів</span><p class="hint" id="howto">Перетягни склянку на пробірку або натисни склянку, а потім пробірку. Одне перетягування додає одну порцію розчину.</p></div>
+        <div class="shelf" id="shelf"></div>
+        <div class="rack">
+          <div class="tubes" id="tubes"></div>
+        </div>
+        <div class="row"><button class="btn ghost" type="button" id="rinse">Помити всі пробірки</button><span class="hint">Реакції в пробірках розраховуються за йонами, тому результат правильний для будь-якої пари розчинів.</span></div>
+      </section>
+
+      <section class="card" id="eqCard">
+        <span class="lbl">Що сталося в пробірці</span>
+        <div id="eqBox"><p class="hint">Злий два розчини в одну пробірку: тут з'являться спостереження, молекулярне, повне й скорочене йонні рівняння.</p></div>
+      </section>
+    </div>
+
+    <aside class="card">
+      <div class="tabs" id="tabs"><button type="button" data-t="tasks" aria-pressed="true">Завдання · 12 балів</button><button type="button" data-t="log" aria-pressed="false">Журнал дослідів</button></div>
+      <div id="tTasks" style="display:flex;flex-direction:column;gap:10px"></div>
+      <div id="tLog" hidden><div class="journal" id="journal"><p class="hint">Тут з'являтимуться всі твої досліди.</p></div></div>
+    </aside>
+  </div>
+</div>
+
+<div class="overlay" id="start">
+  <div class="card">
+    <span class="eyebrow">Перед початком роботи</span>
+    <h2 style="margin:0;font-family:var(--f-display);font-size:22px">Реакції йонного обміну</h2>
+    <p style="margin:0">Реакції між розчинами електролітів відбуваються до кінця, якщо утворюється <b>осад</b>, <b>газ</b> або <b>слабкий електроліт (вода)</b>. Перевір це на досліді й виконай 7 завдань.</p>
+    <div class="safety">🧤 У справжній лабораторії працюють у халаті, окулярах і рукавичках, а кислоти й луги наливають обережно. Тут можна експериментувати скільки завгодно!</div>
+    <div class="grid2">
+      <div><label class="lbl" for="pname">Прізвище та ім'я</label><input type="text" id="pname" maxlength="60" autocomplete="name" placeholder="Іваненко Олена"></div>
+      <div><label class="lbl" for="pcls">Клас</label><select id="pcls"><option value="">— обери —</option><option>9-А</option><option>9-Б</option><option>Інший</option></select></div>
+    </div>
+    <p class="msg bad" id="startErr" hidden>Впиши прізвище, ім'я та обери клас.</p>
+    <div class="row"><button class="btn" id="startBtn" type="button">До лабораторії</button></div>
+  </div>
+</div>
+
+<script src="ion-core.js"></script>
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="ionlab9";
+const {RG,PPT,Tube,molecular,full,pairFor}=window.IonLab;
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const X_OPTS=["NaCl","Na2SO4","Na2CO3","KNO3"];
+const X_ID=X_OPTS[Math.random()*4|0];
+const SHELF=["AgNO3","BaCl2","CaCl2","NaCl","Na2SO4","Na2CO3","CuSO4","FeCl3","NaOH","HCl","H2SO4","KNO3","PHPH","X"];
+const real=id=>id==="X"?X_ID:id;
+const label=id=>id==="X"?"Розчин X":RG[id].f;
+let ME={name:"",cls:""},sel=null,experiments=0;
+const tubes=[...Array(6)].map(()=>({t:new Tube(),names:[]}));
+
+/* ---------- полиця ---------- */
+function bottleSVG(id){
+  const c=id==="X"?"#fde68a":id==="PHPH"?"#fafafa":RG[id].tint||"#dbeafe";
+  return `<svg viewBox="0 0 46 70" aria-hidden="true"><rect x="18" y="2" width="10" height="12" rx="4" fill="#7f1d1d"/><rect x="15" y="12" width="16" height="7" rx="2" fill="#1f2937"/>
+  <path d="M10 22h26a4 4 0 0 1 4 4v38a4 4 0 0 1-4 4H10a4 4 0 0 1-4-4V26a4 4 0 0 1 4-4z" fill="#fff" stroke="#94a3b8" stroke-width="1.5"/>
+  <path d="M8 36h30v28a3 3 0 0 1-3 3H11a3 3 0 0 1-3-3z" fill="${c}" opacity=".75"/><rect x="11" y="40" width="24" height="12" rx="2" fill="#fff" opacity=".85"/></svg>`;
+}
+$("shelf").innerHTML=SHELF.map(id=>`<button class="bottle ${id==="X"?"x":""}" type="button" data-id="${id}" aria-pressed="false">${bottleSVG(id)}<span class="f">${label(id)}</span><span class="n">${id==="X"?"невідомий":RG[id].n}</span></button>`).join("");
+
+/* ---------- пробірки ---------- */
+function tubeSVG(i){return `<svg viewBox="0 0 60 210" aria-hidden="true">
+  <defs><clipPath id="cp${i}"><path d="M17 14h26v160a13 13 0 0 1-26 0z"/></clipPath></defs>
+  <g clip-path="url(#cp${i})"><rect class="liq" x="0" y="210" width="60" height="0" fill="#bfe3f7" opacity=".55"/>
+    <rect class="tint" x="0" y="210" width="60" height="0" fill="none" opacity="0"/>
+    <g class="ppt"></g><rect class="cloud" x="0" y="0" width="60" height="210" fill="#fff" opacity="0"/>
+    <g class="bubs">${[22,30,38,26,34].map((x,k)=>`<circle class="bub" cx="${x}" cy="182" r="${2+k%2}" fill="#fff" stroke="#93c5fd" style="animation-delay:${k*0.25}s"/>`).join("")}</g>
+    <g class="drops"></g></g>
+  <path d="M15 6h30v4h-2v164a13 13 0 0 1-26 0V10h-2z" fill="rgba(233,244,251,.25)" stroke="#94a3b8" stroke-width="2"/>
+  <rect x="20" y="20" width="4" height="140" rx="2" fill="#fff" opacity=".7"/></svg>`}
+$("tubes").innerHTML=tubes.map((_,i)=>`<div class="tube" data-i="${i}" role="button" tabindex="0" aria-label="Пробірка ${i+1}"><div class="callout"></div>${tubeSVG(i)}<span class="num">${i+1}</span><span class="contents"></span><button class="clr" type="button">вилити</button></div>`).join("");
+document.querySelectorAll(".tube").forEach(el=>{
+  el.addEventListener("click",e=>{if(e.target.closest(".clr")){clearTube(+el.dataset.i);return}if(sel) pour(sel,+el.dataset.i)});
+  el.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&sel){e.preventDefault();pour(sel,+el.dataset.i)}});
+});
+function drawTube(i){
+  const T=tubes[i],t=T.t,el=document.querySelector(`.tube[data-i="${i}"]`),svg=el.querySelector("svg");
+  const lvl=Math.min(6,t.vol)*26,top=187-lvl;
+  const liq=svg.querySelector(".liq");liq.setAttribute("y",top);liq.setAttribute("height",lvl+10);
+  const ions=t.ions,tint=svg.querySelector(".tint");let col=null,op=0;
+  if(t.phph&&t.oh()>0.05){col="#db2777";op=.6}
+  else if((ions["Cu²⁺"]||0)>0.02&&(ions["Fe³⁺"]||0)>0.02){col="#65a30d";op=.45}
+  else if((ions["Cu²⁺"]||0)>0.02){col="#0ea5e9";op=Math.min(.6,.25+ions["Cu²⁺"]*.2)}
+  else if((ions["Fe³⁺"]||0)>0.02){col="#eab308";op=Math.min(.65,.3+ions["Fe³⁺"]*.2)}
+  tint.setAttribute("y",top);tint.setAttribute("height",lvl+10);tint.setAttribute("fill",col||"none");tint.setAttribute("opacity",op);
+  const g=svg.querySelector(".ppt");let y=188,html="";
+  for(const [p,a] of Object.entries(t.ppt)){if(a<0.01)continue;const h=Math.max(18,Math.min(42,a*30));y-=h;const c=PPT[p].c,light=/^#f|#ffffff/.test(c);
+    html+=`<rect x="0" y="${y}" width="60" height="${h}" fill="${c}"/>`+[...Array(7)].map((_,k)=>`<circle cx="${19+(k*7)%22}" cy="${y+3+(k*5)%Math.max(4,h-4)}" r="1.6" fill="${light?"#cbd5e1":"rgba(0,0,0,.18)"}"/>`).join("")+
+    `<line x1="0" x2="60" y1="${y}" y2="${y}" stroke="${light?"#94a3b8":"rgba(0,0,0,.2)"}" stroke-width="1"/>`}
+  g.innerHTML=html;
+  el.querySelector(".contents").textContent=T.names.length?T.names.join(" + "):"порожня";
+}
+function clearTube(i){tubes[i]={t:new Tube(),names:[]};drawTube(i)}
+$("rinse").onclick=()=>tubes.forEach((_,i)=>clearTube(i));
+
+/* ---------- вибір і перетягування ---------- */
+function select(id){sel=sel===id?null:id;document.querySelectorAll(".bottle").forEach(b=>b.setAttribute("aria-pressed",b.dataset.id===sel));
+  document.querySelectorAll(".tube").forEach(t=>t.classList.toggle("target",!!sel));
+  $("howto").textContent=sel?`Обрано ${label(sel)}. Натисни пробірку, щоб додати порцію (можна кілька разів). Натисни склянку ще раз, щоб скасувати.`:"Перетягни склянку на пробірку або натисни склянку, а потім пробірку. Одне перетягування додає одну порцію розчину."}
+let drag=null;
+document.querySelectorAll(".bottle").forEach(b=>{
+  b.addEventListener("pointerdown",e=>{drag={id:b.dataset.id,x:e.clientX,y:e.clientY,moved:false,pid:e.pointerId};});
+});
+document.addEventListener("pointermove",e=>{if(!drag||e.pointerId!==drag.pid)return;
+  if(!drag.moved&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<8)return;
+  if(!drag.moved){drag.moved=true;drag.g=document.createElement("div");drag.g.className="dragghost";drag.g.textContent="💧 "+label(drag.id);document.body.appendChild(drag.g)}
+  drag.g.style.left=e.clientX+"px";drag.g.style.top=e.clientY+"px";
+  document.querySelectorAll(".tube.over").forEach(t=>t.classList.remove("over"));const t=tubeAt(e.clientX,e.clientY);if(t)t.classList.add("over");e.preventDefault()},{passive:false});
+document.addEventListener("pointerup",e=>{if(!drag||e.pointerId!==drag.pid)return;const d=drag;drag=null;
+  document.querySelectorAll(".tube.over").forEach(t=>t.classList.remove("over"));
+  if(d.moved){d.g.remove();const t=tubeAt(e.clientX,e.clientY);if(t)pour(d.id,+t.dataset.i)}else select(d.id)});
+document.addEventListener("pointercancel",()=>{if(drag&&drag.g)drag.g.remove();drag=null});
+function tubeAt(x,y){const el=document.elementFromPoint(x,y);return el&&el.closest(".tube")}
+
+/* ---------- зливання ---------- */
+const FLAGS={};let busy=false;
+function pour(id,i){
+  const T=tubes[i];if(T.t.vol>=6){callout(i,"Пробірка повна — натисни «вилити»");return}
+  if(busy)return;busy=true;
+  const el=document.querySelector(`.tube[data-i="${i}"]`),dg=el.querySelector(".drops");
+  dg.innerHTML=[0,1,2].map(k=>`<circle class="drop" cx="30" cy="20" r="3.5" fill="#93c5fd" style="animation-delay:${k*0.12}s"/>`).join("");
+  setTimeout(()=>{dg.innerHTML="";busy=false;apply(id,i)},reduce?0:420);
+}
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function apply(id,i){
+  const T=tubes[i],before=T.t.added.slice(),rid=real(id),hadOthers=new Set(before.filter(x=>x!=="PHPH"&&x!==rid)).size>0;
+  const ev=T.t.add(rid);T.names.push(label(id));experiments++;
+  const xInvolved=T.names.includes("Розчин X");
+  drawTube(i);
+  const el=document.querySelector(`.tube[data-i="${i}"]`),svg=el.querySelector("svg");
+  const ppEv=ev.find(e=>e.ppt&&!e.dissolve);
+  if(ppEv&&!reduce){const c=svg.querySelector(".cloud");c.setAttribute("fill",PPT[ppEv.ppt].c==="#ffffff"||PPT[ppEv.ppt].c==="#f8fafc"||PPT[ppEv.ppt].c==="#f1f5f9"?"#e2e8f0":PPT[ppEv.ppt].c);
+    c.style.transition="none";c.setAttribute("opacity",.75);requestAnimationFrame(()=>{c.style.transition="opacity 1.8s";c.setAttribute("opacity",0)})}
+  if(ev.some(e=>e.gas)){svg.classList.add("gas");setTimeout(()=>svg.classList.remove("gas"),3200)}
+  let obs=[...new Set(ev.map(e=>e.obs))];if(obs.length>1)obs=obs.filter(o=>o!=="видимих змін немає");
+  const text=obs.length?obs.join("; "):"видимих змін немає";
+  callout(i,text[0].toUpperCase()+text.slice(1));
+  // журнал і рівняння
+  const rows=ev.filter(e=>e.short!==undefined||e.inf).map(e=>({e,p:pairFor(e,rid,before)}));
+  logRow(i,id,T,text,ev,xInvolved);
+  showEq(i,id,text,rows,xInvolved,ev,hadOthers,new Set(T.t.added).size);
+  // прапорці для завдань
+  ev.forEach(e=>{if(e.ppt==="BaSO4"&&!e.dissolve)FLAGS.baso4=true;if(e.ppt==="CuOH2"&&!e.dissolve)FLAGS.cuoh=true;if(e.gas)FLAGS.gas=true;if(e.id==="phOff")FLAGS.neut=true;
+    if(e.id==="dCu"||e.id==="dFe")FLAGS.dissolve=true});
+  if(!ev.length&&new Set(T.t.added).size===2&&rid!=="PHPH"&&!xInvolved) FLAGS.noreact=true;
+  if(xInvolved&&hadOthers) FLAGS.xtest=(FLAGS.xtest||0)+1;
+  updateTasks();
+}
+function callout(i,t){const c=document.querySelector(`.tube[data-i="${i}"] .callout`);c.textContent=t;c.classList.add("on");clearTimeout(c._t);c._t=setTimeout(()=>c.classList.remove("on"),3500)}
+function showEq(i,id,text,rows,xInv,ev,hadOthers,nKinds){
+  let h=`<div class="obs">Пробірка ${i+1}: додали ${label(id)} → ${text}</div>`;
+  if(xInv&&ev.length){h+=`<p class="hint">У пробірці є «Розчин X». Рівняння приховано: склад X треба визначити самостійно за спостереженнями.</p>`}
+  else if(!ev.length){h+=`<p class="hint">${hadOthers&&nKinds>2?"Нових змін немає: йони, що залишилися в пробірці, з доданим розчином не утворюють ні осаду, ні газу, ні води.":hadOthers?"Реакція йонного обміну не відбувається: не утворюється ні осад, ні газ, ні вода. Йони просто перебувають разом у розчині.":"Розчин налито в пробірку. Додай інший розчин, щоб перевірити, чи відбудеться реакція."}</p>`}
+  else rows.forEach(({e,p})=>{
+    h+=`<div class="eqs">`;
+    if(p){h+=`<div class="eqr"><b>Молекулярне рівняння</b><span>${molecular(p)}</span></div><div class="eqr"><b>Повне йонне</b><span>${full(p)}</span></div>`}
+    if(e.short) h+=`<div class="eqr short"><b>Скорочене йонне</b><span>${e.short}</span></div>`;
+    h+=`<p class="hint">${e.inf}</p></div>`});
+  $("eqBox").innerHTML=h;
+}
+const LOG=[];
+function logRow(i,id,T,text,ev,xInv){
+  LOG.unshift({i,id,mix:T.names.join(" + "),text,short:xInv?"":ev.filter(e=>e.short).map(e=>e.short).join("; ")});
+  $("journal").innerHTML=LOG.slice(0,60).map(r=>`<div class="jr"><div class="t">Пробірка ${r.i+1} · ${r.mix}</div><div class="o">${r.text}</div>${r.short?`<div class="s">${r.short}</div>`:""}</div>`).join("");
+}
+
+/* ---------- завдання ---------- */
+const TASKS=[
+ {k:"baso4",pts:2,t:"Добудь білий осад барій сульфату BaSO₄",q:"Яке скорочене йонне рівняння цієї реакції?",opts:["Ba²⁺ + SO₄²⁻ → BaSO₄↓","Ba²⁺ + 2Cl⁻ → BaCl₂","2Na⁺ + SO₄²⁻ → Na₂SO₄","BaCl₂ + SO₄²⁻ → BaSO₄↓ + 2Cl⁻"]},
+ {k:"cuoh",pts:2,t:"Добудь синій осад купрум(II) гідроксиду Cu(OH)₂",q:"Яке скорочене йонне рівняння цієї реакції?",opts:["Cu²⁺ + 2OH⁻ → Cu(OH)₂↓","Cu²⁺ + OH⁻ → CuOH↓","2Na⁺ + SO₄²⁻ → Na₂SO₄","CuSO₄ + 2OH⁻ → Cu(OH)₂↓ + SO₄²⁻"]},
+ {k:"gas",pts:2,t:"Проведи реакцію, під час якої виділяється газ",q:"Яке скорочене йонне рівняння відповідає виділенню CO₂?",opts:["2H⁺ + CO₃²⁻ → H₂O + CO₂↑","Na⁺ + Cl⁻ → NaCl","H⁺ + CO₃²⁻ → HCO₃↑","2H⁺ + O²⁻ → H₂O"]},
+ {k:"neut",pts:2,t:"Зроби нейтралізацію помітною: луг з індикатором має стати безбарвним після додавання кислоти",q:"Яке скорочене йонне рівняння реакції нейтралізації?",opts:["H⁺ + OH⁻ → H₂O","Na⁺ + Cl⁻ → NaCl","H⁺ + Cl⁻ → HCl","2H⁺ + O²⁻ → H₂O"]},
+ {k:"dissolve",pts:1,t:"Розчини осад нерозчинної основи (Cu(OH)₂ або Fe(OH)₃) кислотою"},
+ {k:"noreact",pts:1,t:"Знайди два розчини, між якими реакція йонного обміну НЕ відбувається",q:"Чому реакція не відбувається?",opts:["Не утворюється ні осад, ні газ, ні вода","Одна з речовин нерозчинна у воді","Реакція відбувається, але дуже швидко","Для реакції потрібен каталізатор"],qOnly:true},
+ {k:"x",pts:2,t:"Визнач, яка речовина в «Розчині X». Проведи щонайменше 2 досліди з ним",x:true}
+];
+const XNAMES={NaCl:"натрій хлорид NaCl",Na2SO4:"натрій сульфат Na₂SO₄",Na2CO3:"натрій карбонат Na₂CO₃",KNO3:"калій нітрат KNO₃"};
+const ANS={};// k:{act:bool,q:true/false/null}
+TASKS.forEach(t=>{t.order=t.opts?shuffle(t.opts.map((o,j)=>[o,j===0])):null;ANS[t.k]={act:false,q:null}});
+function updateTasks(){
+  TASKS.forEach(t=>{if(t.k!=="x"&&FLAGS[t.k])ANS[t.k].act=true});
+  $("tTasks").innerHTML=TASKS.map((t,i)=>{const a=ANS[t.k],done=t.x?a.q!==null:(a.act&&(!t.opts||a.q!==null));
+    let body="";
+    if(t.opts){ if(!a.act) body=`<span class="lock">🔒 Питання відкриється, коли проведеш дослід.</span>`;
+      else body=`<b style="font-size:14px">${t.q}</b><div class="opts">${t.order.map(([o,ok],j)=>`<button class="op ${t.k==="noreact"?"txt":""} ${a.q!==null?(ok?"ok":(a.pick===j?"no":"")):""}" type="button" data-k="${t.k}" data-j="${j}" ${a.q!==null?"disabled":""}>${o}</button>`).join("")}</div>`}
+    if(t.x){ const n=FLAGS.xtest||0;
+      body=n<2?`<span class="lock">🔒 Дослідів з розчином X: ${n} з 2.</span>`:`<div class="opts">${X_OPTS.map(id=>`<button class="op txt ${a.q!==null?(id===X_ID?"ok":(a.pick===id?"no":"")):""}" type="button" data-x="${id}" ${a.q!==null?"disabled":""}>${XNAMES[id]}</button>`).join("")}</div>`;
+      if(a.q!==null) body+=`<span class="lock">${a.q?"✓ Правильно!":"✗ Ні, у розчині X був "+XNAMES[X_ID]+"."}</span>`}
+    return `<div class="mis ${done?"done":""}"><h3><span class="st">${done?"✓":i+1}</span>${t.t}<span class="pts">${t.pts} б.</span></h3>${body}</div>`}).join("")+
+    `<div class="row" style="justify-content:space-between"><span>Набрано: <span class="total" id="tot">${score()}</span> / 12</span><button class="btn green" type="button" id="submit">Здати роботу</button></div><div id="sendMsg"></div>`;
+  $("tTasks").querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{const t=TASKS.find(x=>x.k===b.dataset.k),j=+b.dataset.j;ANS[t.k].q=t.order[j][1];ANS[t.k].pick=j;updateTasks()});
+  $("tTasks").querySelectorAll("[data-x]").forEach(b=>b.onclick=()=>{ANS.x.q=b.dataset.x===X_ID;ANS.x.pick=b.dataset.x;updateTasks()});
+  $("submit").onclick=submit;
+}
+function partScore(t){const a=ANS[t.k];
+  if(t.x) return a.q?2:0;
+  if(t.k==="dissolve") return a.act?1:0;
+  if(t.k==="noreact") return a.act&&a.q?1:0;
+  return (a.act?1:0)+(a.q?1:0);
+}
+const score=()=>TASKS.reduce((s,t)=>s+partScore(t),0);
+let sent=false;
+async function submit(){
+  const box=$("sendMsg");box.className="msg info";box.textContent="Надсилаю роботу вчителю…";
+  if(sent){box.className="msg ok";box.textContent="✓ Робота вже надіслана.";return}
+  const rec={name:ME.name,cls:ME.cls,score:score(),max:12,ts:{".sv":"timestamp"},parts:TASKS.map(partScore).join(" "),experiments,x:`${RG[X_ID].f}: ${ANS.x.q===null?"не визначав":ANS.x.q?"правильно":"неправильно"}`};
+  try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec)});if(!r.ok)throw new Error(r.status);
+    sent=true;box.className="msg ok";box.textContent=`✓ Роботу отримано вчителем: ${rec.score} / 12. Можеш і далі експериментувати в лабораторії.`;
+  }catch(e){box.className="msg bad";box.textContent="Не вдалося надіслати. Перевір інтернет і натисни «Здати роботу» ще раз."}
+}
+document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{document.querySelectorAll("#tabs button").forEach(x=>x.setAttribute("aria-pressed",x===b));
+  $("tTasks").hidden=b.dataset.t!=="tasks";$("tLog").hidden=b.dataset.t!=="log"});
+
+/* ---------- старт ---------- */
+$("startBtn").onclick=()=>{const n=$("pname").value.trim(),c=$("pcls").value;if(n.length<3||!c){$("startErr").hidden=false;return}
+  ME={name:n.slice(0,60),cls:c};$("who").textContent=`${ME.name} · ${ME.cls}`;$("start").hidden=true};
+tubes.forEach((_,i)=>drawTube(i));updateTasks();
+</script>
+</body>
+</html>

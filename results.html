@@ -92,6 +92,7 @@ const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.fireba
 const API_KEY="AIzaSyAGOncvJIlGaJu14uqEWy6rQxdF7-pQYUI";
 const STATIONS=["Обладнання","Ризики","Рівняння","Хід роботи","Збирання","Виявлення","Каталізатори","Висновок"];
 const WORKS=[
+  {id:"ionlab9",label:"9 кл. · Лабораторія РЙО",title:"Віртуальна лабораторія «Реакції йонного обміну» (9 клас)",subject:"Хімія · 9 клас · реакції йонного обміну"},
   {id:"elem7",label:"7 кл. · Хімічний детектив",title:"Гра «Хімічний детектив» — 25 елементів (7 клас)",subject:"Хімія · 7 клас · §6"},
   {id:"arkush_rivn11",label:"11 кл. · Робочий аркуш «Рівновага»",title:"Робочий аркуш «Хімічна рівновага» (11 клас)",subject:"Хімія · 11 клас · §11"},
   {id:"kinetics11",label:"11 кл. · Швидкість і рівновага",title:"Інтерактивний аркуш «Швидкість і рівновага» (11 клас)",subject:"Хімія · 11 клас · уроки 16–17"},
@@ -199,6 +200,18 @@ function render(){
         <div><b>Самооцінка</b>${esc(x.reflection||"—")}</div></div></details></td>
       <td class="muted">${when(x)}</td></tr>`}).join("")
       :'<tr><td colspan="7" class="muted">Ще ніхто не здав роботу. Коли учні натиснуть «Здати роботу», вони з\'являться тут.</td></tr>';
+  } else if(work.id==="ionlab9"){
+    const NM=["BaSO₄ + рівняння","Cu(OH)₂ + рівняння","Газ CO₂ + рівняння","Нейтралізація","Розчинення осаду","Немає реакції","Розчин X"],MX=[2,2,2,2,1,1,2];
+    $("kAvg").textContent=best.length?(best.reduce((s,x)=>s+x.score,0)/best.length).toFixed(1):"0"; $("kAvgT").textContent="середній бал (з 12)";
+    $("kTop").textContent=best.filter(x=>/правильно$/.test(x.x||"")&&!/неправильно/.test(x.x||"")).length; $("kTopT").textContent="учнів правильно визначили розчин X";
+    const miss=NM.map((n,i)=>[n,best.filter(x=>(+((x.parts||"").split(" ")[i])||0)<MX[i]).length]);
+    $("hardTitle").textContent="Завдання, які найчастіше не виконані повністю"; $("hardHint").textContent="Скільки учнів не набрали максимум за завдання (за найкращою спробою).";
+    $("hard").innerHTML=best.length?miss.sort((a,b)=>b[1]-a[1]).map(([n,k])=>`<span class="chip">${esc(n)} <small>${k} уч.</small></span>`).join(""):'<span class="muted">Поки немає даних</span>';
+    $("th").innerHTML=`<tr><th data-k="name">Учень</th><th data-k="cls">Клас</th><th data-k="score">Бали</th><th>За завданнями 1–7</th><th data-k="experiments">Дослідів</th><th>Розчин X</th><th data-k="ts">Коли</th></tr>`;
+    $("tb").innerHTML=out.length?out.map(x=>{const p=x.score>=10?"g":x.score>=7?"m":"b";
+      return `<tr><td><strong>${esc(x.name)}</strong></td><td>${esc(x.cls)}</td><td><span class="pill ${p}">${x.score} / 12</span></td>
+      <td class="mono">${esc(x.parts||"")}</td><td class="mono">${esc(x.experiments)}</td><td>${esc(x.x||"—")}</td><td class="muted">${when(x)}</td></tr>`}).join("")
+      :'<tr><td colspan="7" class="muted">Ще ніхто не здав.</td></tr>';
   } else if(work.id==="elem7"){
     $("kAvg").textContent=best.length?(best.reduce((s,x)=>s+(+x.mastered||0),0)/best.length).toFixed(1):"0"; $("kAvgT").textContent="опановано елементів у середньому (з 25)";
     $("kTop").textContent=best.filter(x=>(+x.mastered||0)>=25).length; $("kTopT").textContent="учнів опанували всі 25";
@@ -324,6 +337,8 @@ function csv(){
     lines=[["Учень","Клас","Почав","Завершив","Тривалість, хв","Виходів","Поза тестом, с","Перезавантажень","Статус"]].concat(sessions().map(r=>[r.name,r.cls,t(r.start),t(r.end),r.minutes??"",r.exits,r.away,r.reloads,!r.end?"не завершив":r.reason==="timeout"?"час вийшов":"завершив"]));}
   else if(work.id==="kysen8"){lines=[["Учень","Клас","Бали (з 12)",...STATIONS,"Спроб","Рівняння","Каталізатори","Найефективніший","Найменш ефективний","Висновок","Самооцінка","Дата"]]
     .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.tries,x.equation,x.catalysts,x.most,x.least,x.conclusion,x.reflection,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
+  else if(work.id==="ionlab9"){lines=[["Учень","Клас","Бали (з 12)","З.1","З.2","З.3","З.4","З.5","З.6","З.7","Дослідів","Розчин X","Дата"]]
+    .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.experiments,x.x,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="elem7"){lines=[["Учень","Клас","Бали (з 12)","Опановано (з 25)","Раундів","Останній режим","Результат раунду","Слабкі елементи","Дата"]]
     .concat(out.map(x=>[x.name,x.cls,x.score,x.mastered,x.rounds,x.mode,x.round,x.weak,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="arkush_rivn11"){lines=[["Учень","Клас","Бали (з 12)","Р1","Р2","Р3","Р4","Р5","Р6","Р7","Р8","Спроб","Розгадка уроку","Дата"]]
