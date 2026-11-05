@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Хімічний детектив · 7 клас</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap">
+<style>
+/* Layout: a game hub (mode cards + "my element map" of the 25 elements) and three game screens; the Guess-Who board is a 5×5 card grid with a question panel beside it. Bright single light look; violet = game UI, element tiles neutral (colour would give answers away). */
+:root{
+  color-scheme: light;
+  --bg:#f4f2ff; --card:#ffffff; --ink:#1e1840; --muted:#615d82; --line:#e2defa;
+  --violet:#6d4aff; --violet-deep:#4b2fd1; --tile:#f1edff; --tile-ink:#3b2f8f;
+  --yes:#16a34a; --no:#e11d48; --gold:#f5a524; --l0:#e5e3f0; --l1:#fde68a; --l2:#86efac; --l3:#22c55e;
+  --metal:#fde7d6; --nonmetal:#dcfce7;
+  --f-display:"Fredoka","Nunito",system-ui,sans-serif;
+  --f-body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1180px;margin:0 auto;padding-block:16px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
+.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{width:52px;height:52px;border-radius:16px;background:var(--violet);color:#fff;display:grid;place-items:center;font-family:var(--f-display);font-size:28px;font-weight:700;box-shadow:0 5px 0 var(--violet-deep);flex:none}
+.top .eyebrow{font:800 11px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.top h1{margin:0;font-family:var(--f-display);font-size:clamp(24px,4vw,32px);line-height:1.05}
+.top .who{margin-left:auto;font-weight:800;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+h2{margin:0;font-family:var(--f-display);font-size:22px;line-height:1.2}
+h3{margin:0;font-family:var(--f-display);font-size:18px}
+.lead{margin:0;color:var(--muted)}
+label.lbl,.lbl{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:900;color:var(--muted)}
+input[type=text],select{font:inherit;font-size:16px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);background:#fff;color:var(--ink);width:100%}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:540px){.grid2{grid-template-columns:1fr}}
+.btn{font-family:var(--f-display);font-weight:600;font-size:17px;border:0;border-radius:16px;padding:12px 20px;cursor:pointer;color:#fff;background:var(--violet);box-shadow:0 5px 0 var(--violet-deep)}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--violet-deep)}
+.btn.ghost{background:#fff;color:var(--violet-deep);border:2px solid var(--line);box-shadow:none}
+.btn.gold{background:var(--gold);color:#3a2300;box-shadow:0 5px 0 #b97706}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.err{color:var(--no);font-weight:800;margin:0}
+/* hub */
+.modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:860px){.modes{grid-template-columns:1fr}}
+.mode{text-align:left;font:inherit;color:inherit;background:var(--card);border:2px solid var(--line);border-radius:22px;padding:18px;cursor:pointer;display:flex;flex-direction:column;gap:8px;transition:transform .15s,border-color .15s}
+.mode:hover{transform:translateY(-3px);border-color:var(--violet)}
+.mode .ic{font-size:34px;line-height:1}
+.mode b{font-family:var(--f-display);font-size:20px;font-weight:600}
+.mode .best{font-weight:800;color:var(--gold);letter-spacing:2px}
+.prog{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:center}
+.ring{width:96px;height:96px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-weight:700;font-size:26px;flex:none}
+.ring small{display:block;font-family:var(--f-body);font-size:11px;color:var(--muted);font-weight:800;text-align:center;line-height:1.1}
+.map{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:6px}
+@media (max-width:640px){.map{grid-template-columns:repeat(5,minmax(0,1fr))}}
+.mt{font:inherit;border:0;border-radius:12px;padding:6px 2px;cursor:pointer;text-align:center;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:2px}
+.mt .s{font-family:var(--f-display);font-weight:700;font-size:20px;line-height:1}
+.mt .d{display:flex;gap:2px}.mt .d i{width:6px;height:6px;border-radius:50%;background:rgba(0,0,0,.15)}.mt .d i.on{background:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:13px;font-weight:700;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:5px;vertical-align:-1px}
+.info{background:var(--tile);border-radius:16px;padding:12px 14px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;align-items:center}
+.info .big{grid-row:span 5;font-family:var(--f-display);font-size:48px;font-weight:700;color:var(--tile-ink);line-height:1}
+/* guess board */
+.board{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px;align-items:start}
+@media (max-width:980px){.board{grid-template-columns:1fr}}
+.cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.ec{font:inherit;color:var(--tile-ink);background:var(--tile);border:2px solid transparent;border-radius:16px;padding:8px 4px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;position:relative;min-height:96px;transition:transform .2s,opacity .2s,background .2s}
+.ec .z{position:absolute;top:5px;left:8px;font:800 11px var(--f-mono);opacity:.7}
+.ec .s{font-family:var(--f-display);font-weight:700;font-size:clamp(24px,3.4vw,38px);line-height:1}
+.ec .n{font-weight:800;font-size:clamp(11px,1.3vw,14px)}
+.ec .bd{display:flex;gap:3px;margin-top:2px}
+.ec .bd span{font:800 10px var(--f-mono);border-radius:5px;padding:1px 4px;background:#fff}
+.ec.metal{background:var(--metal)} .ec.nonmetal{background:var(--nonmetal)}
+.ec.down{opacity:.28;transform:scale(.94);filter:grayscale(1)}
+.ec.shake{animation:sh .45s}
+@keyframes sh{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.ec.pick{border-color:var(--gold);box-shadow:0 0 0 3px #fde68a}
+.ec.win{border-color:var(--yes);box-shadow:0 0 0 4px #bbf7d0;opacity:1;filter:none;transform:scale(1.04)}
+.guessing .ec:not(.down){border-color:var(--gold)}
+.panel{position:sticky;top:calc(env(safe-area-inset-top,0px) + 10px)}
+.tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;background:var(--tile);border-radius:14px;padding:4px}
+.tabs button{font:inherit;font-weight:800;font-size:14px;border:0;border-radius:11px;padding:9px 4px;background:transparent;color:var(--muted);cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--violet);color:#fff}
+.qs{display:flex;flex-direction:column;gap:6px;max-height:330px;overflow:auto;padding-right:2px}
+.q{font:inherit;text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:9px 12px;cursor:pointer;display:flex;gap:10px;align-items:center;color:var(--ink);font-weight:700;font-size:14.5px}
+.q:hover:not([disabled]){border-color:var(--violet)}
+.q[disabled]{cursor:default;background:#f8f7fd;color:var(--muted)}
+.q .a{margin-left:auto;font:800 12px var(--f-mono)}
+.q .a.y{color:var(--yes)} .q .a.n{color:var(--no)}
+.says{background:var(--tile);border-radius:16px;padding:12px;text-align:center;display:flex;flex-direction:column;gap:2px}
+.says .w{font-family:var(--f-display);font-weight:700;font-size:40px;line-height:1}
+.says .w.y{color:var(--yes)} .says .w.n{color:var(--no)}
+.stat{display:flex;gap:8px;flex-wrap:wrap;font-weight:800;font-size:14px}
+.stat span{background:var(--tile);border-radius:999px;padding:4px 10px}
+.toast{background:#fff4e5;border:2px solid var(--gold);border-radius:14px;padding:10px 12px;font-weight:700;font-size:14.5px}
+.switch{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px;color:var(--muted);cursor:pointer}
+.switch input{width:18px;height:18px;accent-color:var(--violet)}
+/* memory */
+.mem{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;max-width:640px;width:100%;margin:0 auto}
+.mc{font:inherit;aspect-ratio:1;border:0;border-radius:18px;cursor:pointer;position:relative;background:transparent;perspective:600px;padding:0}
+.mc .in{position:absolute;inset:0;transition:transform .35s;transform-style:preserve-3d}
+.mc.open .in,.mc.done .in{transform:rotateY(180deg)}
+.mc .fr,.mc .bk{position:absolute;inset:0;border-radius:18px;display:grid;place-items:center;backface-visibility:hidden;padding:4px;text-align:center}
+.mc .bk{background:linear-gradient(135deg,var(--violet),#a855f7);color:#fff;font-family:var(--f-display);font-size:34px}
+.mc .fr{background:#fff;border:3px solid var(--line);transform:rotateY(180deg);color:var(--tile-ink);font-family:var(--f-display);font-weight:700;font-size:clamp(14px,3vw,22px);line-height:1.1}
+.mc .fr.sym{font-size:clamp(26px,6vw,42px)}
+.mc.done .fr{border-color:var(--yes);background:#f0fdf4}
+.mc.bad .fr{border-color:var(--no)}
+/* blitz */
+.quiz{max-width:640px;width:100%;margin:0 auto}
+.qtxt{font-family:var(--f-display);font-size:clamp(20px,3.4vw,26px);font-weight:600;text-align:center;line-height:1.3}
+.qbig{font-family:var(--f-display);font-weight:700;font-size:72px;color:var(--tile-ink);text-align:center;line-height:1}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:480px){.opts{grid-template-columns:1fr}}
+.op{font:inherit;font-weight:800;font-size:18px;border:2px solid var(--line);background:#fff;border-radius:16px;padding:14px;cursor:pointer;color:var(--ink)}
+.op:hover:not([disabled]){border-color:var(--violet)}
+.op.ok{background:#dcfce7;border-color:var(--yes)} .op.no{background:#ffe4e6;border-color:var(--no)}
+.pbar{height:10px;border-radius:999px;background:var(--line);overflow:hidden}
+.pbar i{display:block;height:100%;background:linear-gradient(90deg,var(--violet),var(--yes));width:0;transition:width .3s}
+.fb{border-radius:14px;padding:10px 12px;font-weight:700;text-align:center}
+.fb.ok{background:#dcfce7;color:#166534}.fb.no{background:#ffe4e6;color:#9f1239}
+/* result */
+.overlay{position:fixed;inset:0;z-index:20;background:rgba(30,24,64,.55);display:flex;align-items:center;justify-content:center;
+  padding:20px max(16px,env(safe-area-inset-right,0px)) 20px max(16px,env(safe-area-inset-left,0px))}
+.overlay .card{max-width:480px;width:100%;text-align:center;align-items:center}
+.stars{font-size:46px;letter-spacing:6px;color:var(--gold);line-height:1}
+.stars .off{color:#d6d3e8}
+.sent{font-weight:800;font-size:14px;border-radius:12px;padding:8px 12px;background:var(--tile)}
+.sent.ok{background:#dcfce7;color:#166534}.sent.no{background:#ffe4e6;color:#9f1239}
+@media (prefers-reduced-motion:reduce){.ec,.mc .in,.mode{transition:none}.ec.shake{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="logo" aria-hidden="true">?</div>
+    <div><div class="eyebrow">Хімія · 7 клас · § 6 · 25 елементів</div><h1>Хімічний детектив</h1></div>
+    <span class="who" id="who" hidden></span>
+  </div>
+
+  <!-- старт -->
+  <section class="card" id="vStart" style="max-width:620px">
+    <h2>Вітаю, детективе! 🕵️</h2>
+    <p class="lead">Тут три ігри з 25 хімічними елементами. Кожна правильна відповідь «зафарбовує» елемент на твоїй карті прогресу. Мета — опанувати всі 25!</p>
+    <div class="grid2">
+      <div><label class="lbl" for="pname">Прізвище та ім'я</label><input type="text" id="pname" maxlength="60" autocomplete="name" placeholder="Іваненко Олена"></div>
+      <div><label class="lbl" for="pcls">Клас</label><select id="pcls"><option value="">— обери —</option><option>7-А</option><option>7-Б</option><option>7-В</option><option>Інший</option></select></div>
+    </div>
+    <p class="err" id="startErr" hidden>Впиши прізвище, ім'я та обери клас, щоб учитель бачив твій прогрес.</p>
+    <div class="row"><button class="btn" id="startBtn" type="button">Увійти в гру</button></div>
+    <p class="lead" style="font-size:14px">Прогрес зберігається на цьому пристрої під твоїм прізвищем, а результати кожного раунду отримує вчитель.</p>
+  </section>
+
+  <!-- хаб -->
+  <section id="vHub" hidden style="display:flex;flex-direction:column;gap:16px">
+    <div class="modes">
+      <button class="mode" type="button" data-go="guess"><span class="ic">🕵️</span><b>Таємний елемент</b><span class="lead">Комп'ютер загадав елемент. Став питання «так / ні», перевертай картки й вгадай за найменшу кількість питань.</span><span class="best" id="bestGuess"></span></button>
+      <button class="mode" type="button" data-go="memory"><span class="ic">🃏</span><b>Пари-пам'ятки</b><span class="lead">Відкривай картки й знаходь пари «символ — назва» або «символ — як читається у формулі».</span><span class="best" id="bestMemory"></span></button>
+      <button class="mode" type="button" data-go="blitz"><span class="ic">⚡</span><b>Бліц-перевірка</b><span class="lead">12 різних питань: символи, назви, вимова, прості речовини, метал чи неметал. Найбільше питань про елементи, які ти ще погано знаєш.</span><span class="best" id="bestBlitz"></span></button>
+    </div>
+    <div class="card">
+      <div class="prog">
+        <div class="ring" id="ring"></div>
+        <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+          <h2>Моя карта елементів</h2>
+          <p class="lead" id="progText"></p>
+          <div class="legend"><span><i style="background:var(--l0)"></i>ще не знаю</span><span><i style="background:var(--l1)"></i>знайомий</span><span><i style="background:var(--l2)"></i>опановано</span><span><i style="background:var(--l3)"></i>знаю напам'ять</span></div>
+        </div>
+      </div>
+      <div class="map" id="map"></div>
+      <div class="info" id="info" hidden></div>
+    </div>
+  </section>
+
+  <!-- таємний елемент -->
+  <section id="vGuess" hidden>
+    <div class="board">
+      <div class="card" style="padding:12px">
+        <div class="row" style="justify-content:space-between"><span class="lead" id="gHelp">Натисни картку, щоб перевернути (прибрати) елемент, який точно не підходить.</span>
+          <label class="switch"><input type="checkbox" id="hints"> підказки на картках (не більше ★★)</label></div>
+        <div class="cards" id="cards"></div>
+      </div>
+      <div class="card panel">
+        <h3>Постав питання</h3>
+        <div class="tabs" id="qtabs"><button type="button" data-t="0" aria-pressed="true">Метал і стан</button><button type="button" data-t="1" aria-pressed="false">Таблиця</button><button type="button" data-t="2" aria-pressed="false">Назва й символ</button></div>
+        <div class="qs" id="qs"></div>
+        <div class="says" id="says"><span class="lbl">Комп'ютер відповідає</span><span class="w" id="sayW">…</span><span class="lead" id="sayT" style="font-size:14px">Обери питання вище</span></div>
+        <div class="toast" id="gToast" hidden></div>
+        <div class="stat"><span id="gQ">Питань: 0</span><span id="gLeft">Залишилось карток: 25</span><span id="gLives">Спроб вгадати: ❤❤❤</span></div>
+        <div class="row"><button class="btn gold" id="guessBtn" type="button">Я знаю, хто це!</button><button class="btn ghost" type="button" data-home>До меню</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- пари -->
+  <section id="vMemory" hidden class="card">
+    <div class="row" style="justify-content:space-between">
+      <h2>Пари-пам'ятки</h2>
+      <div class="tabs" id="memTabs" style="min-width:300px;grid-template-columns:1fr 1fr"><button type="button" data-m="name" aria-pressed="true">Символ — назва</button><button type="button" data-m="say" aria-pressed="false">Символ — вимова</button></div>
+    </div>
+    <div class="stat"><span id="mMoves">Ходів: 0</span><span id="mPairs">Пар: 0 / 8</span></div>
+    <div class="mem" id="mem"></div>
+    <div class="row"><button class="btn ghost" type="button" data-home>До меню</button><button class="btn ghost" type="button" id="memNew">Нова гра</button></div>
+  </section>
+
+  <!-- бліц -->
+  <section id="vBlitz" hidden class="card quiz">
+    <div class="row" style="justify-content:space-between"><h2>Бліц-перевірка</h2><span class="stat"><span id="bNum">1 / 12</span><span id="bOk">✓ 0</span></span></div>
+    <div class="pbar"><i id="bBar"></i></div>
+    <div class="qbig" id="bBig"></div>
+    <div class="qtxt" id="bTxt"></div>
+    <div class="opts" id="bOpts"></div>
+    <div class="fb" id="bFb" hidden></div>
+    <div class="row"><button class="btn ghost" type="button" data-home>До меню</button></div>
+  </section>
+</div>
+
+<div class="overlay" id="res" hidden>
+  <div class="card">
+    <span class="lbl" id="rKick"></span>
+    <h2 id="rTitle"></h2>
+    <div class="stars" id="rStars"></div>
+    <p class="lead" id="rText"></p>
+    <div class="sent" id="rSent">Надсилаю результат учителю…</div>
+    <div class="row" style="justify-content:center"><button class="btn" id="rAgain" type="button">Ще раз</button><button class="btn ghost" id="rHome" type="button">До меню</button></div>
+  </div>
+</div>
+
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="elem7";
+const $=id=>document.getElementById(id);
+const R=n=>Math.random()*n|0;
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=R(i+1);[a[i],a[j]]=[a[j],a[i]]}return a};
+const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+
+/* 25 елементів (§ 6, Таблиця 1): символ, назва, латинська, вимова у формулі, проста речовина, №, група, період, метал, стан простої речовини, формула X₂ */
+const EL=[
+ ["H","Гідроген","Hydrogenium","аш","водень",1,1,1,0,"г",1],["Li","Літій","Lithium","літій","літій",3,1,2,1,"т",0],
+ ["C","Карбон","Carboneum","це","вуглець",6,14,2,0,"т",0],["N","Нітроген","Nitrogenium","ен","азот",7,15,2,0,"г",1],
+ ["O","Оксиген","Oxygenium","о","кисень",8,16,2,0,"г",1],["F","Флуор","Fluorum","флуор","фтор",9,17,2,0,"г",1],
+ ["Na","Натрій","Natrium","натрій","натрій",11,1,3,1,"т",0],["Mg","Магній","Magnesium","магній","магній",12,2,3,1,"т",0],
+ ["Al","Алюміній","Aluminium","алюміній","алюміній",13,13,3,1,"т",0],["Si","Силіцій","Silicium","силіцій","кремній",14,14,3,0,"т",0],
+ ["P","Фосфор","Phosphorus","пе","фосфор",15,15,3,0,"т",0],["S","Сульфур","Sulfur","ес","сірка",16,16,3,0,"т",0],
+ ["Cl","Хлор","Chlorum","хлор","хлор",17,17,3,0,"г",1],["K","Калій","Kalium","калій","калій",19,1,4,1,"т",0],
+ ["Ca","Кальцій","Calcium","кальцій","кальцій",20,2,4,1,"т",0],["Cr","Хром","Chromium","хром","хром",24,6,4,1,"т",0],
+ ["Fe","Ферум","Ferrum","ферум","залізо",26,8,4,1,"т",0],["Cu","Купрум","Cuprum","купрум","мідь",29,11,4,1,"т",0],
+ ["Zn","Цинк","Zincum","цинк","цинк",30,12,4,1,"т",0],["Br","Бром","Bromum","бром","бром",35,17,4,0,"р",1],
+ ["Ag","Аргентум","Argentum","аргентум","срібло",47,11,5,1,"т",0],["I","Йод","Iodum","йод","йод",53,17,5,0,"т",1],
+ ["Ba","Барій","Barium","барій","барій",56,2,6,1,"т",0],["Au","Аурум","Aurum","аурум","золото",79,11,6,1,"т",0],
+ ["Hg","Меркурій","Hydrargyrum","гідраргірум","ртуть",80,12,6,1,"р",0]
+].map(([s,n,l,v,ps,z,g,p,m,st,x2])=>({s,n,l,v,ps,z,g,p,m,st,x2}));
+const BY=Object.fromEntries(EL.map(e=>[e.s,e]));
+const ST={т:"тверда",р:"рідина",г:"газ"};
+
+/* ---------- прогрес ---------- */
+let P=null,KEY="";
+function loadP(){P=store.get(KEY)||{lv:{},err:{},best:{guess:0,memory:0,blitz:0},rounds:0};}
+function saveP(){store.set(KEY,P)}
+const lv=s=>P.lv[s]||0;
+function bump(s,d){P.lv[s]=Math.max(0,Math.min(3,lv(s)+d));if(d<0)P.err[s]=(P.err[s]||0)+1;saveP()}
+const mastered=()=>EL.filter(e=>lv(e.s)>=2).length;
+const grade=()=>Math.round(mastered()/25*12);
+const weakList=()=>EL.filter(e=>lv(e.s)<2&&(P.err[e.s]||0)>0).sort((a,b)=>(P.err[b.s]||0)-(P.err[a.s]||0)).slice(0,6).map(e=>e.s);
+function pickWeighted(n,exclude=[]){const pool=EL.filter(e=>!exclude.includes(e.s));const w=pool.map(e=>4-lv(e.s)+(P.err[e.s]?1:0));
+  const out=[];const used=new Set();while(out.length<n&&out.length<pool.length){let t=Math.random()*w.reduce((a,b,i)=>a+(used.has(i)?0:b),0);
+    for(let i=0;i<pool.length;i++){if(used.has(i))continue;t-=w[i];if(t<=0){used.add(i);out.push(pool[i]);break}}}return out}
+
+/* ---------- навігація ---------- */
+const views=["vStart","vHub","vGuess","vMemory","vBlitz"];
+function show(v){views.forEach(x=>$(x).hidden=x!==v);scrollTo({top:0,behavior:"smooth"})}
+let ME={name:"",cls:""};
+$("startBtn").onclick=()=>{const n=$("pname").value.trim(),c=$("pcls").value;if(n.length<3||!c){$("startErr").hidden=false;return}
+  ME={name:n.slice(0,60),cls:c};KEY="elem7:"+n.toLowerCase()+"|"+c;loadP();store.set("elem7-last",ME);
+  $("who").hidden=false;$("who").textContent=`${ME.name} · ${ME.cls}`;hub()};
+(function(){const l=store.get("elem7-last");if(l){$("pname").value=l.name||"";$("pcls").value=l.cls||""}})();
+document.querySelectorAll("[data-home]").forEach(b=>b.onclick=hub);
+document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>({guess:startGuess,memory:startMemory,blitz:startBlitz})[b.dataset.go]());
+const pl=(n,a,b,c)=>{const t=n%100,u=n%10;return n+' '+(t>10&&t<20?c:u===1?a:u>=2&&u<=4?b:c)};
+const starStr=n=>n?"★".repeat(n)+"☆".repeat(3-n):"";
+function hub(){
+  show("vHub");$("res").hidden=true;
+  $("bestGuess").textContent=P.best.guess?"Рекорд: "+starStr(P.best.guess):"";$("bestMemory").textContent=P.best.memory?"Рекорд: "+starStr(P.best.memory):"";
+  $("bestBlitz").textContent=P.best.blitz?`Рекорд: ${P.best.blitz} / 12`:"";
+  const m=mastered();$("ring").innerHTML=`<div>${m}<small>з 25<br>опановано</small></div>`;
+  $("ring").style.background=`conic-gradient(var(--l3) ${m/25*360}deg,var(--l0) 0)`;$("ring").style.boxShadow="inset 0 0 0 12px #fff";
+  const w=weakList();
+  $("progText").innerHTML=m===25?"🏆 Неймовірно! Ти опанував(-ла) всі 25 елементів!":`Опановано <b>${m}</b> з 25 елементів. ${w.length?"Найбільше помилок: <b>"+w.join(", ")+"</b>.":"Натисни на елемент, щоб повторити, що про нього треба знати."}`;
+  $("map").innerHTML=EL.map(e=>{const L=lv(e.s);return `<button class="mt" type="button" data-s="${e.s}" style="background:var(--l${L})" aria-label="${e.n}, рівень ${L} з 3"><span class="s">${e.s}</span><span class="d">${[1,2,3].map(i=>`<i class="${i<=L?"on":""}"></i>`).join("")}</span></button>`}).join("");
+  $("map").querySelectorAll(".mt").forEach(b=>b.onclick=()=>showInfo(BY[b.dataset.s]));$("info").hidden=true;
+}
+function showInfo(e){const i=$("info");i.hidden=false;
+  i.innerHTML=`<span class="big">${e.s}</span><b>${e.n} <span class="lead" style="font-weight:600">(лат. ${e.l}, № ${e.z})</span></b><span>У формулі читаємо: <b>«${e.v}»</b></span><span>Проста речовина: <b>${e.ps}</b>${e.x2?` (${e.s}₂)`:""}</span><span>${e.m?"Металічний":"Неметалічний"} елемент · проста речовина — ${ST[e.st]}</span><span class="lead" style="font-size:14px">${e.p}-й період, ${e.g}-а група</span>`}
+
+/* ---------- результат раунду ---------- */
+let again=null;
+function finish(mode,stars,text,roundTxt){
+  const key=mode;if(mode==="blitz"){P.best.blitz=Math.max(P.best.blitz,stars.score)}else P.best[key]=Math.max(P.best[key],stars);
+  P.rounds++;saveP();
+  const st=mode==="blitz"?stars.stars:stars;
+  $("rKick").textContent={guess:"Таємний елемент",memory:"Пари-пам'ятки",blitz:"Бліц-перевірка"}[mode];
+  $("rTitle").textContent=st===0?"Цього разу не вдалося":st===3?"Блискуче!":st===2?"Чудово!":"Добре!";
+  $("rStars").innerHTML="★".repeat(st)+`<span class="off">${"★".repeat(3-st)}</span>`;
+  $("rText").innerHTML=text+`<br>Опановано елементів: <b>${mastered()} / 25</b>.`;
+  $("res").hidden=false;$("rAgain").onclick=()=>{$("res").hidden=true;again()};$("rHome").onclick=hub;
+  send({mode:{guess:"Таємний елемент",memory:"Пари",blitz:"Бліц"}[mode],round:roundTxt});
+}
+async function send(x){
+  const box=$("rSent");box.className="sent";box.textContent="Надсилаю результат учителю…";
+  const rec={name:ME.name,cls:ME.cls,score:grade(),max:12,ts:{".sv":"timestamp"},mastered:mastered(),rounds:P.rounds,mode:x.mode,round:x.round,weak:weakList().join(" ")};
+  try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec)});if(!r.ok)throw new Error(r.status);
+    box.className="sent ok";box.textContent="✓ Результат отримано вчителем";}
+  catch(e){box.className="sent no";box.textContent="Не вдалося надіслати результат. Перевір інтернет: наступний раунд надішле прогрес знову."}
+}
+
+/* ---------- 1. Таємний елемент ---------- */
+const Q=[[
+  ["Це метал?",e=>e.m],["Це неметал?",e=>!e.m],["Проста речовина за звичайних умов — газ?",e=>e.st==="г"],["Проста речовина — рідина?",e=>e.st==="р"],
+  ["Проста речовина — тверда?",e=>e.st==="т"],["Формула простої речовини — X₂, як у кисню O₂?",e=>e.x2],["Це дорогоцінний метал (з нього роблять прикраси)?",e=>e.s==="Ag"||e.s==="Au"]
+ ],[
+  ["Порядковий номер менший за 10?",e=>e.z<10],["Порядковий номер більший за 20?",e=>e.z>20],["Елемент у 2-му періоді?",e=>e.p===2],["Елемент у 3-му періоді?",e=>e.p===3],
+  ["Елемент у 4-му періоді?",e=>e.p===4],["Елемент у 1-й групі?",e=>e.g===1],["Елемент у 2-й групі?",e=>e.g===2],["Елемент у 17-й групі?",e=>e.g===17]
+ ],[
+  ["Символ складається з однієї літери?",e=>e.s.length===1],["Друга літера символу — «g»?",e=>e.s[1]==="g"],["Назва закінчується на «-ій»?",e=>/ій$/.test(e.n)],
+  ["Назва закінчується на «-ген»?",e=>/ген$/.test(e.n)],["Назва закінчується на «-ум»?",e=>/ум$/.test(e.n)],
+  ["У формулі символ читається не так, як назва елемента (як H — «аш»)?",e=>e.v!==e.n.toLowerCase()],["Проста речовина називається інакше, ніж елемент (як Оксиген — кисень)?",e=>e.ps!==e.n.toLowerCase()]
+ ]];
+let G=null;
+function startGuess(){
+  again=startGuess;show("vGuess");
+  G={secret:pickWeighted(1)[0],asked:[],down:new Set(),lives:3,guessing:false,hint:false,mist:new Set(),tab:0};
+  $("hints").checked=false;$("gToast").hidden=true;$("sayW").textContent="…";$("sayW").className="w";$("sayT").textContent="Обери питання вище";
+  drawCards();drawQs();gStat();
+}
+function drawCards(){
+  $("cards").innerHTML=EL.map(e=>`<button type="button" class="ec ${G.hint?(e.m?"metal":"nonmetal"):""} ${G.down.has(e.s)?"down":""}" data-s="${e.s}" aria-label="${e.n}"><span class="z">${e.z}</span><span class="s">${e.s}</span><span class="n">${e.n}</span>${G.hint?`<span class="bd"><span>${e.m?"М":"НМ"}</span><span>${ST[e.st]}</span></span>`:""}</button>`).join("");
+  $("cards").querySelectorAll(".ec").forEach(b=>b.onclick=()=>cardClick(b));
+  $("cards").parentElement.classList.toggle("guessing",G.guessing);
+}
+const fits=e=>G.asked.every(([qi,ti,ans])=>!!Q[ti][qi][1](e)===ans);
+function cardClick(b){
+  const s=b.dataset.s,e=BY[s];
+  if(G.guessing){guess(e,b);return}
+  if(G.down.has(s)){G.down.delete(s);b.classList.remove("down");gStat();return}
+  if(fits(e)){ // учень хоче прибрати елемент, що ще підходить
+    b.classList.remove("shake");void b.offsetWidth;b.classList.add("shake");
+    const why=G.asked.length?G.asked.map(([qi,ti,ans])=>`«${Q[ti][qi][0]}» — ${ans?"так":"ні"}`).join("; "):"ти ще не поставив(-ла) жодного питання";
+    toast(`Зачекай! ${e.n} (${e.s}) ще може бути таємним елементом, бо підходить під усі відповіді: ${why}.`);
+    if(!G.mist.has(s)){G.mist.add(s);bump(s,-1)}return}
+  G.down.add(s);b.classList.add("down");$("gToast").hidden=true;gStat();
+}
+function toast(t){const x=$("gToast");x.hidden=false;x.textContent=t}
+function drawQs(){
+  document.querySelectorAll("#qtabs button").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.t===G.tab));
+  $("qs").innerHTML=Q[G.tab].map((q,qi)=>{const a=G.asked.find(x=>x[0]===qi&&x[1]===G.tab);
+    return `<button class="q" type="button" data-q="${qi}" ${a?"disabled":""}>${q[0]}${a?`<span class="a ${a[2]?"y":"n"}">${a[2]?"ТАК":"НІ"}</span>`:""}</button>`}).join("");
+  $("qs").querySelectorAll(".q:not([disabled])").forEach(b=>b.onclick=()=>ask(+b.dataset.q));
+}
+document.querySelectorAll("#qtabs button").forEach(b=>b.onclick=()=>{G.tab=+b.dataset.t;drawQs()});
+function ask(qi){if(G.guessing)return;const ans=!!Q[G.tab][qi][1](G.secret);G.asked.push([qi,G.tab,ans]);
+  $("sayW").textContent=ans?"ТАК":"НІ";$("sayW").className="w "+(ans?"y":"n");$("sayT").textContent="Переверни картки, які тепер точно не підходять";$("gToast").hidden=true;drawQs();gStat()}
+$("hints").onchange=e=>{G.hint=e.target.checked;drawCards()};
+function gStat(){$("gQ").textContent=`Питань: ${G.asked.length}`;$("gLeft").textContent=`Залишилось карток: ${25-G.down.size}`;$("gLives").textContent="Спроб вгадати: "+"❤".repeat(G.lives)+"♡".repeat(3-G.lives)}
+$("guessBtn").onclick=()=>{G.guessing=!G.guessing;$("guessBtn").textContent=G.guessing?"Скасувати":"Я знаю, хто це!";
+  $("gHelp").textContent=G.guessing?"Натисни картку елемента, який, на твою думку, загадав комп'ютер.":"Натисни картку, щоб перевернути (прибрати) елемент, який точно не підходить.";drawCards()};
+function guess(e,b){
+  if(G.down.has(e.s))return;
+  if(e===G.secret){b.classList.add("win");bump(e.s,+1);
+    let st=G.asked.length<=4?3:G.asked.length<=7?2:1;if(G.hint)st=Math.min(st,2);if(G.lives<3)st=Math.max(1,st-1);
+    G.guessing=false;$("guessBtn").textContent="Я знаю, хто це!";
+    setTimeout(()=>finish("guess",st,`Це <b>${e.n} (${e.s})</b>! Ти вгадав(-ла) за <b>${pl(G.asked.length,'питання','питання','питань')}</b>.<br>У формулі читаємо «${e.v}», проста речовина — ${e.ps}.`,`${e.s} за ${G.asked.length} пит.`),700);return}
+  G.lives--;G.down.add(e.s);b.classList.add("down");gStat();
+  if(G.lives<=0){const s=G.secret;bump(s.s,-1);setTimeout(()=>finish("guess",0,`Комп'ютер загадав <b>${s.n} (${s.s})</b>. Переглянь, що про нього треба знати, на карті елементів.`,`не вгадав ${s.s}`),500);return}
+  toast(`Ні, це не ${e.n}. Залишилось спроб: ${G.lives}. Постав ще питання!`);
+  G.guessing=false;$("guessBtn").textContent="Я знаю, хто це!";drawCards();
+}
+
+/* ---------- 2. Пари ---------- */
+let M=null,memType="name";
+document.querySelectorAll("#memTabs button").forEach(b=>b.onclick=()=>{memType=b.dataset.m;document.querySelectorAll("#memTabs button").forEach(x=>x.setAttribute("aria-pressed",x===b));startMemory()});
+$("memNew").onclick=()=>startMemory();
+function startMemory(){
+  again=startMemory;show("vMemory");
+  const els=pickWeighted(8);M={els,open:[],done:0,moves:0,miss:new Set(),busy:false};
+  const cards=shuffle(els.flatMap(e=>[{s:e.s,t:e.s,sym:1},{s:e.s,t:memType==="name"?e.n:"«"+e.v+"»",sym:0}]));
+  $("mem").innerHTML=cards.map((c,i)=>`<button class="mc" type="button" data-s="${c.s}" data-i="${i}" aria-label="Закрита картка"><span class="in"><span class="bk">?</span><span class="fr ${c.sym?"sym":""}">${c.t}</span></span></button>`).join("");
+  $("mem").querySelectorAll(".mc").forEach(b=>b.onclick=()=>memClick(b));mStat();
+}
+function mStat(){$("mMoves").textContent=`Ходів: ${M.moves}`;$("mPairs").textContent=`Пар: ${M.done} / 8`}
+function memClick(b){
+  if(M.busy||b.classList.contains("open")||b.classList.contains("done"))return;
+  b.classList.add("open");b.setAttribute("aria-label",b.querySelector(".fr").textContent);M.open.push(b);
+  if(M.open.length<2)return;
+  M.moves++;const [a,c]=M.open;M.open=[];
+  if(a.dataset.s===c.dataset.s&&a!==c){[a,c].forEach(x=>{x.classList.remove("open");x.classList.add("done")});M.done++;if(!M.miss.has(a.dataset.s))bump(a.dataset.s,+1);mStat();
+    if(M.done===8){const st=M.moves<=12?3:M.moves<=16?2:1;setTimeout(()=>finish("memory",st,`Усі 8 пар знайдено за <b>${pl(M.moves,'хід','ходи','ходів')}</b>.`,`${M.moves} ходів (${memType==="name"?"назви":"вимова"})`),600)}return}
+  M.busy=true;[a,c].forEach(x=>x.classList.add("bad"));
+  // помилка рахується, якщо пару вже бачили, але переплутали
+  [a,c].forEach(x=>{const s=x.dataset.s;if(x.dataset.seen)M.miss.add(s);x.dataset.seen=1});
+  setTimeout(()=>{[a,c].forEach(x=>{x.classList.remove("open","bad");x.setAttribute("aria-label","Закрита картка")});M.busy=false},900);mStat();
+}
+
+/* ---------- 3. Бліц ---------- */
+const TRAPS={H:["Hg"],Hg:["H","Ag"],Ag:["Au","Al"],Au:["Ag","Al"],Al:["Ag"],C:["Ca","Cl","Cu"],Ca:["C","Cu"],Cu:["C","Ca"],Cl:["C","Cr"],Cr:["Cl","C"],
+ K:["Ca","Na"],Na:["N"],N:["Na"],S:["Si","Zn"],Si:["S"],F:["Fe"],Fe:["F"],P:["F"],Mg:["Hg"],Zn:["S"],O:["H"],Ba:["Br"],Br:["Ba"],I:["H"],Li:["Al"]};
+let B=null;
+function startBlitz(){again=startBlitz;show("vBlitz");B={i:0,ok:0,items:pickWeighted(12),miss:[]};bNext()}
+function bNext(){
+  if(B.i>=12){const st=B.ok>=11?3:B.ok>=8?2:B.ok>=5?1:0;
+    finish("blitz",{stars:st,score:B.ok},`Правильних відповідей: <b>${B.ok} з 12</b>.${B.miss.length?"<br>Повтори: <b>"+[...new Set(B.miss)].join(", ")+"</b>.":""}`,`${B.ok} / 12`);return}
+  const e=B.items[B.i],type=R(6);let big="",txt="",ans,opts;
+  const others=n=>shuffle(EL.filter(x=>x!==e)).slice(0,n);
+  if(type===0){big=e.s;txt="Як називається цей хімічний елемент?";ans=e.n;opts=others(3).map(x=>x.n)}
+  else if(type===1){big="";txt=`Який символ має елемент <b>${e.n}</b>?`;ans=e.s;const tr=(TRAPS[e.s]||[]).filter(x=>x!==e.s);opts=shuffle(tr).slice(0,2);others(5).forEach(x=>{if(opts.length<3&&!opts.includes(x.s))opts.push(x.s)})}
+  else if(type===2){big=e.s;txt="Як читається цей символ у хімічній формулі?";ans="«"+e.v+"»";
+    const pool=[...new Set(EL.map(x=>x.v).concat(["гідроген","карбон","нітроген","оксиген","сульфур","меркурій","фосфор"]))].filter(v=>v!==e.v);
+    let wrong=shuffle(pool).slice(0,3);const nm=e.n.toLowerCase();if(nm!==e.v&&!wrong.includes(nm))wrong[0]=nm;opts=wrong.map(v=>"«"+v+"»")}
+  else if(type===3){big=e.s;txt=`Як називається проста речовина, утворена елементом <b>${e.n}</b>?`;ans=e.ps;
+    const pool=shuffle(["водень","кисень","азот","вуглець","мідь","залізо","срібло","золото","ртуть","сірка","кремній","фтор","хлор","натрій","магній"].filter(v=>v!==e.ps));opts=pool.slice(0,3)}
+  else if(type===4){big=e.s;txt=`${e.n} — це металічний чи неметалічний елемент?`;ans=e.m?"металічний":"неметалічний";opts=[e.m?"неметалічний":"металічний"]}
+  else {big=e.s;txt=`У якому стані за звичайних умов перебуває проста речовина ${e.ps}?`;ans=ST[e.st];opts=Object.values(ST).filter(v=>v!==ans)}
+  opts=shuffle(opts.concat(ans));
+  $("bBig").textContent=big;$("bBig").hidden=!big;$("bTxt").innerHTML=txt;$("bFb").hidden=true;
+  $("bNum").textContent=`${B.i+1} / 12`;$("bOk").textContent=`✓ ${B.ok}`;$("bBar").style.width=(B.i/12*100)+"%";
+  $("bOpts").innerHTML=opts.map(o=>`<button class="op" type="button">${o}</button>`).join("");
+  $("bOpts").querySelectorAll(".op").forEach(b=>b.onclick=()=>{
+    const ok=b.textContent===ans;$("bOpts").querySelectorAll(".op").forEach(x=>{x.disabled=true;if(x.textContent===ans)x.classList.add("ok")});
+    if(ok){B.ok++;bump(e.s,+1)}else{b.classList.add("no");bump(e.s,-1);B.miss.push(e.s)}
+    const fb=$("bFb");fb.hidden=false;fb.className="fb "+(ok?"ok":"no");
+    fb.innerHTML=(ok?"✓ Правильно! ":"✗ Ні. ")+`${e.s} — ${e.n}, у формулі «${e.v}», проста речовина — ${e.ps} (${ST[e.st]}).`;
+    B.i++;setTimeout(bNext,ok?1300:2600)});
+}
+</script>
+</body>
+</html>
