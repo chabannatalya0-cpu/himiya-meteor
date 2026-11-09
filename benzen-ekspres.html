@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Експрес-перевірка: бензен</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700;800&display=swap">
+<style>
+/* Express quiz with a big sticky countdown ring; hexagon motif. Bright single look. */
+:root{color-scheme:light;
+  --bg:#f5f3ff;--card:#fff;--ink:#1e1b3a;--muted:#625e80;--line:#e4e0f5;
+  --accent:#7c3aed;--accent-deep:#5b21b6;--ok:#16a34a;--bad:#dc2626;--warn:#f59e0b;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;--f-body:"Golos Text",system-ui,sans-serif;--f-mono:"JetBrains Mono",ui-monospace,monospace}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:18px;line-height:1.45}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:860px;margin:0 auto;padding-block:14px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:14px}
+.eyebrow{font:800 11px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+h1{margin:2px 0 0;font-family:var(--f-display);font-size:clamp(22px,4.4vw,32px);line-height:1.08}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--card);border:3px solid var(--ink);border-radius:18px;padding:8px 14px;display:flex;gap:14px;align-items:center;box-shadow:0 4px 0 var(--ink)}
+.ring{width:64px;height:64px;flex:none;position:relative}
+.ring svg{width:64px;height:64px;transform:rotate(-90deg)}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font:800 16px var(--f-mono)}
+.bar .who{flex:1;font-weight:700;font-size:15px;color:var(--muted)}
+.bar .cnt{font-weight:800}
+.bar.warn{border-color:var(--warn);box-shadow:0 4px 0 var(--warn)}.bar.crit{border-color:var(--bad);box-shadow:0 4px 0 var(--bad);animation:pulse 1s infinite}
+@keyframes pulse{50%{transform:scale(1.01)}}
+.q{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.q.ans{border-color:#c4b5fd}
+.q.ok{border-color:var(--ok);background:#f0fdf4}.q.no{border-color:var(--bad);background:#fef2f2}
+.q h3{margin:0;font-size:18px;display:flex;gap:10px;align-items:flex-start}
+.q h3 .no{flex:none;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--accent);color:#fff;font:800 14px var(--f-mono)}
+.q.ok h3 .no{background:var(--ok)}.q.no h3 .no{background:var(--bad)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (max-width:560px){.opts{grid-template-columns:1fr}}
+.op{font:inherit;font-size:17px;text-align:left;border:2px solid var(--line);background:#fff;border-radius:12px;padding:9px 12px;cursor:pointer;color:var(--ink)}
+.op:hover:not([disabled]){border-color:var(--accent)}
+.op[aria-pressed="true"]{border-color:var(--accent);background:#ede9fe;font-weight:700}
+.op.ok{border-color:var(--ok);background:#dcfce7}.op.no{border-color:var(--bad);background:#fee2e2}.op.miss{border-color:var(--ok);border-style:dashed}
+.op[disabled]{cursor:default}
+.ex{font-size:15.5px;color:#166534}
+.btn{font-family:var(--f-display);font-size:16px;border:3px solid var(--ink);border-radius:14px;padding:12px 20px;cursor:pointer;color:#fff;background:var(--accent);box-shadow:0 4px 0 var(--ink)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.btn.green{background:var(--ok)}.btn[disabled]{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.card{background:var(--card);border:3px solid var(--ink);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px;box-shadow:0 5px 0 var(--ink)}
+.final{font-family:var(--f-display);font-size:44px;color:var(--ok)}
+.msg{font-weight:700;padding:10px 12px;border-radius:12px}
+.msg.ok{background:#e8f8ee;color:#166534}.msg.bad{background:#fdecec;color:#991b1b}.msg.info{background:#ede9fe;color:var(--accent-deep)}
+.hint{margin:0;color:var(--muted);font-size:15.5px}
+input[type=text],select{font:inherit;font-size:17px;padding:11px 13px;border-radius:12px;border:2px solid var(--ink);background:#fff;color:var(--ink);width:100%}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--warn);outline-offset:2px}
+.overlay{position:fixed;inset:0;z-index:30;background:rgba(30,27,58,.62);display:flex;align-items:center;justify-content:center;padding:20px max(16px,env(safe-area-inset-right,0px)) 20px max(16px,env(safe-area-inset-left,0px))}
+.overlay .card{max-width:540px;width:100%}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media (max-width:520px){.grid2{grid-template-columns:1fr}}
+.lbl{font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--muted)}
+.rules{margin:0;padding-left:20px;font-size:16px}.rules li{margin-bottom:3px}
+.hex{font-size:40px;line-height:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Хімія · 10 клас · експрес-перевірка · 6 хвилин</span>
+    <h1>Арени. Бензен: формули, будова, фізичні властивості</h1>
+  </header>
+  <div class="bar" id="bar">
+    <div class="ring"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="27" fill="none" stroke="#ede9fe" stroke-width="7"/><circle id="arc" cx="32" cy="32" r="27" fill="none" stroke="#7c3aed" stroke-width="7" stroke-linecap="round" stroke-dasharray="169.6" stroke-dashoffset="0"/></svg><b id="time">6:00</b></div>
+    <span class="who" id="who"></span>
+    <span class="cnt">Відповіді: <span id="done">0</span> / 12</span>
+  </div>
+  <div id="qs" style="display:flex;flex-direction:column;gap:12px"></div>
+  <section class="card" id="fin">
+    <div class="row"><button class="btn green" type="button" id="submit">Завершити й надіслати</button><span class="hint" id="finHint">Можна завершити раніше. Коли час скінчиться, робота надішлеться автоматично.</span></div>
+    <div id="res" hidden><span class="lbl">Результат</span><div><span class="final" id="score">0</span> / 12</div></div>
+    <div id="sendMsg"></div>
+  </section>
+</div>
+
+<div class="overlay" id="start">
+  <div class="card">
+    <div class="row"><span class="hex">⬡</span><div><span class="lbl">Експрес-перевірка</span><h2 style="margin:0;font-family:var(--f-display);font-size:21px">Бензен за 6 хвилин</h2></div></div>
+    <ul class="rules">
+      <li><b>12 запитань</b>, у кожному одна правильна відповідь, 1 бал за кожну.</li>
+      <li>Таймер — <b>6 хвилин</b>. Коли час вийде, відповіді надішлються автоматично.</li>
+      <li>Працюй самостійно: виходи зі сторінки фіксуються.</li>
+      <li>Пройти можна лише <b>один раз</b>.</li>
+    </ul>
+    <div class="grid2">
+      <div><label class="lbl" for="pname">Прізвище та ім'я</label><input type="text" id="pname" maxlength="60" autocomplete="name" placeholder="Іваненко Олена"></div>
+      <div><label class="lbl" for="pcls">Клас</label><select id="pcls"><option value="">— обери —</option><option>10-А</option><option>10-Б</option><option>Інший</option></select></div>
+    </div>
+    <p class="msg bad" id="startErr" hidden>Впиши прізвище, ім'я та обери клас.</p>
+    <div class="row"><button class="btn" id="startBtn" type="button">Почати — таймер стартує</button></div>
+  </div>
+</div>
+
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="benzenexp10";
+const LIMIT=360;
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+/* перший варіант — правильний */
+const Q=[
+ {id:1,t:"Молекулярна формула бензену:",o:["C₆H₆","C₆H₁₂","C₆H₁₄","C₂H₂"],e:"Бензен — C₆H₆: шість атомів Карбону й шість атомів Гідрогену."},
+ {id:2,t:"Загальна формула гомологічного ряду бензену:",o:["CₙH₂ₙ₋₆","CₙH₂ₙ","CₙH₂ₙ₋₂","CₙH₂ₙ₊₂"],e:"Арени ряду бензену: CₙH₂ₙ₋₆ (n ≥ 6)."},
+ {id:3,t:"Хто 1865 року запропонував циклічну формулу бензену з чергуванням одинарних і подвійних зв'язків?",o:["Ф. А. Кекуле","М. Фарадей","О. М. Бутлеров","Д. І. Менделєєв"],e:"Формулу Кекуле запропонував німецький хімік Фрідріх Август Кекуле."},
+ {id:4,t:"Хто вперше виділив бензен (1825 р.)?",o:["М. Фарадей","Ф. А. Кекуле","Е. Мітчерліх","М. В. Ломоносов"],e:"Майкл Фарадей виділив бензен з конденсату світильного газу."},
+ {id:5,t:"Тип гібридизації атомів Карбону в молекулі бензену:",o:["sp²","sp³","sp","гібридизації немає"],e:"Кожен атом Карбону в sp²-гібридизації, негібридна p-орбіталь бере участь у π-системі."},
+ {id:6,t:"Валентний кут C–C–C у молекулі бензену:",o:["120°","109°28′","180°","90°"],e:"Кут 120° — як у правильному шестикутнику та для sp²-гібридизації."},
+ {id:7,t:"Форма молекули бензену:",o:["плоский правильний шестикутник","тетраедр","лінійна","неплоский цикл «крісло»"],e:"Усі 12 атомів лежать в одній площині, кільце — правильний шестикутник."},
+ {id:8,t:"Усі зв'язки C–C у бензені однакові за довжиною (0,140 нм). Це означає, що вони…",o:["проміжні між одинарним і подвійним","такі самі, як одинарні","такі самі, як подвійні","почергово одинарні й подвійні"],e:"0,140 нм — між одинарним (0,154 нм) і подвійним (0,134 нм): «півторний» ароматичний зв'язок."},
+ {id:9,t:"Що позначає коло всередині шестикутника в сучасній формулі бензену?",o:["єдину π-електронну систему з 6 електронів","три подвійні зв'язки","порожнину всередині молекули","атом Гідрогену в центрі"],e:"Шість p-електронів утворюють єдину делокалізовану π-систему — ароматичний секстет."},
+ {id:10,t:"Агрегатний стан і колір бензену за звичайних умов:",o:["безбарвна рідина з характерним запахом","безбарвний газ без запаху","біла кристалічна речовина","жовта масляниста рідина без запаху"],e:"Бензен — безбарвна летка рідина з характерним запахом."},
+ {id:11,t:"Як бензен поводиться з водою?",o:["майже не розчиняється, легший за воду","добре розчиняється у воді","не розчиняється, важчий за воду й тоне","змішується з водою в будь-яких співвідношеннях"],e:"Густина ≈ 0,88 г/см³ — бензен утворює шар над водою; сам є добрим розчинником для органічних речовин."},
+ {id:12,t:"Температура кипіння бензену ближча до…",o:["80 °C","100 °C","35 °C","218 °C"],e:"tкип ≈ 80 °C, tпл ≈ 5,5 °C (на холоді бензен твердне). Бензен токсичний — працюють лише під витяжкою."}
+];
+const ORDER=shuffle(Q).map(q=>({...q,opts:shuffle(q.o.map((t,j)=>[t,j===0]))}));
+const ANS={};let ME={},t0=0,timer=null,exits=0,finished=false;
+
+function render(){
+  $("qs").innerHTML=ORDER.map((q,i)=>{const a=ANS[q.id];let cls=a!=null?"ans":"";if(finished)cls=a!=null&&q.opts[a][1]?"ok":"no";
+    return `<div class="q ${cls}"><h3><span class="no">${i+1}</span>${q.t}</h3><div class="opts">${q.opts.map(([t,ok],j)=>{let c="";if(finished){if(ok)c=a===j?"ok":"miss";else if(a===j)c="no"}
+      return `<button class="op ${c}" type="button" data-q="${q.id}" data-j="${j}" aria-pressed="${a===j}" ${finished?"disabled":""}>${t}</button>`}).join("")}</div>${finished?`<span class="ex">${a==null?"Немає відповіді. ":""}${q.e}</span>`:""}</div>`}).join("");
+  $("qs").querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>{ANS[+b.dataset.q]=+b.dataset.j;render()});
+  $("done").textContent=Object.keys(ANS).length;
+}
+function tick(){const left=Math.max(0,LIMIT-Math.floor((Date.now()-t0)/1000));
+  $("time").textContent=`${Math.floor(left/60)}:${String(left%60).padStart(2,"0")}`;
+  $("arc").setAttribute("stroke-dashoffset",169.6*(1-left/LIMIT));
+  $("arc").setAttribute("stroke",left<=30?"#dc2626":left<=60?"#f59e0b":"#7c3aed");
+  $("bar").className="bar"+(left<=30?" crit":left<=60?" warn":"");
+  if(left<=0)finish(true)}
+const KEY=()=>"benzexp:"+ME.name.toLowerCase()+"|"+ME.cls;
+$("startBtn").onclick=()=>{const n=$("pname").value.trim(),c=$("pcls").value;if(n.length<3||!c){$("startErr").hidden=false;return}
+  ME={name:n.slice(0,60),cls:c};
+  try{if(localStorage.getItem(KEY())){$("startErr").hidden=false;$("startErr").textContent="Ти вже проходив(-ла) цю перевірку. Повторне проходження не передбачено.";return}}catch(e){}
+  $("who").textContent=`👤 ${ME.name} · ${ME.cls}`;$("start").hidden=true;t0=Date.now();timer=setInterval(tick,250);tick();render()};
+document.addEventListener("visibilitychange",()=>{if(document.hidden&&t0&&!finished)exits++});
+$("submit").onclick=()=>finish(false);
+async function finish(auto){if(finished)return;finished=true;clearInterval(timer);
+  const score=ORDER.filter(q=>ANS[q.id]!=null&&q.opts[ANS[q.id]][1]).length;
+  const sec=Math.min(LIMIT,Math.round((Date.now()-t0)/1000));
+  render();$("res").hidden=false;$("score").textContent=score;$("submit").disabled=true;$("finHint").textContent=auto?"⏰ Час вийшов — відповіді надіслано автоматично.":"Робота завершена.";
+  $("fin").scrollIntoView({behavior:"smooth"});
+  try{localStorage.setItem(KEY(),"1")}catch(e){}
+  const wrong=Q.filter(q=>!(ANS[q.id]!=null&&ORDER.find(o=>o.id===q.id).opts[ANS[q.id]][1])).map(q=>q.id);
+  const rec={name:ME.name,cls:ME.cls,score,max:12,ts:{".sv":"timestamp"},sec,auto:!!auto,exits,answered:Object.keys(ANS).length,wrong:wrong.join(" ")};
+  const box=$("sendMsg");box.className="msg info";box.textContent="Надсилаю…";
+  for(let i=0;i<3;i++){try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec)});if(!r.ok)throw new Error(r.status);
+      box.className="msg ok";box.textContent=`✓ Роботу отримано вчителем: ${score} / 12. Нижче — правильні відповіді з поясненнями.`;return}catch(e){await new Promise(r=>setTimeout(r,1500))}}
+  box.className="msg bad";box.innerHTML=`Не вдалося надіслати. Перевір інтернет і натисни <button class="btn" type="button" id="retry" style="padding:6px 12px;font-size:14px">Надіслати ще раз</button>`;
+  $("retry").onclick=async()=>{try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec)});if(!r.ok)throw 0;box.className="msg ok";box.textContent=`✓ Роботу отримано вчителем: ${score} / 12.`}catch(e){}}}
+</script>
+</body>
+</html>
