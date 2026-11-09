@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Хімічний завод</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700;800&display=swap">
+<style>
+/* Loud, colourful factory board: gradient header, colour-coded substance "tanks" on a blueprint grid, glowing conveyor when a route runs. Single bright look. */
+:root{color-scheme:light;
+  --bg:#fff7ed;--card:#fff;--ink:#1f1235;--muted:#6b5f80;--line:#f1e4d3;
+  --raw:#f97316;--alk:#0ea5e9;--ene:#22c55e;--yne:#ec4899;--aro:#8b5cf6;--oth:#64748b;
+  --accent:#7c3aed;--ok:#16a34a;--bad:#dc2626;--gold:#facc15;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;--f-body:"Golos Text",system-ui,sans-serif;--f-mono:"JetBrains Mono",ui-monospace,monospace}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1280px;margin:0 auto;padding-block:16px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:14px}
+.hero{border-radius:24px;padding:18px 20px;color:#fff;background:linear-gradient(120deg,#f97316 0%,#ec4899 40%,#8b5cf6 75%,#0ea5e9 100%);border:3px solid var(--ink);box-shadow:0 6px 0 var(--ink);display:flex;flex-wrap:wrap;gap:10px 20px;align-items:flex-end;justify-content:space-between}
+.hero .eyebrow{font:800 11px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;opacity:.9}
+.hero h1{margin:2px 0 0;font-family:var(--f-display);font-size:clamp(24px,4.6vw,40px);line-height:1.02;text-shadow:0 3px 0 rgba(0,0,0,.25)}
+.hero .sc{background:#fff;color:var(--ink);border:3px solid var(--ink);border-radius:16px;padding:6px 14px;font-weight:800;display:flex;gap:12px;align-items:center}
+.hero .sc b{font-family:var(--f-display);font-size:24px;color:var(--accent)}
+.orders{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:760px){.orders{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.ord{border:3px solid var(--ink);border-radius:16px;padding:8px 10px;background:#fff;display:flex;flex-direction:column;gap:2px;box-shadow:0 4px 0 var(--ink)}
+.ord .n{font:800 11px var(--f-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.ord .r{font:800 15px var(--f-mono)}
+.ord .p{font-size:13px;font-weight:700;color:var(--muted)}
+.ord.cur{background:var(--gold)}
+.ord.done{background:#dcfce7;border-color:var(--ok);box-shadow:0 4px 0 var(--ok)}
+.main{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:980px){.main{grid-template-columns:1fr}}
+.card{background:var(--card);border:3px solid var(--ink);border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:12px;box-shadow:0 5px 0 var(--ink);min-width:0}
+.map{padding:8px;background:#1e1b4b;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:28px 28px}
+.map svg{width:100%;height:auto;display:block}
+.node{cursor:pointer}
+.node circle.b{stroke:#fff;stroke-width:3}
+.node:hover circle.b{stroke:var(--gold);stroke-width:5}
+.node.src circle.b,.node.dst circle.b{stroke:var(--gold);stroke-width:6}
+.node.inroute circle.b{stroke:var(--gold);stroke-width:5}
+.node text{pointer-events:none}
+.edge{stroke:rgba(255,255,255,.28);stroke-width:2.5;fill:none}
+.edge.route{stroke:var(--gold);stroke-width:5}
+.edge.run{stroke:#fff;stroke-width:6;stroke-dasharray:10 12;animation:flow .6s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-22}}
+.clabel{font:700 11px var(--f-body);fill:#fff}
+.legend{display:flex;flex-wrap:wrap;gap:10px;color:#fff;font-size:12.5px;font-weight:700;padding:4px 6px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-1px;border:2px solid #fff}
+.stage{border:3px solid var(--line);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.stage.on{border-color:var(--accent);background:#faf5ff}
+.stage.ok{border-color:var(--ok);background:#f0fdf4}.stage.bad{border-color:var(--bad);background:#fef2f2}
+.stage h3{margin:0;font-size:15.5px;display:flex;gap:8px;align-items:center}
+.stage h3 .no{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:var(--accent);color:#fff;font:800 13px var(--f-mono)}
+.stage.ok h3 .no{background:var(--ok)}.stage.bad h3 .no{background:var(--bad)}
+.stage h3 .pts{margin-left:auto;font:800 12px var(--f-mono);background:#ede9fe;color:var(--accent);border-radius:99px;padding:3px 9px}
+.hint{margin:0;color:var(--muted);font-size:14.5px}
+.path{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font:800 16px var(--f-mono)}
+.chip{border-radius:10px;padding:4px 10px;color:#fff;border:2px solid var(--ink)}
+.arr{color:var(--muted)}
+.cond{display:flex;flex-direction:column;gap:6px;border:2px dashed var(--line);border-radius:12px;padding:8px}
+.cond b{font-family:var(--f-mono)}
+select{font:inherit;font-size:15px;padding:8px 10px;border-radius:10px;border:2px solid var(--ink);background:#fff;color:var(--ink);width:100%}
+.opts{display:flex;flex-direction:column;gap:6px}
+.op{font:800 15px var(--f-mono);text-align:left;border:2px solid var(--line);background:#fff;border-radius:12px;padding:8px 12px;cursor:pointer;color:var(--ink)}
+.op[aria-pressed="true"]{border-color:var(--accent);background:#ede9fe}
+.op.ok{border-color:var(--ok);background:#dcfce7}.op.no{border-color:var(--bad);background:#fee2e2}.op.miss{border-color:var(--ok);border-style:dashed}.op[disabled]{cursor:default}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{font-family:var(--f-display);font-size:14px;border:3px solid var(--ink);border-radius:14px;padding:9px 15px;cursor:pointer;color:#fff;background:var(--accent);box-shadow:0 4px 0 var(--ink)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.btn.light{background:#fff;color:var(--ink)}.btn.green{background:var(--ok)}.btn.gold{background:var(--gold);color:var(--ink)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.fb{font-size:14.5px;border-radius:12px;padding:8px 11px}
+.fb.ok{background:#dcfce7;color:#14532d}.fb.bad{background:#fee2e2;color:#7f1d1d}.fb.info{background:#ede9fe;color:#4c1d95}
+.eqlist{font:700 14.5px var(--f-mono);display:flex;flex-direction:column;gap:4px;background:#fefce8;border:2px solid var(--gold);border-radius:12px;padding:10px}
+.eqlist small{font-family:var(--f-body);color:var(--muted);font-weight:600}
+.banner{font-family:var(--f-display);font-size:20px;text-align:center;padding:10px;border-radius:14px;background:linear-gradient(90deg,#facc15,#fb923c,#ec4899);color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.25);border:3px solid var(--ink)}
+input[type=text]{font:inherit;font-size:16px;padding:11px 13px;border-radius:12px;border:2px solid var(--ink);background:#fff;color:var(--ink);width:100%}
+button:focus-visible,input:focus-visible,select:focus-visible,.node:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.overlay{position:fixed;inset:0;z-index:30;background:rgba(31,18,53,.65);display:flex;align-items:center;justify-content:center;padding:20px max(16px,env(safe-area-inset-right,0px)) 20px max(16px,env(safe-area-inset-left,0px))}
+.overlay .card{max-width:560px;width:100%}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media (max-width:520px){.grid2{grid-template-columns:1fr}}
+.lbl{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--muted)}
+.final{font-family:var(--f-display);font-size:38px;color:var(--ok)}
+.msg{font-weight:700;padding:9px 12px;border-radius:12px}
+.msg.ok{background:#e8f8ee;color:#166534}.msg.bad{background:#fdecec;color:#991b1b}.msg.info{background:#ede9fe;color:#4c1d95}
+@media (prefers-reduced-motion:reduce){.edge.run{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div><div class="eyebrow">Хімія · 10 клас · методи одержання вуглеводнів</div><h1>🏭 Хімічний завод: побудуй маршрут</h1></div>
+    <div class="sc"><span id="who"></span><span>Бали: <b id="score">0</b> / 12</span></div>
+  </div>
+  <div class="orders" id="orders"></div>
+  <div class="main">
+    <section class="card map">
+      <svg viewBox="0 0 900 560" id="svg" aria-label="Карта перетворень вуглеводнів"></svg>
+      <div class="legend"><span><i style="background:var(--raw)"></i>сировина / реагенти</span><span><i style="background:var(--alk)"></i>алкани</span><span><i style="background:var(--ene)"></i>алкени</span><span><i style="background:var(--yne)"></i>алкіни</span><span><i style="background:var(--aro)"></i>арени</span><span><i style="background:var(--oth)"></i>циклоалкани, спирти</span></div>
+    </section>
+    <section class="card" id="panel"></section>
+  </div>
+  <section class="card" id="fin" hidden>
+    <span class="lbl">Зміну завершено</span>
+    <div class="row"><span>Результат: <span class="final" id="finScore">0</span> / 12</span></div>
+    <div class="row"><button class="btn green" type="button" id="submit">Надіслати вчителю</button></div>
+    <div id="sendMsg"></div>
+  </section>
+</div>
+
+<div class="overlay" id="start">
+  <div class="card">
+    <span class="lbl">Перед початком зміни</span>
+    <h2 style="margin:0;font-family:var(--f-display);font-size:22px">Ти — головний технолог 🏭</h2>
+    <p style="margin:0">Тобі надійдуть <b>4 замовлення</b>. Для кожного: <b>1)</b> проклади маршрут на карті від сировини до продукту; <b>2)</b> підбери реагенти й умови для кожної стадії; <b>3)</b> обери правильне рівняння. Кожен етап — 1 бал, дві спроби (за другу — половина балу).</p>
+    <div class="grid2">
+      <div><label class="lbl" for="pname">Прізвище та ім'я</label><input type="text" id="pname" maxlength="60" autocomplete="name" placeholder="Іваненко Олена"></div>
+      <div><label class="lbl" for="pcls">Клас</label><select id="pcls"><option value="">— обери —</option><option>10-А</option><option>10-Б</option><option>Інший</option></select></div>
+    </div>
+    <p class="msg bad" id="startErr" hidden>Впиши прізвище, ім'я та обери клас.</p>
+    <div class="row"><button class="btn gold" id="startBtn" type="button">Почати зміну</button></div>
+  </div>
+</div>
+
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="zavod10";
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const fmt=x=>String(Math.round(x*10)/10).replace(".",",");
+
+const NODES={
+ CH3COONa:{f:"CH₃COONa",n:"натрій ацетат",x:110,y:80,c:"--raw"},
+ Al4C3:{f:"Al₄C₃",n:"алюміній карбід",x:110,y:250,c:"--raw"},
+ CaC2:{f:"CaC₂",n:"кальцій карбід",x:300,y:350,c:"--raw"},
+ C4H10:{f:"C₄H₁₀",n:"бутан",x:170,y:480,c:"--alk"},
+ CH4:{f:"CH₄",n:"метан",x:310,y:160,c:"--alk"},
+ C2H6:{f:"C₂H₆",n:"етан",x:440,y:500,c:"--alk"},
+ C2H2:{f:"C₂H₂",n:"етин",x:510,y:250,c:"--yne"},
+ C2H4:{f:"C₂H₄",n:"етен",x:660,y:410,c:"--ene"},
+ C2H5OH:{f:"C₂H₅OH",n:"етанол",x:830,y:500,c:"--oth"},
+ C6H6:{f:"C₆H₆",n:"бензен",x:680,y:110,c:"--aro"},
+ C6H12:{f:"C₆H₁₂",n:"циклогексан",x:840,y:240,c:"--oth"}
+};
+/* стадії: from,to, умови (g — група, щоб не давати майже однакових варіантів), правильне рівняння + хибні */
+const EDGES=[
+ {a:"CH3COONa",b:"CH4",c:"+ NaOH, сплавлення (t)",g:"naoh",eq:"CH₃COONa + NaOH → CH₄↑ + Na₂CO₃",w:["CH₃COONa + NaOH → C₂H₆↑ + Na₂CO₃","CH₃COONa + H₂O → CH₄↑ + NaHCO₃","2CH₃COONa + NaOH → CH₄↑ + Na₂CO₃"]},
+ {a:"Al4C3",b:"CH4",c:"+ H₂O",g:"w",eq:"Al₄C₃ + 12H₂O → 3CH₄↑ + 4Al(OH)₃",w:["Al₄C₃ + 12H₂O → 4CH₄↑ + 4Al(OH)₃","Al₄C₃ + 12H₂O → 3C₂H₂↑ + 4Al(OH)₃","Al₄C₃ + 4H₂O → 3CH₄↑ + 4AlOH"]},
+ {a:"CaC2",b:"C2H2",c:"+ H₂O",g:"w",eq:"CaC₂ + 2H₂O → C₂H₂↑ + Ca(OH)₂",w:["CaC₂ + 2H₂O → C₂H₄↑ + Ca(OH)₂","CaC₂ + H₂O → C₂H₂↑ + CaO","CaC₂ + 2H₂O → 2CH₄↑ + CaO"]},
+ {a:"CH4",b:"C2H2",c:"t = 1500 °C (піроліз)",g:"pyr",eq:"2CH₄ → C₂H₂ + 3H₂",w:["2CH₄ → C₂H₂ + 2H₂","CH₄ → C₂H₂ + H₂","2CH₄ → C₂H₄ + 3H₂"]},
+ {a:"C4H10",b:"C2H6",c:"t (крекінг)",g:"crack",eq:"C₄H₁₀ → C₂H₆ + C₂H₄",w:["C₄H₁₀ → 2C₂H₆","C₄H₁₀ → C₂H₆ + C₂H₂","C₄H₁₀ → 2C₂H₄ + H₂O"]},
+ {a:"C4H10",b:"C2H4",c:"t (крекінг)",g:"crack",eq:"C₄H₁₀ → C₂H₄ + C₂H₆",w:["C₄H₁₀ → 2C₂H₄","C₄H₁₀ → C₂H₄ + C₂H₂ + H₂O","C₄H₁₀ → C₂H₄ + 2CH₄"]},
+ {a:"C2H2",b:"C2H4",c:"+ H₂, t, кат. Pd",g:"h2",eq:"C₂H₂ + H₂ → C₂H₄",w:["C₂H₂ + 2H₂ → C₂H₄","C₂H₂ + H₂ → C₂H₆","C₂H₂ + H₂O → C₂H₄"]},
+ {a:"C2H2",b:"C2H6",c:"+ 2H₂, t, кат. Ni",g:"h2",eq:"C₂H₂ + 2H₂ → C₂H₆",w:["C₂H₂ + H₂ → C₂H₆","C₂H₂ + 3H₂ → C₂H₆","C₂H₂ + 2H₂ → C₂H₄"]},
+ {a:"C2H4",b:"C2H6",c:"+ H₂, t, кат. Ni",g:"h2",eq:"C₂H₄ + H₂ → C₂H₆",w:["C₂H₄ + 2H₂ → C₂H₆","C₂H₄ + H₂ → C₂H₂","C₂H₄ + H₂O → C₂H₆"]},
+ {a:"C2H6",b:"C2H4",c:"t, кат. (дегідрування)",g:"dehyd",eq:"C₂H₆ → C₂H₄ + H₂",w:["C₂H₆ → C₂H₄ + 2H₂","C₂H₆ → C₂H₂ + H₂","2C₂H₆ → C₂H₄ + H₂"]},
+ {a:"C2H5OH",b:"C2H4",c:"H₂SO₄ (конц.), t > 140 °C",g:"h2so4",eq:"C₂H₅OH → C₂H₄ + H₂O",w:["C₂H₅OH → C₂H₂ + H₂O","C₂H₅OH → C₂H₆ + O₂","2C₂H₅OH → C₂H₄ + 2H₂O"]},
+ {a:"C2H4",b:"C2H5OH",c:"+ H₂O, t, p, кат. H₃PO₄",g:"w2",eq:"C₂H₄ + H₂O → C₂H₅OH",w:["C₂H₄ + 2H₂O → C₂H₅OH","C₂H₄ + H₂ → C₂H₅OH","C₂H₄ + H₂O → C₂H₆O₂"]},
+ {a:"C2H2",b:"C6H6",c:"t, активоване вугілля (тримеризація)",g:"trim",eq:"3C₂H₂ → C₆H₆",w:["2C₂H₂ → C₆H₆","3C₂H₂ → C₆H₁₂","C₂H₂ → C₆H₆ + H₂"]},
+ {a:"C6H12",b:"C6H6",c:"t, кат. Pt (дегідрування)",g:"dehyd",eq:"C₆H₁₂ → C₆H₆ + 3H₂",w:["C₆H₁₂ → C₆H₆ + H₂","C₆H₁₂ → C₆H₆ + 6H₂","C₆H₁₂ → C₆H₆ + 3H₂O"]},
+ {a:"C6H6",b:"C6H12",c:"+ 3H₂, t, кат. Ni",g:"h2",eq:"C₆H₆ + 3H₂ → C₆H₁₂",w:["C₆H₆ + H₂ → C₆H₁₂","C₆H₆ + 6H₂ → C₆H₁₂","C₆H₆ + 3H₂ → C₆H₁₀"]}
+];
+const edge=(a,b)=>EDGES.find(e=>e.a===a&&e.b===b);
+const EQPREF=["Al4C3>CH4","CH4>C2H2","C2H2>C6H6","C6H6>C6H12","C6H12>C6H6","C2H2>C2H6","CaC2>C2H2","CH3COONa>CH4","C4H10>C2H6","C4H10>C2H4","C2H5OH>C2H4","C2H2>C2H4","C2H6>C2H4","C2H4>C2H6","C2H4>C2H5OH"];
+const POOL=[["CaC2","C6H6"],["CH3COONa","C2H2"],["Al4C3","C6H6"],["C2H5OH","C2H6"],["CaC2","C2H6"],["CH4","C6H12"],["C2H6","C2H5OH"],["C4H10","C2H5OH"],["Al4C3","C2H4"],["CH3COONa","C6H6"],["C6H12","C6H6"],["C4H10","C2H6"]];
+/* 4 замовлення: 1 коротке-середнє, 2 середні, 1 довге */
+function bfs(s,t){const q=[[s]],seen=new Set([s]);while(q.length){const p=q.shift(),l=p[p.length-1];if(l===t)return p;EDGES.filter(e=>e.a===l&&!seen.has(e.b)).forEach(e=>{seen.add(e.b);q.push([...p,e.b])})}return null}
+const byLen=POOL.map(o=>({o,L:bfs(...o).length-1}));
+function pickOrders(){for(let t=0;t<200;t++){const c=[...shuffle(byLen.filter(x=>x.L<=2)).slice(0,2),...shuffle(byLen.filter(x=>x.L>=3)).slice(0,2)];
+  if(new Set(c.map(x=>x.o[0])).size===4&&new Set(c.map(x=>x.o[1])).size===4)return c}return byLen.slice(0,4)}
+const ORD=pickOrders().map(x=>({src:x.o[0],dst:x.o[1],route:[x.o[0]],rTry:0,cTry:0,sc:[null,null,null],conds:{},eqPick:null,stage:0,miss:[]}));
+let cur=0;
+
+/* ---------- карта ---------- */
+const col=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+function arrowPath(e,off){const A=NODES[e.a],B=NODES[e.b],dx=B.x-A.x,dy=B.y-A.y,L=Math.hypot(dx,dy),ux=dx/L,uy=dy/L,r=40;
+  const sx=A.x+ux*r,sy=A.y+uy*r,ex=B.x-ux*(r+8),ey=B.y-uy*(r+8),mx=(sx+ex)/2-uy*off,my=(sy+ey)/2+ux*off;return {d:`M${sx} ${sy} Q${mx} ${my} ${ex} ${ey}`,mx,my}}
+function drawMap(){const o=ORD[cur]||ORD[ORD.length-1],inR=new Set(o.route),rEdges=new Set();for(let i=1;i<o.route.length;i++)rEdges.add(o.route[i-1]+">"+o.route[i]);
+  const running=o.stage>=3;
+  let h=`<defs><marker id="ar" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="rgba(255,255,255,.55)"/></marker>
+   <marker id="arG" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#facc15"/></marker></defs>`;
+  EDGES.forEach(e=>{const two=!!edge(e.b,e.a),p=arrowPath(e,two?22:0),k=e.a+">"+e.b,isR=rEdges.has(k);
+    h+=`<path class="edge ${isR?(running?"route run":"route"):""}" d="${p.d}" marker-end="url(#${isR?"arG":"ar"})"/>`;
+    if(isR&&o.stage>=2&&o.conds[k]!=null){const t=e.c;h+=`<rect x="${p.mx-t.length*3.1-6}" y="${p.my-11}" width="${t.length*6.2+12}" height="20" rx="6" fill="#7c3aed" stroke="#fff"/><text class="clabel" x="${p.mx}" y="${p.my+3}" text-anchor="middle">${t}</text>`}});
+  Object.entries(NODES).forEach(([k,n])=>{const idx=o.route.indexOf(k);
+    h+=`<g class="node ${k===o.src?"src":""} ${k===o.dst?"dst":""} ${inR?"":""}${inR.has(k)?" inroute":""}" data-n="${k}" tabindex="0" role="button" aria-label="${n.n}">
+     <circle class="b" cx="${n.x}" cy="${n.y}" r="38" fill="${col(n.c)}"/>
+     <text x="${n.x}" y="${n.y+3}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="800" font-size="${n.f.length>6?13:16}" fill="#fff">${n.f}</text>
+     <text x="${n.x}" y="${n.y+56}" text-anchor="middle" font-family="Golos Text, Arial, sans-serif" font-weight="700" font-size="12.5" fill="#e9e4ff">${n.n}</text>
+     ${k===o.src?`<text x="${n.x}" y="${n.y-46}" text-anchor="middle" font-size="18">📦</text>`:""}${k===o.dst?`<text x="${n.x}" y="${n.y-46}" text-anchor="middle" font-size="18">🎯</text>`:""}
+     ${idx>0?`<circle cx="${n.x+30}" cy="${n.y-28}" r="11" fill="#facc15" stroke="#1f1235" stroke-width="2"/><text x="${n.x+30}" y="${n.y-24}" text-anchor="middle" font-weight="800" font-size="12" fill="#1f1235">${idx}</text>`:""}</g>`});
+  $("svg").innerHTML=h;
+  $("svg").querySelectorAll(".node").forEach(g=>{const f=()=>clickNode(g.dataset.n);g.onclick=f;g.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();f()}}});
+}
+function clickNode(k){const o=ORD[cur];if(!o||o.stage!==0)return;const last=o.route[o.route.length-1];
+  if(k===last&&o.route.length>1){o.route.pop();render();return}
+  if(o.route.includes(k))return;if(o.route.length>=6)return;o.route.push(k);render()}
+
+/* ---------- панель ---------- */
+const chipF=k=>`<span class="chip" style="background:${col(NODES[k].c)}">${NODES[k].f}</span>`;
+const pathHTML=r=>r.map(chipF).join('<span class="arr">→</span>');
+function render(){renderOrders();drawMap();renderPanel();upd()}
+function renderOrders(){$("orders").innerHTML=ORD.map((o,i)=>{const s=o.sc.reduce((a,b)=>a+(b||0),0);
+  return `<div class="ord ${i===cur&&o.stage<4?"cur":""} ${o.stage>=4?"done":""}"><span class="n">Замовлення ${i+1}</span><span class="r">${NODES[o.src].f} → ${NODES[o.dst].f}</span><span class="p">${o.stage>=4?"✓ "+fmt(s)+" / 3 б.":i===cur?"⏳ в роботі":i<cur?"":"очікує"}</span></div>`}).join("")}
+function stageBox(n,t,state,body){return `<div class="stage ${state}"><h3><span class="no">${n}</span>${t}<span class="pts">1 б.</span></h3>${body}</div>`}
+function renderPanel(){const o=ORD[cur];if(!o){$("panel").innerHTML=`<div class="banner">🎉 Зміну завершено!</div><p class="hint">Усі 4 замовлення виконано. Надішли результат учителю нижче.</p>`;$("fin").hidden=false;return}
+  const st=i=>o.sc[i]==null?(o.stage===i?"on":""):(o.sc[i]===1?"ok":o.sc[i]>0?"ok":"bad");
+  let h=`<span class="lbl">Замовлення ${cur+1} / 4</span><div style="font-family:var(--f-display);font-size:19px">Отримай ${NODES[o.dst].n} ${NODES[o.dst].f} з ${gen(o.src)} ${NODES[o.src].f}</div>`;
+  // етап 1
+  let b1=`<div class="path">${pathHTML(o.route)}${o.route[o.route.length-1]!==o.dst&&o.stage===0?'<span class="arr">→ … 🎯</span>':""}</div>`;
+  if(o.stage===0){b1+=`<p class="hint">Натискай речовини на карті по черзі (шлях іде лише за стрілками). Натисни останню ще раз, щоб її прибрати.</p>${o.rTry===1?`<div class="fb bad">✗ Маршрут неможливий: ${o.why}. Ще одна спроба (за неї — 0,5 б.).</div>`:""}<div class="row"><button class="btn" type="button" id="chkR">Перевірити маршрут</button><button class="btn light" type="button" id="rstR">Скинути</button></div>`}
+  else b1+=`<div class="fb ${o.sc[0]===1?"ok":o.sc[0]>0?"info":"bad"}">${o.sc[0]===1?"✓ Маршрут правильний! +1 б.":o.sc[0]>0?"✓ З другої спроби: +0,5 б.":"✗ Дві спроби використано. Ось робочий маршрут — працюємо з ним."}</div>`;
+  h+=stageBox(1,"Маршрут",st(0),b1);
+  // етап 2
+  if(o.stage>=1){const steps=[];for(let i=1;i<o.route.length;i++)steps.push(edge(o.route[i-1],o.route[i]));
+    let b2=steps.map(e=>{const k=e.a+">"+e.b,opts=o.opt[k],v=o.conds[k];let res="";
+      if(o.stage>=2)res=v===e.c?" ✓":` ✗ <small>правильно: ${e.c}</small>`;
+      return `<div class="cond"><b>${NODES[e.a].f} → ${NODES[e.b].f}${res}</b>${o.stage===1?`<select data-k="${k}"><option value="">— обери реагент і умови —</option>${opts.map(x=>`<option ${v===x?"selected":""}>${x}</option>`).join("")}</select>`:`<span>${v||""}</span>`}</div>`}).join("");
+    if(o.stage===1)b2+=`${o.cTry===1?`<div class="fb bad">✗ Не всі умови правильні. Ще одна спроба (за неї — 0,5 б.).</div>`:""}<div class="row"><button class="btn" type="button" id="chkC">Перевірити умови</button></div>`;
+    else b2+=`<div class="fb ${o.sc[1]===1?"ok":o.sc[1]>0?"info":"bad"}">${o.sc[1]===1?"✓ Усі умови правильні! +1 б.":o.sc[1]>0?"✓ З другої спроби: +0,5 б.":"✗ Дві спроби використано — правильні умови показано вище й на карті."}</div>`;
+    h+=stageBox(2,"Реагенти й умови",st(1),b2)}
+  // етап 3
+  if(o.stage>=2){const e=o.eqEdge,done=o.stage>=3;
+    let b3=`<p class="hint">Яке рівняння правильно описує стадію <b>${NODES[e.a].f} → ${NODES[e.b].f}</b>?</p><div class="opts">${o.eqOpts.map((t,j)=>{let c="";if(done){if(t===e.eq)c=o.eqPick===j?"ok":"miss";else if(o.eqPick===j)c="no"}return `<button class="op ${c}" type="button" data-q="${j}" aria-pressed="${o.eqPick===j}" ${done?"disabled":""}>${t}</button>`}).join("")}</div>`;
+    if(!done)b3+=`<div class="row"><button class="btn" type="button" id="chkE">Перевірити</button></div>`;
+    else b3+=`<div class="fb ${o.sc[2]?"ok":"bad"}">${o.sc[2]?"✓ Правильно! +1 б.":"✗ Ні — правильне рівняння позначено зеленою рамкою."}</div>`;
+    h+=stageBox(3,"Рівняння",st(2),b3)}
+  if(o.stage>=3){const steps=[];for(let i=1;i<o.route.length;i++)steps.push(edge(o.route[i-1],o.route[i]));
+    h+=`<div class="banner">🏭 Лінію запущено!</div><div class="eqlist">${steps.map(e=>`<div>${e.eq} <small>(${e.c})</small></div>`).join("")}</div>
+    <div class="row"><button class="btn gold" type="button" id="next">${cur<3?"Наступне замовлення →":"Завершити зміну"}</button></div>`}
+  $("panel").innerHTML=h;
+  const on=(id,f)=>{const el=$(id);if(el)el.onclick=f};
+  on("rstR",()=>{o.route=[o.src];render()});
+  on("chkR",()=>checkRoute(o));
+  $("panel").querySelectorAll("select[data-k]").forEach(s=>s.onchange=()=>{o.conds[s.dataset.k]=s.value||undefined});
+  on("chkC",()=>checkCond(o));
+  $("panel").querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>{o.eqPick=+b.dataset.q;renderPanel()});
+  on("chkE",()=>{if(o.eqPick==null)return;o.sc[2]=o.eqOpts[o.eqPick]===o.eqEdge.eq?1:0;if(!o.sc[2])o.miss.push("рівняння "+NODES[o.eqEdge.a].f.replace(/\s/g,"")+"→"+NODES[o.eqEdge.b].f);o.stage=3;render()});
+  on("next",()=>{o.stage=4;cur++;render();scrollTo({top:0,behavior:"smooth"})});
+}
+function gen(k){return {CH3COONa:"натрій ацетату",Al4C3:"алюміній карбіду",CaC2:"кальцій карбіду",C4H10:"бутану",CH4:"метану",C2H6:"етану",C2H2:"етину",C2H4:"етену",C2H5OH:"етанолу",C6H6:"бензену",C6H12:"циклогексану"}[k]}
+function checkRoute(o){const r=o.route;let why="";
+  if(r.length<2)why="маршрут порожній";
+  else{for(let i=1;i<r.length;i++)if(!edge(r[i-1],r[i])){why=`немає способу перетворити ${NODES[r[i-1]].f} на ${NODES[r[i]].f} за один крок`;break}
+    if(!why&&r[r.length-1]!==o.dst)why=`маршрут не закінчується на ${NODES[o.dst].f}`}
+  o.rTry++;
+  if(!why){o.sc[0]=o.rTry===1?1:0.5}
+  else if(o.rTry>=2){o.sc[0]=0;o.route=bfs(o.src,o.dst);o.miss.push(`маршрут ${NODES[o.src].f}→${NODES[o.dst].f}`)}
+  else{o.why=why;render();return}
+  // готуємо етап 2
+  o.opt={};const allC=[...new Set(EDGES.map(e=>e.c))];
+  for(let i=1;i<o.route.length;i++){const e=edge(o.route[i-1],o.route[i]),k=e.a+">"+e.b;
+    const bad=shuffle(EDGES.filter(x=>x.g!==e.g&&x.c!==e.c).map(x=>x.c).filter((v,j,a)=>a.indexOf(v)===j)).slice(0,4);o.opt[k]=shuffle([e.c,...bad])}
+  o.stage=1;render()}
+function checkCond(o){const steps=[];for(let i=1;i<o.route.length;i++)steps.push(edge(o.route[i-1],o.route[i]));
+  if(steps.some(e=>!o.conds[e.a+">"+e.b]))return;
+  const wrong=steps.filter(e=>o.conds[e.a+">"+e.b]!==e.c);o.cTry++;
+  if(!wrong.length)o.sc[1]=o.cTry===1?1:0.5;
+  else if(o.cTry>=2){o.sc[1]=0;wrong.forEach(e=>o.miss.push(`умови ${NODES[e.a].f}→${NODES[e.b].f}`))}
+  else{render();return}
+  // етап 3: рівняння найцікавішої стадії маршруту
+  const ks=steps.map(e=>e.a+">"+e.b),k=EQPREF.find(x=>ks.includes(x))||ks[0],e=steps[ks.indexOf(k)];
+  o.eqEdge=e;o.eqOpts=shuffle([e.eq,...e.w]);o.stage=2;render()}
+const total=()=>ORD.reduce((a,o)=>a+o.sc.reduce((x,y)=>x+(y||0),0),0);
+function upd(){const s=total();$("score").textContent=fmt(s);$("finScore").textContent=fmt(s)}
+
+/* ---------- здача ---------- */
+let ME={},sent=false;
+$("submit").onclick=async()=>{const box=$("sendMsg");if(sent)return;$("submit").disabled=true;box.className="msg info";box.textContent="Надсилаю…";
+  const rec={name:ME.name,cls:ME.cls,score:total(),max:12,ts:{".sv":"timestamp"},
+    parts:ORD.map(o=>o.sc.reduce((a,b)=>a+(b||0),0)).join(" "),detail:ORD.map(o=>o.sc.join("/")).join(" "),
+    orders:ORD.map(o=>`${o.src}→${o.dst}`).join(", "),weak:ORD.flatMap(o=>o.miss).join("; ")};
+  try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec)});if(!r.ok)throw new Error(r.status);
+    sent=true;box.className="msg ok";box.textContent=`✓ Роботу отримано вчителем: ${fmt(rec.score)} / 12. Чудова зміна, технологу!`;
+  }catch(e){$("submit").disabled=false;box.className="msg bad";box.textContent="Не вдалося надіслати. Перевір інтернет і натисни ще раз."}};
+$("startBtn").onclick=()=>{const nm=$("pname").value.trim(),c=$("pcls").value;if(nm.length<3||!c){$("startErr").hidden=false;return}
+  ME={name:nm.slice(0,60),cls:c};$("who").textContent=`👷 ${ME.name} · ${ME.cls}`;$("start").hidden=true};
+render();
+</script>
+</body>
+</html>
