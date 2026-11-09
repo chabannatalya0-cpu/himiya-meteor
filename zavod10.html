@@ -16,7 +16,7 @@
   --f-display:"Unbounded","Arial Black",system-ui,sans-serif;--f-body:"Golos Text",system-ui,sans-serif;--f-mono:"JetBrains Mono",ui-monospace,monospace}
 *{box-sizing:border-box}[hidden]{display:none!important}
 html,body{margin:0}
-body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:18px;line-height:1.45}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
 .wrap{max-width:1280px;margin:0 auto;padding-block:16px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:14px}
 .hero{border-radius:24px;padding:18px 20px;color:#fff;background:linear-gradient(120deg,#f97316 0%,#ec4899 40%,#8b5cf6 75%,#0ea5e9 100%);border:3px solid var(--ink);box-shadow:0 6px 0 var(--ink);display:flex;flex-wrap:wrap;gap:10px 20px;align-items:flex-end;justify-content:space-between}
@@ -27,12 +27,12 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .orders{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
 @media (max-width:760px){.orders{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .ord{border:3px solid var(--ink);border-radius:16px;padding:8px 10px;background:#fff;display:flex;flex-direction:column;gap:2px;box-shadow:0 4px 0 var(--ink)}
-.ord .n{font:800 11px var(--f-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
-.ord .r{font:800 15px var(--f-mono)}
-.ord .p{font-size:13px;font-weight:700;color:var(--muted)}
+.ord .n{font:800 13px var(--f-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.ord .r{font:800 18px var(--f-mono)}
+.ord .p{font-size:15px;font-weight:700;color:var(--muted)}
 .ord.cur{background:var(--gold)}
 .ord.done{background:#dcfce7;border-color:var(--ok);box-shadow:0 4px 0 var(--ok)}
-.main{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:14px;align-items:start}
+.main{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:14px;align-items:start}
 @media (max-width:980px){.main{grid-template-columns:1fr}}
 .card{background:var(--card);border:3px solid var(--ink);border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:12px;box-shadow:0 5px 0 var(--ink);min-width:0}
 .map{padding:8px;background:#1e1b4b;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:28px 28px}
@@ -43,47 +43,47 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .node.src circle.b,.node.dst circle.b{stroke:var(--gold);stroke-width:6}
 .node.inroute circle.b{stroke:var(--gold);stroke-width:5}
 .node text{pointer-events:none}
-.edge{stroke:rgba(255,255,255,.28);stroke-width:2.5;fill:none}
+.edge{stroke:rgba(255,255,255,.32);stroke-width:3;fill:none}
 .edge.route{stroke:var(--gold);stroke-width:5}
 .edge.run{stroke:#fff;stroke-width:6;stroke-dasharray:10 12;animation:flow .6s linear infinite}
 @keyframes flow{to{stroke-dashoffset:-22}}
-.clabel{font:700 11px var(--f-body);fill:#fff}
-.legend{display:flex;flex-wrap:wrap;gap:10px;color:#fff;font-size:12.5px;font-weight:700;padding:4px 6px}
+.clabel{font:700 17px var(--f-body);fill:#fff}
+.legend{display:flex;flex-wrap:wrap;gap:12px;color:#fff;font-size:15.5px;font-weight:700;padding:4px 6px}
 .legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-1px;border:2px solid #fff}
 .stage{border:3px solid var(--line);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px}
 .stage.on{border-color:var(--accent);background:#faf5ff}
 .stage.ok{border-color:var(--ok);background:#f0fdf4}.stage.bad{border-color:var(--bad);background:#fef2f2}
-.stage h3{margin:0;font-size:15.5px;display:flex;gap:8px;align-items:center}
-.stage h3 .no{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:var(--accent);color:#fff;font:800 13px var(--f-mono)}
+.stage h3{margin:0;font-size:19px;display:flex;gap:8px;align-items:center}
+.stage h3 .no{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:var(--accent);color:#fff;font:800 13px var(--f-mono)}
 .stage.ok h3 .no{background:var(--ok)}.stage.bad h3 .no{background:var(--bad)}
-.stage h3 .pts{margin-left:auto;font:800 12px var(--f-mono);background:#ede9fe;color:var(--accent);border-radius:99px;padding:3px 9px}
-.hint{margin:0;color:var(--muted);font-size:14.5px}
-.path{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font:800 16px var(--f-mono)}
+.stage h3 .pts{margin-left:auto;font:800 14px var(--f-mono);background:#ede9fe;color:var(--accent);border-radius:99px;padding:3px 9px}
+.hint{margin:0;color:var(--muted);font-size:17px}
+.path{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font:800 20px var(--f-mono)}
 .chip{border-radius:10px;padding:4px 10px;color:#fff;border:2px solid var(--ink)}
 .arr{color:var(--muted)}
 .cond{display:flex;flex-direction:column;gap:6px;border:2px dashed var(--line);border-radius:12px;padding:8px}
 .cond b{font-family:var(--f-mono)}
-select{font:inherit;font-size:15px;padding:8px 10px;border-radius:10px;border:2px solid var(--ink);background:#fff;color:var(--ink);width:100%}
+select{font:inherit;font-size:17px;padding:10px 12px;border-radius:10px;border:2px solid var(--ink);background:#fff;color:var(--ink);width:100%}
 .opts{display:flex;flex-direction:column;gap:6px}
-.op{font:800 15px var(--f-mono);text-align:left;border:2px solid var(--line);background:#fff;border-radius:12px;padding:8px 12px;cursor:pointer;color:var(--ink)}
+.op{font:800 18px var(--f-mono);text-align:left;border:2px solid var(--line);background:#fff;border-radius:12px;padding:8px 12px;cursor:pointer;color:var(--ink)}
 .op[aria-pressed="true"]{border-color:var(--accent);background:#ede9fe}
 .op.ok{border-color:var(--ok);background:#dcfce7}.op.no{border-color:var(--bad);background:#fee2e2}.op.miss{border-color:var(--ok);border-style:dashed}.op[disabled]{cursor:default}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.btn{font-family:var(--f-display);font-size:14px;border:3px solid var(--ink);border-radius:14px;padding:9px 15px;cursor:pointer;color:#fff;background:var(--accent);box-shadow:0 4px 0 var(--ink)}
+.btn{font-family:var(--f-display);font-size:16px;border:3px solid var(--ink);border-radius:14px;padding:9px 15px;cursor:pointer;color:#fff;background:var(--accent);box-shadow:0 4px 0 var(--ink)}
 .btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .btn.light{background:#fff;color:var(--ink)}.btn.green{background:var(--ok)}.btn.gold{background:var(--gold);color:var(--ink)}
 .btn[disabled]{opacity:.45;cursor:not-allowed}
-.fb{font-size:14.5px;border-radius:12px;padding:8px 11px}
+.fb{font-size:17px;border-radius:12px;padding:8px 11px}
 .fb.ok{background:#dcfce7;color:#14532d}.fb.bad{background:#fee2e2;color:#7f1d1d}.fb.info{background:#ede9fe;color:#4c1d95}
-.eqlist{font:700 14.5px var(--f-mono);display:flex;flex-direction:column;gap:4px;background:#fefce8;border:2px solid var(--gold);border-radius:12px;padding:10px}
+.eqlist{font:700 17px var(--f-mono);display:flex;flex-direction:column;gap:4px;background:#fefce8;border:2px solid var(--gold);border-radius:12px;padding:10px}
 .eqlist small{font-family:var(--f-body);color:var(--muted);font-weight:600}
-.banner{font-family:var(--f-display);font-size:20px;text-align:center;padding:10px;border-radius:14px;background:linear-gradient(90deg,#facc15,#fb923c,#ec4899);color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.25);border:3px solid var(--ink)}
+.banner{font-family:var(--f-display);font-size:24px;text-align:center;padding:10px;border-radius:14px;background:linear-gradient(90deg,#facc15,#fb923c,#ec4899);color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.25);border:3px solid var(--ink)}
 input[type=text]{font:inherit;font-size:16px;padding:11px 13px;border-radius:12px;border:2px solid var(--ink);background:#fff;color:var(--ink);width:100%}
 button:focus-visible,input:focus-visible,select:focus-visible,.node:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 .overlay{position:fixed;inset:0;z-index:30;background:rgba(31,18,53,.65);display:flex;align-items:center;justify-content:center;padding:20px max(16px,env(safe-area-inset-right,0px)) 20px max(16px,env(safe-area-inset-left,0px))}
 .overlay .card{max-width:560px;width:100%}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media (max-width:520px){.grid2{grid-template-columns:1fr}}
-.lbl{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--muted)}
+.lbl{font-size:14px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--muted)}
 .final{font-family:var(--f-display);font-size:38px;color:var(--ok)}
 .msg{font-weight:700;padding:9px 12px;border-radius:12px}
 .msg.ok{background:#e8f8ee;color:#166534}.msg.bad{background:#fdecec;color:#991b1b}.msg.info{background:#ede9fe;color:#4c1d95}
@@ -99,7 +99,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,.node:focus-visibl
   <div class="orders" id="orders"></div>
   <div class="main">
     <section class="card map">
-      <svg viewBox="0 0 900 560" id="svg" aria-label="Карта перетворень вуглеводнів"></svg>
+      <svg viewBox="0 10 900 600" id="svg" aria-label="Карта перетворень вуглеводнів"></svg>
       <div class="legend"><span><i style="background:var(--raw)"></i>сировина / реагенти</span><span><i style="background:var(--alk)"></i>алкани</span><span><i style="background:var(--ene)"></i>алкени</span><span><i style="background:var(--yne)"></i>алкіни</span><span><i style="background:var(--aro)"></i>арени</span><span><i style="background:var(--oth)"></i>циклоалкани, спирти</span></div>
     </section>
     <section class="card" id="panel"></section>
@@ -134,17 +134,17 @@ const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random(
 const fmt=x=>String(Math.round(x*10)/10).replace(".",",");
 
 const NODES={
- CH3COONa:{f:"CH₃COONa",n:"натрій ацетат",x:110,y:80,c:"--raw"},
+ CH3COONa:{f:"CH₃COONa",n:"натрій ацетат",x:110,y:85,c:"--raw"},
  Al4C3:{f:"Al₄C₃",n:"алюміній карбід",x:110,y:250,c:"--raw"},
  CaC2:{f:"CaC₂",n:"кальцій карбід",x:300,y:350,c:"--raw"},
- C4H10:{f:"C₄H₁₀",n:"бутан",x:170,y:480,c:"--alk"},
+ C4H10:{f:"C₄H₁₀",n:"бутан",x:160,y:470,c:"--alk"},
  CH4:{f:"CH₄",n:"метан",x:310,y:160,c:"--alk"},
- C2H6:{f:"C₂H₆",n:"етан",x:440,y:500,c:"--alk"},
+ C2H6:{f:"C₂H₆",n:"етан",x:430,y:500,c:"--alk"},
  C2H2:{f:"C₂H₂",n:"етин",x:510,y:250,c:"--yne"},
  C2H4:{f:"C₂H₄",n:"етен",x:660,y:410,c:"--ene"},
- C2H5OH:{f:"C₂H₅OH",n:"етанол",x:830,y:500,c:"--oth"},
- C6H6:{f:"C₆H₆",n:"бензен",x:680,y:110,c:"--aro"},
- C6H12:{f:"C₆H₁₂",n:"циклогексан",x:840,y:240,c:"--oth"}
+ C2H5OH:{f:"C₂H₅OH",n:"етанол",x:830,y:490,c:"--oth"},
+ C6H6:{f:"C₆H₆",n:"бензен",x:680,y:100,c:"--aro"},
+ C6H12:{f:"C₆H₁₂",n:"циклогексан",x:830,y:260,c:"--oth"}
 };
 /* стадії: from,to, умови (g — група, щоб не давати майже однакових варіантів), правильне рівняння + хибні */
 const EDGES=[
@@ -177,7 +177,7 @@ let cur=0;
 
 /* ---------- карта ---------- */
 const col=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
-function arrowPath(e,off){const A=NODES[e.a],B=NODES[e.b],dx=B.x-A.x,dy=B.y-A.y,L=Math.hypot(dx,dy),ux=dx/L,uy=dy/L,r=40;
+function arrowPath(e,off){const A=NODES[e.a],B=NODES[e.b],dx=B.x-A.x,dy=B.y-A.y,L=Math.hypot(dx,dy),ux=dx/L,uy=dy/L,r=52;
   const sx=A.x+ux*r,sy=A.y+uy*r,ex=B.x-ux*(r+8),ey=B.y-uy*(r+8),mx=(sx+ex)/2-uy*off,my=(sy+ey)/2+ux*off;return {d:`M${sx} ${sy} Q${mx} ${my} ${ex} ${ey}`,mx,my}}
 function drawMap(){const o=ORD[cur]||ORD[ORD.length-1],inR=new Set(o.route),rEdges=new Set();for(let i=1;i<o.route.length;i++)rEdges.add(o.route[i-1]+">"+o.route[i]);
   const running=o.stage>=3;
@@ -185,14 +185,14 @@ function drawMap(){const o=ORD[cur]||ORD[ORD.length-1],inR=new Set(o.route),rEdg
    <marker id="arG" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#facc15"/></marker></defs>`;
   EDGES.forEach(e=>{const two=!!edge(e.b,e.a),p=arrowPath(e,two?22:0),k=e.a+">"+e.b,isR=rEdges.has(k);
     h+=`<path class="edge ${isR?(running?"route run":"route"):""}" d="${p.d}" marker-end="url(#${isR?"arG":"ar"})"/>`;
-    if(isR&&o.stage>=2&&o.conds[k]!=null){const t=e.c;h+=`<rect x="${p.mx-t.length*3.1-6}" y="${p.my-11}" width="${t.length*6.2+12}" height="20" rx="6" fill="#7c3aed" stroke="#fff"/><text class="clabel" x="${p.mx}" y="${p.my+3}" text-anchor="middle">${t}</text>`}});
+    if(isR&&o.stage>=2&&o.conds[k]!=null){const t=e.c;h+=`<rect x="${p.mx-t.length*4.7-8}" y="${p.my-15}" width="${t.length*9.4+16}" height="29" rx="7" fill="#7c3aed" stroke="#fff"/><text class="clabel" x="${p.mx}" y="${p.my+5}" text-anchor="middle">${t}</text>`}});
   Object.entries(NODES).forEach(([k,n])=>{const idx=o.route.indexOf(k);
     h+=`<g class="node ${k===o.src?"src":""} ${k===o.dst?"dst":""} ${inR?"":""}${inR.has(k)?" inroute":""}" data-n="${k}" tabindex="0" role="button" aria-label="${n.n}">
-     <circle class="b" cx="${n.x}" cy="${n.y}" r="38" fill="${col(n.c)}"/>
-     <text x="${n.x}" y="${n.y+3}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="800" font-size="${n.f.length>6?13:16}" fill="#fff">${n.f}</text>
-     <text x="${n.x}" y="${n.y+56}" text-anchor="middle" font-family="Golos Text, Arial, sans-serif" font-weight="700" font-size="12.5" fill="#e9e4ff">${n.n}</text>
-     ${k===o.src?`<text x="${n.x}" y="${n.y-46}" text-anchor="middle" font-size="18">📦</text>`:""}${k===o.dst?`<text x="${n.x}" y="${n.y-46}" text-anchor="middle" font-size="18">🎯</text>`:""}
-     ${idx>0?`<circle cx="${n.x+30}" cy="${n.y-28}" r="11" fill="#facc15" stroke="#1f1235" stroke-width="2"/><text x="${n.x+30}" y="${n.y-24}" text-anchor="middle" font-weight="800" font-size="12" fill="#1f1235">${idx}</text>`:""}</g>`});
+     <circle class="b" cx="${n.x}" cy="${n.y}" r="50" fill="${col(n.c)}"/>
+     <text x="${n.x}" y="${n.y+7}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="800" font-size="${n.f.length>7?16:n.f.length>5?20:26}" fill="#fff">${n.f}</text>
+     <text x="${n.x}" y="${n.y+76}" text-anchor="middle" font-family="Golos Text, Arial, sans-serif" font-weight="700" font-size="20" fill="#e9e4ff">${n.n}</text>
+     ${k===o.src?`<text x="${n.x-34}" y="${n.y-38}" text-anchor="middle" font-size="24">📦</text>`:""}${k===o.dst?`<text x="${n.x-34}" y="${n.y-38}" text-anchor="middle" font-size="24">🎯</text>`:""}
+     ${idx>0?`<circle cx="${n.x+36}" cy="${n.y-34}" r="15" fill="#facc15" stroke="#1f1235" stroke-width="2"/><text x="${n.x+36}" y="${n.y-28}" text-anchor="middle" font-weight="800" font-size="17" fill="#1f1235">${idx}</text>`:""}</g>`});
   $("svg").innerHTML=h;
   $("svg").querySelectorAll(".node").forEach(g=>{const f=()=>clickNode(g.dataset.n);g.onclick=f;g.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();f()}}});
 }
