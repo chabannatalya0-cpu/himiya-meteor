@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Метали й неметали</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700;800&display=swap">
+<style>
+/* Bright worksheet: stacked colourful task cards, element "tiles" like periodic-table cells (metals = warm orange, non-metals = teal). One check per task, total 12 points, submit to teacher. */
+:root{color-scheme:light;
+  --bg:#fff8ef;--card:#fff;--ink:#1d1b2e;--muted:#666277;--line:#ece4d6;
+  --metal:#f97316;--metal-bg:#fff1e6;--non:#0d9488;--non-bg:#e6faf7;--accent:#6d28d9;--accent-deep:#4c1d95;
+  --ok:#16a34a;--bad:#dc2626;--gold:#f59e0b;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;--f-body:"Golos Text",system-ui,sans-serif;--f-mono:"JetBrains Mono",ui-monospace,monospace}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:860px;margin:0 auto;padding-block:18px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
+header{display:flex;flex-direction:column;gap:6px}
+.eyebrow{font:800 11px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+h1{margin:0;font-family:var(--f-display);font-size:clamp(24px,5vw,36px);line-height:1.08}
+h1 .m{color:var(--metal)}h1 .n{color:var(--non)}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--card);border:2px solid var(--ink);border-radius:16px;padding:10px 14px;display:flex;gap:12px;align-items:center;justify-content:space-between;box-shadow:0 4px 0 var(--ink)}
+.bar b{font-family:var(--f-display);font-size:20px}
+.prog{flex:1;height:10px;background:#f1ece2;border-radius:99px;overflow:hidden;max-width:300px}.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--metal),var(--non));width:0;transition:width .4s}
+.sec{background:var(--card);border:2px solid var(--ink);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px;box-shadow:0 5px 0 var(--ink)}
+.sec h2{margin:0;font-size:19px;display:flex;gap:10px;align-items:flex-start}
+.sec h2 .no{flex:none;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:var(--accent);color:#fff;font:800 15px var(--f-mono)}
+.sec h2 .pts{margin-left:auto;flex:none;font:800 12px var(--f-mono);background:#f3e8ff;color:var(--accent-deep);border-radius:99px;padding:4px 10px}
+.sec.done{border-color:var(--ok);box-shadow:0 5px 0 var(--ok)}
+.sec.done h2 .no{background:var(--ok)}
+.hint{margin:0;color:var(--muted);font-size:14.5px}
+.tile{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;min-width:58px;padding:6px 8px;border-radius:12px;border:2px solid var(--ink);background:#fff;font:inherit;cursor:pointer;color:var(--ink);line-height:1.05}
+.tile .s{font:800 22px var(--f-mono)}.tile .z{font-size:11px;color:var(--muted)}
+.tile[aria-pressed="true"]{outline:4px solid var(--gold);outline-offset:1px}
+.tiles{display:flex;flex-wrap:wrap;gap:8px;min-height:64px;padding:8px;border-radius:14px;background:#faf6ef;border:2px dashed var(--line)}
+.bins{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bin{border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:8px;cursor:pointer;border:3px solid}
+.bin.m{background:var(--metal-bg);border-color:var(--metal)}.bin.n{background:var(--non-bg);border-color:var(--non)}
+.bin h3{margin:0;font-size:15px}.bin.m h3{color:#c2410c}.bin.n h3{color:#0f766e}
+.bin .tiles{background:rgba(255,255,255,.6);border-color:transparent;min-height:80px}
+.q{border:2px solid var(--line);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.q p{margin:0;font-weight:600}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.op{font:inherit;font-weight:700;border:2px solid var(--ink);background:#fff;border-radius:12px;padding:8px 14px;cursor:pointer;color:var(--ink)}
+.op[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.op.mono{font-family:var(--f-mono);font-size:18px}
+.op.ok{background:#dcfce7;border-color:var(--ok);color:#14532d}.op.no{background:#fee2e2;border-color:var(--bad);color:#7f1d1d}
+.op.miss{box-shadow:0 0 0 3px var(--ok) inset}
+.op[disabled],.tile[disabled]{cursor:default}
+.q.ok{border-color:var(--ok);background:#f0fdf4}.q.no{border-color:var(--bad);background:#fef2f2}
+.ex{font-size:14px;color:#166534}
+.order{display:flex;flex-wrap:wrap;gap:8px;min-height:72px;padding:8px;border-radius:14px;background:#f3e8ff;border:2px dashed #c4b5fd}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{font-family:var(--f-display);font-size:15px;border:2px solid var(--ink);border-radius:14px;padding:11px 18px;cursor:pointer;color:#fff;background:var(--accent);box-shadow:0 4px 0 var(--ink)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.btn.light{background:#fff;color:var(--ink)}.btn.green{background:var(--ok)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.msg{font-weight:700;padding:9px 12px;border-radius:12px;font-size:15px}
+.msg.ok{background:#e8f8ee;color:#166534}.msg.bad{background:#fdecec;color:#991b1b}.msg.info{background:#f3e8ff;color:var(--accent-deep)}
+input[type=text],select{font:inherit;font-size:16px;padding:11px 13px;border-radius:12px;border:2px solid var(--ink);background:#fff;color:var(--ink);width:100%}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.overlay{position:fixed;inset:0;z-index:30;background:rgba(29,27,46,.6);display:flex;align-items:center;justify-content:center;padding:20px max(16px,env(safe-area-inset-right,0px)) 20px max(16px,env(safe-area-inset-left,0px))}
+.overlay .sec{max-width:520px;width:100%}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media (max-width:520px){.grid2{grid-template-columns:1fr}}
+.lbl{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--muted)}
+.final{font-family:var(--f-display);font-size:40px;color:var(--ok)}
+.rule{background:#fffbeb;border:2px solid var(--gold);border-radius:14px;padding:10px 12px;font-size:14.5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Хімія · 7 клас · інтерактивний аркуш</span>
+    <h1>Періодична система: <span class="m">металічні</span> та <span class="n">неметалічні</span> елементи</h1>
+    <p class="hint">6 завдань, разом 12 балів. Кожне завдання перевіряється <b>один раз</b>, тож не поспішай. Можна користуватися періодичною системою в підручнику.</p>
+  </header>
+  <div class="bar"><span id="who"></span><div class="prog"><i id="progI"></i></div><span>Бали: <b id="score">0</b> / 12</span></div>
+
+  <section class="sec" id="s1"></section>
+  <section class="sec" id="s2"></section>
+  <section class="sec" id="s3"></section>
+  <section class="sec" id="s4"></section>
+  <section class="sec" id="s5"></section>
+  <section class="sec" id="s6"></section>
+
+  <section class="sec" id="fin">
+    <h2><span class="no">★</span>Здати роботу</h2>
+    <p class="hint" id="finHint">Перевір усі 6 завдань, тоді кнопка стане активною.</p>
+    <div class="row"><span>Твій результат: <span class="final" id="finScore">0</span> / 12</span></div>
+    <div class="row"><button class="btn green" id="submit" type="button" disabled>Надіслати вчителю</button></div>
+    <div id="sendMsg"></div>
+  </section>
+</div>
+
+<div class="overlay" id="start">
+  <div class="sec">
+    <span class="eyebrow">Перед початком</span>
+    <h2 style="font-family:var(--f-display)">Метали й неметали</h2>
+    <div class="rule">💡 <b>Пам'ятай:</b> горизонтальні ряди — це <b>періоди</b>, вертикальні стовпчики — <b>групи</b>. Металічних елементів у періодичній системі значно більше, ніж неметалічних.</div>
+    <div class="grid2">
+      <div><label class="lbl" for="pname">Прізвище та ім'я</label><input type="text" id="pname" maxlength="60" autocomplete="name" placeholder="Іваненко Олена"></div>
+      <div><label class="lbl" for="pcls">Клас</label><select id="pcls"><option value="">— обери —</option><option>7-А</option><option>7-Б</option><option>Інший</option></select></div>
+    </div>
+    <p class="msg bad" id="startErr" hidden>Впиши прізвище, ім'я та обери клас.</p>
+    <div class="row"><button class="btn" id="startBtn" type="button">Почати</button></div>
+  </div>
+</div>
+
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="ps7";
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const EL={H:[1,"Гідроген"],He:[2,"Гелій"],Li:[3,"Літій"],C:[6,"Карбон"],N:[7,"Нітроген"],O:[8,"Оксиген"],Ne:[10,"Неон"],Na:[11,"Натрій"],Mg:[12,"Магній"],Al:[13,"Алюміній"],Si:[14,"Силіцій"],P:[15,"Фосфор"],S:[16,"Сульфур"],Cl:[17,"Хлор"],Ar:[18,"Аргон"],K:[19,"Калій"],Ca:[20,"Кальцій"],Fe:[26,"Ферум"],Cu:[29,"Купрум"],Ag:[47,"Аргентум"],Au:[79,"Аурум"]};
+const tile=(s,extra="")=>`<button class="tile" type="button" data-s="${s}" ${extra}><span class="z">${EL[s][0]}</span><span class="s">${s}</span><span class="z">${EL[s][1]}</span></button>`;
+const SCORE={},DONE={},DETAIL={};
+const PTS={s1:2,s2:3,s3:2,s4:2,s5:2,s6:1};
+function head(id,n,t,hint){return `<h2><span class="no">${n}</span>${t}<span class="pts">${PTS[id]} б.</span></h2>${hint?`<p class="hint">${hint}</p>`:""}`}
+function finish(id,correct,total){
+  const sc=Math.round(correct/total*PTS[id]*2)/2;SCORE[id]=sc;DONE[id]=true;DETAIL[id]=`${correct}/${total}`;
+  $(id).classList.add("done");
+  const m=document.createElement("div");m.className="msg "+(correct===total?"ok":"info");
+  m.textContent=correct===total?`✓ Усе правильно! +${sc} б.`:`Правильно ${correct} з ${total}: +${sc} б. Правильні відповіді позначено зеленим.`;
+  $(id).appendChild(m);update();
+}
+function update(){const s=Object.values(SCORE).reduce((a,b)=>a+b,0),n=Object.keys(DONE).length;
+  $("score").textContent=fmt(s);$("finScore").textContent=fmt(s);$("progI").style.width=(n/6*100)+"%";
+  if(n===6){$("submit").disabled=false;$("finHint").textContent="Усі завдання перевірено. Надішли роботу вчителю."}}
+const fmt=x=>String(x).replace(".",",");
+const total=()=>Object.values(SCORE).reduce((a,b)=>a+b,0);
+
+/* ---------- Завдання 1: знайди елемент за адресою ---------- */
+const S1=[
+  {q:"Елемент 2-го періоду з порядковим номером 8",a:"O",o:["O","S","N","Na"]},
+  {q:"Елемент 3-го періоду з порядковим номером 12",a:"Mg",o:["Mg","Ca","Al","C"]},
+  {q:"Елемент 1-го періоду — інертний (благородний) газ",a:"He",o:["He","H","Ne","Ar"]},
+  {q:"Елемент 4-го періоду з порядковим номером 26",a:"Fe",o:["Fe","Cu","K","Ca"]}
+];
+function build1(){const s=$("s1");
+  s.innerHTML=head("s1",1,"Знайди елемент за «адресою»","Обери символ елемента за описом його місця в періодичній системі.")+
+  S1.map((x,i)=>`<div class="q" data-i="${i}"><p>${x.q}</p><div class="opts">${shuffle(x.o).map(o=>`<button class="op mono" type="button" data-v="${o}" aria-pressed="false">${o}</button>`).join("")}</div></div>`).join("")+
+  `<div class="row"><button class="btn" type="button" id="c1">Перевірити</button></div>`;
+  s.querySelectorAll(".q").forEach(q=>q.querySelectorAll(".op").forEach(b=>b.onclick=()=>{q.querySelectorAll(".op").forEach(x=>x.setAttribute("aria-pressed",x===b))}));
+  $("c1").onclick=()=>{const qs=[...s.querySelectorAll(".q")];if(qs.some(q=>!q.querySelector('[aria-pressed="true"]'))){warn(s,"Дай відповідь на всі 4 питання.");return}
+    let c=0;qs.forEach((q,i)=>{const p=q.querySelector('[aria-pressed="true"]'),ok=p.dataset.v===S1[i].a;c+=ok;q.classList.add(ok?"ok":"no");
+      q.querySelectorAll(".op").forEach(b=>{b.disabled=true;if(b.dataset.v===S1[i].a)b.classList.add(b===p?"ok":"miss");else if(b===p)b.classList.add("no")})});
+    $("c1").remove();finish("s1",c,4)};
+}
+
+/* ---------- Завдання 2: сортування ---------- */
+const MET=["Na","Mg","Al","Fe","Cu","Ca"],NON=["O","N","S","Cl","C","H"];
+function build2(){const s=$("s2");let sel=null;
+  s.innerHTML=head("s2",2,"Розсортуй елементи: металічні чи неметалічні","Натисни картку елемента, а потім кошик. Щоб повернути картку, натисни її в кошику.")+
+  `<div class="tiles" id="pool">${shuffle(MET.concat(NON)).map(e=>tile(e)).join("")}</div>
+   <div class="bins"><div class="bin m" data-b="m" role="button" tabindex="0"><h3>🔩 Металічні</h3><div class="tiles"></div></div><div class="bin n" data-b="n" role="button" tabindex="0"><h3>💨 Неметалічні</h3><div class="tiles"></div></div></div>
+   <div class="row"><button class="btn" type="button" id="c2">Перевірити</button></div>`;
+  const pool=$("pool");
+  s.addEventListener("click",e=>{if($("c2")===null)return;const t=e.target.closest(".tile");
+    if(t){e.stopPropagation();if(t.parentElement!==pool){pool.appendChild(t);t.setAttribute("aria-pressed","false");sel=null;return}
+      sel=sel===t?null:t;pool.querySelectorAll(".tile").forEach(x=>x.setAttribute("aria-pressed",x===sel));return}
+    const b=e.target.closest(".bin");if(b&&sel){b.querySelector(".tiles").appendChild(sel);sel.setAttribute("aria-pressed","false");sel=null}});
+  $("c2").onclick=()=>{if(pool.children.length){warn(s,"Розклади всі 12 елементів по кошиках.");return}
+    let c=0;s.querySelectorAll(".bin").forEach(b=>b.querySelectorAll(".tile").forEach(t=>{const ok=(b.dataset.b==="m")===MET.includes(t.dataset.s);c+=ok;
+      t.style.background=ok?"#dcfce7":"#fee2e2";t.style.borderColor=ok?"var(--ok)":"var(--bad)";if(!ok)t.title="Неправильний кошик";t.disabled=true}));
+    $("c2").remove();finish("s2",c,12);
+    if(c<12){const n=document.createElement("p");n.className="ex";n.innerHTML=`Металічні: ${MET.join(", ")}. Неметалічні: ${NON.join(", ")}.`;s.insertBefore(n,s.lastElementChild)}};
+}
+
+/* ---------- Завдання 3: правда чи ні ---------- */
+const S3=[
+  {t:"Горизонтальні ряди періодичної системи називають періодами.",a:true},
+  {t:"У періодичній системі 7 періодів.",a:true},
+  {t:"Обидва елементи 1-го періоду — Гідроген і Гелій — металічні.",a:false,e:"Гідроген і Гелій — неметалічні елементи."},
+  {t:"Металічних елементів у періодичній системі більше, ніж неметалічних.",a:true},
+  {t:"Порядковий номер елемента дорівнює кількості протонів у ядрі його атома.",a:true},
+  {t:"Аргон, Неон і Гелій — металічні елементи.",a:false,e:"Це неметалічні елементи, їхні прості речовини — інертні (благородні) гази."}
+];
+function build3(){const s=$("s3");
+  s.innerHTML=head("s3",3,"Правда чи ні?","Для кожного твердження обери «Так» або «Ні».")+
+  S3.map((x,i)=>`<div class="q" data-i="${i}"><p>${x.t}</p><div class="opts"><button class="op" type="button" data-v="1" aria-pressed="false">Так</button><button class="op" type="button" data-v="0" aria-pressed="false">Ні</button></div></div>`).join("")+
+  `<div class="row"><button class="btn" type="button" id="c3">Перевірити</button></div>`;
+  s.querySelectorAll(".q").forEach(q=>q.querySelectorAll(".op").forEach(b=>b.onclick=()=>q.querySelectorAll(".op").forEach(x=>x.setAttribute("aria-pressed",x===b))));
+  $("c3").onclick=()=>{const qs=[...s.querySelectorAll(".q")];if(qs.some(q=>!q.querySelector('[aria-pressed="true"]'))){warn(s,"Дай відповідь на всі 6 тверджень.");return}
+    let c=0;qs.forEach((q,i)=>{const p=q.querySelector('[aria-pressed="true"]'),ok=(p.dataset.v==="1")===S3[i].a;c+=ok;q.classList.add(ok?"ok":"no");
+      q.querySelectorAll(".op").forEach(b=>{b.disabled=true;const right=(b.dataset.v==="1")===S3[i].a;if(right)b.classList.add(b===p?"ok":"miss");else if(b===p)b.classList.add("no")});
+      if(S3[i].e){const e=document.createElement("span");e.className="ex";e.textContent=S3[i].e;q.appendChild(e)}});
+    $("c3").remove();finish("s3",c,6)};
+}
+
+/* ---------- Завдання 4: четвертий зайвий ---------- */
+const S4=[
+  {o:["Na","K","Cl","Ca"],a:"Cl",e:"Cl — неметалічний елемент, решта — металічні."},
+  {o:["O","S","N","Fe"],a:"Fe",e:"Fe — металічний елемент, решта — неметалічні."},
+  {o:["He","Ne","Ar","O"],a:"O",e:"Прості речовини He, Ne, Ar — інертні (благородні) гази, а O — ні."},
+  {o:["Cu","Ag","Au","C"],a:"C",e:"C — неметалічний елемент, а Cu, Ag, Au — метали, з яких здавна виготовляють монети й прикраси."}
+];
+function build4(){const s=$("s4");
+  s.innerHTML=head("s4",4,"Четвертий зайвий","У кожному рядку натисни елемент, який відрізняється від інших.")+
+  S4.map((x,i)=>`<div class="q" data-i="${i}"><div class="opts">${shuffle(x.o).map(o=>tile(o,'aria-pressed="false"')).join("")}</div></div>`).join("")+
+  `<div class="row"><button class="btn" type="button" id="c4">Перевірити</button></div>`;
+  s.querySelectorAll(".q").forEach(q=>q.querySelectorAll(".tile").forEach(b=>b.onclick=()=>q.querySelectorAll(".tile").forEach(x=>x.setAttribute("aria-pressed",x===b))));
+  $("c4").onclick=()=>{const qs=[...s.querySelectorAll(".q")];if(qs.some(q=>!q.querySelector('[aria-pressed="true"]'))){warn(s,"Обери зайвий елемент у кожному з 4 рядків.");return}
+    let c=0;qs.forEach((q,i)=>{const p=q.querySelector('[aria-pressed="true"]'),ok=p.dataset.s===S4[i].a;c+=ok;q.classList.add(ok?"ok":"no");
+      q.querySelectorAll(".tile").forEach(b=>{b.disabled=true;b.setAttribute("aria-pressed","false");if(b.dataset.s===S4[i].a){b.style.background="#dcfce7";b.style.borderColor="var(--ok)"}else if(b===p){b.style.background="#fee2e2";b.style.borderColor="var(--bad)"}});
+      const e=document.createElement("span");e.className="ex";e.textContent=S4[i].e;q.appendChild(e)});
+    $("c4").remove();finish("s4",c,4)};
+}
+
+/* ---------- Завдання 5: проста речовина — метал чи неметал ---------- */
+const S5=[
+  {t:"🥇 Жовта блискуча речовина, добре проводить тепло й електричний струм, легко кується в тонку фольгу.",a:"m",e:"Це золото (Au) — метал."},
+  {t:"🟡 Жовтий крихкий порошок, не проводить електричний струм, не кується.",a:"n",e:"Це сірка (S) — неметал."},
+  {t:"🌡️ Рідина з металічним блиском, проводить електричний струм.",a:"m",e:"Це ртуть (Hg) — єдиний метал, рідкий за кімнатної температури."},
+  {t:"✏️ Чорна крихка речовина, проводить електричний струм, нею пишуть олівці.",a:"n",e:"Це графіт (C) — неметал, хоча проводить струм. Виняток, який варто запам'ятати!"}
+];
+function build5(){const s=$("s5");
+  s.innerHTML=head("s5",5,"Метал чи неметал? Визнач за властивостями","Прочитай опис простої речовини й обери, метал це чи неметал.")+
+  S5.map((x,i)=>`<div class="q" data-i="${i}"><p>${x.t}</p><div class="opts"><button class="op" type="button" data-v="m" aria-pressed="false">🔩 Метал</button><button class="op" type="button" data-v="n" aria-pressed="false">💨 Неметал</button></div></div>`).join("")+
+  `<div class="row"><button class="btn" type="button" id="c5">Перевірити</button></div>`;
+  s.querySelectorAll(".q").forEach(q=>q.querySelectorAll(".op").forEach(b=>b.onclick=()=>q.querySelectorAll(".op").forEach(x=>x.setAttribute("aria-pressed",x===b))));
+  $("c5").onclick=()=>{const qs=[...s.querySelectorAll(".q")];if(qs.some(q=>!q.querySelector('[aria-pressed="true"]'))){warn(s,"Дай відповідь на всі 4 описи.");return}
+    let c=0;qs.forEach((q,i)=>{const p=q.querySelector('[aria-pressed="true"]'),ok=p.dataset.v===S5[i].a;c+=ok;q.classList.add(ok?"ok":"no");
+      q.querySelectorAll(".op").forEach(b=>{b.disabled=true;if(b.dataset.v===S5[i].a)b.classList.add(b===p?"ok":"miss");else if(b===p)b.classList.add("no")});
+      const e=document.createElement("span");e.className="ex";e.textContent=S5[i].e;q.appendChild(e)});
+    $("c5").remove();finish("s5",c,4)};
+}
+
+/* ---------- Завдання 6: порядок у 3-му періоді ---------- */
+const P3=["Na","Mg","Al","Si","P","S","Cl","Ar"];
+function build6(){const s=$("s6");
+  s.innerHTML=head("s6",6,"Шикуйся! Елементи 3-го періоду","Натискай елементи в порядку зростання порядкового номера. Номери на картках сховано — скористайся періодичною системою. Щоб повернути картку, натисни її в рядку.")+
+  `<div class="tiles" id="p6">${shuffle(P3).map(e=>`<button class="tile" type="button" data-s="${e}"><span class="s">${e}</span><span class="z">${EL[e][1]}</span></button>`).join("")}</div>
+   <span class="lbl">Від найменшого номера до найбільшого →</span><div class="order" id="o6"></div>
+   <div class="row"><button class="btn" type="button" id="c6">Перевірити</button></div>`;
+  s.addEventListener("click",e=>{if(!$("c6"))return;const t=e.target.closest(".tile");if(!t)return;(t.parentElement.id==="p6"?$("o6"):$("p6")).appendChild(t)});
+  $("c6").onclick=()=>{if($("p6").children.length){warn(s,"Постав у рядок усі 8 елементів.");return}
+    const got=[...$("o6").children].map(t=>t.dataset.s);let c=0;
+    [...$("o6").children].forEach((t,i)=>{const ok=got[i]===P3[i];c+=ok;t.disabled=true;t.style.background=ok?"#dcfce7":"#fee2e2";t.style.borderColor=ok?"var(--ok)":"var(--bad)";
+      t.insertAdjacentHTML("afterbegin",`<span class="z">${EL[t.dataset.s][0]}</span>`)});
+    $("p6").remove();$("c6").remove();
+    const full=c===8;SCORE.s6=full?1:0;DONE.s6=true;DETAIL.s6=`${c}/8`;$("s6").classList.add("done");
+    const m=document.createElement("div");m.className="msg "+(full?"ok":"info");
+    m.innerHTML=full?"✓ Чудово! +1 б. Зверни увагу: період починається металічним елементом Натрієм, а закінчується інертним газом Аргоном.":`Порядок не зовсім правильний: 0 б. Правильно: ${P3.join(" → ")}. Період починається металічним елементом, а закінчується інертним газом.`;
+    s.appendChild(m);update()};
+}
+
+function warn(sec,t){let w=sec.querySelector(".warn");if(!w){w=document.createElement("p");w.className="msg bad warn";sec.appendChild(w)}w.textContent=t;setTimeout(()=>w.remove(),3000)}
+
+/* ---------- здача ---------- */
+let ME={},sent=false;
+$("submit").onclick=async()=>{const box=$("sendMsg");if(sent){box.className="msg ok";box.textContent="✓ Роботу вже надіслано.";return}
+  box.className="msg info";box.textContent="Надсилаю…";$("submit").disabled=true;
+  const rec={name:ME.name,cls:ME.cls,score:total(),max:12,ts:{".sv":"timestamp"},parts:["s1","s2","s3","s4","s5","s6"].map(k=>SCORE[k]).join(" "),detail:["s1","s2","s3","s4","s5","s6"].map(k=>DETAIL[k]).join(" ")};
+  try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec)});if(!r.ok)throw new Error(r.status);
+    sent=true;box.className="msg ok";box.textContent=`✓ Роботу отримано вчителем: ${fmt(rec.score)} / 12. Молодець!`;
+  }catch(e){$("submit").disabled=false;box.className="msg bad";box.textContent="Не вдалося надіслати. Перевір інтернет і натисни ще раз."}};
+$("startBtn").onclick=()=>{const n=$("pname").value.trim(),c=$("pcls").value;if(n.length<3||!c){$("startErr").hidden=false;return}
+  ME={name:n.slice(0,60),cls:c};$("who").textContent=`👤 ${ME.name} · ${ME.cls}`;$("start").hidden=true};
+build1();build2();build3();build4();build5();build6();
+</script>
+</body>
+</html>
