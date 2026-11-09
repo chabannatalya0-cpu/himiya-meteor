@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>НД 8 · Електропровідність</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700;800&display=swap">
+<style>
+/* Bright research card: yellow "electric" accent, numbered stage cards like a lab notebook, video at top. */
+:root{color-scheme:light;
+  --bg:#fffbea;--card:#fff;--ink:#1c1917;--muted:#6b6358;--line:#eee3c4;
+  --volt:#facc15;--volt-deep:#a16207;--blue:#2563eb;--blue-bg:#e8efff;--ok:#16a34a;--bad:#dc2626;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;--f-body:"Golos Text",system-ui,sans-serif;--f-mono:"JetBrains Mono",ui-monospace,monospace}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:900px;margin:0 auto;padding-block:16px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
+.eyebrow{font:800 11px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+h1{margin:2px 0 0;font-family:var(--f-display);font-size:clamp(22px,4.4vw,32px);line-height:1.1}
+h1 mark{background:var(--volt);padding:0 6px;border-radius:6px}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--card);border:2px solid var(--ink);border-radius:16px;padding:9px 14px;display:flex;gap:12px;align-items:center;justify-content:space-between;box-shadow:0 4px 0 var(--ink)}
+.bar b{font-family:var(--f-display);font-size:20px}
+.prog{flex:1;height:10px;background:#f3ead0;border-radius:99px;overflow:hidden;max-width:280px}.prog i{display:block;height:100%;background:var(--volt);width:0;transition:width .4s}
+.card{background:var(--card);border:2px solid var(--ink);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px;box-shadow:0 5px 0 var(--ink);min-width:0}
+.card.done{border-color:var(--ok);box-shadow:0 5px 0 var(--ok)}
+.card h2{margin:0;font-size:19px;display:flex;gap:10px;align-items:flex-start}
+.card h2 .no{flex:none;min-width:34px;height:34px;padding:0 6px;border-radius:10px;display:grid;place-items:center;background:var(--volt);color:var(--ink);font:800 15px var(--f-mono);border:2px solid var(--ink)}
+.card.done h2 .no{background:var(--ok);color:#fff;border-color:var(--ok)}
+.card h2 .pts{margin-left:auto;flex:none;font:800 12px var(--f-mono);background:var(--blue-bg);color:var(--blue);border-radius:99px;padding:4px 10px}
+.hint{margin:0;color:var(--muted);font-size:14.5px}
+video{width:100%;border-radius:14px;background:#000;max-height:460px}
+.opts{display:flex;flex-direction:column;gap:6px}
+.op{font:inherit;text-align:left;border:2px solid var(--line);background:#fff;border-radius:12px;padding:9px 12px;cursor:pointer;color:var(--ink)}
+.op:hover:not([disabled]){border-color:var(--blue)}
+.op[aria-pressed="true"]{border-color:var(--blue);background:var(--blue-bg)}
+.op.ok{border-color:var(--ok);background:#dcfce7}.op.no{border-color:var(--bad);background:#fee2e2}.op.miss{border-color:var(--ok);border-style:dashed}
+.op[disabled]{cursor:default}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.chk{display:flex;gap:8px;align-items:center;border:2px solid var(--line);border-radius:12px;padding:8px 10px;cursor:pointer;background:#fff}
+.chk[aria-pressed="true"]{border-color:var(--blue);background:var(--blue-bg)}
+.chk .box{flex:none;width:20px;height:20px;border:2px solid var(--ink);border-radius:6px;display:grid;place-items:center;font-size:13px;font-weight:800}
+.chk[aria-pressed="true"] .box::after{content:"✓"}
+.chk.ok{border-color:var(--ok);background:#dcfce7}.chk.no{border-color:var(--bad);background:#fee2e2}.chk.miss{border-color:var(--ok);border-style:dashed}
+textarea{font:inherit;font-size:16px;padding:11px 13px;border-radius:12px;border:2px solid var(--ink);background:#fff;color:var(--ink);width:100%;min-height:90px;resize:vertical}
+.schemes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:640px){.schemes{grid-template-columns:1fr}}
+.scheme{font:inherit;border:2px solid var(--line);background:#fff;border-radius:14px;padding:8px;cursor:pointer;display:flex;flex-direction:column;gap:4px;align-items:center;color:var(--ink)}
+.scheme svg{width:100%;height:auto}
+.scheme[aria-pressed="true"]{border-color:var(--blue);background:var(--blue-bg)}
+.scheme.ok{border-color:var(--ok);background:#dcfce7}.scheme.no{border-color:var(--bad);background:#fee2e2}
+.order{display:flex;flex-direction:column;gap:6px;min-height:50px;padding:8px;border-radius:14px;background:var(--blue-bg);border:2px dashed #a5b8f3;counter-reset:s}
+.pool{display:flex;flex-direction:column;gap:6px}
+.step{font:inherit;text-align:left;border:2px solid var(--ink);background:#fff;border-radius:12px;padding:8px 12px;cursor:pointer;color:var(--ink)}
+.order .step::before{counter-increment:s;content:counter(s) ". ";font-weight:800;font-family:var(--f-mono)}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th,td{border-bottom:1px solid var(--line);padding:7px 6px;text-align:left;vertical-align:middle}
+th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.tw{overflow-x:auto}
+.seg{display:inline-flex;border:2px solid var(--ink);border-radius:10px;overflow:hidden}
+.seg button{font:inherit;font-size:14px;font-weight:700;border:0;background:#fff;padding:6px 10px;cursor:pointer;color:var(--ink)}
+.seg button+button{border-left:2px solid var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.seg button.y[aria-pressed="true"]{background:var(--volt);color:var(--ink)}
+.seg button[disabled]{cursor:default}
+td.res-ok{background:#f0fdf4}td.res-no{background:#fef2f2}
+.tag{font-size:12px;font-weight:800;border-radius:99px;padding:2px 8px;white-space:nowrap}
+.tag.ok{background:#dcfce7;color:#14532d}.tag.no{background:#fee2e2;color:#7f1d1d}.tag.free{background:#f1f5f9;color:#475569}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{font-family:var(--f-display);font-size:14.5px;border:2px solid var(--ink);border-radius:14px;padding:10px 16px;cursor:pointer;color:var(--ink);background:var(--volt);box-shadow:0 4px 0 var(--ink)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.btn.green{background:var(--ok);color:#fff}.btn[disabled]{opacity:.45;cursor:not-allowed}
+.fb{font-size:14.5px;border-radius:12px;padding:9px 12px}
+.fb.ok{background:#dcfce7;color:#14532d}.fb.bad{background:#fee2e2;color:#7f1d1d}.fb.info{background:var(--blue-bg);color:#1e3a8a}
+.msg{font-weight:700;padding:9px 12px;border-radius:12px}
+.msg.ok{background:#e8f8ee;color:#166534}.msg.bad{background:#fdecec;color:#991b1b}.msg.info{background:var(--blue-bg);color:#1e3a8a}
+input[type=text],select{font:inherit;font-size:16px;padding:11px 13px;border-radius:12px;border:2px solid var(--ink);background:#fff;color:var(--ink);width:100%}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.overlay{position:fixed;inset:0;z-index:30;background:rgba(28,25,23,.6);display:flex;align-items:center;justify-content:center;padding:20px max(16px,env(safe-area-inset-right,0px)) 20px max(16px,env(safe-area-inset-left,0px))}
+.overlay .card{max-width:540px;width:100%}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media (max-width:520px){.grid2{grid-template-columns:1fr}}
+.lbl{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--muted)}
+.final{font-family:var(--f-display);font-size:38px;color:var(--ok)}
+.task{border:2px solid var(--line);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Хімія · 9 клас · навчальне дослідження № 8</span>
+    <h1>Дослідження <mark>електропровідності</mark> речовин і розчинів</h1>
+    <p class="hint">Заповни картку дослідження крок за кроком: мета, гіпотеза, обладнання, безпека, схема приладу, хід роботи, результати, висновок. Разом 12 балів. Кожен крок перевіряється <b>один раз</b>.</p>
+  </header>
+  <div class="bar"><span id="who"></span><div class="prog"><i id="progI"></i></div><span>Бали: <b id="score">0</b> / 12</span></div>
+
+  <section class="card">
+    <h2><span class="no">▶</span>Відео досліду</h2>
+    <p class="hint">Переглянь відео повністю. Під час кроку 7 можна повертатися до потрібного фрагмента.</p>
+    <video controls preload="metadata" playsinline src="https://s3.eu-central-2.wasabisys.com/digital-content/Mediateka/Chemistry/elektoprovidnist.mp4"></video>
+    <p class="hint">Відео не відкривається? Подивись його в матеріалах уроку в Google Класі.</p>
+  </section>
+
+  <div id="steps" style="display:flex;flex-direction:column;gap:16px"></div>
+
+  <section class="card" id="fin">
+    <h2><span class="no">★</span>Здати дослідження</h2>
+    <p class="hint" id="finHint">Виконай усі 8 кроків, тоді кнопка стане активною.</p>
+    <div class="row"><span>Результат: <span class="final" id="finScore">0</span> / 12</span></div>
+    <div class="row"><button class="btn green" type="button" id="submit" disabled>Надіслати вчителю</button></div>
+    <div id="sendMsg"></div>
+  </section>
+</div>
+
+<div class="overlay" id="start">
+  <div class="card">
+    <span class="eyebrow">Перед початком</span>
+    <h2 style="font-family:var(--f-display)">НД № 8 · Електропровідність</h2>
+    <p style="margin:0">Метали проводять струм завдяки вільним електронам. А чи можуть проводити струм розчини й розплави? Перевіримо!</p>
+    <div class="grid2">
+      <div><label class="lbl" for="pname">Прізвище та ім'я</label><input type="text" id="pname" maxlength="60" autocomplete="name" placeholder="Іваненко Олена"></div>
+      <div><label class="lbl" for="pcls">Клас</label><select id="pcls"><option value="">— обери —</option><option>9-А</option><option>9-Б</option><option>Інший</option></select></div>
+    </div>
+    <p class="msg bad" id="startErr" hidden>Впиши прізвище, ім'я та обери клас.</p>
+    <div class="row"><button class="btn" id="startBtn" type="button">Почати дослідження</button></div>
+  </div>
+</div>
+
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="nd8el9";
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const fmt=x=>String(Math.round(x*10)/10).replace(".",",");
+const SCORE={},REC={};
+
+/* зразки (для гіпотези й результатів) */
+const SAMPLES=[
+  {k:"nacl_s",t:"Натрій хлорид NaCl (сухі кристали)",a:0},
+  {k:"sug_s",t:"Цукор (сухі кристали)",a:0},
+  {k:"h2o_d",t:"Дистильована вода",a:0},
+  {k:"h2o_t",t:"Водопровідна вода",a:null},
+  {k:"nacl_r",t:"Розчин натрій хлориду",a:1},
+  {k:"sug_r",t:"Розчин цукру",a:0},
+  {k:"naoh_r",t:"Розчин натрій гідроксиду NaOH",a:1},
+  {k:"hcl_r",t:"Хлоридна кислота HCl (розчин)",a:1},
+  {k:"cit_r",t:"Розчин лимонної кислоти",a:null},
+  {k:"cacl_m",t:"Розплав кальцій хлориду гексагідрату CaCl₂·6H₂O",a:1},
+  {k:"sug_m",t:"Розплав цукру",a:0}
+];
+const PRED={},OBS={};
+
+/* ---------- кроки ---------- */
+const STEPS=[
+ {id:"goal",n:1,pts:1,t:"Мета дослідження",hint:"Обери формулювання мети, яке відповідає завданню дослідження.",type:"one",
+  opts:[["Перевірити, які речовини, їхні водні розчини та розплави проводять електричний струм, і виявити спільні ознаки речовин, що проводять струм",1],
+        ["Довести, що всі розчини проводять електричний струм",0],
+        ["Навчитися збирати електричне коло з батарейкою і лампочкою",0],
+        ["Визначити температуру плавлення цукру й кальцій хлориду",0]],
+  ok:"Саме так: мета — перевірити електропровідність і знайти спільне в речовинах, що проводять струм."},
+ {id:"hyp",n:2,pts:1,t:"Гіпотеза",type:"hyp"},
+ {id:"eq",n:3,pts:1,t:"Що нам знадобиться?",hint:"Познач усе обладнання й речовини, потрібні для дослідження. Зайвого не обирай.",type:"multi",
+  items:[["Хімічні склянки",1],["Порцелянова чаша",1],["Нагрівний прилад",1],["Прилад для перевірки електропровідності (джерело струму, лампочка, електроди, дроти)",1],["Дистильована вода",1],["Кристалічні речовини: NaCl, цукор, NaOH, лимонна кислота, CaCl₂",1],["Розбавлені хлоридна й сульфатна кислоти",1],
+         ["Магніт",0],["Лійка з паперовим фільтром",0],["Пробірка з газовідвідною трубкою",0],["Компас",0]]},
+ {id:"safe",n:4,pts:1,t:"Небезпеки й ризики",hint:"Обери всі правильні правила безпеки для цього дослідження.",type:"multi",
+  items:[["Луги (NaOH, KOH) та кислоти їдкі: працюю в окулярах і рукавичках, не беру речовини руками",1],
+         ["Не торкаюся електродів і дротів, коли прилад увімкнено, та не працюю мокрими руками",1],
+         ["Після кожного зразка промиваю електроди дистильованою водою",1],
+         ["Порцелянова чаша після нагрівання гаряча: беру її тримачем",1],
+         ["Розчини можна куштувати, щоб перевірити, чи є там сіль",0],
+         ["Дистильована вода отруйна, тому працюю з нею під витяжкою",0]]},
+ {id:"scheme",n:5,pts:1,t:"Схема приладу",hint:"Яка схема електричного кола правильна для перевірки електропровідності? Лампочка має засвітитися лише тоді, коли речовина між електродами проводить струм.",type:"scheme"},
+ {id:"order",n:6,pts:1,t:"Хід роботи",hint:"Натискай кроки в правильному порядку. Щоб повернути крок, натисни його в рамці.",type:"order",
+  steps:["Зібрати прилад і перевірити його: з'єднати електроди — лампочка світиться.","Перевірити сухі кристалічні речовини.","Перевірити дистильовану воду.","Приготувати розчини речовин на дистильованій воді й перевірити їх.","Нагріти речовини в порцеляновій чаші та перевірити розплави.","Записати результати в таблицю й зробити висновок."]},
+ {id:"res",n:7,pts:4,t:"Результати досліду",type:"res"},
+ {id:"concl",n:8,pts:2,t:"Висновок",type:"concl"}
+];
+
+function card(s,body){return `<section class="card ${s.id in SCORE?"done":""}" id="c_${s.id}"><h2><span class="no">${s.n}</span>${s.t}<span class="pts">${s.pts} б.</span></h2>${s.hint?`<p class="hint">${s.hint}</p>`:""}${body}</section>`}
+function render(){
+  $("steps").innerHTML=STEPS.map(s=>card(s,R[s.type](s))).join("");
+  STEPS.forEach(s=>B[s.type]&&B[s.type](s));
+  const sc=Object.values(SCORE).reduce((a,b)=>a+b,0),n=Object.keys(SCORE).length;
+  $("score").textContent=fmt(sc);$("finScore").textContent=fmt(sc);$("progI").style.width=n/8*100+"%";
+  if(n===8){$("submit").disabled=sent;$("finHint").textContent="Усі кроки виконано. Надішли дослідження вчителю."}
+}
+const UI={};// стан вибору
+const R={},B={};
+/* один варіант */
+R.one=s=>{if(!UI[s.id])UI[s.id]={ord:shuffle(s.opts.map((o,j)=>j))};const u=UI[s.id],done=s.id in SCORE;
+  return `<div class="opts">${u.ord.map(j=>{const [t,ok]=s.opts[j];let c="";if(done){if(ok)c=u.pick===j?"ok":"miss";else if(u.pick===j)c="no"}
+    return `<button class="op ${c}" type="button" data-s="${s.id}" data-j="${j}" aria-pressed="${u.pick===j}" ${done?"disabled":""}>${t}</button>`}).join("")}</div>`+
+    (done?`<div class="fb ${SCORE[s.id]?"ok":"bad"}">${SCORE[s.id]?"✓ ":"✗ Ні. "}${s.ok}</div>`:`<div class="row"><button class="btn" type="button" data-chk="${s.id}">Перевірити</button></div>`)};
+B.one=s=>{document.querySelectorAll(`[data-s="${s.id}"]`).forEach(b=>b.onclick=()=>{UI[s.id].pick=+b.dataset.j;render()});
+  const c=document.querySelector(`[data-chk="${s.id}"]`);if(c)c.onclick=()=>{if(UI[s.id].pick==null)return warn(s,"Обери варіант.");SCORE[s.id]=s.opts[UI[s.id].pick][1]?s.pts:0;REC[s.id]=s.opts[UI[s.id].pick][0].slice(0,60);render()}};
+/* кілька варіантів */
+R.multi=s=>{if(!UI[s.id])UI[s.id]={ord:shuffle(s.items.map((o,j)=>j)),sel:new Set()};const u=UI[s.id],done=s.id in SCORE;
+  return `<div class="grid">${u.ord.map(j=>{const [t,ok]=s.items[j],on=u.sel.has(j);let c="";if(done){if(ok)c=on?"ok":"miss";else if(on)c="no"}
+    return `<div class="chk ${c}" role="checkbox" tabindex="0" aria-pressed="${on}" data-m="${s.id}" data-j="${j}"><span class="box"></span><span>${t}</span></div>`}).join("")}</div>`+
+    (done?`<div class="fb ${SCORE[s.id]===s.pts?"ok":"info"}">${SCORE[s.id]===s.pts?"✓ Усе правильно!":`Частково правильно: +${fmt(SCORE[s.id])} б. Зелена пунктирна рамка — те, що треба було обрати; червоне — зайве.`}</div>`:`<div class="row"><button class="btn" type="button" data-chk="${s.id}">Перевірити</button></div>`)};
+B.multi=s=>{if(s.id in SCORE)return;document.querySelectorAll(`[data-m="${s.id}"]`).forEach(b=>{const f=()=>{const j=+b.dataset.j,u=UI[s.id];u.sel.has(j)?u.sel.delete(j):u.sel.add(j);render()};b.onclick=f;b.onkeydown=e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();f()}}});
+  document.querySelector(`[data-chk="${s.id}"]`).onclick=()=>{const u=UI[s.id];if(!u.sel.size)return warn(s,"Познач хоча б один варіант.");
+    let right=0,wrong=0,need=s.items.filter(x=>x[1]).length;u.sel.forEach(j=>s.items[j][1]?right++:wrong++);
+    const frac=Math.max(0,(right-wrong)/need);SCORE[s.id]=Math.round(frac*s.pts*2)/2;REC[s.id]=`${right}/${need}, зайвих ${wrong}`;render()}};
+/* гіпотеза */
+R.hyp=s=>{const done=s.id in SCORE;
+  return `<p class="hint">Спрогнозуй до перегляду результатів: чи буде світитися лампочка? Потім сформулюй гіпотезу одним-двома реченнями.</p>
+  <div class="tw"><table><thead><tr><th>Зразок</th><th>Мій прогноз</th></tr></thead><tbody>${SAMPLES.map(x=>`<tr><td>${x.t}</td><td><span class="seg">
+   <button type="button" class="y" data-p="${x.k}" data-v="1" aria-pressed="${PRED[x.k]===1}" ${done?"disabled":""}>💡 проводить</button><button type="button" data-p="${x.k}" data-v="0" aria-pressed="${PRED[x.k]===0}" ${done?"disabled":""}>✕ не проводить</button></span></td></tr>`).join("")}</tbody></table></div>
+  <label class="lbl" for="hypT">Моя гіпотеза</label><textarea id="hypT" maxlength="600" placeholder="Я припускаю, що електричний струм проводитимуть… тому що…" ${done?"readonly":""}>${esc(REC.hypText||"")}</textarea>
+  ${done?`<div class="fb ok">✓ Гіпотезу записано (+1 б.). У кроці 7 порівняєш її з результатами досліду.</div>`:`<div class="row"><button class="btn" type="button" data-chk="hyp">Зберегти гіпотезу</button></div>`}`};
+B.hyp=s=>{if(s.id in SCORE)return;document.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{REC.hypText=$("hypT").value;PRED[b.dataset.p]=+b.dataset.v;render()});
+  $("hypT").oninput=e=>REC.hypText=e.target.value;
+  document.querySelector('[data-chk="hyp"]').onclick=()=>{const t=$("hypT").value.trim();if(Object.keys(PRED).length<SAMPLES.length)return warn(s,"Зроби прогноз для кожного зразка.");
+    if(t.length<25)return warn(s,"Сформулюй гіпотезу повним реченням (хоча б 25 символів).");REC.hypText=t;SCORE.hyp=1;render()}};
+/* схема */
+const SCH=[
+ {ok:1,svg:circuit("series")},{ok:0,svg:circuit("short")},{ok:0,svg:circuit("open")}];
+function circuit(kind){
+  const bat=`<rect x="14" y="40" width="12" height="40" fill="#1c1917"/><rect x="30" y="50" width="6" height="20" fill="#1c1917"/><text x="40" y="112" font-size="11" font-family="Arial">батарея</text>`;
+  const lamp=`<circle cx="110" cy="20" r="12" fill="#fde68a" stroke="#1c1917" stroke-width="2"/><path d="M102 12l16 16M118 12l-16 16" stroke="#1c1917" stroke-width="1.5"/>`;
+  const glass=`<path d="M150 70v52h52V70" fill="#bfdbfe" stroke="#1c1917" stroke-width="2"/><rect x="160" y="62" width="6" height="52" fill="#57534e"/><rect x="186" y="62" width="6" height="52" fill="#57534e"/>`;
+  const w=d=>`<path d="${d}" fill="none" stroke="#1c1917" stroke-width="2.5"/>`;
+  let s=bat+lamp+glass;
+  if(kind==="series")s+=w("M20 40V20H98")+w("M122 20H163V62")+w("M33 80V140H189V114");
+  if(kind==="short")s+=w("M20 40V20H98")+w("M122 20H163V62")+w("M33 80V140H189V114")+w("M163 50H189V62");
+  if(kind==="open")s+=w("M20 40V20H98")+w("M122 20H140")+w("M33 80V140H189V114")+w("M163 62V40");
+  return `<svg viewBox="0 0 220 150" aria-hidden="true">${s}</svg>`;
+}
+R.scheme=s=>{if(!UI.scheme)UI.scheme={ord:shuffle([0,1,2])};const u=UI.scheme,done="scheme" in SCORE;
+  return `<div class="schemes">${u.ord.map((j,i)=>{let c="";if(done){if(SCH[j].ok)c="ok";else if(u.pick===j)c="no"}
+   return `<button class="scheme ${c}" type="button" data-sc="${j}" aria-pressed="${u.pick===j}" ${done?"disabled":""}>${SCH[j].svg}<b>Схема ${"АБВ"[i]}</b></button>`}).join("")}</div>`+
+   (done?`<div class="fb ${SCORE.scheme?"ok":"bad"}">${SCORE.scheme?"✓ ":"✗ Ні. "}Правильна схема — послідовне коло: батарея → лампочка → електрод → речовина → електрод → батарея. Якщо електроди з'єднані дротом, лампочка світитиметься завжди, а якщо коло розірване, — не світитиметься ніколи.</div>`
+   :`<div class="row"><button class="btn" type="button" data-chk="scheme">Перевірити</button></div>`)};
+B.scheme=s=>{if("scheme" in SCORE)return;document.querySelectorAll("[data-sc]").forEach(b=>b.onclick=()=>{UI.scheme.pick=+b.dataset.sc;render()});
+  document.querySelector('[data-chk="scheme"]').onclick=()=>{if(UI.scheme.pick==null)return warn(s,"Обери схему.");SCORE.scheme=SCH[UI.scheme.pick].ok?1:0;render()}};
+/* порядок */
+R.order=s=>{if(!UI.order)UI.order={pool:shuffle(s.steps.map((x,j)=>j)),seq:[]};const u=UI.order,done="order" in SCORE;
+  if(done)return `<div class="order">${s.steps.map((t,j)=>`<div class="step" style="cursor:default;${u.seq[j]===j?"":"border-color:var(--bad)"}">${t}</div>`).join("")}</div><div class="fb ${SCORE.order?"ok":"bad"}">${SCORE.order?"✓ Правильний порядок!":"✗ Порядок неправильний. Вище — правильна послідовність."}</div>`;
+  return `<div class="order" id="ordBox">${u.seq.map(j=>`<button class="step" type="button" data-back="${j}">${s.steps[j]}</button>`).join("")||'<span class="hint">Натискай кроки нижче…</span>'}</div>
+   <div class="pool">${u.pool.map(j=>`<button class="step" type="button" data-go="${j}">${s.steps[j]}</button>`).join("")}</div>
+   <div class="row"><button class="btn" type="button" data-chk="order">Перевірити</button></div>`};
+B.order=s=>{if("order" in SCORE)return;const u=UI.order;
+  document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{const j=+b.dataset.go;u.pool=u.pool.filter(x=>x!==j);u.seq.push(j);render()});
+  document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>{const j=+b.dataset.back;u.seq=u.seq.filter(x=>x!==j);u.pool.push(j);render()});
+  document.querySelector('[data-chk="order"]').onclick=()=>{if(u.pool.length)return warn(s,"Розстав усі 6 кроків.");SCORE.order=u.seq.every((j,i)=>j===i)?1:0;render()}};
+/* результати */
+R.res=s=>{const done="res" in SCORE,locked=!("hyp" in SCORE);
+  if(locked)return `<p class="hint">🔒 Спершу запиши гіпотезу (крок 2).</p>`;
+  return `<p class="hint">Запиши, що відбувалося з лампочкою у відео. Останній стовпчик порівнює результат з твоїм прогнозом.</p><div class="tw"><table><thead><tr><th>Зразок</th><th>Лампочка у досліді</th><th>Прогноз</th></tr></thead><tbody>${SAMPLES.map(x=>{
+    const o=OBS[x.k];let cls="",tag="";if(done){if(x.a==null){tag=`<span class="tag free">не оцінюється</span>`}else{const ok=o===x.a;cls=ok?"res-ok":"res-no";tag=ok?`<span class="tag ok">✓</span>`:`<span class="tag no">✗ ${x.a?"світиться":"не світиться"}</span>`}}
+    return `<tr><td>${x.t}${x.a==null?" <small class='hint'>(запиши, що побачив)</small>":""}</td><td class="${cls}"><span class="seg"><button type="button" class="y" data-o="${x.k}" data-v="1" aria-pressed="${o===1}" ${done?"disabled":""}>💡 світиться</button><button type="button" data-o="${x.k}" data-v="0" aria-pressed="${o===0}" ${done?"disabled":""}>✕ не світиться</button></span> ${tag}</td>
+     <td>${PRED[x.k]===o||o==null?"":"⚠️ "}${PRED[x.k]?"💡":"✕"}</td></tr>`}).join("")}</tbody></table></div>`+
+    (done?`<div class="fb ${SCORE.res===4?"ok":"info"}">Правильно ${REC.res}: +${fmt(SCORE.res)} б. ⚠️ — там, де результат не збігся з твоєю гіпотезою. Це нормально: для того й проводять дослід!</div>`:`<div class="row"><button class="btn" type="button" data-chk="res">Перевірити</button></div>`)};
+B.res=s=>{if("res" in SCORE||!("hyp" in SCORE))return;
+  document.querySelectorAll("[data-o]").forEach(b=>b.onclick=()=>{OBS[b.dataset.o]=+b.dataset.v;render()});
+  document.querySelector('[data-chk="res"]').onclick=()=>{if(Object.keys(OBS).length<SAMPLES.length)return warn(s,"Заповни результат для кожного зразка.");
+    const g=SAMPLES.filter(x=>x.a!=null),c=g.filter(x=>OBS[x.k]===x.a).length;SCORE.res=Math.round(c/g.length*4*2)/2;REC.res=`${c} з ${g.length}`;render()}};
+/* висновок */
+const C1=[["Струм проводять водні розчини й розплави солей, лугів і кислот. Сухі кристали, дистильована вода, розчин і розплав цукру струм не проводять.",1],
+  ["Струм проводять усі рідини, а тверді речовини не проводять.",0],["Струм проводять тільки розчини кислот.",0],["Струм проводять усі речовини, якщо їх нагріти.",0]];
+const C2=[["У кристалі йони зв'язані й не можуть рухатися, а в розчині й розплаві йони вільні й переносять заряд.",1],
+  ["У розчині з'являються вільні електрони, як у металах.",0],["Вода сама по собі добре проводить струм.",0],["У кристалі NaCl немає йонів.",0]];
+R.concl=s=>{if(!UI.concl)UI.concl={o1:shuffle([0,1,2,3]),o2:shuffle([0,1,2,3])};const u=UI.concl,done="concl" in SCORE;
+  const q=(arr,ord,key,pick)=>`<div class="opts">${ord.map(j=>{let c="";if(done){if(arr[j][1])c=pick===j?"ok":"miss";else if(pick===j)c="no"}return `<button class="op ${c}" type="button" data-c="${key}" data-j="${j}" aria-pressed="${pick===j}" ${done?"disabled":""}>${arr[j][0]}</button>`}).join("")}</div>`;
+  return `<div class="task"><b>1) Яке узагальнення відповідає результатам досліду?</b>${q(C1,u.o1,"a",u.a)}</div>
+  <div class="task"><b>2) Чому сухий натрій хлорид не проводить струм, а його розчин і розплав проводять?</b>${q(C2,u.o2,"b",u.b)}</div>
+  <label class="lbl" for="conT">Мій висновок (своїми словами: чи підтвердилася гіпотеза, що спільного в речовинах, які проводять струм)</label>
+  <textarea id="conT" maxlength="1000" placeholder="Гіпотеза підтвердилася / не підтвердилася… Струм проводять… Це електроліти…" ${done?"readonly":""}>${esc(REC.conclText||"")}</textarea>`+
+  (done?`<div class="fb ${SCORE.concl===2?"ok":"info"}">+${fmt(SCORE.concl)} б. Речовини, водні розчини або розплави яких проводять електричний струм, називають <b>електролітами</b> (солі, луги, кислоти). Ті, що не проводять, — <b>неелектроліти</b> (цукор, спирт).</div>`
+   :`<div class="row"><button class="btn" type="button" data-chk="concl">Перевірити й зберегти</button></div>`)};
+B.concl=s=>{if("concl" in SCORE)return;const u=UI.concl;
+  document.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{REC.conclText=$("conT").value;u[b.dataset.c]=+b.dataset.j;render()});
+  $("conT").oninput=e=>REC.conclText=e.target.value;
+  document.querySelector('[data-chk="concl"]').onclick=()=>{const t=$("conT").value.trim();if(u.a==null||u.b==null)return warn(s,"Дай відповідь на обидва питання.");
+    if(t.length<30)return warn(s,"Напиши висновок своїми словами (хоча б 30 символів).");REC.conclText=t;SCORE.concl=(C1[u.a][1]?1:0)+(C2[u.b][1]?1:0);render()}};
+
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function warn(s,t){const c=$("c_"+s.id);let w=c.querySelector(".warn");if(!w){w=document.createElement("p");w.className="msg bad warn";c.appendChild(w)}w.textContent=t;setTimeout(()=>w&&w.remove(),3500)}
+
+/* ---------- здача ---------- */
+let ME={},sent=false;
+$("submit").onclick=async()=>{const box=$("sendMsg");if(sent)return;$("submit").disabled=true;box.className="msg info";box.textContent="Надсилаю…";
+  const order=["goal","hyp","eq","safe","scheme","order","res","concl"];
+  const rec={name:ME.name,cls:ME.cls,score:order.reduce((a,k)=>a+SCORE[k],0),max:12,ts:{".sv":"timestamp"},parts:order.map(k=>SCORE[k]).join(" "),
+    hypothesis:REC.hypText||"",conclusion:REC.conclText||"",
+    observations:SAMPLES.map(x=>`${x.t.replace(/ \(.*\)$/,"")}: ${OBS[x.k]?"світиться":"не світиться"}`).join("; "),
+    mismatch:SAMPLES.filter(x=>PRED[x.k]!==OBS[x.k]).length};
+  try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec)});if(!r.ok)throw new Error(r.status);
+    sent=true;box.className="msg ok";box.textContent=`✓ Дослідження отримано вчителем: ${fmt(rec.score)} / 12. Молодець!`;
+  }catch(e){$("submit").disabled=false;box.className="msg bad";box.textContent="Не вдалося надіслати. Перевір інтернет і натисни ще раз."}};
+$("startBtn").onclick=()=>{const nm=$("pname").value.trim(),c=$("pcls").value;if(nm.length<3||!c){$("startErr").hidden=false;return}
+  ME={name:nm.slice(0,60),cls:c};$("who").textContent=`👤 ${ME.name} · ${ME.cls}`;$("start").hidden=true};
+render();
+</script>
+</body>
+</html>
