@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Тренажер дисоціації</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700;800&display=swap">
+<style>
+/* Bright trainer: cation chips red-pink, anion chips blue; equation builder rows with live charge balance meter. */
+:root{color-scheme:light;
+  --bg:#f5f3ff;--card:#fff;--ink:#1e1b3a;--muted:#635e80;--line:#e2ddf5;
+  --cat:#e11d48;--cat-bg:#ffe4ea;--an:#2563eb;--an-bg:#e0eaff;--accent:#7c3aed;--accent-deep:#5b21b6;--ok:#16a34a;--bad:#dc2626;--gold:#f59e0b;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;--f-body:"Golos Text",system-ui,sans-serif;--f-mono:"JetBrains Mono",ui-monospace,monospace}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:960px;margin:0 auto;padding-block:16px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
+.eyebrow{font:800 11px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+h1{margin:2px 0 0;font-family:var(--f-display);font-size:clamp(23px,4.4vw,34px);line-height:1.08}
+h1 .c{color:var(--cat)}h1 .a{color:var(--an)}
+h2.part{margin:6px 0 0;font-family:var(--f-display);font-size:clamp(18px,3vw,22px)}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--card);border:2px solid var(--ink);border-radius:16px;padding:9px 14px;display:flex;gap:12px;align-items:center;justify-content:space-between;box-shadow:0 4px 0 var(--ink)}
+.bar b{font-family:var(--f-display);font-size:20px}
+.prog{flex:1;height:10px;background:#ebe7fb;border-radius:99px;overflow:hidden;max-width:280px}.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--cat),var(--an));width:0;transition:width .4s}
+.card{background:var(--card);border:2px solid var(--ink);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px;box-shadow:0 5px 0 var(--ink);min-width:0}
+.card.done{border-color:var(--ok);box-shadow:0 5px 0 var(--ok)}.card.fail{border-color:var(--bad);box-shadow:0 5px 0 var(--bad)}
+.card h3{margin:0;font-size:16px;display:flex;gap:10px;align-items:center}
+.card h3 .no{flex:none;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--accent);color:#fff;font:800 14px var(--f-mono)}
+.card.done h3 .no{background:var(--ok)}.card.fail h3 .no{background:var(--bad)}
+.card h3 .pts{margin-left:auto;flex:none;font:800 12px var(--f-mono);background:#ede9fe;color:var(--accent-deep);border-radius:99px;padding:4px 10px}
+.hint{margin:0;color:var(--muted);font-size:14.5px}
+.rule{background:#fffbeb;border:2px solid var(--gold);border-radius:14px;padding:10px 12px;font-size:14.5px}
+.eqn{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-family:var(--f-mono);font-weight:800;font-size:22px;min-height:56px;padding:8px 10px;border-radius:14px;background:#faf9ff;border:2px dashed var(--line)}
+.eqn .f{font-size:24px}
+.eqn .arr{color:var(--muted)}
+.prod{display:inline-flex;align-items:center;gap:2px;border-radius:12px;padding:2px 4px 2px 2px;border:2px solid}
+.prod.c{background:var(--cat-bg);border-color:var(--cat);color:#9f1239}.prod.a{background:var(--an-bg);border-color:var(--an);color:#1e40af}
+.prod .k{display:inline-flex;flex-direction:column;align-items:center}
+.prod .k button{font:800 12px var(--f-mono);border:0;background:transparent;cursor:pointer;padding:0 4px;line-height:1;color:inherit}
+.prod .kn{font-size:20px;min-width:16px;text-align:center}
+.prod .x{font:800 14px var(--f-mono);border:0;background:transparent;cursor:pointer;color:inherit;opacity:.6;padding:0 2px}
+.plus{color:var(--muted)}
+.pal{display:flex;flex-wrap:wrap;gap:6px}
+.ion{font:800 17px var(--f-mono);border:2px solid;border-radius:10px;padding:5px 11px;cursor:pointer;background:#fff}
+.ion.c{border-color:var(--cat);color:#9f1239}.ion.a{border-color:var(--an);color:#1e40af}
+.ion:hover:not([disabled]){transform:translateY(-1px)}.ion[disabled]{opacity:.35;cursor:default}
+.meter{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700}
+.meter .sum{font-family:var(--f-mono);font-size:16px;border-radius:8px;padding:2px 8px;background:#f1f5f9}
+.meter .sum.zero{background:#dcfce7;color:#14532d}.meter .sum.nz{background:#fee2e2;color:#7f1d1d}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{font-family:var(--f-display);font-size:14.5px;border:2px solid var(--ink);border-radius:14px;padding:10px 16px;cursor:pointer;color:#fff;background:var(--accent);box-shadow:0 4px 0 var(--ink)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.btn.light{background:#fff;color:var(--ink)}.btn.green{background:var(--ok)}.btn[disabled]{opacity:.45;cursor:not-allowed}
+.fb{font-size:14.5px;border-radius:12px;padding:9px 12px}
+.fb.ok{background:#dcfce7;color:#14532d}.fb.bad{background:#fee2e2;color:#7f1d1d}.fb.info{background:#ede9fe;color:var(--accent-deep)}
+.sol{font-family:var(--f-mono);font-weight:800;font-size:18px}
+.grid2c{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:820px){.grid2c{grid-template-columns:1fr}}
+.opts{display:flex;flex-direction:column;gap:6px}
+.op{font:inherit;text-align:left;border:2px solid var(--line);background:#fff;border-radius:12px;padding:8px 12px;cursor:pointer;color:var(--ink)}
+.op.mono{font-family:var(--f-mono);font-weight:800;font-size:16px}
+.op[aria-pressed="true"]{border-color:var(--accent);background:#ede9fe}
+.op.ok{border-color:var(--ok);background:#dcfce7}.op.no{border-color:var(--bad);background:#fee2e2}.op.miss{border-color:var(--ok);border-style:dashed}.op[disabled]{cursor:default}
+table{width:100%;border-collapse:collapse}
+td,th{border-bottom:1px solid var(--line);padding:7px 6px;text-align:left;vertical-align:middle}
+th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+td.m{font-family:var(--f-mono);font-weight:800;font-size:16px}
+.seg{display:inline-flex;border:2px solid var(--ink);border-radius:10px;overflow:hidden;flex-wrap:wrap}
+.seg button{font:inherit;font-size:14px;font-weight:700;border:0;background:#fff;padding:6px 10px;cursor:pointer;color:var(--ink)}
+.seg button+button{border-left:2px solid var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.seg button.ok{background:#16a34a;color:#fff}.seg button.no{background:#dc2626;color:#fff}.seg button[disabled]{cursor:default}
+.tw{overflow-x:auto}
+.order{display:flex;flex-direction:column;gap:6px;min-height:50px;padding:8px;border-radius:14px;background:#ede9fe;border:2px dashed #c4b5fd;counter-reset:s}
+.step{font:800 16px var(--f-mono);text-align:left;border:2px solid var(--ink);background:#fff;border-radius:12px;padding:8px 12px;cursor:pointer;color:var(--ink)}
+.order .step::before{counter-increment:s;content:counter(s) ") ";color:var(--accent)}
+.ans{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ans input{font:inherit;font-family:var(--f-mono);font-weight:800;font-size:17px;width:110px;padding:9px 11px;border-radius:12px;border:2px solid var(--ink)}
+.label{border:3px solid #0ea5e9;border-radius:16px;padding:12px;background:linear-gradient(180deg,#f0f9ff,#fff);font-size:14.5px}
+.label b{font-family:var(--f-display);font-size:15px;color:#0369a1}
+.label .ions{display:grid;grid-template-columns:1fr 1fr;gap:4px 18px;font-family:var(--f-mono);font-weight:700;margin-top:6px}
+input[type=text],select{font:inherit;font-size:16px;padding:11px 13px;border-radius:12px;border:2px solid var(--ink);background:#fff;color:var(--ink);width:100%}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.overlay{position:fixed;inset:0;z-index:30;background:rgba(30,27,58,.6);display:flex;align-items:center;justify-content:center;padding:20px max(16px,env(safe-area-inset-right,0px)) 20px max(16px,env(safe-area-inset-left,0px))}
+.overlay .card{max-width:540px;width:100%}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media (max-width:520px){.grid2{grid-template-columns:1fr}}
+.lbl{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--muted)}
+.final{font-family:var(--f-display);font-size:38px;color:var(--ok)}
+.msg{font-weight:700;padding:9px 12px;border-radius:12px}
+.msg.ok{background:#e8f8ee;color:#166534}.msg.bad{background:#fdecec;color:#991b1b}.msg.info{background:#ede9fe;color:var(--accent-deep)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Хімія · 9 клас · електролітична дисоціація</span>
+    <h1>Дисоціація кислот, основ і солей: <span class="c">катіони</span> та <span class="a">аніони</span></h1>
+    <p class="hint">4 частини, разом 12 балів. Набір речовин у тебе свій — у сусіда інший.</p>
+  </header>
+  <div class="bar"><span id="who"></span><div class="prog"><i id="progI"></i></div><span>Бали: <b id="score">0</b> / 12</span></div>
+
+  <h2 class="part">Частина 1. Конструктор рівнянь дисоціації</h2>
+  <div class="rule">💡 Як складати: 1) визнач, на які йони розпадається речовина; 2) постав заряди (валентність металу / кислотного залишку); 3) <b>індекси у формулі стають коефіцієнтами</b> перед йонами: Al₂(SO₄)₃ → 2Al³⁺ + 3SO₄²⁻; 4) перевір: сума зарядів має дорівнювати <b>0</b>. Кислотний залишок (SO₄²⁻, NO₃⁻, PO₄³⁻…) <b>не розпадається</b> на атоми!</div>
+  <p class="hint">Натискай йони в палітрі, щоб додати їх у рівняння. Стрілками ▲▼ змінюй коефіцієнт, × — прибрати йон. На кожне рівняння 2 спроби: з першої — 1 бал, з другої — 0,5.</p>
+  <div class="grid2c" id="p1"></div>
+
+  <h2 class="part">Частина 2. Що спільного? Визначення через йони</h2>
+  <div class="card" id="p2"></div>
+
+  <h2 class="part">Частина 3. Ступінчаста дисоціація</h2>
+  <div class="card" id="p3"></div>
+
+  <h2 class="part">Частина 4. Йони навколо нас</h2>
+  <div class="card" id="p4"></div>
+
+  <section class="card" id="fin">
+    <h3><span class="no">★</span>Здати роботу</h3>
+    <p class="hint" id="finHint">Виконай усі 4 частини, тоді кнопка стане активною.</p>
+    <div class="row"><span>Результат: <span class="final" id="finScore">0</span> / 12</span></div>
+    <div class="row"><button class="btn green" type="button" id="submit" disabled>Надіслати вчителю</button></div>
+    <div id="sendMsg"></div>
+  </section>
+</div>
+
+<div class="overlay" id="start">
+  <div class="card">
+    <span class="eyebrow">Перед початком</span>
+    <h3 style="font-family:var(--f-display);font-size:20px">Тренажер дисоціації</h3>
+    <p style="margin:0">Електроліти у воді розпадаються на йони: позитивні <b style="color:var(--cat)">катіони</b> і негативні <b style="color:var(--an)">аніони</b>. Навчимося записувати це рівняннями.</p>
+    <div class="grid2">
+      <div><label class="lbl" for="pname">Прізвище та ім'я</label><input type="text" id="pname" maxlength="60" autocomplete="name" placeholder="Іваненко Олена"></div>
+      <div><label class="lbl" for="pcls">Клас</label><select id="pcls"><option value="">— обери —</option><option>9-А</option><option>9-Б</option><option>Інший</option></select></div>
+    </div>
+    <p class="msg bad" id="startErr" hidden>Впиши прізвище, ім'я та обери клас.</p>
+    <div class="row"><button class="btn" id="startBtn" type="button">Почати</button></div>
+  </div>
+</div>
+
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="dys9";
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const pick=a=>a[Math.random()*a.length|0];
+const fmt=x=>String(Math.round(x*10)/10).replace(".",",");
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* йони: d — запис, z — заряд; fake — пастка (такого йона не існує або він не з цієї речовини) */
+const ION={H:["H⁺",1],Li:["Li⁺",1],Na:["Na⁺",1],K:["K⁺",1],Ba:["Ba²⁺",2],Ca:["Ca²⁺",2],Mg:["Mg²⁺",2],Cu:["Cu²⁺",2],Zn:["Zn²⁺",2],Al:["Al³⁺",3],Fe3:["Fe³⁺",3],
+  OH:["OH⁻",-1],Cl:["Cl⁻",-1],Br:["Br⁻",-1],I:["I⁻",-1],NO3:["NO₃⁻",-1],SO4:["SO₄²⁻",-2],CO3:["CO₃²⁻",-2],PO4:["PO₄³⁻",-3],
+  xH2:["H₂⁺",1],xNa2:["Na₂⁺",1],xK3:["K₃⁺",1],xBa:["Ba⁺",1],xCa:["Ca⁺",1],xMg:["Mg⁺",1],xCu:["Cu⁺",1],xAl:["Al²⁺",2],xFe2:["Fe²⁺",2],xLi:["Li²⁺",2],xZn:["Zn⁺",1],
+  xOH:["OH²⁻",-2],xO:["O²⁻",-2],xCl:["Cl²⁻",-2],xCl2:["Cl₂⁻",-1],xBr:["Br²⁻",-2],xI:["I²⁻",-2],xNO3:["NO₃²⁻",-2],xSO4:["SO₄⁻",-1],xS:["S⁶⁺",6],xCO3:["CO₃⁻",-1],xPO4:["PO₄²⁻",-2]};
+const TRAP={H:["xH2"],Na:["xNa2"],K:["xK3"],Ba:["xBa"],Ca:["xCa"],Mg:["xMg"],Cu:["xCu"],Al:["xAl"],Fe3:["xFe2"],Li:["xLi"],Zn:["xZn"],
+  OH:["xOH","xO"],Cl:["xCl","xCl2"],Br:["xBr"],I:["xI"],NO3:["xNO3"],SO4:["xSO4","xS","xO"],CO3:["xCO3","xO"],PO4:["xPO4"]};
+const SUBS={
+ acid:{HCl:[["H",1],["Cl",1]],HNO3:[["H",1],["NO3",1]],HBr:[["H",1],["Br",1]],HI:[["H",1],["I",1]],H2SO4:[["H",2],["SO4",1]]},
+ base1:{NaOH:[["Na",1],["OH",1]],KOH:[["K",1],["OH",1]],LiOH:[["Li",1],["OH",1]]},
+ base2:{"Ba(OH)2":[["Ba",1],["OH",2]]},
+ salt1:{CaCl2:[["Ca",1],["Cl",2]],MgCl2:[["Mg",1],["Cl",2]],Na2SO4:[["Na",2],["SO4",1]],K2CO3:[["K",2],["CO3",1]],"Cu(NO3)2":[["Cu",1],["NO3",2]],BaCl2:[["Ba",1],["Cl",2]],Na2CO3:[["Na",2],["CO3",1]],ZnSO4:[["Zn",1],["SO4",1]]},
+ salt2:{"Al2(SO4)3":[["Al",2],["SO4",3]],"Fe2(SO4)3":[["Fe3",2],["SO4",3]],K3PO4:[["K",3],["PO4",1]],"Fe(NO3)3":[["Fe3",1],["NO3",3]],AlCl3:[["Al",1],["Cl",3]],Na3PO4:[["Na",3],["PO4",1]]}
+};
+const sub=f=>f.replace(/\d/g,d=>"₀₁₂₃₄₅₆₇₈₉"[d]);
+const cls=k=>ION[k][1]>0?"c":"a";
+/* індивідуальний набір */
+const acids=shuffle(Object.keys(SUBS.acid));
+const SET=[
+ {f:acids[0],g:"acid"},{f:acids.includes("H2SO4")&&acids[0]!=="H2SO4"?"H2SO4":acids[1],g:"acid"},
+ {f:pick(Object.keys(SUBS.base1)),g:"base1"},{f:"Ba(OH)2",g:"base2"},
+ {f:pick(Object.keys(SUBS.salt1)),g:"salt1"},{f:pick(Object.keys(SUBS.salt2)),g:"salt2"}
+].map(x=>({...x,ions:SUBS[x.g][x.f]}));
+SET.forEach(x=>{const right=x.ions.map(i=>i[0]),traps=[...new Set(right.flatMap(k=>TRAP[k]||[]))];
+  const others=shuffle(Object.keys(ION).filter(k=>!k.startsWith("x")&&!right.includes(k))).slice(0,3);
+  x.pal=shuffle([...right,...traps,...others]);x.sel=[];x.tries=0;x.done=false;x.pts=0});
+
+const SCORE={};
+function upd(){const s=Object.values(SCORE).reduce((a,b)=>a+b,0);$("score").textContent=fmt(s);$("finScore").textContent=fmt(s);
+  const n=SET.filter(x=>x.done).length+["p2","p3","p4"].filter(k=>k in SCORE).length;$("progI").style.width=n/9*100+"%";
+  if(n===9&&!sent){$("submit").disabled=false;$("finHint").textContent="Усе виконано. Надішли роботу вчителю."}}
+
+/* ---------- частина 1 ---------- */
+const eqStr=ions=>ions.map(([k,c])=>(c>1?c:"")+ION[k][0]).join(" + ");
+function render1(){
+  $("p1").innerHTML=SET.map((x,i)=>{const sum=x.sel.reduce((s,[k,c])=>s+ION[k][1]*c,0);
+    const prods=x.sel.map(([k,c],j)=>(j?'<span class="plus">+</span>':"")+`<span class="prod ${cls(k)}">${x.done?"":`<span class="k"><button type="button" data-u="${i}:${j}">▲</button><button type="button" data-d="${i}:${j}">▼</button></span>`}<span class="kn">${c>1?c:""}</span>${ION[k][0]}${x.done?"":`<button class="x" type="button" data-r="${i}:${j}" aria-label="прибрати">×</button>`}</span>`).join("");
+    let fb="";
+    if(x.done)fb=x.pts===1?`<div class="fb ok">✓ Правильно! +1 б.</div>`:x.pts>0?`<div class="fb info">✓ Правильно з другої спроби: +0,5 б.</div>`:`<div class="fb bad">✗ Дві спроби використано. Правильно:<br><span class="sol">${sub(x.f)} → ${eqStr(x.ions)}</span></div>`;
+    else if(x.tries===1)fb=`<div class="fb bad">✗ Не так. ${x.hint} Ще одна спроба.</div>`;
+    return `<section class="card ${x.done?(x.pts>0?"done":"fail"):""}"><h3><span class="no">${i+1}</span>${["Кислота","Кислота","Луг","Луг","Сіль","Сіль"][i]}<span class="pts">1 б.</span></h3>
+     <div class="eqn"><span class="f">${sub(x.f)}</span><span class="arr">→</span>${prods||'<span class="hint" style="font-family:var(--f-body);font-size:14px">додай йони з палітри</span>'}</div>
+     ${x.done?"":`<div class="meter">Сума зарядів: <span class="sum ${x.sel.length?(sum===0?"zero":"nz"):""}">${sum>0?"+":""}${sum}</span>${x.sel.length&&sum===0?" ✓ баланс":""}</div>
+     <div class="pal">${x.pal.map(k=>`<button class="ion ${cls(k)}" type="button" data-a="${i}:${k}" ${x.sel.some(s=>s[0]===k)?"disabled":""}>${ION[k][0]}</button>`).join("")}</div>
+     <div class="row"><button class="btn" type="button" data-chk="${i}">Перевірити</button></div>`}${fb}</section>`}).join("");
+  const P=s=>s.split(":");
+  document.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{const [i,k]=P(b.dataset.a);SET[i].sel.push([k,1]);render1()});
+  document.querySelectorAll("[data-u]").forEach(b=>b.onclick=()=>{const [i,j]=P(b.dataset.u).map(Number);const s=SET[i].sel[j];if(s[1]<6)s[1]++;render1()});
+  document.querySelectorAll("[data-d]").forEach(b=>b.onclick=()=>{const [i,j]=P(b.dataset.d).map(Number);const s=SET[i].sel[j];if(s[1]>1)s[1]--;render1()});
+  document.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{const [i,j]=P(b.dataset.r).map(Number);SET[i].sel.splice(j,1);render1()});
+  document.querySelectorAll("[data-chk]").forEach(b=>b.onclick=()=>check1(+b.dataset.chk));
+}
+function check1(i){const x=SET[i];if(!x.sel.length)return;
+  const want=Object.fromEntries(x.ions),got=Object.fromEntries(x.sel);
+  const ok=Object.keys(want).length===Object.keys(got).length&&Object.keys(want).every(k=>got[k]===want[k]);
+  x.tries++;
+  if(ok){x.done=true;x.pts=x.tries===1?1:0.5}
+  else if(x.tries>=2){x.done=true;x.pts=0}
+  else{const fake=x.sel.some(([k])=>k.startsWith("x")),sum=x.sel.reduce((s,[k,c])=>s+ION[k][1]*c,0),sameKinds=Object.keys(want).every(k=>k in got)&&Object.keys(got).length===Object.keys(want).length;
+    x.hint=fake?"Серед йонів є такий, що не існує або має неправильний заряд. Перевір заряди за валентністю.":sameKinds?"Йони правильні, але коефіцієнти — ні. Індекс у формулі стає коефіцієнтом перед йоном.":sum!==0?"Сума зарядів не дорівнює нулю.":"Перевір, на які йони розпадається ця речовина."}
+  if(x.done){SCORE["e"+i]=x.pts;if(x.pts<1)MIST.push(x.f)}
+  render1();upd();if(SET.every(s=>s.done))render2()}
+const MIST=[];
+
+/* ---------- частина 2 ---------- */
+const P2E=shuffle([["HNO3","acid"],["H2SO4","acid"],["KOH","base"],["Ba(OH)2","base"],["Na2CO3","salt"],["Fe(NO3)3","salt"]]);
+const ALL={...SUBS.acid,...SUBS.base1,...SUBS.base2,...SUBS.salt1,...SUBS.salt2};
+const DEF=[["Кислоти","катіони Гідрогену H⁺ та аніони кислотного залишку"],["Основи (луги)","катіони металічного елемента та гідроксид-аніони OH⁻"],["Солі","катіони металічного елемента та аніони кислотного залишку"]];
+const DEFO=shuffle([0,1,2]);
+const U2={cls:{},def:{}};
+function render2(){const done="p2" in SCORE,locked=!SET.every(s=>s.done);
+  const el=$("p2");el.className="card"+(done?" done":"");
+  if(locked){el.innerHTML=`<h3><span class="no">2</span>Визначення через йони<span class="pts">2 б.</span></h3><p class="hint">🔒 Відкриється, коли завершиш усі 6 рівнянь частини 1.</p>`;return}
+  const N={acid:"кислота",base:"луг",salt:"сіль"};
+  el.innerHTML=`<h3><span class="no">2</span>Визначення через йони<span class="pts">2 б.</span></h3>
+  <p class="hint"><b>а)</b> За рівнянням дисоціації визнач клас речовини (формули сховано).</p>
+  <div class="tw"><table><tbody>${P2E.map(([f,g],i)=>{const a=U2.cls[i];return `<tr><td class="m">? → ${eqStr(ALL[f])}</td><td><span class="seg">${["acid","base","salt"].map(v=>{let c="";if(done){if(v===g)c="ok";else if(a===v)c="no"}return `<button type="button" class="${c}" data-c2="${i}:${v}" aria-pressed="${a===v}" ${done?"disabled":""}>${N[v]}</button>`}).join("")}</span></td></tr>`}).join("")}</tbody></table></div>
+  <p class="hint"><b>б)</b> Допиши визначення: «… — це електроліти, які під час дисоціації утворюють …»</p>
+  <div class="tw"><table><tbody>${DEF.map(([n],i)=>{const a=U2.def[i];return `<tr><td><b>${n}</b></td><td><div class="opts">${DEFO.map(j=>{let c="";if(done){if(j===i)c=a===j?"ok":"miss";else if(a===j)c="no"}return `<button class="op ${c}" type="button" data-d2="${i}:${j}" aria-pressed="${a===j}" ${done?"disabled":""}>${DEF[j][1]}</button>`}).join("")}</div></td></tr>`}).join("")}</tbody></table></div>
+  ${done?`<div class="fb ${SCORE.p2===2?"ok":"info"}">+${fmt(SCORE.p2)} б. Головне: <b>кислоти</b> дають лише катіони H⁺, <b>луги</b> — лише аніони OH⁻, <b>солі</b> — катіони металу й аніони кислотного залишку.</div>`:`<div class="row"><button class="btn" type="button" id="c2">Перевірити</button></div>`}`;
+  if(done)return;
+  el.querySelectorAll("[data-c2]").forEach(b=>b.onclick=()=>{const [i,v]=b.dataset.c2.split(":");U2.cls[i]=v;render2()});
+  el.querySelectorAll("[data-d2]").forEach(b=>b.onclick=()=>{const [i,j]=b.dataset.d2.split(":").map(Number);U2.def[i]=j;render2()});
+  $("c2").onclick=()=>{if(Object.keys(U2.cls).length<6||Object.keys(U2.def).length<3)return warn(el,"Дай відповідь на всі пункти а) і б).");
+    const a=P2E.filter(([f,g],i)=>U2.cls[i]===g).length,b=DEF.filter((d,i)=>U2.def[i]===i).length;
+    SCORE.p2=(a===6?1:a>=4?0.5:0)+(b===3?1:b===2?0.5:0);render2();upd();render3()}}
+
+/* ---------- частина 3 ---------- */
+const ST=["H₃PO₄ ⇄ H⁺ + H₂PO₄⁻","H₂PO₄⁻ ⇄ H⁺ + HPO₄²⁻","HPO₄²⁻ ⇄ H⁺ + PO₄³⁻"];
+const H2O=shuffle([["H₂SO₄ → H⁺ + HSO₄⁻",1],["H₂SO₄ → H₂⁺ + SO₄²⁻",0],["H₂SO₄ → 2H⁺ + S⁶⁺ + 4O²⁻",0],["H₂SO₄ → H⁺ + SO₄²⁻",0]]);
+const U3={pool:shuffle([0,1,2]),seq:[],q:null};
+function render3(){const el=$("p3"),done="p3" in SCORE,locked=!("p2" in SCORE);el.className="card"+(done?" done":"");
+  const h=`<h3><span class="no">3</span>Ступінчаста дисоціація<span class="pts">2 б.</span></h3>`;
+  if(locked){el.innerHTML=h+`<p class="hint">🔒 Відкриється після частини 2.</p>`;return}
+  el.innerHTML=h+`<p class="hint">Кислоти з кількома атомами Гідрогену (H₂SO₄, H₃PO₄) відщеплюють йони H⁺ <b>по одному</b> — ступенями.</p>
+   <b>а) Розстав ступені дисоціації ортофосфатної кислоти H₃PO₄ по порядку.</b>
+   ${done?`<div class="order">${ST.map((t,j)=>`<div class="step" style="cursor:default;${U3.seq[j]===j?"":"border-color:var(--bad)"}">${t}</div>`).join("")}</div>`:
+   `<div class="order">${U3.seq.map(j=>`<button class="step" type="button" data-b3="${j}">${ST[j]}</button>`).join("")||'<span class="hint">Натискай рівняння нижче…</span>'}</div>
+    <div class="opts">${U3.pool.map(j=>`<button class="step" type="button" data-g3="${j}">${ST[j]}</button>`).join("")}</div>`}
+   <b>б) Який запис першого ступеня дисоціації сульфатної кислоти правильний?</b>
+   <div class="opts">${H2O.map(([t,ok],j)=>{let c="";if(done){if(ok)c=U3.q===j?"ok":"miss";else if(U3.q===j)c="no"}return `<button class="op mono ${c}" type="button" data-q3="${j}" aria-pressed="${U3.q===j}" ${done?"disabled":""}>${t}</button>`}).join("")}</div>
+   ${done?`<div class="fb ${SCORE.p3===2?"ok":"info"}">+${fmt(SCORE.p3)} б. Кожен наступний ступінь відбувається слабше, тому в розчині H₃PO₄ найбільше йонів H⁺ і H₂PO₄⁻, а PO₄³⁻ — дуже мало.</div>`:`<div class="row"><button class="btn" type="button" id="c3">Перевірити</button></div>`}`;
+  if(done)return;
+  el.querySelectorAll("[data-g3]").forEach(b=>b.onclick=()=>{const j=+b.dataset.g3;U3.pool=U3.pool.filter(x=>x!==j);U3.seq.push(j);render3()});
+  el.querySelectorAll("[data-b3]").forEach(b=>b.onclick=()=>{const j=+b.dataset.b3;U3.seq=U3.seq.filter(x=>x!==j);U3.pool.push(j);render3()});
+  el.querySelectorAll("[data-q3]").forEach(b=>b.onclick=()=>{U3.q=+b.dataset.q3;render3()});
+  $("c3").onclick=()=>{if(U3.pool.length||U3.q==null)return warn(el,"Розстав усі три ступені й обери відповідь у пункті б).");
+    SCORE.p3=(U3.seq.every((j,i)=>j===i)?1:0)+(H2O[U3.q][1]?1:0);render3();upd();render4()}}
+
+/* ---------- частина 4 ---------- */
+const CNT=pick([["Al2(SO4)3",5],["Fe2(SO4)3",5],["K3PO4",4],["Na3PO4",4],["Fe(NO3)3",4],["AlCl3",4]]);
+const MG=shuffle([["MgSO₄",1],["Mg₂SO₄",0],["Mg(SO₄)₂",0],["MgS",0]]);
+const U4={n:"",q:null};
+function render4(){const el=$("p4"),done="p4" in SCORE,locked=!("p3" in SCORE);el.className="card"+(done?" done":"");
+  const h=`<h3><span class="no">4</span>Йони навколо нас<span class="pts">2 б.</span></h3>`;
+  if(locked){el.innerHTML=h+`<p class="hint">🔒 Відкриється після частини 3.</p>`;return}
+  el.innerHTML=h+`<b>а) Скільки йонів (усього) утворюється під час дисоціації однієї формульної одиниці ${sub(CNT[0])}?</b>
+   <div class="ans"><input type="text" inputmode="numeric" id="n4" value="${esc(U4.n)}" ${done?"readonly":""}><span>йонів</span></div>
+   <div class="label"><b>💧 Мінеральна вода «Джерельна» · мг/л</b><div class="ions"><span>Na⁺ + K⁺ … 210</span><span>HCO₃⁻ … 420</span><span>Ca²⁺ … 60</span><span>Cl⁻ … 120</span><span>Mg²⁺ … 35</span><span>SO₄²⁻ … 95</span></div></div>
+   <b>б) Йони Mg²⁺ і SO₄²⁻ могли потрапити у воду під час розчинення солі. Обери її формулу.</b>
+   <div class="opts">${MG.map(([t,ok],j)=>{let c="";if(done){if(ok)c=U4.q===j?"ok":"miss";else if(U4.q===j)c="no"}return `<button class="op mono ${c}" type="button" data-q4="${j}" aria-pressed="${U4.q===j}" ${done?"disabled":""}>${t}</button>`}).join("")}</div>
+   ${done?`<div class="fb ${SCORE.p4===2?"ok":"info"}">+${fmt(SCORE.p4)} б. ${sub(CNT[0])} → ${eqStr(ALL[CNT[0]])}: разом ${CNT[1]} йонів. Mg²⁺ і SO₄²⁻ мають заряди 2+ і 2−, тому сіль — MgSO₄ (магній сульфат).</div>`:`<div class="row"><button class="btn" type="button" id="c4">Перевірити</button></div>`}`;
+  if(done)return;
+  $("n4").oninput=e=>U4.n=e.target.value;
+  el.querySelectorAll("[data-q4]").forEach(b=>b.onclick=()=>{U4.n=$("n4").value;U4.q=+b.dataset.q4;render4()});
+  $("c4").onclick=()=>{U4.n=$("n4").value;if(!U4.n.trim()||U4.q==null)return warn(el,"Дай відповідь на обидва питання.");
+    SCORE.p4=(+U4.n.trim()===CNT[1]?1:0)+(MG[U4.q][1]?1:0);render4();upd()}}
+
+function warn(el,t){let w=el.querySelector(".warn");if(!w){w=document.createElement("p");w.className="msg bad warn";el.appendChild(w)}w.textContent=t;setTimeout(()=>w&&w.remove(),3500)}
+
+/* ---------- здача ---------- */
+let ME={},sent=false;
+$("submit").onclick=async()=>{const box=$("sendMsg");if(sent)return;$("submit").disabled=true;box.className="msg info";box.textContent="Надсилаю…";
+  const p1=SET.reduce((a,x)=>a+x.pts,0);
+  const rec={name:ME.name,cls:ME.cls,score:Object.values(SCORE).reduce((a,b)=>a+b,0),max:12,ts:{".sv":"timestamp"},
+    parts:[p1,SCORE.p2,SCORE.p3,SCORE.p4].join(" "),eq:SET.map(x=>x.pts).join(" "),set:SET.map(x=>x.f).join(", "),weak:MIST.join(", ")};
+  try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec)});if(!r.ok)throw new Error(r.status);
+    sent=true;box.className="msg ok";box.textContent=`✓ Роботу отримано вчителем: ${fmt(rec.score)} / 12. Молодець!`;
+  }catch(e){$("submit").disabled=false;box.className="msg bad";box.textContent="Не вдалося надіслати. Перевір інтернет і натисни ще раз."}};
+$("startBtn").onclick=()=>{const nm=$("pname").value.trim(),c=$("pcls").value;if(nm.length<3||!c){$("startErr").hidden=false;return}
+  ME={name:nm.slice(0,60),cls:c};$("who").textContent=`👤 ${ME.name} · ${ME.cls}`;$("start").hidden=true};
+render1();render2();render3();render4();
+</script>
+</body>
+</html>
