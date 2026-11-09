@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>pH-лабораторія: гідроліз солей</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700;800&display=swap">
+<style>
+/* Demonstration lab for a projector: big bench scene (beaker, pH-meter, indicator bottles, water wash bottle) left; controls and live graphs right. Light tiled lab wall. */
+:root{color-scheme:light;
+  --bg:#eef4fa;--card:#fff;--ink:#0f172a;--muted:#55627a;--line:#d6e2ee;
+  --accent:#0284c7;--accent-deep:#075985;--ok:#16a34a;--acid:#dc2626;--base:#2563eb;--neu:#16a34a;--gold:#f59e0b;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;--f-body:"Golos Text",system-ui,sans-serif;--f-mono:"JetBrains Mono",ui-monospace,monospace}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.45}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1400px;margin:0 auto;padding-block:14px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:14px;align-items:start}
+@media (max-width:1060px){.wrap{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0;box-shadow:0 2px 8px rgba(15,23,42,.05)}
+.head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.head h1{margin:0;font-family:var(--f-display);font-size:clamp(20px,2.6vw,28px)}
+.head .sub{color:var(--muted);font-size:15px}
+.badge{border:2px solid var(--accent);color:var(--accent-deep);border-radius:99px;padding:4px 12px;font-weight:800;font-size:14px}
+.stage{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#f6f9fc}
+.stage svg{display:block;width:100%;height:auto}
+.verdict{font-size:19px;font-weight:700;padding:4px 2px}
+.verdict b{font-family:var(--f-mono)}
+.panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.panels{grid-template-columns:1fr}}
+.lbl{font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--muted)}
+.ptitle{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.ptitle b{font-size:16px}
+.tog{display:inline-flex;border:2px solid var(--line);border-radius:10px;overflow:hidden}
+.tog button{font:inherit;font-size:13px;font-weight:700;border:0;background:#fff;padding:4px 10px;cursor:pointer;color:var(--ink)}
+.tog button[aria-pressed="true"]{background:var(--accent);color:#fff}
+.ions{display:flex;flex-direction:column;gap:8px}
+.ion{border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:flex;flex-direction:column;gap:4px}
+.ion .t{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ion .t b{font-family:var(--f-mono);font-size:17px}
+.tag{font-size:12px;font-weight:800;border-radius:99px;padding:2px 9px;color:#fff}
+.tag.sp{background:#64748b}.tag.wa{background:var(--acid)}.tag.wb{background:var(--base)}
+.ion .eq{font-family:var(--f-mono);font-size:14.5px;font-weight:700}
+.ion .pc{font:800 14px var(--f-mono);color:var(--accent-deep)}
+.bar{height:8px;border-radius:99px;background:#e2e8f0;overflow:hidden}.bar i{display:block;height:100%;background:var(--accent)}
+.side h2{margin:0;font-size:22px;font-family:var(--f-display)}
+.salts{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.salt{font:inherit;border:2px solid var(--line);background:#fff;border-radius:12px;padding:6px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;line-height:1.15;color:var(--ink)}
+.salt b{font:800 17px var(--f-mono)}.salt small{font-size:12.5px;color:var(--muted)}
+.salt[aria-pressed="true"]{border-color:var(--accent);background:#e0f2fe;box-shadow:0 0 0 2px var(--accent) inset}
+.ctl{display:flex;flex-direction:column;gap:6px}
+.ctl .r{display:flex;gap:10px;align-items:center}
+.ctl input[type=range]{flex:1;accent-color:var(--accent)}
+.ctl input[type=text]{width:96px;font:700 16px var(--f-mono);padding:7px 9px;border:2px solid var(--line);border-radius:10px;text-align:right}
+.btns{display:flex;flex-wrap:wrap;gap:6px}
+.btn{font:inherit;font-weight:800;font-size:15px;border:2px solid var(--accent);border-radius:12px;padding:8px 12px;cursor:pointer;color:var(--accent-deep);background:#fff}
+.btn.solid{background:var(--accent);color:#fff}
+.btn[aria-pressed="true"]{background:var(--accent);color:#fff}
+.hint{margin:0;color:var(--muted);font-size:14px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th,td{border-bottom:1px solid var(--line);padding:6px 6px;text-align:left}th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+td.m{font-family:var(--f-mono);font-weight:800}
+.qs{margin:0;padding-left:20px;font-size:15.5px}.qs li{margin-bottom:4px}
+button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.drip{animation:drip .5s ease-in forwards}@keyframes drip{from{transform:translateY(0);opacity:1}to{transform:translateY(120px);opacity:0}}
+@media (prefers-reduced-motion:reduce){.drip{animation-duration:.01s}}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <main style="display:flex;flex-direction:column;gap:14px;min-width:0">
+  <section class="card">
+   <div class="head"><div><h1 id="title">Вимірювання pH</h1><div class="sub" id="subt"></div></div><span class="badge" id="stab">Стабільно</span></div>
+   <div class="stage"><svg viewBox="0 0 900 470" id="scene" aria-label="Лабораторний стіл"></svg></div>
+   <div class="verdict" id="verdict"></div>
+   <p class="hint">Клацніть на пляшку з водою, щоб долити 10 мл; на крапельниці індикаторів — щоб додати індикатор; на кнопку pH-метра — щоб опустити або підняти електрод.</p>
+  </section>
+  <div class="panels">
+   <section class="card">
+    <div class="ptitle"><b>pH залежно від концентрації</b><span class="tog" id="gtog"><button type="button" data-g="one" aria-pressed="true">ця сіль</button><button type="button" data-g="all" aria-pressed="false">усі солі</button></span></div>
+    <svg viewBox="0 0 420 260" id="graph" aria-label="Графік pH від концентрації"></svg>
+   </section>
+   <section class="card">
+    <div class="ptitle"><b id="ionsT">Які йони взаємодіють з водою?</b></div>
+    <div class="ions" id="ions"></div>
+   </section>
+  </div>
+  <section class="card">
+   <div class="ptitle"><b>📋 Журнал вимірювань</b><span class="btns"><button class="btn solid" type="button" id="rec">Записати вимір</button><button class="btn" type="button" id="clr">Очистити</button></span></div>
+   <table><thead><tr><th>Сіль</th><th>c, моль/л</th><th>pH</th><th>Середовище</th><th>Індикатор</th></tr></thead><tbody id="log"><tr><td colspan="5" class="hint">Натисніть «Записати вимір», щоб зберегти поточний результат.</td></tr></tbody></table>
+  </section>
+  <section class="card">
+   <b>🔎 Дослідіть разом</b>
+   <ol class="qs">
+    <li>Порівняйте pH 0,1 М розчинів <b>Na₂CO₃</b> і <b>NaHCO₃</b>. Чому карбонат «лужніший»?</li>
+    <li>Як змінюється pH розчину <b>NH₄Cl</b>, якщо його розбавляти водою? А ступінь гідролізу?</li>
+    <li>Чому <b>CH₃COONH₄</b> дає майже нейтральне середовище, хоча гідролізують обидва йони?</li>
+    <li><b>NaHSO₄</b> — кисла сіль. Чому її розчин кислий, хоча гідролізу тут майже немає?</li>
+    <li>Яким індикатором можна відрізнити розчини NaCl і Na₂CO₃? А NaCl і AlCl₃?</li>
+   </ol>
+  </section>
+ </main>
+
+ <aside class="card side">
+  <h2>Інструменти</h2>
+  <p class="hint">Оберіть сіль, концентрацію та об'єм розчину. Розрахунок — для 25 °C за константами дисоціації K<sub>a</sub> та K<sub>b</sub>.</p>
+  <span class="lbl">Сіль</span>
+  <div class="salts" id="salts"></div>
+  <p class="hint" id="sdesc"></p>
+  <div class="ctl"><span class="lbl">Концентрація солі в склянці (до розбавлення)</span>
+   <div class="r"><input type="range" id="cR" min="-4" max="0" step="0.01" value="-1" aria-label="Концентрація"><input type="text" id="cT" value="0.1" aria-label="Концентрація, моль/л"><span>М</span></div>
+   <span class="hint">Логарифмічна шкала від 0,0001 до 1 моль/л.</span></div>
+  <div class="ctl"><span class="lbl">Об'єм зразка</span>
+   <div class="r"><input type="range" id="vR" min="20" max="200" step="10" value="100" aria-label="Об'єм зразка"><input type="text" id="vT" value="100" readonly><span>мл</span></div></div>
+  <div class="ctl"><span class="lbl">Розбавлення: додана вода</span>
+   <div class="r"><input type="range" id="wR" min="0" max="500" step="10" value="0" aria-label="Додана вода"><input type="text" id="wT" value="0" readonly><span>мл</span></div>
+   <div class="btns"><button class="btn" type="button" data-w="10">+10 мл</button><button class="btn" type="button" data-w="100">+100 мл</button><button class="btn" type="button" id="w0">Без води</button></div></div>
+  <span class="lbl">Індикатор у склянці</span>
+  <div class="btns" id="inds"></div>
+  <span class="lbl">Електрод pH-метра</span>
+  <div class="btns"><button class="btn solid" type="button" id="probe">Підняти електрод</button></div>
+ </aside>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const KW=1e-14;
+const sub=s=>s.replace(/(\d+)/g,(m,d,i,str)=>/[A-Za-z)]/.test(str[i-1]||"")?`<sub>${d}</sub>`:m);
+/* Кислотно-основні системи: pKa (від найбільш протонованої форми), z0 — заряд найбільш протонованої форми */
+const SYS={
+ ac:{pKa:[4.76],z0:0,f:["CH₃COOH","CH₃COO⁻"]},
+ nh4:{pKa:[9.25],z0:1,f:["NH₄⁺","NH₃·H₂O"]},
+ co3:{pKa:[6.35,10.33],z0:0,f:["H₂CO₃","HCO₃⁻","CO₃²⁻"]},
+ so4:{pKa:[-3,1.99],z0:0,f:["H₂SO₄","HSO₄⁻","SO₄²⁻"]},
+ al:{pKa:[4.97],z0:3,f:["Al³⁺","AlOH²⁺"]},
+ zn:{pKa:[8.96],z0:2,f:["Zn²⁺","ZnOH⁺"]},
+ fe:{pKa:[2.19],z0:3,f:["Fe³⁺","FeOH²⁺"]},
+ cu:{pKa:[7.5],z0:2,f:["Cu²⁺","CuOH⁺"]},
+ s:{pKa:[7.0,12.9],z0:0,f:["H₂S","HS⁻","S²⁻"]},
+ po4:{pKa:[2.15,7.2,12.35],z0:0,f:["H₃PO₄","H₂PO₄⁻","HPO₄²⁻","PO₄³⁻"]}
+};
+/* sp — спектатори {заряд:кількість на формульну одиницю}; sys — [система, кількість, з якої форми починаємо(індекс)] */
+const SALTS=[
+ {k:"NaCl",n:"натрій хлорид",sp:{Na:[1,1],Cl:[-1,1]},sys:[],ions:[["Na⁺","sp","катіон сильної основи NaOH"],["Cl⁻","sp","аніон сильної кислоти HCl"]],d:"Сіль сильної основи й сильної кислоти: гідролізу немає."},
+ {k:"NH4Cl",n:"амоній хлорид",sp:{Cl:[-1,1]},sys:[["nh4",1,0]],ions:[["NH₄⁺","wa","катіон слабкої основи NH₃·H₂O",0,"NH₄⁺ + H₂O ⇄ NH₃·H₂O + H⁺"],["Cl⁻","sp","аніон сильної кислоти HCl"]],d:"NH₄⁺ віддає протон воді — розчин кислий."},
+ {k:"CH3COONa",n:"натрій ацетат",sp:{Na:[1,1]},sys:[["ac",1,1]],ions:[["Na⁺","sp","катіон сильної основи NaOH"],["CH₃COO⁻","wb","аніон слабкої кислоти CH₃COOH",0,"CH₃COO⁻ + H₂O ⇄ CH₃COOH + OH⁻"]],d:"CH₃COO⁻ забирає протон у води — розчин лужний."},
+ {k:"CH3COONH4",n:"амоній ацетат",sp:{},sys:[["nh4",1,0],["ac",1,1]],ions:[["NH₄⁺","wa","катіон слабкої основи",0,"NH₄⁺ + H₂O ⇄ NH₃·H₂O + H⁺"],["CH₃COO⁻","wb","аніон слабкої кислоти",1,"CH₃COO⁻ + H₂O ⇄ CH₃COOH + OH⁻"]],d:"Гідролізують обидва йони майже однаково — pH ≈ 7."},
+ {k:"Na2CO3",n:"натрій карбонат",sp:{Na:[1,2]},sys:[["co3",1,2]],ions:[["Na⁺","sp","катіон сильної основи NaOH"],["CO₃²⁻","wb","аніон слабкої кислоти H₂CO₃",0,"CO₃²⁻ + H₂O ⇄ HCO₃⁻ + OH⁻"]],d:"CO₃²⁻ — сильна «слабка основа»: розчин помітно лужний."},
+ {k:"NaHCO3",n:"натрій гідрогенкарбонат",sp:{Na:[1,1]},sys:[["co3",1,1]],ions:[["Na⁺","sp","катіон сильної основи NaOH"],["HCO₃⁻","wb","може і віддати, і прийняти протон",0,"HCO₃⁻ + H₂O ⇄ H₂CO₃ + OH⁻"]],d:"HCO₃⁻ приймає протон сильніше, ніж віддає: слабколужне середовище."},
+ {k:"K2S",n:"калій сульфід",sp:{K:[1,2]},sys:[["s",1,2]],ions:[["K⁺","sp","катіон сильної основи KOH"],["S²⁻","wb","аніон слабкої кислоти H₂S",0,"S²⁻ + H₂O ⇄ HS⁻ + OH⁻"]],d:"S²⁻ гідролізує дуже сильно: сильнолужне середовище."},
+ {k:"Na3PO4",n:"натрій ортофосфат",sp:{Na:[1,3]},sys:[["po4",1,3]],ions:[["Na⁺","sp","катіон сильної основи NaOH"],["PO₄³⁻","wb","аніон слабкої кислоти H₃PO₄",0,"PO₄³⁻ + H₂O ⇄ HPO₄²⁻ + OH⁻"]],d:"PO₄³⁻ гідролізує сильно: лужне середовище."},
+ {k:"ZnCl2",n:"цинк хлорид",sp:{Cl:[-1,2]},sys:[["zn",1,0]],ions:[["Zn²⁺","wa","катіон слабкої основи Zn(OH)₂",0,"Zn²⁺ + H₂O ⇄ ZnOH⁺ + H⁺"],["Cl⁻","sp","аніон сильної кислоти HCl"]],d:"Zn²⁺ гідролізує — розчин кислий."},
+ {k:"CuSO4",n:"купрум(II) сульфат",sp:{},sys:[["cu",1,0],["so4",1,2]],ions:[["Cu²⁺","wa","катіон слабкої основи Cu(OH)₂",0,"Cu²⁺ + H₂O ⇄ CuOH⁺ + H⁺"],["SO₄²⁻","sp","аніон сильної кислоти H₂SO₄"]],d:"Cu²⁺ гідролізує — розчин кислий.",tint:"#7dd3fc"},
+ {k:"AlCl3",n:"алюміній хлорид",sp:{Cl:[-1,3]},sys:[["al",1,0]],ions:[["Al³⁺","wa","катіон слабкої основи Al(OH)₃",0,"Al³⁺ + H₂O ⇄ AlOH²⁺ + H⁺"],["Cl⁻","sp","аніон сильної кислоти HCl"]],d:"Al³⁺ гідролізує сильно — розчин кислий."},
+ {k:"FeCl3",n:"ферум(III) хлорид",sp:{Cl:[-1,3]},sys:[["fe",1,0]],ions:[["Fe³⁺","wa","катіон слабкої основи Fe(OH)₃",0,"Fe³⁺ + H₂O ⇄ FeOH²⁺ + H⁺"],["Cl⁻","sp","аніон сильної кислоти HCl"]],d:"Fe³⁺ гідролізує дуже сильно — сильнокисле середовище.",tint:"#facc15"},
+ {k:"NaHSO4",n:"натрій гідрогенсульфат",sp:{Na:[1,1]},sys:[["so4",1,1]],ions:[["Na⁺","sp","катіон сильної основи NaOH"],["HSO₄⁻","wa","дисоціює далі: HSO₄⁻ ⇄ H⁺ + SO₄²⁻",0,"HSO₄⁻ ⇄ H⁺ + SO₄²⁻"]],d:"Тут не гідроліз, а дисоціація HSO₄⁻: розчин сильнокислий."},
+ {k:"KNO3",n:"калій нітрат",sp:{K:[1,1],NO3:[-1,1]},sys:[],ions:[["K⁺","sp","катіон сильної основи KOH"],["NO₃⁻","sp","аніон сильної кислоти HNO₃"]],d:"Сіль сильної основи й сильної кислоти: pH = 7."}
+];
+function alphas(sys,h){const K=sys.pKa.map(p=>10**-p);let terms=[1];for(let i=0;i<K.length;i++)terms.push(terms[i]*K[i]/h);const s=terms.reduce((a,b)=>a+b,0);return terms.map(t=>t/s)}
+function solve(salt,C){
+  const f=pH=>{const h=10**-pH;let q=h-KW/h;
+    Object.values(salt.sp).forEach(([z,n])=>q+=z*n*C);
+    salt.sys.forEach(([k,n])=>{const s=SYS[k],a=alphas(s,h);a.forEach((x,i)=>q+=x*(s.z0-i)*n*C)});return q};
+  let lo=-1,hi=15;for(let i=0;i<70;i++){const m=(lo+hi)/2;if(f(m)>0)lo=m;else hi=m}return (lo+hi)/2}
+/* ступінь гідролізу йона: частка, що змінила форму відносно початкової */
+function degree(salt,C,pH,sysIdx){const [k,n,start]=salt.sys[sysIdx],s=SYS[k],a=alphas(s,10**-pH);return 1-a[start]}
+/* індикатори */
+const IND=[["none","Без індикатора"],["univ","Універсальний"],["lit","Лакмус"],["php","Фенолфталеїн"],["mo","Метилоранж"]];
+const mix=(a,b,t)=>{const p=x=>[1,3,5].map(i=>parseInt(x.slice(i,i+2),16));const A=p(a),B=p(b);return "#"+A.map((v,i)=>Math.round(v+(B[i]-v)*Math.max(0,Math.min(1,t)))).map(v=>v.toString(16).padStart(2,"0")).join("")};
+function grad(stops,x){for(let i=1;i<stops.length;i++)if(x<=stops[i][0])return mix(stops[i-1][1],stops[i][1],(x-stops[i-1][0])/(stops[i][0]-stops[i-1][0]));return stops[stops.length-1][1]}
+function indColor(ind,pH,base){
+  if(ind==="univ")return grad([[0,"#b91c1c"],[2,"#ef4444"],[4,"#f97316"],[5.5,"#facc15"],[7,"#22c55e"],[8.5,"#14b8a6"],[10,"#2563eb"],[12,"#4338ca"],[14,"#6d28d9"]],pH);
+  if(ind==="lit")return grad([[0,"#dc2626"],[4.5,"#dc2626"],[6.5,"#8b5cf6"],[8.3,"#2563eb"],[14,"#1d4ed8"]],pH);
+  if(ind==="php")return pH<8.2?base:grad([[8.2,"#fbcfe8"],[9.2,"#ec4899"],[10,"#db2777"],[14,"#be185d"]],pH);
+  if(ind==="mo")return grad([[0,"#dc2626"],[3.1,"#ef4444"],[4.4,"#fb923c"],[4.6,"#facc15"],[14,"#facc15"]],pH);
+  return base}
+const indName={none:"—",univ:"універсальний",lit:"лакмус",php:"фенолфталеїн",mo:"метилоранж"};
+const indText=(ind,pH)=>ind==="lit"?(pH<5?"червоний":pH<8?"фіолетовий":"синій"):ind==="php"?(pH<8.2?"безбарвний":"малиновий"):ind==="mo"?(pH<3.1?"червоний":pH<4.4?"оранжевий":"жовтий"):ind==="univ"?"колір за шкалою":"";
+
+/* ---------- стан ---------- */
+let salt=SALTS[2],C0=0.1,Vs=100,Vw=0,ind="none",probe=true,gmode="one",settleT=0;
+const fmtC=c=>c>=0.01?String(+c.toPrecision(3)).replace(".",","):c.toExponential(1).replace(".",",").replace("e-","·10⁻").replace(/⁻(\d)/,(m,d)=>"⁻"+"⁰¹²³⁴⁵⁶⁷⁸⁹"[d]);
+const med=pH=>pH<6.5?"кисле":pH>7.5?"лужне":"нейтральне";
+const medCol=pH=>pH<6.5?"var(--acid)":pH>7.5?"var(--base)":"var(--neu)";
+
+$("salts").innerHTML=SALTS.map((s,i)=>`<button class="salt" type="button" data-i="${i}" aria-pressed="${s===salt}"><b>${sub(s.k)}</b><small>${s.n}</small></button>`).join("");
+$("salts").querySelectorAll(".salt").forEach(b=>b.onclick=()=>{salt=SALTS[+b.dataset.i];Vw=0;ind="none";$("salts").querySelectorAll(".salt").forEach(x=>x.setAttribute("aria-pressed",x===b));unsettle();upd()});
+$("inds").innerHTML=IND.map(([k,n])=>`<button class="btn" type="button" data-ind="${k}" aria-pressed="${k===ind}">${n}</button>`).join("");
+$("inds").querySelectorAll("button").forEach(b=>b.onclick=()=>{ind=b.dataset.ind;drop=ind!=="none";upd()});
+$("cR").oninput=e=>{C0=10**+e.target.value;$("cT").value=fmtC(C0).replace(/·10.*/,m=>m);unsettle();upd()};
+$("cT").onchange=e=>{const v=parseFloat(String(e.target.value).replace(",","."));if(v>=1e-4&&v<=1){C0=v;$("cR").value=Math.log10(v)}unsettle();upd()};
+$("vR").oninput=e=>{Vs=+e.target.value;Vw=Math.min(Vw,600-Vs);$("vT").value=Vs;unsettle();upd()};
+$("wR").oninput=e=>{Vw=Math.min(+e.target.value,600-Vs);unsettle();upd()};
+document.querySelectorAll("[data-w]").forEach(b=>b.onclick=()=>addWater(+b.dataset.w));
+$("w0").onclick=()=>{Vw=0;unsettle();upd()};
+$("probe").onclick=()=>{probe=!probe;unsettle();upd()};
+document.querySelectorAll("#gtog button").forEach(b=>b.onclick=()=>{gmode=b.dataset.g;document.querySelectorAll("#gtog button").forEach(x=>x.setAttribute("aria-pressed",x===b));upd()});
+let drop=false,water=false;
+function addWater(v){if(Vs+Vw+v>600){Vw=600-Vs}else Vw+=v;water=true;unsettle();upd()}
+function unsettle(){settleT=Date.now()}
+const LOG=[];
+$("rec").onclick=()=>{const C=C0*Vs/(Vs+Vw),pH=solve(salt,C);LOG.unshift({s:salt.k,C,pH,ind});renderLog()};
+$("clr").onclick=()=>{LOG.length=0;renderLog()};
+function renderLog(){$("log").innerHTML=LOG.length?LOG.map(r=>`<tr><td><b>${sub(r.s)}</b></td><td class="m">${fmtC(r.C)}</td><td class="m">${r.pH.toFixed(2).replace(".",",")}</td><td style="color:${medCol(r.pH)};font-weight:800">${med(r.pH)}</td><td>${r.ind==="none"?"—":indName[r.ind]+": "+indText(r.ind,r.pH)}</td></tr>`).join(""):`<tr><td colspan="5" class="hint">Натисніть «Записати вимір», щоб зберегти поточний результат.</td></tr>`}
+
+/* ---------- сцена ---------- */
+function scene(C,pH,shown){
+  const V=Vs+Vw,lvl=Math.min(1,V/600),bx=300,by=110,bw=210,bh=300,top=by+bh-lvl*(bh-20);
+  const base=salt.tint||"#dbeafe",col=indColor(ind,pH,base);
+  const tiles=[...Array(10)].map((_,i)=>`<line x1="${i*90}" y1="0" x2="${i*90}" y2="360" stroke="#e2e8f0"/>`).join("")+[...Array(5)].map((_,i)=>`<line x1="0" y1="${i*90}" x2="900" y2="${i*90}" stroke="#e2e8f0"/>`).join("");
+  const marks=[100,200,300,400,500,600].map(m=>{const y=by+bh-m/600*(bh-20);return `<line x1="${bx+bw-24}" x2="${bx+bw-6}" y1="${y}" y2="${y}" stroke="#94a3b8" stroke-width="2"/><text x="${bx+bw-28}" y="${y+4}" text-anchor="end" font-size="11" fill="#64748b" font-family="Arial">${m}</text>`}).join("");
+  const eY=probe?top+90>by+bh-30?by+bh-30:Math.max(top+60,by+bh-130):by-40;
+  const disp=shown?pH.toFixed(2).replace(".",","):"--.--";
+  const idrops=IND.slice(1).map(([k,n],i)=>{const x=640+i*58,c=k==="univ"?"#22c55e":k==="lit"?"#8b5cf6":k==="php"?"#f8fafc":"#fb923c";
+    return `<g class="indb" data-ind="${k}" style="cursor:pointer"><rect x="${x}" y="300" width="44" height="64" rx="8" fill="#fff" stroke="${ind===k?"#0284c7":"#94a3b8"}" stroke-width="${ind===k?4:2}"/>
+      <rect x="${x+6}" y="320" width="32" height="40" rx="5" fill="${c}" opacity=".8"/><rect x="${x+14}" y="282" width="16" height="20" rx="4" fill="#1e293b"/><circle cx="${x+22}" cy="278" r="8" fill="#ef4444"/>
+      <text x="${x+22}" y="382" text-anchor="middle" font-size="11" font-weight="700" fill="#334155" font-family="Arial">${n.slice(0,7)}${n.length>7?".":""}</text></g>`}).join("");
+  return `<rect width="900" height="470" fill="#f8fafc"/>${tiles}
+  <rect x="0" y="400" width="900" height="70" fill="#334155"/><rect x="0" y="396" width="900" height="8" fill="#475569"/>
+  <!-- штатив -->
+  <rect x="190" y="40" width="8" height="362" fill="#64748b"/><rect x="160" y="392" width="70" height="10" rx="3" fill="#475569"/>
+  <rect x="194" y="70" width="${bx+bw/2-194}" height="8" fill="#94a3b8"/><rect x="${bx+bw/2-14}" y="64" width="28" height="20" rx="4" fill="#475569"/>
+  <!-- склянка -->
+  <path d="M${bx} ${by}v${bh-10}a10 10 0 0 0 10 10h${bw-20}a10 10 0 0 0 10-10v-${bh-10}" fill="rgba(255,255,255,.55)" stroke="#94a3b8" stroke-width="3"/>
+  <path d="M${bx+3} ${top}h${bw-6}v${by+bh-top-10}a8 8 0 0 1-8 8h${-(bw-22)}a8 8 0 0 1-8-8z" fill="${col}" opacity="${ind==="none"&&!salt.tint?.35:.75}" style="transition:fill .8s"/>
+  ${marks}<text x="${bx+8}" y="${by+20}" font-size="12" fill="#64748b" font-family="Arial">мл</text>
+  <!-- магнітна мішалка -->
+  <rect x="${bx-30}" y="${by+bh+2}" width="${bw+60}" height="34" rx="8" fill="#e2e8f0" stroke="#94a3b8"/><rect x="${bx+bw/2-22}" y="${by+bh-14}" width="44" height="7" rx="3.5" fill="#f1f5f9" stroke="#64748b"/>
+  <text x="${bx+bw/2}" y="${by+bh+24}" text-anchor="middle" font-size="12" font-weight="700" fill="#475569" font-family="Arial">МАГНІТНА МІШАЛКА</text>
+  <!-- електрод -->
+  <g style="transition:transform .6s"><rect x="${bx+bw/2-7}" y="78" width="14" height="${eY-78}" rx="6" fill="#e2e8f0" stroke="#64748b" stroke-width="2"/>
+   <circle cx="${bx+bw/2}" cy="${eY}" r="10" fill="#cbd5e1" stroke="#64748b" stroke-width="2"/><text x="${bx+bw/2+16}" y="96" font-size="12" font-weight="700" fill="#334155" font-family="Arial">скляний pH-електрод</text></g>
+  <path d="M${bx+bw/2} 64 C ${bx+bw/2} 20, 120 20, 110 250" fill="none" stroke="#1e293b" stroke-width="4"/>
+  <!-- pH-метр -->
+  <rect x="30" y="250" width="160" height="148" rx="12" fill="#1e293b"/><rect x="44" y="264" width="132" height="76" rx="6" fill="#bef264"/>
+  <text x="52" y="282" font-size="12" font-weight="700" fill="#1a2e05" font-family="Arial">pH</text><text x="166" y="282" text-anchor="end" font-size="11" fill="#1a2e05" font-family="Arial">25,0 °C</text>
+  <text x="110" y="326" text-anchor="middle" font-size="40" font-weight="800" fill="#1a2e05" font-family="JetBrains Mono, Consolas, monospace">${disp}</text>
+  <text x="110" y="372" text-anchor="middle" font-size="13" font-weight="700" fill="#e2e8f0" font-family="Arial">pH-МЕТР</text>
+  <circle cx="168" cy="382" r="6" fill="${shown?"#22c55e":"#f59e0b"}"/>
+  <!-- вода -->
+  <g id="washB" style="cursor:pointer"><rect x="548" y="200" width="70" height="164" rx="14" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/><rect x="560" y="180" width="46" height="24" rx="6" fill="#cbd5e1"/>
+   <path d="M583 180 C 583 130, 530 120, ${bx+bw-20} ${by-10}" fill="none" stroke="#94a3b8" stroke-width="6"/><rect x="556" y="260" width="54" height="40" rx="4" fill="#fff" stroke="#cbd5e1"/>
+   <text x="583" y="277" text-anchor="middle" font-size="11" font-weight="800" fill="#0f172a" font-family="Arial">H₂O</text><text x="583" y="292" text-anchor="middle" font-size="9.5" fill="#475569" font-family="Arial">+10 мл</text>
+   ${water?`<circle class="drip" cx="${bx+bw-20}" cy="${by}" r="5" fill="#93c5fd"/>`:""}</g>
+  ${idrops}
+  ${drop?`<circle class="drip" cx="${bx+bw/2+40}" cy="${by-10}" r="6" fill="${indColor(ind,pH,"#93c5fd")}"/>`:""}
+  <!-- етикетка -->
+  <rect x="${bx+18}" y="${by+bh-70}" width="96" height="40" rx="6" fill="#fff" opacity=".9" stroke="#cbd5e1"/>
+  <text x="${bx+66}" y="${by+bh-52}" text-anchor="middle" font-size="14" font-weight="800" fill="#0f172a" font-family="JetBrains Mono, Consolas, monospace">${salt.k.replace(/\d/g,d=>"₀₁₂₃₄₅₆₇₈₉"[d])}</text>
+  <text x="${bx+66}" y="${by+bh-36}" text-anchor="middle" font-size="11" fill="#475569" font-family="Arial">${fmtC(C)} М</text>`;
+}
+
+/* ---------- графік ---------- */
+function graph(C,pH){const X=lc=>50+(lc+4)/4*350,Y=p=>220-p/14*200;
+  let h=`<rect x="50" y="20" width="350" height="200" fill="#fafcff" stroke="#cbd5e1"/>`;
+  for(let p=0;p<=14;p+=2)h+=`<line x1="50" x2="400" y1="${Y(p)}" y2="${Y(p)}" stroke="#eef2f7"/><text x="44" y="${Y(p)+4}" text-anchor="end" font-size="11" fill="#64748b" font-family="Arial">${p}</text>`;
+  [-4,-3,-2,-1,0].forEach(l=>h+=`<text x="${X(l)}" y="236" text-anchor="middle" font-size="11" fill="#64748b" font-family="Arial">10${l?["⁻⁴","⁻³","⁻²","⁻¹"][l+4]:"⁰"}</text>`);
+  h+=`<text x="225" y="254" text-anchor="middle" font-size="11.5" fill="#475569" font-family="Arial">концентрація солі, моль/л (лог. шкала)</text><text x="14" y="120" font-size="12" fill="#475569" font-family="Arial" transform="rotate(-90 14 120)">pH</text>`;
+  h+=`<line x1="50" x2="400" y1="${Y(7)}" y2="${Y(7)}" stroke="#16a34a" stroke-dasharray="6 5"/><text x="56" y="${Y(7)-5}" font-size="11" fill="#16a34a" font-family="Arial" font-weight="700">нейтрально</text>`;
+  const line=(s,c,w)=>{let pts=[];for(let l=-4;l<=0.001;l+=0.08)pts.push(`${X(l).toFixed(1)},${Y(solve(s,10**l)).toFixed(1)}`);return `<polyline points="${pts.join(" ")}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linejoin="round"/>`};
+  if(gmode==="all")SALTS.forEach(s=>{if(s!==salt){const pE=solve(s,0.1);h+=line(s,pE<6.5?"#fca5a5":pE>7.5?"#93c5fd":"#cbd5e1",1.5);h+=`<text x="403" y="${Y(pE)+3}" font-size="9.5" fill="#64748b" font-family="Arial">${s.k}</text>`}});
+  h+=line(salt,"#0284c7",3.5);const lc=Math.max(-4,Math.min(0,Math.log10(C)));
+  h+=`<circle cx="${X(lc)}" cy="${Y(pH)}" r="7" fill="#0284c7" stroke="#fff" stroke-width="2"/><text x="${X(lc)}" y="${Y(pH)-12}" text-anchor="middle" font-size="12" font-weight="800" fill="#0c4a6e" font-family="Arial">pH ${pH.toFixed(2).replace(".",",")}</text>`;
+  $("graph").innerHTML=h}
+
+/* ---------- оновлення ---------- */
+let timer=null;
+function upd(){const C=C0*Vs/(Vs+Vw),pH=solve(salt,C),settled=probe&&Date.now()-settleT>900;
+  $("wR").value=Vw;$("wT").value=Vw;$("vT").value=Vs;
+  $("title").innerHTML=`Вимірювання pH: ${fmtC(C)} М ${sub(salt.k)}`;
+  $("subt").textContent=`${Vs+Vw} мл · 25,0 °C · ${probe?(settled?"pH "+pH.toFixed(2).replace(".",",")+" · "+med(pH):"вимірювання…"):"електрод піднято"}`;
+  $("stab").textContent=!probe?"Електрод у повітрі":settled?"Стабільно":"Стабілізується…";
+  $("probe").textContent=probe?"Підняти електрод":"Опустити електрод";
+  $("scene").innerHTML=scene(C,pH,settled);
+  $("scene").querySelectorAll(".indb").forEach(g=>g.onclick=()=>{ind=g.dataset.ind;drop=true;syncInd();upd()});
+  $("washB")&&($("washB").onclick=()=>addWater(10));
+  setTimeout(()=>{water=false;drop=false},600);
+  $("verdict").innerHTML=probe&&settled?`pH-метр показує <b>pH ${pH.toFixed(2).replace(".",",")}</b>: розчин ${sub(salt.k)} — <span style="color:${medCol(pH)}">${med(pH)}</span>.${ind!=="none"?` Індикатор ${indName[ind]}: ${indText(ind,pH)}.`:""}`:`<span style="color:var(--muted)">${probe?"Зачекайте, показ стабілізується…":"Опустіть електрод у розчин, щоб виміряти pH."}${ind!=="none"?` Індикатор ${indName[ind]}: ${indText(ind,pH)}.`:""}</span>`;
+  $("sdesc").textContent=salt.d;
+  // йони
+  $("ionsT").innerHTML=`${sub(salt.k)}: які йони взаємодіють з водою?`;
+  $("ions").innerHTML=salt.ions.map(([f,t,d,si,eq])=>{let pc="";
+    if(t!=="sp"){const deg=degree(salt,C,pH,si)*100;pc=`<div class="eq">${eq}</div><div class="r" style="display:flex;gap:8px;align-items:center"><div class="bar" style="flex:1"><i style="width:${Math.min(100,Math.max(1,deg))}%;background:${t==="wa"?"var(--acid)":"var(--base)"}"></i></div><span class="pc">${deg<0.01?deg.toExponential(1):deg<1?deg.toFixed(3):deg.toFixed(1)} %</span></div><span class="hint">частка йонів ${f}, що прореагували</span>`}
+    return `<div class="ion"><div class="t"><b>${f}</b><span class="tag ${t}">${t==="sp"?"спостерігач":t==="wa"?"віддає H⁺":"забирає H⁺"}</span><span class="hint">${d}</span></div>${pc}</div>`}).join("")+
+    `<div class="hint" style="font-weight:700;color:${medCol(pH)}">→ середовище ${med(pH)}, pH ${pH.toFixed(2).replace(".",",")}</div>`;
+  graph(C,pH);
+  clearTimeout(timer);if(probe&&!settled)timer=setTimeout(upd,950);
+}
+function syncInd(){$("inds").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.ind===ind))}
+const _u=upd;upd=function(){syncInd();_u()};
+settleT=0;upd();
+</script>
+</body>
+</html>
