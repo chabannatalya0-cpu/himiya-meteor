@@ -118,6 +118,7 @@ const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.fireba
 const API_KEY="AIzaSyAGOncvJIlGaJu14uqEWy6rQxdF7-pQYUI";
 const STATIONS=["Обладнання","Ризики","Рівняння","Хід роботи","Збирання","Виявлення","Каталізатори","Висновок"];
 const WORKS=[
+  {id:"elektr9",date:"2026-11-12",cls:"9",url:"elektrolity9.html",type:"Інтерактивний аркуш",label:"9 кл. · Сильні й слабкі електроліти",title:"Інтерактивний аркуш «Сильні та слабкі електроліти. Ступінь дисоціації» (9 клас)",subject:"Хімія · 9 клас · ступінь дисоціації"},
   {id:"ionmod9",date:"2026-11-12",cls:"9",url:"ionmod9.html",type:"Інтерактивна майстерня",label:"9 кл. · Майстерня йонів",title:"Майстерня йонів: моделювання простих і багатоатомних йонів (9 клас)",subject:"Хімія · 9 клас · моделювання йонів"},
   {id:"nd2mv8",date:"2026-11-12",cls:"8",url:"nd2gaz8.html",type:"Навчальне дослідження",label:"8 кл. · НД №2 «Молярний об'єм»",title:"Навчальне дослідження № 2 «Визначення молярного об'єму газів» (8 клас)",subject:"Хімія · 8 клас · молярний об'єм газів"},
   {id:"sklad7",date:"2026-11-11",cls:"7",url:"sklad7.html",type:"Тренажер",label:"7 кл. · Що показує формула",title:"Тренажер «Що показує формула? Якісний і кількісний склад» (7 клас)",subject:"Хімія · 7 клас · хімічні формули"},
@@ -279,6 +280,20 @@ function render(){
         <div><b>Самооцінка</b>${esc(x.reflection||"—")}</div></div></details></td>
       <td class="muted">${when(x)}</td></tr>`}).join("")
       :'<tr><td colspan="7" class="muted">Ще ніхто не здав роботу. Коли учні натиснуть «Здати роботу», вони з\'являться тут.</td></tr>';
+  } else if(work.id==="elektr9"){
+    const NM=["Сильний чи слабкий","Що показує α","Модель (склянки)","Задачі на α","→ чи ⇄","Чинники α","Лампочки"],MX=[2,1,2,3,2,1,1];
+    $("kAvg").textContent=best.length?(best.reduce((s,x)=>s+x.score,0)/best.length).toFixed(1):"0"; $("kAvgT").textContent="середній бал (з 12)";
+    $("kTop").textContent=best.filter(x=>x.score>=10).length; $("kTopT").textContent="учнів з балом 10–12";
+    const sum=Array(7).fill(0);best.forEach(x=>(x.parts||"").split(" ").forEach((v,i)=>sum[i]+=(+v||0)));
+    $("hardTitle").textContent="Завдання, з якими клас впорався найгірше"; $("hardHint").textContent="Частка набраних балів за завданням (найкращі спроби учнів).";
+    $("hard").innerHTML=best.length?NM.map((n,i)=>[n,Math.round(sum[i]/(MX[i]*best.length)*100)]).sort((a,b)=>a[1]-b[1]).map(([n,p])=>`<span class="chip">${esc(n)} <small>${p}%</small></span>`).join(""):'<span class="muted">Поки немає даних</span>';
+    $("th").innerHTML=`<tr><th data-k="name">Учень</th><th data-k="cls">Клас</th><th data-k="score">Бали</th><th>Завдання 1–7</th><th>Самооцінка</th><th>Деталі</th><th data-k="ts">Коли</th></tr>`;
+    $("tb").innerHTML=out.length?out.map(x=>{const p=x.score>=10?"g":x.score>=7?"m":"b";
+      return `<tr><td><strong>${esc(x.name)}</strong></td><td>${esc(x.cls)}</td><td><span class="pill ${p}">${String(x.score).replace(".",",")} / 12</span></td>
+      <td class="mono">${esc((x.parts||"").replace(/\./g,","))}</td><td>${esc(x.self||"")}</td>
+      <td><details><summary>Відкрити</summary><div class="work">
+        <div><b>Помилки в сортуванні</b>${esc(x.sortWrong||"—")}</div><div><b>Склянки</b>${esc(x.model)}</div><div><b>Задачі</b>${esc(x.calc)}</div></div></details></td><td class="muted">${when(x)}</td></tr>`}).join("")
+      :'<tr><td colspan="7" class="muted">Ще ніхто не здав.</td></tr>';
   } else if(work.id==="ionmod9"){
     const NM=["Атом → йон","Порівняння атома й йона","Багатоатомні йони","Сортування за зарядом"],MX=[4,2,4,2];
     $("kAvg").textContent=best.length?(best.reduce((s,x)=>s+x.score,0)/best.length).toFixed(1):"0"; $("kAvgT").textContent="середній бал (з 12)";
@@ -588,6 +603,8 @@ function csv(){
     .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.detail,x.orders,x.weak,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="dys9"){lines=[["Учень","Клас","Бали (з 12)","Рівняння (з 6)","Визначення (з 2)","Ступінчаста (з 2)","Застосування (з 2)","Рівняння 1–6","Набір речовин","Помилки","Дата"]]
     .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.eq,x.set,x.weak,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
+  else if(work.id==="elektr9"){lines=[["Учень","Клас","Бали (з 12)","З.1 (з 2)","З.2 (з 1)","З.3 (з 2)","З.4 (з 3)","З.5 (з 2)","З.6 (з 1)","З.7 (з 1)","Самооцінка","Помилки в сортуванні","Склянки","Задачі","Дата"]]
+    .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.self,x.sortWrong,x.model,x.calc,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="ionmod9"){lines=[["Учень","Клас","Бали (з 12)","Атом→йон (з 4)","Порівняння (з 2)","Багатоатомні (з 4)","Сортування (з 2)","Атоми","Багатоатомні йони","Порівняння","Сортування","Дата"]]
     .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.atoms,x.poly,x.compare,x.sort,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="nd2mv8"){lines=[["Учень","Клас","Бали (з 12)","Мета","Гіпотеза","Обладнання","Безпека","Схема","Хід роботи","Обчислення (з 4)","Висновок (з 2)","Текст гіпотези","Дані й обчислення","Текст висновку","Дата"]]

@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Сильні й слабкі електроліти</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700;800&display=swap">
+<style>
+/* Electric worksheet: lime "strong" vs amber "weak", lightning-bolt energy on a warm cream page, chunky ink outlines. */
+:root{color-scheme:light;
+  --bg:#f7fee7;--card:#fff;--ink:#14231a;--muted:#5d6b60;--line:#dbe8cf;
+  --st:#84cc16;--st-bg:#ecfccb;--wk:#f59e0b;--wk-bg:#fef3c7;--vio:#7c3aed;--vio-bg:#ede9fe;--ok:#16a34a;--bad:#dc2626;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;--f-body:"Golos Text",system-ui,sans-serif;--f-mono:"JetBrains Mono",ui-monospace,monospace}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16.5px;line-height:1.45;
+  background-image:radial-gradient(circle at 0 0,#d9f99d 0,transparent 35%),radial-gradient(circle at 100% 0,#fde68a 0,transparent 30%)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:920px;margin:0 auto;padding-block:16px 48px;padding-left:max(14px,env(safe-area-inset-left,0px));padding-right:max(14px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
+.hero{background:linear-gradient(120deg,#14231a 0%,#1f3d2b 60%,#3f6212 100%);color:#fff;border-radius:26px;padding:20px;position:relative;overflow:hidden;border:3px solid var(--ink);box-shadow:0 6px 0 var(--ink)}
+.hero svg.bolt{position:absolute;right:-10px;top:-10px;width:170px;opacity:.9}
+.eyebrow{font:800 11px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;opacity:.85}
+h1{margin:4px 0 6px;font-family:var(--f-display);font-size:clamp(23px,4.6vw,36px);line-height:1.1;max-width:75%}
+h1 .s{color:#bef264}h1 .w{color:#fcd34d}
+.hero p{margin:0;max-width:640px;opacity:.92}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:#fff;border:3px solid var(--ink);border-radius:16px;padding:8px 14px;display:flex;gap:12px;align-items:center;justify-content:space-between;box-shadow:0 4px 0 var(--ink)}
+.bar b{font-family:var(--f-display);font-size:20px}
+.prog{flex:1;height:10px;background:#e7f2dc;border-radius:99px;overflow:hidden;max-width:280px}.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--st),var(--wk));width:0;transition:width .4s}
+.card{background:var(--card);border:3px solid var(--ink);border-radius:22px;padding:16px;display:flex;flex-direction:column;gap:12px;box-shadow:0 5px 0 var(--ink);min-width:0}
+.card.done{border-color:var(--ok);box-shadow:0 5px 0 var(--ok)}
+.card h2{margin:0;font-size:18.5px;display:flex;gap:10px;align-items:flex-start}
+.card h2 .no{flex:none;width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:var(--st);color:var(--ink);font:800 16px var(--f-mono);border:2px solid var(--ink)}
+.card:nth-of-type(even) h2 .no{background:var(--wk)}
+.card.done h2 .no{background:var(--ok);color:#fff;border-color:var(--ok)}
+.card h2 .pts{margin-left:auto;flex:none;font:800 12px var(--f-mono);background:var(--vio-bg);color:var(--vio);border-radius:99px;padding:4px 10px}
+.hint{margin:0;color:var(--muted);font-size:15px}
+.theory{background:#fff;border:3px dashed var(--st);border-radius:20px;padding:14px 16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.theory div{font-size:15px}
+.theory b.t{display:block;font-family:var(--f-display);font-size:14px;margin-bottom:4px}
+.formula{font:800 20px var(--f-mono);text-align:center;background:var(--vio-bg);border-radius:14px;padding:10px;color:#3b0764}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{font-family:var(--f-display);font-size:14px;border:3px solid var(--ink);border-radius:14px;padding:9px 15px;cursor:pointer;color:var(--ink);background:#bef264;box-shadow:0 4px 0 var(--ink)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.btn.green{background:var(--ok);color:#fff}.btn[disabled]{opacity:.45;cursor:not-allowed}
+.fb{font-size:15px;border-radius:12px;padding:9px 12px;font-weight:600}
+.fb.ok{background:#dcfce7;color:#14532d}.fb.bad{background:#fee2e2;color:#7f1d1d}.fb.info{background:var(--vio-bg);color:#4c1d95}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:800 16.5px var(--f-mono);border:2px solid var(--ink);border-radius:12px;padding:6px 11px;background:#fff;cursor:pointer;color:var(--ink)}
+.chip[aria-pressed="true"]{background:#fde047}
+.chip.ok{background:#bbf7d0;border-color:var(--ok)}.chip.no{background:#fecaca;border-color:var(--bad)}
+.chip[disabled]{cursor:default}
+.bins{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:560px){.bins{grid-template-columns:1fr}}
+.bin{border-radius:18px;padding:10px;min-height:100px;display:flex;flex-direction:column;gap:8px;cursor:pointer}
+.bin.s{background:var(--st-bg);border:3px dashed var(--st)}.bin.w{background:var(--wk-bg);border:3px dashed var(--wk)}
+.bin h3{margin:0;font-family:var(--f-display);font-size:15px}
+.opts{display:flex;flex-direction:column;gap:6px}
+.opts.h{flex-direction:row;flex-wrap:wrap}
+.op{font:inherit;font-size:15.5px;text-align:left;border:2px solid var(--line);background:#fff;border-radius:12px;padding:8px 12px;cursor:pointer;color:var(--ink)}
+.op:hover:not([disabled]){border-color:var(--vio)}
+.op[aria-pressed="true"]{border-color:var(--vio);background:var(--vio-bg)}
+.op.ok{border-color:var(--ok);background:#dcfce7}.op.no{border-color:var(--bad);background:#fee2e2}.op.miss{border-color:var(--ok);border-style:dashed}
+.op[disabled]{cursor:default}
+.beakers{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:620px){.beakers{grid-template-columns:1fr}}
+.bk{border:2px solid var(--line);border-radius:18px;padding:10px;display:flex;flex-direction:column;gap:8px;background:#fbfff5}
+.bk svg{width:100%;height:auto}
+.bk h3{margin:0;font-family:var(--f-display);font-size:15px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;color:var(--muted);align-items:center}
+.legend svg{width:44px;height:22px;vertical-align:middle}
+.num{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}
+.num label{display:flex;flex-direction:column;justify-content:space-between;gap:4px;font-size:14px;font-weight:700}
+input.v{font:inherit;font-size:17px;font-family:var(--f-mono);padding:8px 10px;border-radius:12px;border:2px solid var(--ink);background:#fff;color:var(--ink);width:100%}
+input.v.ok{border-color:var(--ok);background:#f0fdf4}input.v.no{border-color:var(--bad);background:#fef2f2}
+.task{border:2px solid var(--line);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.eq{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font:800 17px var(--f-mono);border:2px solid var(--line);border-radius:14px;padding:8px 12px}
+.seg{display:inline-flex;border:2px solid var(--ink);border-radius:10px;overflow:hidden}
+.seg button{font:800 20px var(--f-mono);border:0;background:#fff;padding:2px 14px;cursor:pointer;color:var(--ink)}
+.seg button+button{border-left:2px solid var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.seg button[disabled]{cursor:default}
+.eq.ok{border-color:var(--ok);background:#f0fdf4}.eq.no{border-color:var(--bad);background:#fef2f2}
+.lamps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:560px){.lamps{grid-template-columns:1fr}}
+.lamp{border:2px solid var(--line);border-radius:16px;padding:8px;display:flex;flex-direction:column;align-items:center;gap:6px;background:#0f172a;color:#fff}
+.lamp svg{width:90px;height:110px}
+.lamp select{font:inherit;font-size:15px;padding:7px;border-radius:10px;border:2px solid #fff;width:100%}
+.lamp.ok{outline:4px solid var(--ok)}.lamp.no{outline:4px solid var(--bad)}
+input[type=text],select{font:inherit;font-size:16px;padding:11px 13px;border-radius:12px;border:2px solid var(--ink);background:#fff;color:var(--ink);width:100%}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--vio);outline-offset:2px}
+.overlay{position:fixed;inset:0;z-index:30;background:rgba(20,35,26,.7);display:flex;align-items:center;justify-content:center;padding:20px max(16px,env(safe-area-inset-right,0px)) 20px max(16px,env(safe-area-inset-left,0px))}
+.overlay .card{max-width:540px;width:100%}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media (max-width:520px){.grid2{grid-template-columns:1fr}}
+.lbl{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--muted)}
+.msg{font-weight:700;padding:9px 12px;border-radius:12px}
+.msg.ok{background:#e8f8ee;color:#166534}.msg.bad{background:#fdecec;color:#991b1b}.msg.info{background:var(--vio-bg);color:#4c1d95}
+.final{font-family:var(--f-display);font-size:38px;color:var(--ok)}
+.self{display:flex;gap:8px;flex-wrap:wrap}
+.self button{font:inherit;font-size:15px;border:2px solid var(--ink);border-radius:12px;padding:8px 12px;background:#fff;cursor:pointer}
+.self button[aria-pressed="true"]{background:#fde047}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <svg class="bolt" viewBox="0 0 100 100" aria-hidden="true"><path d="M58 4L22 56h22l-8 40 42-58H54z" fill="#facc15" stroke="#14231a" stroke-width="3" stroke-linejoin="round"/></svg>
+    <span class="eyebrow">Хімія · 9 клас · інтерактивний аркуш</span>
+    <h1><span class="s">Сильні</span> і <span class="w">слабкі</span> електроліти. Ступінь дисоціації</h1>
+    <p>Виконай 7 завдань. Кожне перевіряється <b>один раз</b>, тож спершу подумай. Разом 12 балів.</p>
+  </section>
+  <div class="bar"><span id="who"></span><div class="prog"><i id="progI"></i></div><span>Бали: <b id="score">0</b> / 12</span></div>
+
+  <section class="theory">
+    <div><b class="t">⚡ Ступінь дисоціації α</b>показує, яка частка молекул (формульних одиниць) електроліту розпалася на йони.
+      <div class="formula" style="margin-top:8px">α = N<sub>дис</sub> / N<sub>заг</sub></div><span style="font-size:13.5px;color:var(--muted)">або α = n<sub>дис</sub> / n<sub>заг</sub>; часто виражають у відсотках (× 100 %).</span></div>
+    <div><b class="t" style="color:#4d7c0f">💪 Сильні електроліти</b>у розчині майже повністю розпадаються на йони (α близький до 1, тобто до 100 %): сильні кислоти, луги, майже всі розчинні солі. Рівняння пишуть зі стрілкою <b>→</b>.</div>
+    <div><b class="t" style="color:#b45309">🐢 Слабкі електроліти</b>розпадаються на йони лише частково (α значно менший за 1): слабкі кислоти, амоніак у воді (амоній гідроксид), вода. Рівняння пишуть зі знаком оборотності <b>⇄</b>.</div>
+  </section>
+
+  <div id="tasks" style="display:flex;flex-direction:column;gap:16px"></div>
+
+  <section class="card" id="fin">
+    <h2><span class="no">★</span>Самооцінка й здача</h2>
+    <p class="hint">Як ти зараз розумієш тему?</p>
+    <div class="self" id="self"><button type="button" data-v="🟢 Розумію й можу пояснити іншим">🟢 Розумію й можу пояснити</button><button type="button" data-v="🟡 Розумію, але ще помиляюся">🟡 Розумію, але ще помиляюся</button><button type="button" data-v="🔴 Потрібна допомога">🔴 Потрібна допомога</button></div>
+    <p class="hint" id="finHint">Виконай усі 7 завдань, тоді кнопка стане активною.</p>
+    <div class="row"><span>Результат: <span class="final" id="finScore">0</span> / 12</span></div>
+    <div class="row"><button class="btn green" type="button" id="submit" disabled>Надіслати вчителю</button></div>
+    <div id="sendMsg"></div>
+  </section>
+</div>
+
+<div class="overlay" id="start">
+  <div class="card">
+    <span class="lbl">Перед початком</span>
+    <h2 style="font-family:var(--f-display)">Сильні й слабкі електроліти</h2>
+    <p style="margin:0">Чому лампочка в розчині хлоридної кислоти горить яскраво, а в розчині оцтової — ледь жевріє? Розберімося!</p>
+    <div class="grid2">
+      <div><label class="lbl" for="pname">Прізвище та ім'я</label><input type="text" id="pname" maxlength="60" autocomplete="name" placeholder="Іваненко Олена"></div>
+      <div><label class="lbl" for="pcls">Клас</label><select id="pcls"><option value="">— обери —</option><option>9-А</option><option>9-Б</option><option>Інший</option></select></div>
+    </div>
+    <p class="msg bad" id="startErr" hidden>Впиши прізвище, ім'я та обери клас.</p>
+    <div class="row"><button class="btn" id="startBtn" type="button">Почати</button></div>
+  </div>
+</div>
+
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="elektr9";
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const fmt=x=>String(Math.round(x*100)/100).replace(".",",");
+const num=v=>{const x=parseFloat(String(v??"").replace(",",".").replace("%","").replace(/\s/g,""));return isFinite(x)?x:NaN};
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const SCORE={},REC={},UI={};
+
+/* ---- дані ---- */
+const STRONG=["HCl","HNO₃","H₂SO₄","NaOH","KOH","Ba(OH)₂","NaCl","CuSO₄","KNO₃","CaCl₂"],WEAK=["CH₃COOH","H₂S","H₂CO₃","HNO₂","H₂SO₃","NH₃·H₂O","H₂O","HF"];
+const SORT=shuffle([...shuffle(STRONG).slice(0,5).map(f=>[f,"s"]),...shuffle(WEAK).slice(0,5).map(f=>[f,"w"])]);
+const BK=(()=>{const N=20,a=ri(15,19),b=ri(1,4);return shuffle([{tot:N,dis:a,kind:"s"},{tot:N,dis:b,kind:"w"}])})();
+const PR=(()=>{const n1=ri(4,12)*25,d1=Math.round(n1*ri(2,8)/100);
+  const al=[10,15,20,25,30,40][ri(0,5)],n2=ri(2,8)*20;
+  const tot3=[0.2,0.4,0.5,0.8,1][ri(0,4)],a3=[0.95,0.9,0.98,0.02,0.05,0.04][ri(0,5)],d3=+(tot3*a3).toFixed(3);
+  return [{t:`У розчині слабкого електроліту з кожних <b>${n1}</b> молекул на йони розпалося <b>${d1}</b>. Обчисли ступінь дисоціації (у %).`,a:d1/n1*100,u:"α, %",tol:.5},
+   {t:`Ступінь дисоціації електроліту <b>${al} %</b>. У розчині <b>${n2}</b> молекул електроліту. Скільки молекул розпалося на йони?`,a:n2*al/100,u:"N(дис), молекул",tol:.01},
+   {t:`У розчині електроліту кількістю речовини <b>${String(tot3).replace(".",",")} моль</b> на йони розпалося <b>${String(d3).replace(".",",")} моль</b>. Обчисли α (у %) і визнач, сильний чи слабкий це електроліт.`,a:d3/tot3*100,u:"α, %",tol:.5,kind:a3>.5?"s":"w"}]})();
+const EQ=shuffle([["HCl","H⁺ + Cl⁻","→"],["CH₃COOH","CH₃COO⁻ + H⁺","⇄"],["NaOH","Na⁺ + OH⁻","→"],["HNO₂","H⁺ + NO₂⁻","⇄"],["KNO₃","K⁺ + NO₃⁻","→"],["NH₃·H₂O","NH₄⁺ + OH⁻","⇄"]]).slice(0,4);
+const FAC=[["природи (будови) електроліту",1],["природи розчинника",1],["концентрації: під час розведення розчину α зростає",1],["температури: під час нагрівання α слабкого електроліту зростає",1],["форми посудини, у якій міститься розчин",0],["кольору розчину",0]];
+const LAMP=shuffle([["Хлоридна кислота HCl (0,1 моль/л)","b"],["Оцтова кислота CH₃COOH (0,1 моль/л)","d"],["Розчин цукру (0,1 моль/л)","o"]]);
+
+/* ---- завдання ---- */
+const T=[
+ {id:"sort",n:1,pts:2,t:"Сильний чи слабкий?",hint:"Натисни речовину, а потім кошик. Щоб повернути речовину, натисни її в кошику."},
+ {id:"def",n:2,pts:1,t:"Що показує ступінь дисоціації?"},
+ {id:"model",n:3,pts:2,t:"Порахуй на моделі"},
+ {id:"calc",n:4,pts:3,t:"Задачі на ступінь дисоціації",hint:"Відповідь пиши числом (дробові — через кому). Відсотки — без знака %."},
+ {id:"eq",n:5,pts:2,t:"→ чи ⇄ ?",hint:"Обери правильний знак у рівнянні дисоціації: → для сильних електролітів, ⇄ для слабких."},
+ {id:"fac",n:6,pts:1,t:"Від чого залежить ступінь дисоціації?",hint:"Познач усі правильні варіанти."},
+ {id:"lamp",n:7,pts:1,t:"Яскраво, тьмяно чи ніяк?",hint:"Розчини однакової концентрації перевіряють приладом для визначення електропровідності. Яка лампочка буде в кожному випадку?"}
+];
+const R={},B={};
+function card(s,body){return `<section class="card ${s.id in SCORE?"done":""}" id="c_${s.id}"><h2><span class="no">${s.n}</span>${s.t}<span class="pts">${s.pts} б.</span></h2>${s.hint?`<p class="hint">${s.hint}</p>`:""}${body}</section>`}
+function render(){$("tasks").innerHTML=T.map(s=>card(s,R[s.id](s))).join("");T.forEach(s=>B[s.id]&&B[s.id](s));upd()}
+function warn(id,t){const c=$("c_"+id);let w=c.querySelector(".warn");if(!w){w=document.createElement("p");w.className="msg bad warn";c.appendChild(w)}w.textContent=t;setTimeout(()=>w&&w.remove(),3500)}
+const chkBtn=(id,t="Перевірити")=>`<div class="row"><button class="btn" type="button" data-chk="${id}">${t}</button></div>`;
+
+/* 1 сортування */
+UI.sort={bin:{},sel:null};
+R.sort=s=>{const u=UI.sort,done="sort" in SCORE;
+  const chip=(i,w)=>{let c="";if(done)c=u.bin[i]===SORT[i][1]?"ok":"no";return `<button class="chip ${c}" type="button" data-si="${i}" data-w="${w}" aria-pressed="${u.sel===i}" ${done?"disabled":""}>${SORT[i][0]}</button>`};
+  return `<div class="chips">${SORT.map((x,i)=>u.bin[i]?"":chip(i,"p")).join("")||'<span class="hint">Усе розкладено 👍</span>'}</div>
+  <div class="bins"><div class="bin s" data-b="s"><h3>💪 Сильні електроліти</h3><div class="chips">${SORT.map((x,i)=>u.bin[i]==="s"?chip(i,"s"):"").join("")}</div></div>
+   <div class="bin w" data-b="w"><h3>🐢 Слабкі електроліти</h3><div class="chips">${SORT.map((x,i)=>u.bin[i]==="w"?chip(i,"w"):"").join("")}</div></div></div>`+
+  (done?`<div class="fb ${SCORE.sort===2?"ok":"info"}">Правильно ${REC.sort}: +${fmt(SCORE.sort)} б. Зелене — правильно, червоне — помилка.</div>`:chkBtn("sort"))};
+B.sort=s=>{if("sort" in SCORE)return;const u=UI.sort;
+  document.querySelectorAll("[data-si]").forEach(b=>b.onclick=e=>{e.stopPropagation();const i=+b.dataset.si;if(b.dataset.w!=="p"){delete u.bin[i];u.sel=null}else u.sel=u.sel===i?null:i;render()});
+  document.querySelectorAll("[data-b]").forEach(b=>b.onclick=()=>{if(u.sel==null)return;u.bin[u.sel]=b.dataset.b;u.sel=null;render()});
+  document.querySelector('[data-chk="sort"]').onclick=()=>{if(Object.keys(u.bin).length<SORT.length)return warn("sort","Розклади всі речовини по кошиках.");
+    const c=SORT.filter((x,i)=>u.bin[i]===x[1]).length;SCORE.sort=Math.round(c/SORT.length*4)/2;REC.sort=`${c} з ${SORT.length}`;
+    REC.sortWrong=SORT.filter((x,i)=>u.bin[i]!==x[1]).map(x=>x[0]).join(", ");render()}};
+
+/* 2 означення */
+const DQ=[{q:"Ступінь дисоціації — це…",o:[["відношення числа молекул, що розпалися на йони, до загального числа молекул електроліту",1],["кількість йонів у розчині",0],["відношення маси розчиненої речовини до маси розчину",0],["швидкість, з якою речовина розчиняється у воді",0]]},
+ {q:"Якщо α = 1 (100 %), це означає, що…",o:[["усі молекули електроліту розпалися на йони",1],["жодна молекула не розпалася на йони",0],["розпалася половина молекул",0],["речовина є неелектролітом",0]]}];
+UI.def={o:DQ.map(q=>shuffle(q.o.map((x,j)=>j))),a:{}};
+R.def=s=>{const u=UI.def,done="def" in SCORE;
+  return DQ.map((q,k)=>`<div class="task"><b>${k+1}) ${q.q}</b><div class="opts">${u.o[k].map(j=>{let c="";if(done){if(q.o[j][1])c=u.a[k]===j?"ok":"miss";else if(u.a[k]===j)c="no"}
+   return `<button class="op ${c}" type="button" data-dq="${k}" data-j="${j}" aria-pressed="${u.a[k]===j}" ${done?"disabled":""}>${q.o[j][0]}</button>`}).join("")}</div></div>`).join("")+
+   (done?`<div class="fb ${SCORE.def===1?"ok":"info"}">+${fmt(SCORE.def)} б. α = N(дис) / N(заг). Для сильних електролітів α близький до 1, для слабких — значно менший за 1, для неелектролітів α = 0.</div>`:chkBtn("def"))};
+B.def=s=>{if("def" in SCORE)return;const u=UI.def;document.querySelectorAll("[data-dq]").forEach(b=>b.onclick=()=>{u.a[+b.dataset.dq]=+b.dataset.j;render()});
+  document.querySelector('[data-chk="def"]').onclick=()=>{if(Object.keys(u.a).length<2)return warn("def","Дай відповідь на обидва запитання.");
+    const c=DQ.filter((q,k)=>q.o[u.a[k]][1]).length;SCORE.def=c/2;REC.def=`${c} з 2`;render()}};
+
+/* 3 модель */
+function beakerSVG(b){let h=`<path d="M30 20v170a14 14 0 0 0 14 14h232a14 14 0 0 0 14-14V20" fill="#ecfeff" stroke="#14231a" stroke-width="4"/><path d="M34 60h252v130a10 10 0 0 1-10 10H44a10 10 0 0 1-10-10z" fill="#bae6fd" opacity=".6"/>`;
+  const items=shuffle([...Array(b.dis).fill("i"),...Array(b.tot-b.dis).fill("m")]);
+  items.forEach((t,k)=>{const col=k%5,row=k/5|0,x=70+col*46+(row%2)*10,y=82+row*30;
+    if(t==="m")h+=`<g><circle cx="${x-7}" cy="${y}" r="9" fill="#a3e635" stroke="#14231a" stroke-width="1.5"/><circle cx="${x+7}" cy="${y}" r="9" fill="#fbbf24" stroke="#14231a" stroke-width="1.5"/></g>`;
+    else h+=`<g><circle cx="${x-12}" cy="${y-5}" r="8" fill="#a3e635" stroke="#14231a" stroke-width="1.5"/><text x="${x-12}" y="${y-1}" text-anchor="middle" font-size="11" font-weight="800" font-family="Arial">+</text><circle cx="${x+12}" cy="${y+5}" r="8" fill="#fbbf24" stroke="#14231a" stroke-width="1.5"/><text x="${x+12}" y="${y+9}" text-anchor="middle" font-size="12" font-weight="800" font-family="Arial">−</text></g>`});
+  return `<svg viewBox="0 0 320 215" aria-hidden="true">${h}</svg>`}
+const BKS=BK.map(beakerSVG);
+UI.model={v:{},k:{}};
+R.model=s=>{const u=UI.model,done="model" in SCORE;
+  return `<p class="hint">У кожній склянці зображено 20 частинок розчиненого електроліту. Порахуй, скільки з них розпалося на йони, обчисли α (у %) і визнач тип електроліту.</p>
+  <div class="legend"><span><svg viewBox="0 0 44 22"><circle cx="15" cy="11" r="8" fill="#a3e635" stroke="#14231a"/><circle cx="29" cy="11" r="8" fill="#fbbf24" stroke="#14231a"/></svg> молекула (не розпалася)</span>
+   <span><svg viewBox="0 0 44 22"><circle cx="10" cy="11" r="8" fill="#a3e635" stroke="#14231a"/><text x="10" y="15" text-anchor="middle" font-size="11" font-weight="800">+</text><circle cx="34" cy="11" r="8" fill="#fbbf24" stroke="#14231a"/><text x="34" y="15" text-anchor="middle" font-size="12" font-weight="800">−</text></svg> пара йонів (молекула розпалася)</span></div>
+  <div class="beakers">${BK.map((b,i)=>{const c=k=>done?(REC.mchk[i][k]?"ok":"no"):"";
+   return `<div class="bk"><h3>Склянка ${"АБ"[i]}</h3>${BKS[i]}<div class="num"><label>α, %<input class="v ${c("a")}" inputmode="decimal" data-mv="${i}" value="${esc(u.v[i]??"")}" ${done?"readonly":""}></label></div>
+    <div class="opts h">${[["s","💪 сильний"],["w","🐢 слабкий"]].map(([k,t])=>{let cl="";if(done){if(k===b.kind)cl=u.k[i]===k?"ok":"miss";else if(u.k[i]===k)cl="no"}return `<button class="op ${cl}" type="button" data-mk="${i}" data-k="${k}" aria-pressed="${u.k[i]===k}" ${done?"disabled":""}>${t}</button>`}).join("")}</div></div>`}).join("")}</div>`+
+  (done?`<div class="fb ${SCORE.model===2?"ok":"info"}">+${fmt(SCORE.model)} б. Склянка А: ${BK[0].dis} з 20 → α = ${BK[0].dis*5} %; склянка Б: ${BK[1].dis} з 20 → α = ${BK[1].dis*5} %.</div>`:chkBtn("model"))};
+B.model=s=>{if("model" in SCORE)return;const u=UI.model;
+  document.querySelectorAll("[data-mv]").forEach(i=>i.oninput=()=>u.v[+i.dataset.mv]=i.value);
+  document.querySelectorAll("[data-mk]").forEach(b=>b.onclick=()=>{u.k[+b.dataset.mk]=b.dataset.k;render()});
+  document.querySelector('[data-chk="model"]').onclick=()=>{if(BK.some((b,i)=>!isFinite(num(u.v[i]))||!u.k[i]))return warn("model","Для кожної склянки впиши α і обери тип електроліту.");
+    let sc=0;REC.mchk=BK.map((b,i)=>{const a=Math.abs(num(u.v[i])-b.dis*5)<.6,k=u.k[i]===b.kind;sc+=(a?.5:0)+(k?.5:0);return {a,k}});SCORE.model=sc;
+    REC.model=BK.map((b,i)=>`${b.dis}/20: α=${u.v[i]}%, ${u.k[i]==="s"?"сильний":"слабкий"}`).join("; ");render()}};
+
+/* 4 задачі */
+UI.calc={v:{},k:null};
+R.calc=s=>{const u=UI.calc,done="calc" in SCORE;
+  return PR.map((p,i)=>{const c=done?(REC.cchk[i]?"ok":"no"):"";return `<div class="task"><b>Задача ${i+1}.</b><span>${p.t}</span><div class="num"><label>${p.u}<input class="v ${c}" inputmode="decimal" data-cv="${i}" value="${esc(u.v[i]??"")}" ${done?"readonly":""}></label></div>
+   ${p.kind?`<div class="opts h">${[["s","💪 сильний"],["w","🐢 слабкий"]].map(([k,t])=>{let cl="";if(done){if(k===p.kind)cl=u.k===k?"ok":"miss";else if(u.k===k)cl="no"}return `<button class="op ${cl}" type="button" data-ck="${k}" aria-pressed="${u.k===k}" ${done?"disabled":""}>${t}</button>`}).join("")}</div>`:""}
+   ${done&&!REC.cchk[i]?`<span class="hint">Правильна відповідь: <b>${fmt(p.a)}</b></span>`:""}</div>`}).join("")+
+  (done?`<div class="fb ${SCORE.calc===3?"ok":"info"}">+${fmt(SCORE.calc)} б. Нагадування: α = N(дис) / N(заг) · 100 %; N(дис) = α · N(заг).</div>`:chkBtn("calc"))};
+B.calc=s=>{if("calc" in SCORE)return;const u=UI.calc;
+  document.querySelectorAll("[data-cv]").forEach(i=>i.oninput=()=>u.v[+i.dataset.cv]=i.value);
+  document.querySelectorAll("[data-ck]").forEach(b=>b.onclick=()=>{u.k=b.dataset.ck;render()});
+  document.querySelector('[data-chk="calc"]').onclick=()=>{if(PR.some((p,i)=>!isFinite(num(u.v[i])))||!u.k)return warn("calc","Розв'яжи всі задачі й визнач тип електроліту в задачі 3.");
+    REC.cchk=PR.map((p,i)=>Math.abs(num(u.v[i])-p.a)<=Math.max(p.tol,Math.abs(p.a)*.01));
+    SCORE.calc=(REC.cchk[0]?1:0)+(REC.cchk[1]?1:0)+(REC.cchk[2]?.5:0)+(u.k===PR[2].kind?.5:0);
+    REC.calc=PR.map((p,i)=>`${u.v[i]}${REC.cchk[i]?"✓":"✗("+fmt(p.a)+")"}`).join("; ")+`; тип: ${u.k===PR[2].kind?"✓":"✗"}`;render()}};
+
+/* 5 рівняння */
+UI.eq={};
+R.eq=s=>{const u=UI.eq,done="eq" in SCORE;
+  return EQ.map((e,i)=>{const c=done?(u[i]===e[2]?"ok":"no"):"";return `<div class="eq ${c}"><span>${e[0]}</span><span class="seg">${["→","⇄"].map(a=>`<button type="button" data-ei="${i}" data-a="${a}" aria-pressed="${u[i]===a}" ${done?"disabled":""}>${a}</button>`).join("")}</span><span>${e[1]}</span>${done&&u[i]!==e[2]?`<span class="hint">треба ${e[2]}</span>`:""}</div>`}).join("")+
+  (done?`<div class="fb ${SCORE.eq===2?"ok":"info"}">Правильно ${REC.eq}: +${fmt(SCORE.eq)} б.</div>`:chkBtn("eq"))};
+B.eq=s=>{if("eq" in SCORE)return;document.querySelectorAll("[data-ei]").forEach(b=>b.onclick=()=>{UI.eq[+b.dataset.ei]=b.dataset.a;render()});
+  document.querySelector('[data-chk="eq"]').onclick=()=>{if(Object.keys(UI.eq).length<EQ.length)return warn("eq","Обери знак у кожному рівнянні.");
+    const c=EQ.filter((e,i)=>UI.eq[i]===e[2]).length;SCORE.eq=c/2;REC.eq=`${c} з ${EQ.length}`;render()}};
+
+/* 6 чинники */
+UI.fac={o:shuffle(FAC.map((x,j)=>j)),sel:new Set()};
+R.fac=s=>{const u=UI.fac,done="fac" in SCORE;
+  return `<b>Ступінь дисоціації залежить від…</b><div class="opts">${u.o.map(j=>{const on=u.sel.has(j);let c="";if(done){if(FAC[j][1])c=on?"ok":"miss";else if(on)c="no"}
+   return `<button class="op ${c}" type="button" data-fj="${j}" aria-pressed="${on}" ${done?"disabled":""}>${on?"☑":"☐"} ${FAC[j][0]}</button>`}).join("")}</div>`+
+  (done?`<div class="fb ${SCORE.fac===1?"ok":"info"}">+${fmt(SCORE.fac)} б. α залежить від природи електроліту й розчинника, концентрації та температури.</div>`:chkBtn("fac"))};
+B.fac=s=>{if("fac" in SCORE)return;const u=UI.fac;document.querySelectorAll("[data-fj]").forEach(b=>b.onclick=()=>{const j=+b.dataset.fj;u.sel.has(j)?u.sel.delete(j):u.sel.add(j);render()});
+  document.querySelector('[data-chk="fac"]').onclick=()=>{if(!u.sel.size)return warn("fac","Познач хоча б один варіант.");
+    let r=0,w=0;u.sel.forEach(j=>FAC[j][1]?r++:w++);SCORE.fac=Math.max(0,Math.round((r-w)/4*2)/2);REC.fac=`${r}/4, зайвих ${w}`;render()}};
+
+/* 7 лампочки */
+const LB={b:"💡 горить яскраво",d:"🔅 ледь жевріє",o:"⚫ не світиться"};
+function lampSVG(k){const g=k==="b"?"#fde047":k==="d"?"#a16207":"#334155";return `<svg viewBox="0 0 90 110" aria-hidden="true">${k==="b"?`<circle cx="45" cy="40" r="40" fill="#fde047" opacity=".35"/>`:""}<circle cx="45" cy="40" r="26" fill="${g}" stroke="#e2e8f0" stroke-width="3"/><rect x="33" y="64" width="24" height="22" rx="3" fill="#94a3b8"/><path d="M36 70h18M36 76h18" stroke="#475569" stroke-width="2"/></svg>`}
+UI.lamp={};
+R.lamp=s=>{const u=UI.lamp,done="lamp" in SCORE;
+  return `<div class="lamps">${LAMP.map(([t,k],i)=>{const c=done?(u[i]===k?"ok":"no"):"";return `<div class="lamp ${c}"><b style="font-size:14px;text-align:center">${t}</b>${lampSVG(done?k:u[i]||"o")}
+    <select data-li="${i}" ${done?"disabled":""}><option value="">— лампочка… —</option>${Object.entries(LB).map(([v,l])=>`<option value="${v}" ${u[i]===v?"selected":""}>${l}</option>`).join("")}</select></div>`}).join("")}</div>`+
+  (done?`<div class="fb ${SCORE.lamp===1?"ok":"info"}">+${fmt(SCORE.lamp)} б. HCl — сильний електроліт: йонів багато, лампочка горить яскраво. CH₃COOH — слабкий: йонів мало, лампочка ледь жевріє. Цукор — неелектроліт: йонів немає.</div>`:chkBtn("lamp"))};
+B.lamp=s=>{if("lamp" in SCORE)return;document.querySelectorAll("[data-li]").forEach(x=>x.onchange=()=>{UI.lamp[+x.dataset.li]=x.value;render()});
+  document.querySelector('[data-chk="lamp"]').onclick=()=>{if(LAMP.some((x,i)=>!UI.lamp[i]))return warn("lamp","Обери лампочку для кожного розчину.");
+    const c=LAMP.filter((x,i)=>UI.lamp[i]===x[1]).length;SCORE.lamp=c===3?1:c===2?.5:0;REC.lamp=`${c} з 3`;render()}};
+
+/* ---- здача ---- */
+let ME={},sent=false,SELF="";
+document.querySelectorAll("#self button").forEach(b=>b.onclick=()=>{SELF=b.dataset.v;document.querySelectorAll("#self button").forEach(x=>x.setAttribute("aria-pressed",x===b))});
+function upd(){const sc=Object.values(SCORE).reduce((a,b)=>a+b,0),n=Object.keys(SCORE).length;
+  $("score").textContent=fmt(sc);$("finScore").textContent=fmt(sc);$("progI").style.width=n/7*100+"%";
+  if(n===7){$("submit").disabled=sent;$("finHint").textContent="Усі завдання виконано. Обери самооцінку й надішли роботу вчителю."}}
+$("submit").onclick=async()=>{const box=$("sendMsg");if(sent)return;if(!SELF){box.className="msg bad";box.textContent="Обери самооцінку вище.";return}
+  $("submit").disabled=true;box.className="msg info";box.textContent="Надсилаю…";
+  const order=T.map(s=>s.id),sc=order.reduce((a,k)=>a+SCORE[k],0);
+  const rec={name:ME.name,cls:ME.cls,score:sc,max:12,ts:{".sv":"timestamp"},parts:order.map(k=>SCORE[k]).join(" "),
+    sortWrong:REC.sortWrong||"",model:REC.model||"",calc:REC.calc||"",self:SELF};
+  try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec)});if(!r.ok)throw new Error(r.status);
+    sent=true;box.className="msg ok";box.textContent=`✓ Роботу отримано вчителем: ${fmt(sc)} / 12. Молодець!`;
+  }catch(e){$("submit").disabled=false;box.className="msg bad";box.textContent="Не вдалося надіслати. Перевір інтернет і натисни ще раз."}};
+$("startBtn").onclick=()=>{const nm=$("pname").value.trim(),c=$("pcls").value;if(nm.length<3||!c){$("startErr").hidden=false;return}
+  ME={name:nm.slice(0,60),cls:c};$("who").textContent=`👤 ${ME.name} · ${ME.cls}`;$("start").hidden=true};
+render();
+</script>
+</body>
+</html>
