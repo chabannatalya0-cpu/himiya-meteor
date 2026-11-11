@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Лимонна батарейка</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700;800&display=swap">
+<style>
+/* Sunny kitchen-lab: citrus yellow + leaf green, wooden table, chunky toy-like controls, glowing LED as the reward. */
+:root{color-scheme:light;
+  --bg:#fffbe6;--card:#fff;--ink:#1f2a12;--muted:#5f6b4e;--line:#ece3b8;
+  --lem:#facc15;--lem2:#eab308;--leaf:#65a30d;--leaf2:#3f6212;--cu:#c2703d;--sky:#0ea5e9;--pink:#ec4899;--ok:#16a34a;--bad:#dc2626;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;--f-body:"Golos Text",system-ui,sans-serif;--f-mono:"JetBrains Mono",ui-monospace,monospace}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0}
+body{background:radial-gradient(circle at 0 0,#fef08a 0,transparent 40%),radial-gradient(circle at 100% 0,#d9f99d 0,transparent 35%),var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16.5px;line-height:1.45;min-height:100vh}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1180px;margin:0 auto;padding-block:16px 48px;padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:14px}
+header{text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px}
+.eyebrow{font:800 11px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--leaf2)}
+h1{margin:0;font-family:var(--f-display);font-size:clamp(28px,5.6vw,52px);line-height:1;color:var(--lem);-webkit-text-stroke:2.5px var(--ink);paint-order:stroke fill;text-shadow:0 5px 0 var(--ink)}
+h1 span{color:#a3e635}
+header p{margin:6px 0 0;max-width:760px;font-weight:600}
+.main{display:grid;grid-template-columns:300px minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:900px){.main{grid-template-columns:1fr}}
+.card{background:var(--card);border:3px solid var(--ink);border-radius:22px;padding:14px;box-shadow:0 5px 0 var(--ink);display:flex;flex-direction:column;gap:12px}
+.card h2{margin:0;font-family:var(--f-display);font-size:16px}
+.grp{display:flex;flex-direction:column;gap:6px}
+.grp>b{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-size:14.5px;font-weight:700;border:2px solid var(--ink);border-radius:12px;padding:6px 10px;background:#fff;cursor:pointer;color:var(--ink);display:flex;gap:6px;align-items:center}
+.chip[aria-pressed="true"]{background:var(--lem);box-shadow:0 3px 0 var(--ink)}
+.chip i{display:inline-block;width:12px;height:12px;border-radius:3px;border:1px solid #0003}
+.step{display:flex;align-items:center;gap:8px}
+.step button{font:800 20px var(--f-mono);width:40px;height:40px;border-radius:12px;border:2px solid var(--ink);background:#fff;cursor:pointer}
+.step b{font:800 22px var(--f-mono);min-width:28px;text-align:center}
+input[type=range]{width:100%;accent-color:var(--leaf)}
+.big{font-family:var(--f-display);font-size:15px;border:3px solid var(--ink);border-radius:16px;padding:11px 14px;cursor:pointer;background:#a3e635;box-shadow:0 4px 0 var(--ink);color:var(--ink)}
+.big:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.big[aria-pressed="true"]{background:var(--lem)}
+.big.pink{background:#f9a8d4}.big.sky{background:#7dd3fc}.big.white{background:#fff}
+.stage{background:#fff;border:3px solid var(--ink);border-radius:22px;overflow:hidden;box-shadow:0 5px 0 var(--ink)}
+.stage svg{display:block;width:100%;height:auto}
+.chem{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 12px;border-top:3px solid var(--ink);background:#fefce8}
+@media (max-width:600px){.chem{grid-template-columns:1fr}}
+.hb{border-radius:12px;padding:8px 10px;border:2px solid;font-size:14.5px}
+.hb small{display:block;font-weight:800;font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+.hb.a{border-color:var(--pink);background:#fdf2f8}.hb.a small{color:#be185d}
+.hb.c{border-color:var(--sky);background:#f0f9ff}.hb.c small{color:#0369a1}
+.hb.n{grid-column:1/-1;border-color:var(--line);background:#fff;color:var(--muted)}
+.hb code{font:800 15px var(--f-mono);color:var(--ink)}
+.goals{display:flex;flex-direction:column;gap:6px}
+.goal{display:flex;gap:8px;align-items:flex-start;font-size:14.5px;border:2px dashed #d9cf9c;border-radius:12px;padding:6px 10px}
+.goal.ok{border-style:solid;border-color:var(--ok);background:#f0fdf4}
+.goal .m{flex:none;font-size:18px;line-height:1.2}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th{background:var(--leaf2);color:#fff;text-align:left;padding:7px 8px;font-size:12.5px}
+td{border-bottom:1px solid var(--line);padding:6px 8px}
+tr:nth-child(even) td{background:#fefce8}
+.tw{overflow-x:auto}
+.mono{font-family:var(--f-mono);font-weight:800}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.hint{margin:0;color:var(--muted);font-size:14.5px}
+.toast{font-weight:700;font-size:15px;border-radius:12px;padding:8px 12px;background:#ecfccb;border:2px solid var(--leaf)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:40}
+@keyframes up{from{transform:translateY(0);opacity:1}to{transform:translateY(-40px);opacity:0}}
+.bub{animation:up 1.4s linear infinite}
+@keyframes zap{0%,100%{opacity:.25}50%{opacity:1}}
+.zap{animation:zap 1.2s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.bub,.zap{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Хімія · 11 клас · гальванічний елемент</span>
+    <h1>Лимонна <span>батарейка</span></h1>
+    <p>Склади батарейку з фруктів і металів, з'єднай кілька елементів, виміряй напругу та струм — і спробуй засвітити світлодіод!</p>
+  </header>
+
+  <div class="main">
+    <aside class="card">
+      <h2>🧰 Конструктор</h2>
+      <div class="grp"><b>Фрукт або овоч</b><div class="chips" id="fruit"></div></div>
+      <div class="grp"><b>Лівий електрод</b><div class="chips" id="eL"></div></div>
+      <div class="grp"><b>Правий електрод</b><div class="chips" id="eR"></div></div>
+      <div class="grp"><b>Кількість елементів (послідовно)</b><div class="step"><button type="button" id="nMinus">−</button><b id="nVal">1</b><button type="button" id="nPlus">+</button></div></div>
+      <div class="grp"><b>Відстань між електродами: <span id="dVal">2</span> см</b><input type="range" id="dist" min="1" max="6" step="1" value="2"></div>
+      <div class="grp"><b>Навантаження</b><div class="chips" id="load"></div></div>
+      <button class="big" type="button" id="wire" aria-pressed="false">🔌 Під'єднати дроти</button>
+      <button class="big sky" type="button" id="rec">📋 Записати вимір</button>
+    </aside>
+
+    <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
+      <div class="stage"><svg viewBox="0 0 1000 520" id="scene" aria-label="Лимонна батарейка"></svg>
+        <div class="chem" id="chem"></div></div>
+      <div id="toast"></div>
+      <div class="card"><h2>🏆 Дослідницькі виклики</h2><div class="goals" id="goals"></div></div>
+      <div class="card"><h2>📋 Журнал вимірювань</h2>
+        <div class="tw"><table><thead><tr><th>№</th><th>Фрукт</th><th>Електроди (ліво | право)</th><th>Елементів</th><th>Відстань</th><th>Навантаження</th><th>U, В</th><th>I, мА</th></tr></thead><tbody id="log"><tr><td colspan="8" class="hint">Ще немає вимірів — натисни «Записати вимір».</td></tr></tbody></table></div>
+        <div class="row"><button class="big white" type="button" id="copy">📄 Скопіювати таблицю</button><button class="big white" type="button" id="clear">🗑 Очистити</button></div>
+        <p class="hint">Скопійовану таблицю можна вставити в Google Документ, звіт проєкту або в коментар до завдання.</p></div>
+    </div>
+  </div>
+</div>
+<canvas class="confetti" id="conf"></canvas>
+
+<script>
+const $=id=>document.getElementById(id);
+const f2=x=>x.toFixed(2).replace(".",",");
+/* дані (наближені значення для «фруктового» електроліту) */
+const FR={lemon:{n:"Лимон",k:1,R:3,c:"#facc15",d:"#ca8a04",e:"🍋"},potato:{n:"Картопля",k:.93,R:6,c:"#d6b37a",d:"#92653a",e:"🥔"},apple:{n:"Яблуко",k:.88,R:7,c:"#ef4444",d:"#991b1b",e:"🍎"},cucumber:{n:"Огірок",k:.8,R:9,c:"#65a30d",d:"#365314",e:"🥒"}};
+const EL={Zn:{n:"Цинковий цвях",s:"Zn",E:-0.72,c:"#9ca3af"},Mg:{n:"Магнієва стрічка",s:"Mg",E:-1.45,c:"#e5e7eb"},Fe:{n:"Залізний цвях",s:"Fe",E:-0.32,c:"#57534e"},Cu:{n:"Мідна пластинка",s:"Cu",E:0.20,c:"#c2703d"},C:{n:"Графіт (стрижень олівця)",s:"C",E:0.30,c:"#1f2937"}};
+const LD={none:{n:"Лише вольтметр",e:"📟"},led:{n:"Світлодіод",e:"💡"},calc:{n:"Калькулятор",e:"🧮"}};
+let S={fruit:"lemon",L:"Zn",R:"Cu",n:1,d:2,load:"none",wired:false};
+const LOG=[];const G={volt:false,same:false,led:false,calc:false,fruits:new Set(),rev:false};
+function chips(id,obj,key,label){$(id).innerHTML=Object.entries(obj).map(([k,v])=>`<button class="chip" type="button" data-k="${k}" aria-pressed="${S[key]===k}">${label(k,v)}</button>`).join("");
+  $(id).querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{S[key]=b.dataset.k;update()})}
+function calc(){const f=FR[S.fruit],emf1=(EL[S.R].E-EL[S.L].E)*f.k,emf=emf1*S.n,Rin=f.R*(0.6+S.d*0.2)*S.n;// кОм
+  if(!S.wired)return {emf,U:0,I:0,emf1,on:false};
+  let I=0,U=emf,on=false;
+  if(S.load==="led"){if(emf>1.7){I=(emf-1.7)/Rin;U=1.7+I*0.2;on=true}else{I=0;U=emf}}
+  else if(S.load==="calc"){if(emf>=1.2){I=Math.min(0.012,(emf-1.2)/Rin+0.006);U=emf-I*Rin;on=true}else{I=0;U=emf}}
+  return {emf,U,I,emf1,on}}
+function scene(){const f=FR[S.fruit],r=calc(),n=S.n,W=1000,gap=Math.min(200,600/n),x0=120+(4-n)*gap/2*0.6;
+  const cx=i=>x0+i*gap+70,cy=380,RX=Math.min(84,gap/2-8),RY=RX*.69,sep=Math.min(RX-18,14+S.d*7);
+  let h=`<defs><linearGradient id="wood" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#d97706"/><stop offset="1" stop-color="#92400e"/></linearGradient>
+   <radialGradient id="glow"><stop offset="0" stop-color="#fef08a"/><stop offset=".5" stop-color="rgba(250,204,21,.5)"/><stop offset="1" stop-color="rgba(250,204,21,0)"/></radialGradient></defs>
+   <rect width="1000" height="520" fill="#fffbeb"/><rect y="440" width="1000" height="80" fill="url(#wood)"/><rect y="440" width="1000" height="6" fill="#78350f"/>`;
+  // фрукти
+  for(let i=0;i<n;i++){const x=cx(i);
+    h+=`<ellipse cx="${x}" cy="${cy+6}" rx="${RX+2}" ry="${RY+2}" fill="${f.d}"/><ellipse cx="${x}" cy="${cy}" rx="${RX}" ry="${RY}" fill="${f.c}" stroke="#1f2a12" stroke-width="3"/>
+      <ellipse cx="${x-RX*.36}" cy="${cy-RY*.42}" rx="${RX*.26}" ry="9" fill="#fff" opacity=".45"/>`;
+    if(S.fruit==="lemon")h+=`<path d="M${x+RX} ${cy}q14-4 16 4q-12 6-16-4" fill="${f.c}" stroke="#1f2a12" stroke-width="2"/>`;
+    if(S.fruit==="apple")h+=`<path d="M${x} ${cy-RY}q-2-18 6-24" stroke="#78350f" stroke-width="4" fill="none"/><path d="M${x+6} ${cy-RY-16}q20-6 26 6q-18 8-26-6" fill="#65a30d"/>`;
+    // електроди
+    const lx=x-sep,rx=x+sep;
+    h+=`<rect x="${lx-6}" y="${cy-150}" width="12" height="150" rx="3" fill="${EL[S.L].c}" stroke="#1f2a12" stroke-width="2"/><rect x="${rx-6}" y="${cy-150}" width="12" height="150" rx="3" fill="${EL[S.R].c}" stroke="#1f2a12" stroke-width="2"/>
+      <text x="${lx}" y="${cy-158}" text-anchor="middle" font-size="16" font-weight="800" font-family="JetBrains Mono, monospace" fill="#1f2a12">${EL[S.L].s}</text><text x="${rx}" y="${cy-158}" text-anchor="middle" font-size="16" font-weight="800" font-family="JetBrains Mono, monospace" fill="#1f2a12">${EL[S.R].s}</text>`;
+    // бульбашки на катоді
+    if(r.I>0.005){const catX=EL[S.R].E>EL[S.L].E?rx:lx;for(let b=0;b<3;b++)h+=`<circle class="bub" cx="${catX+(b-1)*7}" cy="${cy-10+b*12}" r="3.5" fill="#fff" stroke="#0ea5e9" style="animation-delay:${b*.45}s"/>`}
+    // з'єднувальні дроти між фруктами
+    if(i<n-1&&S.wired){const nx=cx(i+1)-sep;h+=`<path d="M${rx} ${cy-150}C${rx} ${cy-210},${nx} ${cy-210},${nx} ${cy-150}" fill="none" stroke="#16a34a" stroke-width="5" stroke-linecap="round"/><circle cx="${rx}" cy="${cy-150}" r="6" fill="#ef4444"/><circle cx="${nx}" cy="${cy-150}" r="6" fill="#ef4444"/>`}}
+  // мультиметр
+  const mx=760,my=30;
+  h+=`<rect x="${mx}" y="${my}" width="210" height="190" rx="18" fill="#f97316" stroke="#1f2a12" stroke-width="3"/><rect x="${mx+16}" y="${my+16}" width="178" height="70" rx="8" fill="#334155"/><rect x="${mx+22}" y="${my+22}" width="166" height="58" rx="6" fill="#d9f99d"/>
+   <text x="${mx+180}" y="${my+64}" text-anchor="end" font-size="34" font-weight="800" font-family="JetBrains Mono, monospace" fill="#1f2937">${S.wired?f2(r.U):"0,00"} V</text>
+   <text x="${mx+105}" y="${my+112}" text-anchor="middle" font-size="18" font-weight="800" font-family="JetBrains Mono, monospace" fill="#fff">${S.wired?(r.I*1).toFixed(3).replace(".",","):"0,000"} mA</text>
+   <circle cx="${mx+105}" cy="${my+148}" r="22" fill="#1f2937"/><path d="M${mx+105} ${my+148}l14 -12" stroke="#fde047" stroke-width="4"/>
+   <circle cx="${mx+50}" cy="${my+176}" r="8" fill="#111"/><circle cx="${mx+160}" cy="${my+176}" r="8" fill="#dc2626"/><text x="${mx+50}" y="${my+200}" text-anchor="middle" font-size="11" font-weight="800" fill="#1f2a12">COM</text><text x="${mx+160}" y="${my+200}" text-anchor="middle" font-size="11" font-weight="800" fill="#1f2a12">V/mA</text>`;
+  // навантаження
+  const lx0=560,ly0=110;
+  if(S.load==="led"){const br=Math.min(1,r.I/0.35);h+=`${r.on&&br>.03?`<circle cx="${lx0}" cy="${ly0}" r="${40+60*br}" fill="url(#glow)" opacity="${.4+.6*br}"/>`:""}
+    <path d="M${lx0-22} ${ly0+20}v-26a22 22 0 0 1 44 0v26z" fill="${r.on&&br>.03?`rgba(239,68,68,${.55+.45*br})`:"rgba(254,202,202,.8)"}" stroke="#1f2a12" stroke-width="3"/><rect x="${lx0-26}" y="${ly0+20}" width="52" height="8" rx="2" fill="#94a3b8"/>
+    <path d="M${lx0-10} ${ly0+28}v40M${lx0+10} ${ly0+28}v50" stroke="#64748b" stroke-width="4"/><text x="${lx0+18}" y="${ly0+90}" font-size="12" font-weight="800" fill="#1f2a12">+ (довга ніжка)</text>`}
+  if(S.load==="calc"){h+=`<rect x="${lx0-55}" y="${ly0-50}" width="110" height="140" rx="12" fill="#334155" stroke="#1f2a12" stroke-width="3"/><rect x="${lx0-42}" y="${ly0-38}" width="84" height="32" rx="4" fill="${r.on?"#d9f99d":"#9ca3af"}"/>
+    <text x="${lx0+36}" y="${ly0-14}" text-anchor="end" font-size="20" font-weight="800" font-family="JetBrains Mono, monospace" fill="#1f2937">${r.on?"5+5=10":""}</text>
+    ${[0,1,2,3].map(rw=>[0,1,2].map(c=>`<rect x="${lx0-40+c*28}" y="${ly0+4+rw*20}" width="22" height="14" rx="3" fill="#94a3b8"/>`).join("")).join("")}`}
+  // дроти до приладів
+  if(S.wired){const first=cx(0)-sep,last=cx(n-1)+sep;
+    h+=`<path d="M${first} ${cy-150}C${first} 60,${mx+50} 260,${mx+50} ${my+176}" fill="none" stroke="#111" stroke-width="5"/><circle cx="${first}" cy="${cy-150}" r="7" fill="#111"/>`;
+    h+=`<path d="M${last} ${cy-150}C${last} 250,${mx+160} 280,${mx+160} ${my+176}" fill="none" stroke="#dc2626" stroke-width="5"/><circle cx="${last}" cy="${cy-150}" r="7" fill="#dc2626"/>`;
+    if(S.load!=="none")h+=`<path d="M${lx0-10} ${ly0+68}C${lx0-10} 240,${first+10} 200,${first} ${cy-150}" fill="none" stroke="#111" stroke-width="3" stroke-dasharray="2 0"/><path d="M${lx0+10} ${ly0+78}C${lx0+10} 260,${last-10} 220,${last} ${cy-150}" fill="none" stroke="#dc2626" stroke-width="3"/>`;
+    if(r.I>0.005)h+=`<text x="500" y="500" text-anchor="middle" font-size="16" font-weight="800" fill="#fff" class="zap">⚡ Тече струм — електрони рухаються від ${EL[S.R].E>EL[S.L].E?EL[S.L].s:EL[S.R].s} до ${EL[S.R].E>EL[S.L].E?EL[S.R].s:EL[S.L].s}</text>`}
+  else h+=`<text x="500" y="500" text-anchor="middle" font-size="17" font-weight="800" fill="#fff">Натисни «Під'єднати дроти», щоб замкнути коло</text>`;
+  $("scene").innerHTML=h;
+  // хімія
+  const same=S.L===S.R,an=EL[S.R].E>EL[S.L].E?S.L:S.R,cat=an===S.L?S.R:S.L;
+  $("chem").innerHTML=same?`<div class="hb n">Однакові електроди — однакова схильність віддавати електрони, тому напруги немає (0 В). Потрібні <b>два різні</b> метали (провідники).</div>`
+   :`<div class="hb a"><small>Анод (−) · окиснення</small>${EL[an].s==="C"?"графіт не окиснюється":`<code>${EL[an].s}⁰ − 2e⁻ → ${EL[an].s}²⁺</code>`} — ${EL[an].n.toLowerCase()} поступово розчиняється</div>
+     <div class="hb c"><small>Катод (+) · відновлення</small><code>2H⁺ + 2e⁻ → H₂↑</code> — йони Гідрогену з кислого соку відновлюються на ${EL[cat].n.toLowerCase()}</div>
+     <div class="hb n">Сік ${FR[S.fruit].n.toLowerCase()==="лимон"?"лимона":"фрукта/овоча"} — <b>електроліт</b> (містить йони). Напруга одного елемента ≈ ${f2(Math.abs(r.emf1))} В; ${S.n>1?`${S.n} елементи послідовно дають ≈ ${f2(Math.abs(r.emf))} В.`:"з'єднай кілька елементів послідовно, щоб збільшити напругу."}${r.emf<0?" ⚠️ Вольтметр показує мінус: «+» приладу під'єднано до анода. Поміняй електроди місцями!":""}</div>`;
+  return r}
+function goals(r){if(S.wired){if(S.n===1&&r.U>=0.9)G.volt=true;if(S.L===S.R)G.same=true;if(S.load==="led"&&r.on&&r.I>0.01)G.led=true;if(S.load==="calc"&&r.on)G.calc=true;if(r.emf<0)G.rev=true;if(S.L!==S.R&&S.n===1)G.fruits.add(S.fruit)}
+  const L=[["volt","⚡","Отримай напругу понад 0,9 В від одного елемента"],["same","🤔","Доведи, що однакові електроди не дають напруги"],["rev","🔄","Під'єднай прилад «навпаки» й поясни знак «мінус»"],["fruits","🍎",`Виміряй напругу для 3 різних фруктів чи овочів (${G.fruits.size}/3)`],["calc","🧮","Запусти калькулятор"],["led","💡","Засвіти світлодіод!"]];
+  $("goals").innerHTML=L.map(([k,m,t])=>{const ok=k==="fruits"?G.fruits.size>=3:G[k];return `<div class="goal ${ok?"ok":""}"><span class="m">${ok?"✅":m}</span><span>${t}</span></div>`}).join("")}
+let wasLed=false;
+function update(){chips("fruit",FR,"fruit",(k,v)=>`${v.e} ${v.n}`);chips("eL",EL,"L",(k,v)=>`<i style="background:${v.c}"></i>${v.n}`);chips("eR",EL,"R",(k,v)=>`<i style="background:${v.c}"></i>${v.n}`);chips("load",LD,"load",(k,v)=>`${v.e} ${v.n}`);
+  $("nVal").textContent=S.n;$("dVal").textContent=S.d;$("wire").setAttribute("aria-pressed",S.wired);$("wire").textContent=S.wired?"🔌 Дроти під'єднано (від'єднати)":"🔌 Під'єднати дроти";
+  const r=scene();goals(r);
+  const led=S.load==="led"&&r.on&&r.I>0.01;if(led&&!wasLed)confetti();wasLed=led;
+  let t="";if(S.wired&&S.load==="led"&&!r.on)t=r.emf<0?"Світлодіод пропускає струм лише в одному напрямку — переверни полярність (поміняй електроди).":`Світлодіоду потрібно щонайменше ≈ 1,8 В, а зараз ≈ ${f2(Math.max(0,r.emf))} В. Додай елементи!`;
+  else if(S.wired&&S.load==="calc"&&!r.on)t=`Калькулятору потрібно ≈ 1,2–1,5 В. Зараз ≈ ${f2(Math.max(0,r.emf))} В.`;
+  else if(led)t=`🎉 Світлодіод світиться! Струм лише ${r.I.toFixed(2).replace(".",",")} мА — тому так тьмяно. Порівняй: смартфону потрібно ≈ 1000 мА.`;
+  $("toast").innerHTML=t?`<div class="toast">${t}</div>`:""}
+$("nMinus").onclick=()=>{S.n=Math.max(1,S.n-1);update()};$("nPlus").onclick=()=>{S.n=Math.min(4,S.n+1);update()};
+$("dist").oninput=e=>{S.d=+e.target.value;update()};
+$("wire").onclick=()=>{S.wired=!S.wired;update()};
+$("rec").onclick=()=>{if(!S.wired){$("toast").innerHTML=`<div class="toast">Спершу під'єднай дроти — без замкненого кола прилад показує 0.</div>`;return}
+  const r=calc();LOG.push([FR[S.fruit].n,`${EL[S.L].s} | ${EL[S.R].s}`,S.n,S.d+" см",LD[S.load].n,f2(r.U),r.I.toFixed(3).replace(".",",")]);drawLog()};
+function drawLog(){$("log").innerHTML=LOG.length?LOG.map((x,i)=>`<tr><td>${i+1}</td>${x.map((c,j)=>`<td class="${j>4?"mono":""}">${c}</td>`).join("")}</tr>`).join(""):`<tr><td colspan="8" class="hint">Ще немає вимірів — натисни «Записати вимір».</td></tr>`}
+$("copy").onclick=async()=>{const txt=["№\tФрукт\tЕлектроди\tЕлементів\tВідстань\tНавантаження\tU, В\tI, мА",...LOG.map((x,i)=>[i+1,...x].join("\t"))].join("\n");
+  try{await navigator.clipboard.writeText(txt);$("toast").innerHTML=`<div class="toast">✓ Таблицю скопійовано — встав її в документ (Ctrl+V).</div>`}catch(e){$("toast").innerHTML=`<div class="toast">Не вдалося скопіювати автоматично — виділи таблицю мишею й скопіюй.</div>`}};
+$("clear").onclick=()=>{LOG.length=0;drawLog()};
+function confetti(){const c=$("conf"),x=c.getContext("2d");c.width=innerWidth;c.height=innerHeight;if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  const P=Array.from({length:120},()=>({x:Math.random()*c.width,y:-20-Math.random()*200,v:2+Math.random()*4,s:5+Math.random()*6,c:["#facc15","#a3e635","#ec4899","#0ea5e9","#f97316"][Math.random()*5|0],r:Math.random()*6}));
+  let t=0;(function f(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.y+=p.v;p.x+=Math.sin(t/20+p.r)*1.5;x.fillStyle=p.c;x.fillRect(p.x,p.y,p.s,p.s*.6)});t++;if(t<160)requestAnimationFrame(f);else x.clearRect(0,0,c.width,c.height)})()}
+update();
+</script>
+</body>
+</html>
