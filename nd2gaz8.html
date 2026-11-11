@@ -85,7 +85,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .final{font-family:var(--f-display);font-size:38px;color:var(--ok)}
 .task{border:2px solid var(--line);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
 .num{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
-.num label{display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:700}
+.num label{display:flex;flex-direction:column;justify-content:space-between;gap:4px;font-size:14px;font-weight:700}
 input.v{font:inherit;font-size:17px;font-family:var(--f-mono);padding:9px 11px;border-radius:12px;border:2px solid var(--ink);background:#fff;color:var(--ink);width:100%}
 input.v.ok{border-color:var(--ok);background:#f0fdf4}input.v.no{border-color:var(--bad);background:#fef2f2}
 .exp{border:2px solid var(--line);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:10px;background:#fbffff}
@@ -186,7 +186,7 @@ const STEPS=[
  {id:"hyp",n:2,pts:1,t:"Гіпотеза",type:"hyp"},
  {id:"eq",n:3,pts:1,t:"Обладнання та реактиви",hint:"Познач усе обладнання й реактиви, потрібні для дослідження. Зайвого не обирай.",type:"multi",
   items:[["Термометр і барометр",1],["Кристалізатор",1],["Мірні циліндри (10 мл, 25 мл, 100 мл)",1],["Лійки",1],["Конічна колба з корком і газовідвідною трубкою",1],["Стрижневий штатив із тримачем",1],["Ваги, шпателі (ложечки), пінцет, фільтрувальний папір",1],
-         ["Аптечний пероксид гідрогену (3 %) і каталізатор (манган(IV) оксид або сухі дріжджі)",1],["Крейда і столовий оцет (6 % або 9 %)",1],["Вода та розчин NaCl (10 %)",1],
+         ["Аптечний пероксид гідрогену (3 %) і каталізатор — сухі пекарські дріжджі (або манган(IV) оксид)",1],["Крейда і столовий оцет (6 % або 9 %)",1],["Вода та розчин NaCl (10 %)",1],
          ["Спиртівка",0],["Прилад для визначення електропровідності",0],["Порцеляновий тигель",0],["Фенолфталеїн",0]]},
  {id:"safe",n:4,pts:1,t:"Небезпеки й ризики",hint:"Обери всі правильні правила безпеки для цього дослідження.",type:"multi",
   items:[["Працюю в захисних окулярах: пероксид гідрогену й оцет подразнюють очі й шкіру",1],
@@ -199,10 +199,10 @@ const STEPS=[
  {id:"order",n:6,pts:1,t:"Хід роботи",hint:"Натискай кроки в правильному порядку. Щоб повернути крок, натисни його в рамці.",type:"order",
   steps:["Виміряти температуру й атмосферний тиск у лабораторії (термометр, барометр).",
          "Заповнити мірний циліндр на 100 мл водою, перевернути його в кристалізатор із водою й закріпити в штативі.",
-         "Відміряти мірним циліндром розчин пероксиду гідрогену й через лійку налити його в конічну колбу.",
-         "Додати каталізатор, одразу закрити колбу корком і підвести кінець газовідвідної трубки під циліндр.",
+         "Відміряти мірним циліндром розчин пероксиду гідрогену, через лійку налити в конічну колбу й записати його масу.",
+         "Додати каталізатор (сухі дріжджі), одразу закрити колбу корком і підвести кінець газовідвідної трубки під отвір циліндра.",
          "Коли газ перестане виділятися, виміряти об'єм зібраного кисню за поділками циліндра.",
-         "Повторити дослід із крейдою та оцтом, збираючи вуглекислий газ над розчином NaCl, і виконати обчислення."]},
+         "Повторити дослід із наважкою крейди та оцтом (CO₂ збирати над розчином NaCl), звести об'єми газів до н. у. й обчислити Vm."]},
  {id:"res",n:7,pts:4,t:"Результати й обчислення",type:"res"},
  {id:"concl",n:8,pts:2,t:"Висновок",type:"concl"}
 ];
@@ -235,7 +235,7 @@ B.multi=s=>{if(s.id in SCORE)return;document.querySelectorAll(`[data-m="${s.id}"
     const frac=Math.max(0,(right-wrong)/need);SCORE[s.id]=Math.round(frac*s.pts*2)/2;REC[s.id]=`${right}/${need}, зайвих ${wrong}`;render()}};
 /* гіпотеза */
 const HQ=[{k:"same",q:"Молярні об'єми кисню та вуглекислого газу за однакових умов будуть…",o:["однакові","різні: у CO₂ більший, бо він важчий","різні: у O₂ більший, бо він легший"]},
-          {k:"val",q:"В умовах лабораторії (≈ 20 °C) молярний об'єм газу буде…",o:["рівно 22,4 л/моль","трохи більший за 22,4 л/моль","значно менший за 22,4 л/моль"]}];
+          {k:"val",q:"Якщо звести виміряні об'єми до нормальних умов, молярний об'єм газу буде…",o:["приблизно 22,4 л/моль","приблизно 44,8 л/моль, бо газ двохатомний","для кожного газу свій, залежно від молярної маси"]}];
 R.hyp=s=>{const done=s.id in SCORE;
   return `<p class="hint">Спрогнозуй результат до обчислень, а потім сформулюй гіпотезу одним-двома реченнями.</p>
   ${HQ.map(h=>`<div class="task"><b>${h.q}</b><div class="opts">${h.o.map((t,j)=>`<button class="op" type="button" data-p="${h.k}" data-v="${j}" aria-pressed="${PRED[h.k]===j}" ${done?"disabled":""}>${t}</button>`).join("")}</div></div>`).join("")}
@@ -275,48 +275,52 @@ B.order=s=>{if("order" in SCORE)return;const u=UI.order;
   document.querySelector('[data-chk="order"]').onclick=()=>{if(u.pool.length)return warn(s,"Розстав усі 6 кроків.");SCORE.order=u.seq.every((j,i)=>j===i)?1:0;render()}};
 /* результати */
 const FIELDS=[
- ["t","Температура в лабораторії, °C"],["p","Атмосферний тиск, кПа"],
- ["vp","Об'єм розчину H₂O₂ (3 %), мл"],["vo","Об'єм зібраного кисню, мл"],["no","n(O₂), моль — обчисли"],["mo","Vm(O₂), л/моль — обчисли"],
- ["mc","Маса крейди CaCO₃, г"],["vc","Об'єм зібраного CO₂, мл"],["nc","n(CO₂), моль — обчисли"],["mcv","Vm(CO₂), л/моль — обчисли"]];
+ ["t","Температура в кімнаті, °C"],["p","Атмосферний тиск, Па"],
+ ["mp","Маса розчину H₂O₂ (3 %), г"],["vo","Виміряний об'єм O₂, мл"],["no","n(O₂), моль — обчисли"],["vno","V(O₂) за н. у., мл — обчисли"],["mo","Vm(O₂), л/моль — обчисли"],
+ ["mc","Маса крейди CaCO₃, г"],["vc","Виміряний об'єм CO₂, мл"],["nc","n(CO₂), моль — обчисли"],["vnc","V(CO₂) за н. у., мл — обчисли"],["mcv","Vm(CO₂), л/моль — обчисли"]];
+const CALC=["no","vno","mo","nc","vnc","mcv"];
 const inp=(k,lab)=>{const done="res" in SCORE,c=done&&REC.chk&&k in REC.chk?(REC.chk[k]?"ok":"no"):"";return `<label>${lab}<input class="v ${c}" inputmode="decimal" data-d="${k}" value="${esc(DATA[k]??"")}" ${done?"readonly":""}></label>`};
-function expect(){const d=k=>num(DATA[k]);const nO=d("vp")*1*0.03/34/2,nC=d("mc")/100;
-  return {no:nO,mo:d("vo")/1000/nO,nc:nC,mcv:d("vc")/1000/nC}}
+function expect(){const d=k=>num(DATA[k]),k0=d("p")*0.0027/(d("t")+273.15);const nO=d("mp")*0.03/34/2,nC=d("mc")/100,vno=d("vo")*k0,vnc=d("vc")*k0;
+  return {no:nO,vno,mo:vno/1000/nO,nc:nC,vnc,mcv:vnc/1000/nC}}
 R.res=s=>{const done="res" in SCORE,locked=!("hyp" in SCORE);
   if(locked)return `<p class="hint">🔒 Спершу запиши гіпотезу (крок 2).</p>`;
-  let fb="";if(done){const e=expect(),d=k=>num(DATA[k]),T=273+d("t"),k0=d("p")*273/(101.3*T);
-    fb=`<div class="fb ${SCORE.res===4?"ok":"info"}">Правильно обчислено ${REC.res}: +${fmt(SCORE.res)} б. Перевірка за твоїми даними: n(O₂) ≈ ${f3(e.no)} моль, Vm(O₂) ≈ ${f3(e.mo)} л/моль; n(CO₂) ≈ ${f3(e.nc)} моль, Vm(CO₂) ≈ ${f3(e.mcv)} л/моль.<br>
-     Якщо звести до нормальних умов (0 °C, 101,3 кПа): V₀ = V · p · 273 / (101,3 · T), то Vm(O₂) ≈ ${f3(e.mo*k0)} л/моль, Vm(CO₂) ≈ ${f3(e.mcv*k0)} л/моль — порівняй із 22,4 л/моль!</div>`}
-  return `<p class="hint">Зупиняй відео й записуй виміряні числа. Потім обчисли кількість речовини газу та його молярний об'єм (дробові числа пиши через кому, наприклад 0,0044). Обчислення перевіряються за <b>твоїми</b> даними.</p>
-  <div class="exp"><h3>🌡️ Умови досліду</h3><div class="num">${inp("t",FIELDS[0][1])}${inp("p",FIELDS[1][1])}</div><p class="hint" style="font-size:13.5px">Якщо барометр показує мм рт. ст.: p (кПа) = мм рт. ст. × 0,1333 (760 мм рт. ст. = 101,3 кПа).</p></div>
-  <div class="exp"><h3>Дослід 1. Кисень із пероксиду гідрогену</h3>
-   <div class="formula">2H₂O₂ → 2H₂O + O₂↑ &nbsp;(каталізатор)<br>m(H₂O₂) = V(розчину) · 1 г/мл · 0,03 &nbsp;·&nbsp; n(H₂O₂) = m / 34 г/моль<br>n(O₂) = n(H₂O₂) : 2 &nbsp;·&nbsp; Vm = V(O₂) : n(O₂) &nbsp;(мл переведи в л: ÷ 1000)</div>
-   <div class="num">${FIELDS.slice(2,6).map(f=>inp(...f)).join("")}</div></div>
+  let fb="";if(done){const e=expect();
+    fb=`<div class="fb ${SCORE.res===4?"ok":"info"}">Правильних обчислень ${REC.res}: +${fmt(SCORE.res)} б. Зелене — правильно, червоне — з помилкою. Перевірка за твоїми даними:<br>
+     O₂: n ≈ ${f3(e.no)} моль, V(н. у.) ≈ ${f3(e.vno)} мл, Vm ≈ ${f3(e.mo)} л/моль<br>CO₂: n ≈ ${f3(e.nc)} моль, V(н. у.) ≈ ${f3(e.vnc)} мл, Vm ≈ ${f3(e.mcv)} л/моль<br>Порівняй із 22,4 л/моль!</div>`}
+  return `<p class="hint">Зупиняй відео й записуй виміряні числа. Потім виконай обчислення (дробові числа пиши через кому, наприклад 0,0045). Обчислення перевіряються за <b>твоїми</b> даними.</p>
+  <div class="exp"><h3>🌡️ Умови досліду</h3><div class="num">${inp("t",FIELDS[0][1])}${inp("p",FIELDS[1][1])}</div>
+   <div class="formula">Зведення об'єму газу до нормальних умов (н. у.):<br>V(газу за н. у.) = V(газу) · p(Па) · 0,0027 / (t(°C) + 273,15)</div>
+   <p class="hint" style="font-size:13.5px">Тиск — у паскалях: наприклад, 100 500 Па (= 100,5 кПа). Якщо барометр показує мм рт. ст.: p (Па) = мм рт. ст. × 133,3.</p></div>
+  <div class="exp"><h3>Дослід 1. Кисень із пероксиду гідрогену (каталізатор — сухі дріжджі)</h3>
+   <div class="formula">2H₂O₂ → 2H₂O + O₂↑<br>m(H₂O₂) = m(розчину) · 0,03 &nbsp;·&nbsp; n(H₂O₂) = m(H₂O₂) / 34 г/моль<br>n(O₂) = n(H₂O₂) : 2 &nbsp;·&nbsp; Vm = V(O₂ за н. у.) : n(O₂) &nbsp;(мл → л: ÷ 1000)</div>
+   <div class="num">${FIELDS.slice(2,7).map(f=>inp(...f)).join("")}</div></div>
   <div class="exp"><h3>Дослід 2. Вуглекислий газ із крейди та оцту</h3>
-   <div class="formula">CaCO₃ + 2CH₃COOH → (CH₃COO)₂Ca + H₂O + CO₂↑<br>n(CO₂) = n(CaCO₃) = m / 100 г/моль &nbsp;·&nbsp; Vm = V(CO₂) : n(CO₂)<br><small>CO₂ збирають над розчином NaCl, бо у воді він помітно розчиняється.</small></div>
-   <div class="num">${FIELDS.slice(6).map(f=>inp(...f)).join("")}</div></div>`+
+   <div class="formula">CaCO₃ + 2CH₃COOH → (CH₃COO)₂Ca + H₂O + CO₂↑<br>n(CO₂) = n(CaCO₃) = m(CaCO₃) / 100 г/моль &nbsp;·&nbsp; Vm = V(CO₂ за н. у.) : n(CO₂)<br><small>CO₂ збирають над розчином NaCl, бо у воді він помітно розчиняється.</small></div>
+   <div class="num">${FIELDS.slice(7).map(f=>inp(...f)).join("")}</div></div>`+
   (done?fb:`<div class="row"><button class="btn" type="button" data-chk="res">Перевірити обчислення</button></div>`)};
 B.res=s=>{if("res" in SCORE||!("hyp" in SCORE))return;
   document.querySelectorAll("[data-d]").forEach(i=>i.oninput=()=>DATA[i.dataset.d]=i.value);
   document.querySelector('[data-chk="res"]').onclick=()=>{
     if(FIELDS.some(([k])=>!isFinite(num(DATA[k]))))return warn(s,"Заповни всі поля числами.");
     const d=k=>num(DATA[k]);
-    if(d("t")<0||d("t")>40||d("p")<85||d("p")>110)return warn(s,"Перевір температуру (°C) і тиск (у кПа, близько 100).");
-    if(d("vp")<=0||d("vo")<=0||d("mc")<=0||d("vc")<=0)return warn(s,"Об'єми й маса мають бути більшими за нуль.");
-    const e=expect(),chk={};let c=0;["no","mo","nc","mcv"].forEach(k=>{const ok=Math.abs(d(k)-e[k])<=Math.abs(e[k])*0.05;chk[k]=ok;if(ok)c++});
-    REC.chk=chk;SCORE.res=c;REC.res=`${c} з 4`;
-    REC.data=`t=${DATA.t}°C p=${DATA.p}кПа | O₂: V(р-ну)=${DATA.vp}мл V=${DATA.vo}мл n=${DATA.no} Vm=${DATA.mo} | CO₂: m=${DATA.mc}г V=${DATA.vc}мл n=${DATA.nc} Vm=${DATA.mcv}`;render()}};
+    if(d("t")<0||d("t")>40)return warn(s,"Перевір температуру (°C).");
+    if(d("p")<85000||d("p")>110000)return warn(s,"Тиск запиши в паскалях (близько 100 000 Па).");
+    if(d("mp")<=0||d("vo")<=0||d("mc")<=0||d("vc")<=0)return warn(s,"Маси й об'єми мають бути більшими за нуль.");
+    const e=expect(),chk={};let c=0;CALC.forEach(k=>{const ok=Math.abs(d(k)-e[k])<=Math.abs(e[k])*0.05;chk[k]=ok;if(ok)c++});
+    REC.chk=chk;SCORE.res=Math.round(c/6*4*2)/2;REC.res=`${c} з 6`;
+    REC.data=`t=${DATA.t}°C p=${DATA.p}Па | O₂: m(р-ну)=${DATA.mp}г V=${DATA.vo}мл n=${DATA.no} V(н.у.)=${DATA.vno} Vm=${DATA.mo} | CO₂: m=${DATA.mc}г V=${DATA.vc}мл n=${DATA.nc} V(н.у.)=${DATA.vnc} Vm=${DATA.mcv} | обчислень правильно ${c}/6`;render()}};
 /* висновок */
-const C1=[["За однакових умов молярні об'єми кисню й вуглекислого газу практично однакові — це підтверджує закон Авогадро.",1],
+const C1=[["За нормальних умов молярні об'єми кисню й вуглекислого газу практично однакові (≈ 22,4 л/моль) — це підтверджує закон Авогадро.",1],
   ["Молярний об'єм CO₂ більший, ніж O₂, бо молярна маса CO₂ більша.",0],["Молярний об'єм газу залежить від того, скільки речовини взяли для досліду.",0],["Молярний об'єм газу за будь-яких умов дорівнює 22,4 л/моль.",0]];
-const C2=[["У лабораторії температура вища за 0 °C, а під час нагрівання гази розширюються; 22,4 л/моль — це значення для нормальних умов (0 °C, 101,3 кПа).",1],
-  ["Бо каталізатор теж перетворюється на газ.",0],["Бо кисень і вуглекислий газ легші за повітря.",0],["Бо в циліндрі залишилося повітря, яке важить більше за газ.",0]];
+const C2=[["Об'єм газу залежить від температури й тиску, тому, щоб порівняти результати з 22,4 л/моль, виміряні об'єми треба привести до однакових — нормальних — умов (0 °C, 101 325 Па).",1],
+  ["Бо в лабораторії газ стає важчим.",0],["Бо інакше не можна обчислити кількість речовини газу.",0],["Бо за нормальних умов газ не розчиняється у воді.",0]];
 R.concl=s=>{if(!UI.concl)UI.concl={o1:shuffle([0,1,2,3]),o2:shuffle([0,1,2,3])};const u=UI.concl,done="concl" in SCORE;
   const q=(arr,ord,key,pick)=>`<div class="opts">${ord.map(j=>{let c="";if(done){if(arr[j][1])c=pick===j?"ok":"miss";else if(pick===j)c="no"}return `<button class="op ${c}" type="button" data-c="${key}" data-j="${j}" aria-pressed="${pick===j}" ${done?"disabled":""}>${arr[j][0]}</button>`}).join("")}</div>`;
   return `<div class="task"><b>1) Яке узагальнення відповідає результатам досліду?</b>${q(C1,u.o1,"a",u.a)}</div>
-  <div class="task"><b>2) Чому в лабораторії молярний об'єм газу виходить трохи більшим (≈ 24 л/моль), ніж 22,4 л/моль?</b>${q(C2,u.o2,"b",u.b)}</div>
+  <div class="task"><b>2) Навіщо виміряні об'єми газів зводять до нормальних умов?</b>${q(C2,u.o2,"b",u.b)}</div>
   <label class="lbl" for="conT">Мій висновок (своїми словами: чи підтвердилася гіпотеза, яке значення Vm отримано, чому можливі невеликі похибки)</label>
-  <textarea id="conT" maxlength="1000" placeholder="Гіпотеза підтвердилася / не підтвердилася… Я отримав(ла) Vm(O₂) ≈ … л/моль, Vm(CO₂) ≈ … л/моль… Похибки можуть бути через…" ${done?"readonly":""}>${esc(REC.conclText||"")}</textarea>`+
-  (done?`<div class="fb ${SCORE.concl===2?"ok":"info"}">+${fmt(SCORE.concl)} б. <b>Молярний об'єм газу</b> (Vm) — об'єм 1 моль газу. За однакових умов він однаковий для всіх газів (закон Авогадро); за нормальних умов Vm = 22,4 л/моль, за кімнатної температури ≈ 24 л/моль. Невеликі відхилення — через похибки вимірювань і розчинення частини газу у воді.</div>`
+  <textarea id="conT" maxlength="1000" placeholder="Гіпотеза підтвердилася / не підтвердилася… За н. у. я отримав(ла) Vm(O₂) ≈ … л/моль, Vm(CO₂) ≈ … л/моль… Похибки можуть бути через…" ${done?"readonly":""}>${esc(REC.conclText||"")}</textarea>`+
+  (done?`<div class="fb ${SCORE.concl===2?"ok":"info"}">+${fmt(SCORE.concl)} б. <b>Молярний об'єм газу</b> (Vm) — об'єм 1 моль газу. За однакових умов він однаковий для всіх газів (закон Авогадро); за нормальних умов (0 °C, 101 325 Па) Vm = 22,4 л/моль. Невеликі відхилення в досліді — через похибки вимірювань, розчинення частини газу у воді та неповний перебіг реакції.</div>`
    :`<div class="row"><button class="btn" type="button" data-chk="concl">Перевірити й зберегти</button></div>`)};
 B.concl=s=>{if("concl" in SCORE)return;const u=UI.concl;
   document.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{REC.conclText=$("conT").value;u[b.dataset.c]=+b.dataset.j;render()});
