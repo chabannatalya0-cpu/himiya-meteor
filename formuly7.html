@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Хімічні формули</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700;800&display=swap">
+<style>
+/* Playful bright worksheet: candy-coloured task cards, ball-and-stick molecules (CPK colours), sticker-like feedback; formative: retries with hints + traffic-light self-assessment. */
+:root{color-scheme:light;
+  --bg:#fffaf0;--card:#fff;--ink:#22183a;--muted:#6a6080;--line:#efe6d6;
+  --c1:#ff6b6b;--c2:#ffa94d;--c3:#ffd43b;--c4:#69db7c;--c5:#4dabf7;--c6:#b197fc;
+  --ok:#16a34a;--bad:#e03131;--accent:#7048e8;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;--f-body:"Golos Text",system-ui,sans-serif;--f-mono:"JetBrains Mono",ui-monospace,monospace}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);background-image:radial-gradient(circle at 10% 10%,#ffe3e3 0 60px,transparent 61px),radial-gradient(circle at 90% 20%,#e7f5ff 0 90px,transparent 91px),radial-gradient(circle at 80% 90%,#fff3bf 0 80px,transparent 81px);background-attachment:fixed;color:var(--ink);font-family:var(--f-body);font-size:17.5px;line-height:1.45}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:900px;margin:0 auto;padding-block:16px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
+.hero{border-radius:26px;padding:18px 20px;background:linear-gradient(120deg,#ff6b6b,#ffa94d 30%,#ffd43b 50%,#69db7c 70%,#4dabf7 85%,#b197fc);border:3px solid var(--ink);box-shadow:0 6px 0 var(--ink);display:flex;gap:14px;align-items:center}
+.hero .mol{flex:none;width:96px}
+.hero .eb{font:800 11px var(--f-mono);letter-spacing:.14em;text-transform:uppercase}
+.hero h1{margin:2px 0 0;font-family:var(--f-display);font-size:clamp(22px,4.4vw,34px);line-height:1.05;color:#fff;text-shadow:0 3px 0 var(--ink),2px 0 0 var(--ink),-2px 0 0 var(--ink),0 -2px 0 var(--ink)}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:#fff;border:3px solid var(--ink);border-radius:16px;padding:8px 14px;display:flex;gap:10px;align-items:center;justify-content:space-between;box-shadow:0 4px 0 var(--ink);flex-wrap:wrap}
+.bar b{font-family:var(--f-display);font-size:20px;color:var(--accent)}
+.dots{display:flex;gap:5px}.dots i{width:16px;height:16px;border-radius:50%;border:2px solid var(--ink);background:#fff}.dots i.d{background:var(--ok)}.dots i.p{background:var(--c3)}
+.task{background:var(--card);border:3px solid var(--ink);border-radius:22px;padding:16px;display:flex;flex-direction:column;gap:12px;box-shadow:0 6px 0 var(--ink);position:relative}
+.task .hd{display:flex;gap:12px;align-items:center}
+.task .num{flex:none;width:44px;height:44px;border-radius:14px;border:3px solid var(--ink);display:grid;place-items:center;font:800 20px var(--f-display);color:var(--ink)}
+.task h2{margin:0;font-size:20px;line-height:1.2}
+.task .pts{margin-left:auto;flex:none;font:800 12px var(--f-mono);background:#f3f0ff;color:var(--accent);border-radius:99px;padding:4px 10px}
+.task.done{border-color:var(--ok);box-shadow:0 6px 0 var(--ok)}
+.sticker{position:absolute;top:-14px;right:16px;background:var(--ok);color:#fff;font:800 14px var(--f-display);border:3px solid var(--ink);border-radius:12px;padding:3px 10px;transform:rotate(4deg)}
+.hint{margin:0;color:var(--muted);font-size:15.5px}
+.tip{background:#fff9db;border:2px dashed #fab005;border-radius:14px;padding:8px 12px;font-size:15.5px}
+.f{font-family:var(--f-mono);font-weight:800}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:620px){.grid{grid-template-columns:1fr}}
+.pair{display:flex;gap:10px;align-items:center;border:2px solid var(--line);border-radius:14px;padding:8px 10px;background:#fff}
+.pair .f{font-size:22px;min-width:84px}
+.pair.ok{border-color:var(--ok);background:#ebfbee}.pair.no{border-color:var(--bad);background:#fff5f5}
+select{font:inherit;font-size:16px;padding:8px 10px;border-radius:10px;border:2px solid var(--ink);background:#fff;color:var(--ink);width:100%}
+input.n[type=text]{font:800 18px var(--f-mono);width:64px;padding:6px 8px;border-radius:10px;border:2px solid var(--ink);text-align:center}
+input.n[type=text].ok{border-color:var(--ok);background:#ebfbee}input.n[type=text].no{border-color:var(--bad);background:#fff5f5}
+.mols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:620px){.mols{grid-template-columns:1fr}}
+.molc{border:2px solid var(--line);border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:8px;align-items:center;background:linear-gradient(180deg,#f8f9ff,#fff)}
+.molc.ok{border-color:var(--ok)}.molc.no{border-color:var(--bad)}
+.molc svg{width:200px;height:130px}
+.steps{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.stp{display:flex;align-items:center;gap:4px;border:2px solid var(--line);border-radius:12px;padding:3px 6px;background:#fff}
+.stp .ball{width:22px;height:22px;border-radius:50%;border:2px solid rgba(0,0,0,.25);display:grid;place-items:center;font:800 10px var(--f-mono)}
+.stp button{font:800 16px var(--f-mono);width:26px;height:26px;border-radius:8px;border:2px solid var(--ink);background:#fff;cursor:pointer;color:var(--ink);padding:0}
+.stp b{font:800 16px var(--f-mono);min-width:14px;text-align:center}
+.prev{font:800 26px var(--f-mono);min-height:36px}
+.comp{width:100%;border-collapse:collapse}
+.comp th,.comp td{border:2px solid var(--line);padding:6px 8px;text-align:center}
+.comp th{background:#f8f9ff;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.comp td.f{font-size:20px}
+.bins{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bin{border:3px dashed;border-radius:18px;padding:10px;min-height:120px;display:flex;flex-direction:column;gap:8px;cursor:pointer}
+.bin.s{border-color:var(--c5);background:#e7f5ff}.bin.c{border-color:var(--c2);background:#fff4e6}
+.bin h3{margin:0;font-size:16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:800 19px var(--f-mono);border:3px solid var(--ink);border-radius:14px;padding:6px 12px;background:#fff;cursor:pointer;color:var(--ink);box-shadow:0 3px 0 var(--ink)}
+.chip[aria-pressed="true"]{background:var(--c3)}
+.chip.ok{background:#d3f9d8;border-color:var(--ok);box-shadow:0 3px 0 var(--ok)}.chip.no{background:#ffe3e3;border-color:var(--bad);box-shadow:0 3px 0 var(--bad)}
+.pool{min-height:56px;padding:8px;border-radius:14px;background:#faf7ff;border:2px dashed var(--line)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{font-family:var(--f-display);font-size:15px;border:3px solid var(--ink);border-radius:14px;padding:10px 16px;cursor:pointer;color:#fff;background:var(--accent);box-shadow:0 4px 0 var(--ink)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.btn.light{background:#fff;color:var(--ink)}.btn.green{background:var(--ok)}.btn.gold{background:var(--c3);color:var(--ink)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.fb{font-size:16px;border-radius:14px;padding:9px 12px;font-weight:600}
+.fb.ok{background:#d3f9d8;color:#1b5e20}.fb.bad{background:#ffe3e3;color:#8b1a1a}.fb.info{background:#f3f0ff;color:#4527a0}
+.light3{display:flex;gap:6px}
+.light3 button{font:inherit;font-size:22px;width:46px;height:46px;border-radius:50%;border:3px solid var(--ink);background:#fff;cursor:pointer;opacity:.45}
+.light3 button[aria-pressed="true"]{opacity:1;transform:scale(1.1);box-shadow:0 3px 0 var(--ink)}
+.self{display:flex;flex-direction:column;gap:8px}
+.self .it{display:flex;gap:12px;align-items:center;justify-content:space-between;border:2px solid var(--line);border-radius:14px;padding:8px 12px;flex-wrap:wrap}
+textarea{font:inherit;font-size:16px;padding:10px 12px;border-radius:12px;border:2px solid var(--ink);width:100%;min-height:70px}
+.final{font-family:var(--f-display);font-size:42px;color:var(--ok)}
+.msg{font-weight:700;padding:9px 12px;border-radius:12px}
+.msg.ok{background:#e8f8ee;color:#166534}.msg.bad{background:#fdecec;color:#991b1b}.msg.info{background:#f3f0ff;color:#4527a0}
+input[type=text]:not(.n){font:inherit;font-size:17px;padding:11px 13px;border-radius:12px;border:2px solid var(--ink);background:#fff;color:var(--ink);width:100%}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--c2);outline-offset:2px}
+.overlay{position:fixed;inset:0;z-index:30;background:rgba(34,24,58,.6);display:flex;align-items:center;justify-content:center;padding:20px max(16px,env(safe-area-inset-right,0px)) 20px max(16px,env(safe-area-inset-left,0px))}
+.overlay .task{max-width:540px;width:100%}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media (max-width:520px){.grid2{grid-template-columns:1fr}}
+.lbl{font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--muted)}
+.idx{color:var(--c5)}.coef{color:var(--c1)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <svg class="mol" viewBox="0 0 120 90" aria-hidden="true"><line x1="60" y1="40" x2="28" y2="66" stroke="#22183a" stroke-width="6"/><line x1="60" y1="40" x2="92" y2="66" stroke="#22183a" stroke-width="6"/><circle cx="60" cy="40" r="26" fill="#ff4d4d" stroke="#22183a" stroke-width="3"/><circle cx="28" cy="66" r="17" fill="#fff" stroke="#22183a" stroke-width="3"/><circle cx="92" cy="66" r="17" fill="#fff" stroke="#22183a" stroke-width="3"/><circle cx="51" cy="31" r="7" fill="#fff" opacity=".6"/></svg>
+    <div><div class="eb">Хімія · 7 клас · інтерактивний аркуш</div><h1>Хімічні формули. Молекули</h1></div>
+  </div>
+  <div class="tip">💡 <b>Пам'ятка.</b> <span class="f">3<span class="idx">H</span>₂O</span>: <b class="coef">коефіцієнт</b> (велике число перед формулою) показує, <b>скільки молекул</b>; <b class="idx">індекс</b> (маленьке число внизу праворуч) — <b>скільки атомів</b> цього елемента в одній молекулі. Індекс 1 не пишуть.</div>
+  <div class="bar"><span id="who"></span><div class="dots" id="dots"></div><span>Бали: <b id="score">0</b> / 12</span></div>
+  <div id="tasks" style="display:flex;flex-direction:column;gap:20px"></div>
+
+  <section class="task" id="selfBox">
+    <div class="hd"><span class="num" style="background:var(--c4)">✓</span><h2>Оціни себе</h2></div>
+    <p class="hint">Чесно познач, як ти почуваєшся з кожним умінням: 🟢 — можу пояснити іншому, 🟡 — можу, але інколи помиляюся, 🔴 — потрібна допомога.</p>
+    <div class="self" id="self"></div>
+    <label class="lbl" for="refl">Що було найважчим або найцікавішим? (необов'язково)</label>
+    <textarea id="refl" maxlength="400" placeholder="Мені було важко…"></textarea>
+    <div class="row"><span>Результат: <span class="final" id="final">0</span> / 12</span></div>
+    <p class="hint" id="finHint">Виконай усі 6 завдань і заповни самооцінку, щоб надіслати роботу.</p>
+    <div class="row"><button class="btn green" type="button" id="submit" disabled>Надіслати вчителю</button></div>
+    <div id="sendMsg"></div>
+  </section>
+</div>
+
+<div class="overlay" id="start">
+  <div class="task">
+    <span class="lbl">Інтерактивний аркуш</span>
+    <h2 style="font-family:var(--f-display);font-size:22px">🧪 Формули й молекули</h2>
+    <p style="margin:0">6 завдань. Якщо помилишся — отримаєш підказку і зможеш виправити: <b>з першої спроби 2 бали</b>, далі трохи менше. Наприкінці оціниш себе.</p>
+    <div class="grid2">
+      <div><label class="lbl" for="pname">Прізвище та ім'я</label><input type="text" id="pname" maxlength="60" autocomplete="name" placeholder="Іваненко Олена"></div>
+      <div><label class="lbl" for="pcls">Клас</label><select id="pcls"><option value="">— обери —</option><option>7-А</option><option>7-Б</option><option>Інший</option></select></div>
+    </div>
+    <p class="msg bad" id="startErr" hidden>Впиши прізвище, ім'я та обери клас.</p>
+    <div class="row"><button class="btn gold" id="startBtn" type="button">Почати 🚀</button></div>
+  </div>
+</div>
+
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="formuly7";
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const fmt=x=>String(Math.round(x*10)/10).replace(".",",");
+const sub=s=>s.replace(/(\d+)/g,(m,d,i,str)=>/[A-Za-z]/.test(str[i-1]||"")?d.split("").map(c=>"₀₁₂₃₄₅₆₇₈₉"[c]).join(""):m);
+const COL=["--c1","--c2","--c3","--c4","--c5","--c6"];
+/* стан завдань: tries, done, pts */
+const T={};const pts=n=>Math.max(0.5,2-0.5*(n-1));
+
+/* ---------- 1. Прочитай формулу ---------- */
+const READ=shuffle([["H2O","аш-два-о"],["CO2","це-о-два"],["O2","о-два"],["H2SO4","аш-два-ес-о-чотири"],["NaCl","натрій-хлор"],["Fe2O3","ферум-два-о-три"],["NH3","ен-аш-три"],["CaCO3","кальцій-це-о-три"]]).slice(0,4);
+const READO=shuffle(READ.map(r=>r[1]).concat(["о-два-аш","аш-о-два"]));
+/* ---------- 2. Індекс чи коефіцієнт ---------- */
+const MEAN=[["2H","два окремі атоми Гідрогену"],["H2","одна молекула водню з двох атомів Гідрогену"],["2H2","дві молекули водню"],["3O","три окремі атоми Оксигену"],["O3","одна молекула озону з трьох атомів Оксигену"]];
+const MEANO=shuffle(MEAN.map(m=>m[1]));
+/* ---------- 3. Конструктор молекул ---------- */
+const BALL={H:["#ffffff",15],C:["#3b3b3b",22],N:["#3b82f6",22],O:["#ff4d4d",22],Cl:["#40c057",25],S:["#fcc419",25]};
+const MOLS={
+ H2O:{a:[["O",100,55],["H",60,90],["H",140,90]],b:[[0,1],[0,2]],c:{H:2,O:1},n:"вода"},
+ CO2:{a:[["O",45,65],["C",100,65],["O",155,65]],b:[[0,1],[1,2]],c:{C:1,O:2},n:"вуглекислий газ"},
+ NH3:{a:[["N",100,50],["H",58,85],["H",100,102],["H",142,85]],b:[[0,1],[0,2],[0,3]],c:{N:1,H:3},n:"амоніак"},
+ CH4:{a:[["C",100,65],["H",100,22],["H",55,95],["H",145,95],["H",100,110]],b:[[0,1],[0,2],[0,3],[0,4]],c:{C:1,H:4},n:"метан"},
+ O2:{a:[["O",78,65],["O",122,65]],b:[[0,1]],c:{O:2},n:"кисень"},
+ HCl:{a:[["H",72,65],["Cl",118,65]],b:[[0,1]],c:{H:1,Cl:1},n:"гідроген хлорид"},
+ H2O2:{a:[["H",35,95],["O",78,70],["O",122,70],["H",165,45]],b:[[0,1],[1,2],[2,3]],c:{H:2,O:2},n:"гідроген пероксид"},
+ SO2:{a:[["O",50,90],["S",100,60],["O",150,90]],b:[[0,1],[1,2]],c:{S:1,O:2},n:"сульфур(IV) оксид"},
+ O3:{a:[["O",52,88],["O",100,58],["O",148,88]],b:[[0,1],[1,2]],c:{O:3},n:"озон"}
+};
+const MOLSET=shuffle(Object.keys(MOLS)).slice(0,4);
+const ORDER=["C","N","S","H","O","Cl"];
+const BUILD={};MOLSET.forEach(k=>BUILD[k]={C:0,N:0,S:0,H:0,O:0,Cl:0});
+const molSVG=k=>{const m=MOLS[k];return `<svg viewBox="0 0 200 130" aria-label="Модель молекули">${m.b.map(([i,j])=>`<line x1="${m.a[i][1]}" y1="${m.a[i][2]}" x2="${m.a[j][1]}" y2="${m.a[j][2]}" stroke="#22183a" stroke-width="6" stroke-linecap="round"/>`).join("")}
+  ${m.a.map(([e,x,y])=>{const[c,r]=BALL[e];return `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}" stroke="#22183a" stroke-width="2.5"/><circle cx="${x-r*.35}" cy="${y-r*.35}" r="${r*.28}" fill="#fff" opacity=".55"/>`}).join("")}</svg>`};
+const ci=f=>f.replace(/^(\d+)/,'<span class="coef">$1</span>').replace(/([A-Za-z])(\d+)/g,(m,a,d)=>a+'<span class="idx">'+d.split("").map(x=>"₀₁₂₃₄₅₆₇₈₉"[x]).join("")+'</span>');
+const formulaOf=c=>ORDER.filter(e=>c[e]>0).map(e=>e+(c[e]>1?c[e]:"")).join("");
+/* ---------- 4. Склад речовини ---------- */
+const COMP=shuffle([["H2SO4",{H:2,S:1,O:4}],["CaCO3",{Ca:1,C:1,O:3}],["Al2O3",{Al:2,O:3}],["C6H12O6",{C:6,H:12,O:6}],["HNO3",{H:1,N:1,O:3}],["Na2CO3",{Na:2,C:1,O:3}],["Fe2O3",{Fe:2,O:3}],["H3PO4",{H:3,P:1,O:4}]]).slice(0,3);
+/* ---------- 5. Прості й складні ---------- */
+const SIMPLE=["O2","N2","Fe","O3","Cu","H2"],COMPLEX=["H2O","CO2","NaCl","CH4","NH3","C12H22O11"];
+const SORT={pool:shuffle(SIMPLE.concat(COMPLEX)),s:[],c:[],sel:null};
+/* ---------- 6. Коефіцієнти ---------- */
+const COEF=shuffle([["3H2O",{H:6,O:3}],["2CO2",{C:2,O:4}],["5O2",{O:10}],["4NH3",{N:4,H:12}],["2H2SO4",{H:4,S:2,O:8}],["3CH4",{C:3,H:12}],["2Fe2O3",{Fe:4,O:6}]]).slice(0,3);
+const TASKS=[
+ {id:"t1",t:"Прочитай формулу",h:"Обери, як правильно читати кожну формулу вголос."},
+ {id:"t2",t:"Індекс чи коефіцієнт?",h:"Що означає кожен запис? Будь уважним до великих і маленьких чисел!"},
+ {id:"t3",t:"Конструктор молекул",h:"Подивись на модель молекули й набери, скільки атомів кожного елемента в ній. Формула складеться сама."},
+ {id:"t4",t:"Склад речовини за формулою",h:"Запиши, скільки атомів кожного елемента в одній формульній одиниці, і порахуй загальну кількість атомів."},
+ {id:"t5",t:"Проста чи складна?",h:"Натисни формулу, а потім кошик. Проста речовина складається з атомів ОДНОГО елемента, складна — з атомів КІЛЬКОХ елементів."},
+ {id:"t6",t:"Рахуємо атоми з коефіцієнтом",h:"Скільки всього атомів кожного елемента? Коефіцієнт множиться на індекс."}
+];
+const VAL={};// значення полів
+function head(k,i){const t=TASKS[i],s=T[k];return `${s&&s.done?`<span class="sticker">+${fmt(s.pts)} ⭐</span>`:""}<div class="hd"><span class="num" style="background:var(${COL[i]})">${i+1}</span><h2>${t.t}</h2><span class="pts">2 б.</span></div><p class="hint">${t.h}</p>`}
+function ctl(k){const s=T[k]||{tries:0};if(s.done)return `<div class="fb ok">${s.msg}</div>`;
+  return (s.fb?`<div class="fb bad">${s.fb}</div>`:"")+`<div class="row"><button class="btn" type="button" data-chk="${k}">Перевірити</button>${s.tries>=3?`<button class="btn light" type="button" data-show="${k}">Показати відповідь</button>`:""}</div>`}
+function render(){
+  const h=[];
+  // 1
+  h.push(`<section class="task ${T.t1?.done?"done":""}" id="t1">${head("t1",0)}<div class="grid">${READ.map(([f,r],i)=>{const v=VAL["r"+i]||"",st=T.t1?.mark?.[i];
+    return `<div class="pair ${st===1?"ok":st===0?"no":""}"><span class="f">${sub(f)}</span><select data-v="r${i}" ${T.t1?.done?"disabled":""}><option value="">— читається як —</option>${READO.map(o=>`<option ${v===o?"selected":""}>${o}</option>`).join("")}</select></div>`}).join("")}</div>${ctl("t1")}</section>`);
+  // 2
+  h.push(`<section class="task ${T.t2?.done?"done":""}" id="t2">${head("t2",1)}<div class="grid">${MEAN.map(([f,r],i)=>{const v=VAL["m"+i]||"",st=T.t2?.mark?.[i];
+    return `<div class="pair ${st===1?"ok":st===0?"no":""}"><span class="f">${ci(f)}</span>
+    <select data-v="m${i}" ${T.t2?.done?"disabled":""}><option value="">— означає —</option>${MEANO.map(o=>`<option ${v===o?"selected":""}>${o}</option>`).join("")}</select></div>`}).join("")}</div>${ctl("t2")}</section>`);
+  // 3
+  h.push(`<section class="task ${T.t3?.done?"done":""}" id="t3">${head("t3",2)}<div class="mols">${MOLSET.map((k,i)=>{const b=BUILD[k],st=T.t3?.mark?.[i],need=Object.keys(MOLS).flatMap(x=>Object.keys(MOLS[x].c)),els=ORDER.filter(e=>["H","C","N","O","Cl","S"].includes(e));
+    return `<div class="molc ${st===1?"ok":st===0?"no":""}">${molSVG(k)}<div class="steps">${els.map(e=>`<span class="stp"><span class="ball" style="background:${BALL[e][0]};color:${e==="C"?"#fff":"#22183a"}">${e}</span>${T.t3?.done?"":`<button type="button" data-m="${k}:${e}:-1" aria-label="менше ${e}">−</button>`}<b>${b[e]}</b>${T.t3?.done?"":`<button type="button" data-m="${k}:${e}:1" aria-label="більше ${e}">+</button>`}</span>`).join("")}</div>
+     <div class="prev">${formulaOf(b)?sub(formulaOf(b)):"<span class='hint'>формула…</span>"}</div>${T.t3?.done?`<span class="hint">${MOLS[k].n}</span>`:""}</div>`}).join("")}</div>${ctl("t3")}</section>`);
+  // 4
+  h.push(`<section class="task ${T.t4?.done?"done":""}" id="t4">${head("t4",3)}<div style="overflow-x:auto"><table class="comp"><tr><th>Формула</th><th>Склад: скільки атомів кожного елемента</th><th>Усього атомів</th></tr>
+    ${COMP.map(([f,c],i)=>`<tr><td class="f">${sub(f)}</td><td><div class="row" style="justify-content:center">${Object.keys(c).map(e=>`<span class="f">${e}:</span>${inp("c"+i+e,T.t4)}`).join("")}</div></td><td>${inp("c"+i+"T",T.t4)}</td></tr>`).join("")}</table></div>${ctl("t4")}</section>`);
+  // 5
+  const chip=(f,where)=>{const st=T.t5?.done||T.t5?.mark?(where==="s"?SIMPLE.includes(f):where==="c"?COMPLEX.includes(f):null):null;return `<button class="chip ${st===true?"ok":st===false?"no":""}" type="button" data-sort="${f}" aria-pressed="${SORT.sel===f}" ${T.t5?.done?"disabled":""}>${sub(f)}</button>`};
+  h.push(`<section class="task ${T.t5?.done?"done":""}" id="t5">${head("t5",4)}<div class="chips pool" id="pool">${SORT.pool.map(f=>chip(f,"p")).join("")||'<span class="hint">усі формули розкладено 👍</span>'}</div>
+    <div class="bins"><div class="bin s" data-bin="s" role="button" tabindex="0"><h3>🔵 Прості речовини</h3><div class="chips">${SORT.s.map(f=>chip(f,"s")).join("")}</div></div><div class="bin c" data-bin="c" role="button" tabindex="0"><h3>🟠 Складні речовини</h3><div class="chips">${SORT.c.map(f=>chip(f,"c")).join("")}</div></div></div>${ctl("t5")}</section>`);
+  // 6
+  h.push(`<section class="task ${T.t6?.done?"done":""}" id="t6">${head("t6",5)}<div style="overflow-x:auto"><table class="comp"><tr><th>Запис</th><th>Усього атомів кожного елемента</th></tr>
+    ${COEF.map(([f,c],i)=>`<tr><td class="f">${ci(f)}</td><td><div class="row" style="justify-content:center">${Object.keys(c).map(e=>`<span class="f">${e}:</span>${inp("k"+i+e,T.t6)}`).join("")}</div></td></tr>`).join("")}</table></div>${ctl("t6")}</section>`);
+  $("tasks").innerHTML=h.join("");
+  bind();upd();
+}
+const inp=(k,s)=>{const st=s?.mark?.[k];return `<input class="n ${st===1?"ok":st===0?"no":""}" type="text" inputmode="numeric" data-v="${k}" value="${VAL[k]??""}" ${s?.done?"disabled":""} aria-label="${k}">`};
+function bind(){
+  document.querySelectorAll("[data-v]").forEach(el=>{el.oninput=el.onchange=()=>VAL[el.dataset.v]=el.value});
+  document.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{const[k,e,d]=b.dataset.m.split(":");BUILD[k][e]=Math.max(0,Math.min(6,BUILD[k][e]+ +d));render()});
+  document.querySelectorAll("[data-sort]").forEach(b=>b.onclick=e=>{e.stopPropagation();const f=b.dataset.sort;
+    if(!SORT.pool.includes(f)){SORT.s=SORT.s.filter(x=>x!==f);SORT.c=SORT.c.filter(x=>x!==f);SORT.pool.push(f);SORT.sel=null;if(T.t5)T.t5.mark=null;render();return}
+    SORT.sel=SORT.sel===f?null:f;render()});
+  document.querySelectorAll("[data-bin]").forEach(b=>b.onclick=()=>{if(!SORT.sel||T.t5?.done)return;SORT.pool=SORT.pool.filter(x=>x!==SORT.sel);SORT[b.dataset.bin].push(SORT.sel);SORT.sel=null;render()});
+  document.querySelectorAll("[data-chk]").forEach(b=>b.onclick=()=>check(b.dataset.chk));
+  document.querySelectorAll("[data-show]").forEach(b=>b.onclick=()=>show(b.dataset.show));
+}
+const n=v=>{const x=String(v??"").trim();return x===""?null:+x};
+function check(k){const s=T[k]=T[k]||{tries:0};let ok=true,mark={},fb="",empty=false;
+  if(k==="t1"){READ.forEach(([f,r],i)=>{if(!VAL["r"+i])empty=true;mark[i]=VAL["r"+i]===r?1:0;if(!mark[i])ok=false});fb="Підказка: читаємо символи по черзі (H — «аш», C — «це», S — «ес», N — «ен», O — «о»), а індекс додаємо одразу після символу."}
+  if(k==="t2"){MEAN.forEach(([f,r],i)=>{if(!VAL["m"+i])empty=true;mark[i]=VAL["m"+i]===r?1:0;if(!mark[i])ok=false});fb="Підказка: число ПЕРЕД символом — окремі атоми або молекули; маленьке число ПІСЛЯ символу — атоми, з'єднані в одну молекулу."}
+  if(k==="t3"){MOLSET.forEach((m,i)=>{const c=MOLS[m].c,b=BUILD[m];mark[i]=ORDER.every(e=>(c[e]||0)===b[e])?1:0;if(!formulaOf(b))empty=true;if(!mark[i])ok=false});fb="Підказка: порахуй кульки кожного кольору. Червоні — Оксиген, білі — Гідроген, чорні — Карбон, сині — Нітроген, зелені — Хлор, жовті — Сульфур."}
+  if(k==="t4"){COMP.forEach(([f,c],i)=>{let tot=0;Object.entries(c).forEach(([e,v])=>{tot+=v;const g=n(VAL["c"+i+e]);if(g==null)empty=true;mark["c"+i+e]=g===v?1:0;if(g!==v)ok=false});const g=n(VAL["c"+i+"T"]);if(g==null)empty=true;mark["c"+i+"T"]=g===tot?1:0;if(g!==tot)ok=false});
+    fb="Підказка: якщо після символу немає індексу, атом один. Загальна кількість атомів — сума всіх індексів."}
+  if(k==="t5"){if(SORT.pool.length)empty=true;mark=true;SORT.s.forEach(f=>{if(!SIMPLE.includes(f))ok=false});SORT.c.forEach(f=>{if(!COMPLEX.includes(f))ok=false});fb="Підказка: подивись, скільки РІЗНИХ символів у формулі. Один символ (навіть з індексом, як O₃) — проста речовина. Червоні формули можна перетягнути назад, натиснувши на них."}
+  if(k==="t6"){COEF.forEach(([f,c],i)=>Object.entries(c).forEach(([e,v])=>{const g=n(VAL["k"+i+e]);if(g==null)empty=true;mark["k"+i+e]=g===v?1:0;if(g!==v)ok=false}));fb="Підказка: коефіцієнт × індекс. Наприклад, 3H₂O: Гідрогену 3 · 2 = 6, Оксигену 3 · 1 = 3."}
+  if(empty){s.fb="Заповни все, а потім перевіряй 🙂";render();return}
+  s.tries++;s.mark=mark;
+  if(ok){s.done=true;s.pts=pts(s.tries);s.msg=s.tries===1?"🎉 Бездоганно з першої спроби!":`👍 Виправлено! Спроба ${s.tries}.`;s.fb=""}
+  else s.fb=`Є помилки (позначено червоним). ${fb}`;
+  render();if(ok)setTimeout(()=>{const nx=$(TASKS[TASKS.findIndex(t=>t.id===k)+1]?.id||"selfBox");nx&&nx.scrollIntoView({behavior:"smooth",block:"start"})},500)}
+function show(k){const s=T[k];
+  if(k==="t1")READ.forEach(([f,r],i)=>VAL["r"+i]=r);
+  if(k==="t2")MEAN.forEach(([f,r],i)=>VAL["m"+i]=r);
+  if(k==="t3")MOLSET.forEach(m=>ORDER.forEach(e=>BUILD[m][e]=MOLS[m].c[e]||0));
+  if(k==="t4")COMP.forEach(([f,c],i)=>{let t=0;Object.entries(c).forEach(([e,v])=>{VAL["c"+i+e]=v;t+=v});VAL["c"+i+"T"]=t});
+  if(k==="t5"){SORT.pool=[];SORT.s=SIMPLE.slice();SORT.c=COMPLEX.slice()}
+  if(k==="t6")COEF.forEach(([f,c],i)=>Object.entries(c).forEach(([e,v])=>VAL["k"+i+e]=v));
+  s.done=true;s.pts=0.5;s.shown=true;s.mark=null;s.msg="👀 Правильні відповіді показано. Розберися в них — і наступного разу вийде самостійно! (+0,5)";s.fb="";render()}
+const total=()=>Object.values(T).reduce((a,s)=>a+(s.done?s.pts:0),0);
+/* ---------- самооцінка ---------- */
+const SELF=["Я можу прочитати хімічну формулу","Я розумію різницю між індексом і коефіцієнтом","Я можу визначити склад речовини за формулою","Я розрізняю прості й складні речовини"];
+const SV={};
+function renderSelf(){$("self").innerHTML=SELF.map((t,i)=>`<div class="it"><span>${t}</span><span class="light3">${["🟢","🟡","🔴"].map(c=>`<button type="button" data-s="${i}" data-c="${c}" aria-pressed="${SV[i]===c}" aria-label="${c}">${c}</button>`).join("")}</span></div>`).join("");
+  $("self").querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{SV[b.dataset.s]=b.dataset.c;renderSelf();upd()})}
+function upd(){const s=total(),d=TASKS.filter(t=>T[t.id]?.done).length;$("score").textContent=fmt(s);$("final").textContent=fmt(s);
+  $("dots").innerHTML=TASKS.map(t=>`<i class="${T[t.id]?.done?(T[t.id].tries===1&&!T[t.id].shown?"d":"p"):""}" title="${t.t}"></i>`).join("");
+  const ready=d===6&&Object.keys(SV).length===4;$("submit").disabled=!ready||sent;
+  $("finHint").textContent=ready?"Усе готово — надсилай!":`Виконано завдань: ${d} з 6; самооцінка: ${Object.keys(SV).length} з 4.`}
+let ME={},sent=false;
+$("submit").onclick=async()=>{const box=$("sendMsg");if(sent)return;$("submit").disabled=true;box.className="msg info";box.textContent="Надсилаю…";
+  const rec={name:ME.name,cls:ME.cls,score:total(),max:12,ts:{".sv":"timestamp"},parts:TASKS.map(t=>T[t.id].pts).join(" "),tries:TASKS.map(t=>T[t.id].shown?"👀":T[t.id].tries).join(" "),
+    self:SELF.map((t,i)=>SV[i]).join(""),refl:$("refl").value.trim().slice(0,400)};
+  try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec)});if(!r.ok)throw new Error(r.status);
+    sent=true;box.className="msg ok";box.textContent=`✓ Роботу отримано вчителем: ${fmt(rec.score)} / 12. Ти молодець! 🌟`;
+  }catch(e){$("submit").disabled=false;box.className="msg bad";box.textContent="Не вдалося надіслати. Перевір інтернет і натисни ще раз."}};
+$("startBtn").onclick=()=>{const nm=$("pname").value.trim(),c=$("pcls").value;if(nm.length<3||!c){$("startErr").hidden=false;return}
+  ME={name:nm.slice(0,60),cls:c};$("who").textContent=`👤 ${ME.name} · ${ME.cls}`;$("start").hidden=true};
+render();renderSelf();upd();
+</script>
+</body>
+</html>
