@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Знайди елемент</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700;800&display=swap">
+<style>
+/* Game board = blank long-form periodic table in pastel category colours (as in the teacher's picture). Question banner on top; correct click reveals the element in its cell. */
+:root{color-scheme:light;
+  --bg:#f7f8fc;--card:#fff;--ink:#1e2a4a;--muted:#5c6684;--line:#e3e7f1;
+  --met:#fbd3e4;--metb:#c2557f;--non:#fdf0b8;--nonb:#c49a1a;--semi:#d8f1d3;--semib:#4f9f4f;--nob:#d4e9fb;--nobb:#4b92c9;--f:#e6e0fd;--fb:#8f78d0;
+  --accent:#6d28d9;--ok:#16a34a;--bad:#dc2626;--gold:#f59e0b;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;--f-body:"Golos Text",system-ui,sans-serif;--f-mono:"JetBrains Mono",ui-monospace,monospace}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.4}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1400px;margin:0 auto;padding-block:12px 40px;padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:12px}
+.top{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between}
+h1{margin:0;font-family:var(--f-display);font-size:clamp(20px,3vw,30px)}
+.eb{font:800 11px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.stats{display:flex;gap:8px;flex-wrap:wrap}
+.st{background:#fff;border:2px solid var(--line);border-radius:12px;padding:5px 12px;font-weight:700;font-size:15px}
+.st b{font-family:var(--f-display);font-size:18px;color:var(--accent)}
+.q{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:linear-gradient(100deg,#6d28d9,#db2777);color:#fff;border-radius:18px;padding:12px 18px;display:flex;gap:14px;align-items:center;box-shadow:0 6px 16px rgba(109,40,217,.25)}
+.q .n{flex:none;font:800 14px var(--f-mono);background:rgba(255,255,255,.2);border-radius:10px;padding:6px 10px}
+.q .t{flex:1;font-size:clamp(18px,2.3vw,26px);font-weight:800;line-height:1.2}
+.q .t small{display:block;font-size:14px;font-weight:600;opacity:.9}
+.q .fb{flex:none;font-weight:800;font-size:16px;min-width:120px;text-align:right}
+.board{background:#fff;border:1px solid var(--line);border-radius:18px;padding:10px;overflow-x:auto}
+.pt{display:grid;grid-template-columns:34px repeat(18,minmax(38px,1fr));gap:4px;min-width:860px}
+.gh,.ph{font:800 14px var(--f-mono);color:var(--ink);display:grid;place-items:center}
+.gh{height:22px}.ph{font-size:16px}
+.cell{aspect-ratio:1/0.9;border-radius:8px;border:2px solid;cursor:pointer;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;font:inherit;padding:0;transition:transform .15s}
+.cell:hover{transform:scale(1.07);z-index:2;box-shadow:0 4px 12px rgba(0,0,0,.12)}
+.c-met{background:var(--met);border-color:var(--metb)}.c-non{background:var(--non);border-color:var(--nonb)}.c-semi{background:var(--semi);border-color:var(--semib)}.c-nob{background:var(--nob);border-color:var(--nobb)}.c-f{background:var(--f);border-color:var(--fb)}
+.cell .z{font:700 10px var(--f-mono);color:var(--muted);position:absolute;top:2px;left:4px}
+.cell .s{font:800 clamp(13px,1.5vw,20px) var(--f-mono);color:var(--ink)}
+.cell.open .s{animation:pop .45s}
+@keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.3)}100%{transform:scale(1)}}
+.cell.wrong{animation:shake .4s;border-color:var(--bad)!important;background:#fecaca!important}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.cell.hint{box-shadow:0 0 0 4px var(--gold);animation:glow 1s infinite alternate}
+@keyframes glow{to{box-shadow:0 0 0 7px rgba(245,158,11,.4)}}
+.cell.just{box-shadow:0 0 0 4px var(--ok)}
+.star{display:grid;place-items:center;font:800 18px var(--f-mono);color:var(--fb)}
+.frow{display:grid;grid-template-columns:34px repeat(18,minmax(38px,1fr));gap:4px;min-width:860px;margin-top:10px}
+.flab{grid-column:1/4;font-weight:800;color:#5b3fa6;font-size:14px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:14px;font-weight:700;margin-top:6px}
+.legend i{display:inline-block;width:16px;height:16px;border-radius:4px;border:2px solid;margin-right:5px;vertical-align:-3px}
+.info{background:#fff;border:2px solid var(--line);border-radius:16px;padding:10px 14px;display:flex;gap:14px;align-items:center;min-height:74px}
+.info .big{flex:none;width:66px;height:66px;border-radius:12px;border:2px solid;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.info .big b{font:800 26px var(--f-mono)}.info .big span{font:700 11px var(--f-mono);color:var(--muted)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{font-family:var(--f-display);font-size:15px;border:3px solid var(--ink);border-radius:14px;padding:10px 16px;cursor:pointer;color:#fff;background:var(--accent);box-shadow:0 4px 0 var(--ink)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.btn.light{background:#fff;color:var(--ink)}.btn.green{background:var(--ok)}.btn.gold{background:var(--gold);color:var(--ink)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.card{background:#fff;border:3px solid var(--ink);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px;box-shadow:0 5px 0 var(--ink)}
+.final{font-family:var(--f-display);font-size:42px;color:var(--ok)}
+.msg{font-weight:700;padding:9px 12px;border-radius:12px}
+.msg.ok{background:#e8f8ee;color:#166534}.msg.bad{background:#fdecec;color:#991b1b}.msg.info{background:#ede9fe;color:#4c1d95}
+.hint{margin:0;color:var(--muted);font-size:15px}
+input[type=text],select{font:inherit;font-size:17px;padding:11px 13px;border-radius:12px;border:2px solid var(--ink);background:#fff;color:var(--ink);width:100%}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.overlay{position:fixed;inset:0;z-index:30;background:rgba(30,42,74,.6);display:flex;align-items:center;justify-content:center;padding:20px max(16px,env(safe-area-inset-right,0px)) 20px max(16px,env(safe-area-inset-left,0px))}
+.overlay .card{max-width:560px;width:100%}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media (max-width:520px){.grid2{grid-template-columns:1fr}}
+.lbl{font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){.cell.open .s,.cell.wrong,.cell.hint{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div><div class="eb">Хімія · 7 клас · будова періодичної системи</div><h1>🔎 Знайди елемент!</h1></div>
+    <div class="stats"><span class="st" id="who"></span><span class="st">Питання <b id="qn">0</b>/12</span><span class="st">Бали <b id="sc">0</b>/12</span><span class="st">Серія 🔥 <b id="streak">0</b></span><span class="st">⏱ <b id="clock">0:00</b></span></div>
+  </div>
+  <div class="q" id="qbox"><span class="n" id="qtag">?</span><div class="t" id="qtext">Натисни «Почати»</div><span class="fb" id="qfb"></span></div>
+  <div class="board">
+    <div class="pt" id="pt"></div>
+    <div id="frows"></div>
+    <div class="legend"><span><i style="background:var(--met);border-color:var(--metb)"></i>металічні елементи</span><span><i style="background:var(--non);border-color:var(--nonb)"></i>неметалічні елементи</span><span><i style="background:var(--semi);border-color:var(--semib)"></i>напівметали</span><span><i style="background:var(--nob);border-color:var(--nobb)"></i>інертні (благородні) гази</span><span><i style="background:var(--f);border-color:var(--fb)"></i>лантаноїди й актиноїди</span></div>
+  </div>
+  <div class="info" id="info"><span class="hint">Тут з'явиться картка знайденого елемента.</span></div>
+  <section class="card" id="fin" hidden>
+    <span class="lbl">Раунд завершено</span>
+    <div class="row"><span>Результат: <span class="final" id="finScore">0</span> / 12</span><span class="hint" id="finInfo"></span></div>
+    <div class="row"><button class="btn green" type="button" id="submit">Надіслати вчителю</button><button class="btn light" type="button" id="train">Тренуватися далі (без балів)</button></div>
+    <div id="sendMsg"></div>
+  </section>
+</div>
+
+<div class="overlay" id="start">
+  <div class="card">
+    <span class="lbl">Гра</span>
+    <h2 style="margin:0;font-family:var(--f-display);font-size:22px">🔎 Знайди елемент у періодичній системі</h2>
+    <p style="margin:0">Таблиця порожня. Тобі випадатимуть <b>12 завдань</b>: «3 період, 14 група», «елемент № 20», «де живе Хлор?»… Знайди потрібну клітинку й натисни на неї — там з'явиться елемент!</p>
+    <p class="hint">З першої спроби — 1 бал, з другої — 0,5. Після двох помилок клітинка підсвітиться. Горизонтальні ряди — <b>періоди</b>, вертикальні стовпчики — <b>групи</b>.</p>
+    <div class="grid2">
+      <div><label class="lbl" for="pname">Прізвище та ім'я</label><input type="text" id="pname" maxlength="60" autocomplete="name" placeholder="Іваненко Олена"></div>
+      <div><label class="lbl" for="pcls">Клас</label><select id="pcls"><option value="">— обери —</option><option>7-А</option><option>7-Б</option><option>Інший</option></select></div>
+    </div>
+    <p class="msg bad" id="startErr" hidden>Впиши прізвище, ім'я та обери клас.</p>
+    <div class="row"><button class="btn gold" id="startBtn" type="button">Почати</button></div>
+  </div>
+</div>
+
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="pstable7";
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const pick=a=>a[Math.random()*a.length|0];
+const fmt=x=>String(Math.round(x*10)/10).replace(".",",");
+const SYM="H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge As Se Br Kr Rb Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te I Xe Cs Ba La Ce Pr Nd Pm Sm Eu Gd Tb Dy Ho Er Tm Yb Lu Hf Ta W Re Os Ir Pt Au Hg Tl Pb Bi Po At Rn Fr Ra Ac Th Pa U Np Pu Am Cm Bk Cf Es Fm Md No Lr Rf Db Sg Bh Hs Mt Ds Rg Cn Nh Fl Mc Lv Ts Og".split(" ");
+const NAME={1:"Гідроген",2:"Гелій",3:"Літій",4:"Берилій",5:"Бор",6:"Карбон",7:"Нітроген",8:"Оксиген",9:"Флуор",10:"Неон",11:"Натрій",12:"Магній",13:"Алюміній",14:"Силіцій",15:"Фосфор",16:"Сульфур",17:"Хлор",18:"Аргон",19:"Калій",20:"Кальцій",21:"Скандій",22:"Титан",23:"Ванадій",24:"Хром",25:"Манган",26:"Ферум",27:"Кобальт",28:"Нікол",29:"Купрум",30:"Цинк",31:"Галій",32:"Германій",33:"Арсен",34:"Селен",35:"Бром",36:"Криптон",37:"Рубідій",38:"Стронцій",47:"Аргентум",50:"Станум",53:"Йод",54:"Ксенон",55:"Цезій",56:"Барій",78:"Платина",79:"Аурум",80:"Меркурій",82:"Плюмбум",86:"Радон",92:"Уран"};
+const NAMEGEN={1:"Гідрогену",2:"Гелію",3:"Літію",6:"Карбону",7:"Нітрогену",8:"Оксигену",9:"Флуору",10:"Неону",11:"Натрію",12:"Магнію",13:"Алюмінію",14:"Силіцію",15:"Фосфору",16:"Сульфуру",17:"Хлору",18:"Аргону",19:"Калію",20:"Кальцію",24:"Хрому",26:"Феруму",29:"Купруму",30:"Цинку",35:"Брому",47:"Аргентуму",53:"Йоду",79:"Ауруму",80:"Меркурію"};
+/* позиція */
+function pos(z){if(z===1)return[1,1];if(z===2)return[1,18];
+  const P=[[3,10,2],[11,18,3],[19,36,4],[37,54,5],[55,86,6],[87,118,7]];
+  for(const[a,b,p]of P)if(z>=a&&z<=b){
+    if(p<=3){const k=z-a;return[p,k<2?k+1:k+11]}
+    if(p<=5)return[p,z-a+1];
+    if(z>=a+3&&z<=a+16)return[p,"f"];// La..Lu / Ac..Lr (57–71: a+2..a+16)
+    const k=z-a;return[p,k<2?k+1:k===2?3:k-14+1]}}
+function fixPos(z){const[p,g]=pos(z);
+  if(p===6||p===7){const a=p===6?55:87;if(z>=a+2&&z<=a+16)return[p,"f",z-(a+2)];return[p,z<a+2?z-a+1:z-a-14+1+0]}
+  return[p,g]}
+const NOB=[2,10,18,36,54,86,118],SEMI=[5,14,32,33,51,52],NON=[1,6,7,8,9,15,16,17,34,35,53,85,117];
+const cat=z=>NOB.includes(z)?"nob":SEMI.includes(z)?"semi":NON.includes(z)?"non":((z>=57&&z<=71)||(z>=89&&z<=103))?"f":"met";
+const CATN={nob:"інертний (благородний) газ",semi:"напівметал",non:"неметалічний елемент",met:"металічний елемент",f:"лантаноїд / актиноїд"};
+const EL=[];for(let z=1;z<=118;z++){const[p,g,fi]=fixPos(z);EL.push({z,s:SYM[z-1],p,g,fi,c:cat(z)})}
+/* перевірка: p2: B=13; p3 Al=13 */
+/* ---------- побудова таблиці ---------- */
+function buildBoard(){let h=`<span></span>`;for(let g=1;g<=18;g++)h+=`<span class="gh">${g}</span>`;
+  for(let p=1;p<=7;p++){h+=`<span class="ph">${p}</span>`;for(let g=1;g<=18;g++){const e=EL.find(x=>x.p===p&&x.g===g);
+    if(e)h+=`<button class="cell c-${e.c}" type="button" data-z="${e.z}" aria-label="Період ${p}, група ${g}"><span class="z"></span><span class="s"></span></button>`;
+    else if(g===3&&p>=6)h+=`<span class="star">${p===6?"*":"**"}</span>`;else h+=`<span></span>`}}
+  $("pt").innerHTML=h;
+  let f="";[[6,"* Лантаноїди"],[7,"** Актиноїди"]].forEach(([p,l])=>{f+=`<div class="frow"><span class="flab">${l}</span>`;EL.filter(x=>x.p===p&&x.g==="f").forEach(e=>f+=`<button class="cell c-f" type="button" data-z="${e.z}"><span class="z"></span><span class="s"></span></button>`);f+=`</div>`});
+  $("frows").innerHTML=f;
+  document.querySelectorAll(".cell").forEach(c=>c.onclick=()=>clickCell(+c.dataset.z,c));
+}
+function reveal(z,just){const c=document.querySelector(`.cell[data-z="${z}"]`);if(!c)return;c.classList.add("open");c.querySelector(".s").textContent=EL[z-1].s;c.querySelector(".z").textContent=z;
+  document.querySelectorAll(".cell.just").forEach(x=>x.classList.remove("just"));if(just)c.classList.add("just")}
+function showInfo(z){const e=EL[z-1];$("info").innerHTML=`<div class="big c-${e.c}"><span>${z}</span><b>${e.s}</b></div><div><b style="font-size:20px">${NAME[z]||e.s}</b><div>№ ${z} · ${e.p} період · ${e.g==="f"?"лантаноїди/актиноїди":e.g+" група"}</div><div class="hint">${CATN[e.c]}</div></div>`}
+
+/* ---------- генератор питань ---------- */
+const MAIN=EL.filter(e=>e.z<=38||[47,50,53,54,55,56,79,80,82,86].includes(e.z));
+function pickBal(a){const ps=[...new Set(a.map(e=>e.p))];const p=pick(ps);return pick(a.filter(e=>e.p===p))}
+function genQ(used){
+  const free=MAIN.filter(e=>!used.has(e.z)),t=pick(["pg","pg","pg","num","num","name","family"]);
+  if(t==="family"){const fams=[["інертний (благородний) газ",e=>e.g===18],["лужний металічний елемент (1 група, не Гідроген)",e=>e.g===1&&e.z!==1],["галоген (17 група)",e=>e.g===17],["елемент 2 групи",e=>e.g===2]];
+    const[fn,f]=pick(fams),opts=free.filter(e=>f(e)&&e.p>=2&&e.p<=5);if(opts.length){const e=pick(opts);return{z:e.z,tag:"Родина",text:`Знайди: ${fn} ${e.p}-го періоду`}}}
+  if(t==="name"){const opts=free.filter(e=>NAMEGEN[e.z]);if(opts.length){const e=pick(opts);return{z:e.z,tag:"Назва",text:`Де розташований елемент ${NAME[e.z]}?`,sub:"Згадай його символ або знайди за порядковим номером у підручнику"}}}
+  if(t==="num"){const e=pickBal(free.filter(e=>e.z<=56));return{z:e.z,tag:"№",text:`Знайди елемент з порядковим номером ${e.z}`,sub:"Рахуй клітинки зліва направо, рядок за рядком"}}
+  const e=pickBal(free.filter(e=>e.z<=56&&e.z>2));return{z:e.z,tag:"Адреса",text:`Знайди елемент: ${e.p} період, ${e.g} група`}
+}
+/* ---------- гра ---------- */
+let ME={},mode="test",Qs=[],qi=0,tries=0,score=0,streak=0,best=0,t0=0,tick=null,used=new Set(),log=[];
+function newQ(){const q=genQ(used);used.add(q.z);Qs.push(q);tries=0;
+  $("qtag").textContent=q.tag;$("qtext").innerHTML=q.text+(q.sub?`<small>${q.sub}</small>`:"");$("qfb").textContent="";
+  $("qn").textContent=mode==="test"?Qs.length:"∞";document.querySelectorAll(".cell.hint").forEach(c=>c.classList.remove("hint"))}
+function clickCell(z,c){if(!Qs.length||busy)return;const q=Qs[Qs.length-1];
+  if(z===q.z){const pts=tries===0?1:tries===1?0.5:0;if(mode==="test"){score+=pts;log.push({z:q.z,t:q.tag,pts})}
+    streak=tries===0?streak+1:0;best=Math.max(best,streak);
+    reveal(z,true);showInfo(z);$("qfb").textContent=pts===1?"✓ +1":pts?"✓ +0,5":"✓";upd();next()}
+  else{tries++;c.classList.remove("wrong");void c.offsetWidth;c.classList.add("wrong");setTimeout(()=>c.classList.remove("wrong"),700);streak=0;
+    const e=EL[z-1];$("qfb").textContent=`✗ це ${e.p} період, ${e.g==="f"?"f-ряд":e.g+" група"}`;
+    if(tries>=2){document.querySelector(`.cell[data-z="${q.z}"]`).classList.add("hint");$("qfb").textContent="Підказка: клітинка світиться"}
+    upd()}}
+let busy=false;
+function next(){busy=true;setTimeout(()=>{busy=false;if(mode==="test"&&Qs.length>=12){finish();return}newQ()},900)}
+function upd(){$("sc").textContent=fmt(score);$("streak").textContent=streak}
+function clock(){const s=Math.floor((Date.now()-t0)/1000);$("clock").textContent=`${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`}
+function finish(){clearInterval(tick);$("fin").hidden=false;$("finScore").textContent=fmt(score);
+  $("finInfo").textContent=`Найдовша серія без помилок: ${best} · час ${$("clock").textContent}`;
+  $("qtag").textContent="★";$("qtext").innerHTML="Раунд завершено! Надішли результат учителю.";$("qfb").textContent="";$("fin").scrollIntoView({behavior:"smooth"})}
+$("train").onclick=()=>{mode="train";$("fin").hidden=true;$("qbox").scrollIntoView({behavior:"smooth"});if(used.size>=MAIN.length-3)used=new Set();newQ()};
+$("startBtn").onclick=()=>{const n=$("pname").value.trim(),c=$("pcls").value;if(n.length<3||!c){$("startErr").hidden=false;return}
+  ME={name:n.slice(0,60),cls:c};$("who").textContent="👤 "+ME.name+" · "+ME.cls;$("start").hidden=true;t0=Date.now();tick=setInterval(clock,500);newQ()};
+let sent=false;
+$("submit").onclick=async()=>{const box=$("sendMsg");if(sent)return;$("submit").disabled=true;box.className="msg info";box.textContent="Надсилаю…";
+  const sec=Math.round((Date.now()-t0)/1000);
+  const types={};log.forEach(l=>{types[l.t]=types[l.t]||[0,0];types[l.t][0]+=l.pts;types[l.t][1]++});
+  const rec={name:ME.name,cls:ME.cls,score,max:12,ts:{".sv":"timestamp"},sec,streak:best,
+    byType:Object.entries(types).map(([k,[a,b]])=>`${k} ${fmt(a)}/${b}`).join("; "),miss:log.filter(l=>l.pts<1).map(l=>EL[l.z-1].s).join(", ")};
+  try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec)});if(!r.ok)throw new Error(r.status);
+    sent=true;box.className="msg ok";box.textContent=`✓ Результат отримано вчителем: ${fmt(score)} / 12. Можеш тренуватися далі!`;
+  }catch(e){$("submit").disabled=false;box.className="msg bad";box.textContent="Не вдалося надіслати. Перевір інтернет і натисни ще раз."}};
+buildBoard();
+</script>
+</body>
+</html>
