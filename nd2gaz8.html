@@ -99,6 +99,32 @@ input.v.ok{border-color:var(--ok);background:#f0fdf4}input.v.no{border-color:var
 @keyframes fall{from{transform:translateY(0)}to{transform:translateY(70px)}}
 @media (prefers-reduced-motion:reduce){.bub,.lvl{animation:none}}
 a.btn{text-decoration:none;display:inline-block}
+.lab{border-radius:22px;padding:14px;background:linear-gradient(135deg,#7c3aed 0%,#2563eb 45%,#06b6d4 100%);display:flex;flex-direction:column;gap:14px;color:#fff;position:relative;overflow:hidden}
+.lab::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 15% 10%,rgba(255,255,255,.25),transparent 40%),radial-gradient(circle at 90% 80%,rgba(250,204,21,.25),transparent 45%);pointer-events:none}
+.lab>*{position:relative}
+.lab h3{margin:0;font-family:var(--f-display);font-size:17px;letter-spacing:.01em;text-shadow:0 2px 0 rgba(0,0,0,.25)}
+.lab .sub{font-size:14.5px;opacity:.95;margin:0}
+.inst{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.ic{background:#fff;color:var(--ink);border-radius:18px;padding:10px;display:flex;flex-direction:column;gap:8px;align-items:center;border:3px solid #fde047;box-shadow:0 6px 0 rgba(0,0,0,.18)}
+.ic b{font-size:15px}
+.ic svg{width:100%;height:auto;max-height:300px}
+.lens{width:min(230px,100%);aspect-ratio:1;border-radius:50%;border:6px solid #1c1917;overflow:hidden;background:#fff;box-shadow:0 0 0 4px #fde047,0 8px 20px rgba(0,0,0,.3)}
+.lens svg{width:100%;height:100%;max-height:none;display:block}
+.bench{background:#fff;border-radius:18px;border:3px solid #fde047;box-shadow:0 6px 0 rgba(0,0,0,.18);overflow:hidden}
+.bench svg{display:block;width:100%;height:auto}
+.benchrow{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:12px;align-items:start}
+@media (max-width:760px){.benchrow{grid-template-columns:1fr}}
+.side2{display:flex;flex-direction:column;gap:10px;align-items:center}
+.lcd{background:#1f2937;border-radius:12px;padding:10px 14px;width:100%;text-align:right;font:800 30px var(--f-mono);color:#4ade80;text-shadow:0 0 10px rgba(74,222,128,.7);letter-spacing:.04em}
+.scale{background:linear-gradient(#e5e7eb,#cbd5e1);border-radius:16px;padding:10px;width:100%;border:2px solid #94a3b8;color:var(--ink);display:flex;flex-direction:column;gap:6px;align-items:center}
+.lbtn{font-family:var(--f-display);font-size:14px;border:3px solid #1c1917;border-radius:14px;padding:9px 14px;cursor:pointer;color:#1c1917;background:#fde047;box-shadow:0 4px 0 #1c1917;width:100%}
+.lbtn:active{transform:translateY(3px);box-shadow:0 1px 0 #1c1917}
+.lbtn.pink{background:#f9a8d4}.lbtn.mint{background:#86efac}.lbtn.sky{background:#7dd3fc}
+.lbtn[disabled]{opacity:.45;cursor:not-allowed}
+.lstat{font-weight:800;font-size:14.5px;background:rgba(255,255,255,.18);border:2px dashed rgba(255,255,255,.6);border-radius:12px;padding:8px 10px;width:100%}
+.rec{background:#fff;color:var(--ink);border-radius:16px;padding:10px 12px;border:3px solid #fde047}
+@keyframes up2{from{transform:translateY(0);opacity:1}to{transform:translateY(-60px);opacity:0}}
+.b2{animation:up2 1.2s linear infinite}
 </style>
 </head>
 <body>
@@ -112,7 +138,7 @@ a.btn{text-decoration:none;display:inline-block}
 
   <section class="card">
     <h2><span class="no">▶</span>Демонстрація досліду</h2>
-    <p class="hint">Переглянь відео дослідження повністю. Під час кроку 7 зупиняй відео (пауза) і записуй числа: об'єми, масу, температуру й тиск.</p>
+    <p class="hint">Переглянь відео дослідження повністю. Потім у кроці 7 проведеш ці досліди сам у яскравій віртуальній лабораторії — зі своїми числами!</p>
     <div class="row"><a class="btn" href="https://ua.izzi.digital/DOS/1265662/1404516.html#block-16209219" target="_blank" rel="noopener">▶ Відкрити відео досліду</a><span class="hint">Відео не відкривається? Воно є в матеріалах уроку в Google Класі.</span></div>
     <div class="demo">
       <svg viewBox="0 0 640 300" aria-label="Схема: газ з колби по трубці збирається в перевернутий мірний циліндр і витісняє з нього воду">
@@ -203,7 +229,7 @@ const STEPS=[
          "Додати каталізатор (сухі дріжджі), одразу закрити колбу корком і підвести кінець газовідвідної трубки під отвір циліндра.",
          "Коли газ перестане виділятися, виміряти об'єм зібраного кисню за поділками циліндра.",
          "Повторити дослід із наважкою крейди та оцтом (CO₂ збирати над розчином NaCl), звести об'єми газів до н. у. й обчислити Vm."]},
- {id:"res",n:7,pts:4,t:"Результати й обчислення",type:"res"},
+ {id:"res",n:7,pts:4,t:"Віртуальна лабораторія: вимірювання й обчислення",hint:"2 бали — за точні покази приладів, 2 бали — за обчислення (перевіряються за твоїми ж даними).",type:"res"},
  {id:"concl",n:8,pts:2,t:"Висновок",type:"concl"}
 ];
 
@@ -273,42 +299,96 @@ B.order=s=>{if("order" in SCORE)return;const u=UI.order;
   document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{const j=+b.dataset.go;u.pool=u.pool.filter(x=>x!==j);u.seq.push(j);render()});
   document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>{const j=+b.dataset.back;u.seq=u.seq.filter(x=>x!==j);u.pool.push(j);render()});
   document.querySelector('[data-chk="order"]').onclick=()=>{if(u.pool.length)return warn(s,"Розстав усі 6 кроків.");SCORE.order=u.seq.every((j,i)=>j===i)?1:0;render()}};
-/* результати */
+/* результати: віртуальна лабораторія */
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const LAB=(()=>{const t=Math.round(rnd(18,24)),pmm=Math.round(rnd(742,766)),pPa=pmm*133.322,T=t+273.15,k=22.414*(T/273.15)*(101325/pPa)*1000;
+  const mp=+rnd(7,8.6).toFixed(2),mc=+rnd(0.26,0.33).toFixed(2);
+  return {t,pmm,mp,mc,vo:Math.round(mp*0.03/68*k*rnd(.965,.995)),vc:Math.round(mc/100*k*rnd(.95,.98))}})();
+const LS={1:{st:0,lv:0,zoom:false},2:{st:0,lv:0,zoom:false}};let ZT=false,ZB=false;
 const FIELDS=[
- ["t","Температура в кімнаті, °C"],["p","Атмосферний тиск, Па"],
- ["mp","Маса розчину H₂O₂ (3 %), г"],["vo","Виміряний об'єм O₂, мл"],["no","n(O₂), моль — обчисли"],["vno","V(O₂) за н. у., мл — обчисли"],["mo","Vm(O₂), л/моль — обчисли"],
- ["mc","Маса крейди CaCO₃, г"],["vc","Виміряний об'єм CO₂, мл"],["nc","n(CO₂), моль — обчисли"],["vnc","V(CO₂) за н. у., мл — обчисли"],["mcv","Vm(CO₂), л/моль — обчисли"]];
-const CALC=["no","vno","mo","nc","vnc","mcv"];
-const inp=(k,lab)=>{const done="res" in SCORE,c=done&&REC.chk&&k in REC.chk?(REC.chk[k]?"ok":"no"):"";return `<label>${lab}<input class="v ${c}" inputmode="decimal" data-d="${k}" value="${esc(DATA[k]??"")}" ${done?"readonly":""}></label>`};
-function expect(){const d=k=>num(DATA[k]),k0=d("p")*0.0027/(d("t")+273.15);const nO=d("mp")*0.03/34/2,nC=d("mc")/100,vno=d("vo")*k0,vnc=d("vc")*k0;
-  return {no:nO,vno,mo:vno/1000/nO,nc:nC,vnc,mcv:vnc/1000/nC}}
+ ["t","Температура, °C",1],["pmm","Тиск за барометром, мм рт. ст.",1],["p","Тиск, Па — переведи",0],
+ ["mp","Маса розчину H₂O₂ (3 %), г",1],["vo","Об'єм O₂ у циліндрі, мл",1],["no","n(O₂), моль",0],["vno","V(O₂) за н. у., мл",0],["mo","Vm(O₂), л/моль",0],
+ ["mc","Маса крейди CaCO₃, г",1],["vc","Об'єм CO₂ у циліндрі, мл",1],["nc","n(CO₂), моль",0],["vnc","V(CO₂) за н. у., мл",0],["mcv","Vm(CO₂), л/моль",0]];
+const READ={t:[LAB.t,.5],pmm:[LAB.pmm,1],mp:[LAB.mp,.011],vo:[LAB.vo,1],mc:[LAB.mc,.011],vc:[LAB.vc,1]};
+const inp=k=>{const f=FIELDS.find(x=>x[0]===k),done="res" in SCORE,c=done&&REC.chk&&k in REC.chk?(REC.chk[k]?"ok":"no"):"";return `<label>${f[2]?"👁 ":"🧮 "}${f[1]}<input class="v ${c}" inputmode="decimal" data-d="${k}" value="${esc(DATA[k]??"")}" ${done?"readonly":""}></label>`};
+/* прилади */
+function thermo(){let h=`<rect x="44" y="20" width="22" height="270" rx="11" fill="#f8fafc" stroke="#1c1917" stroke-width="2.5"/><circle cx="55" cy="296" r="18" fill="#ef4444" stroke="#1c1917" stroke-width="2.5"/>
+  <rect x="50" y="${280-6*LAB.t}" width="10" height="${6*LAB.t+20}" fill="#ef4444"/>`;
+  for(let v=0;v<=40;v++){const y=280-6*v,L=v%10?v%5?6:10:16;h+=`<line x1="66" y1="${y}" x2="${66+L}" y2="${y}" stroke="#1c1917" stroke-width="${v%5?1:1.6}"/>`;if(v%10===0)h+=`<text x="86" y="${y+4}" font-size="11" font-family="Arial" fill="#1c1917">${v}</text>`}
+  return h+`<text x="96" y="20" font-size="11" font-family="Arial" font-weight="700">°C</text>`}
+function baro(){const ang=v=>(-140+(v-720)*4)*Math.PI/180,P=(v,r)=>[120+r*Math.sin(ang(v)),120-r*Math.cos(ang(v))];
+  let h=`<circle cx="120" cy="120" r="112" fill="#fef3c7" stroke="#1c1917" stroke-width="4"/><circle cx="120" cy="120" r="104" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>`;
+  for(let v=720;v<=790;v++){const L=v%10?v%5?6:10:16,[x1,y1]=P(v,100),[x2,y2]=P(v,100-L);h+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#1c1917" stroke-width="${v%5?1:1.6}"/>`;
+    if(v%10===0){const [x,y]=P(v,74);h+=`<text x="${x}" y="${y+4}" font-size="11" text-anchor="middle" font-family="Arial" fill="#1c1917">${v}</text>`}}
+  const [nx,ny]=P(LAB.pmm,98);
+  return h+`<text x="120" y="165" font-size="10" text-anchor="middle" font-family="Arial" font-weight="700">мм рт. ст.</text><text x="120" y="182" font-size="9" text-anchor="middle" font-family="Arial">БАРОМЕТР</text>
+   <line x1="120" y1="120" x2="${nx}" y2="${ny}" stroke="#dc2626" stroke-width="2"/><circle cx="120" cy="120" r="7" fill="#1c1917"/>`}
+function baroTip(){const a=(-140+(LAB.pmm-720)*4)*Math.PI/180;return [120+92*Math.sin(a),120-92*Math.cos(a)]}
+/* стенд */
+function bench(e){const L=LS[e],gasY=30+2.5*L.lv,react=L.st===3,liquid=L.st>=2,closed=L.st>=3;
+  const water=e===1?"#7dd3fc":"#a5b4fc",fl=e===1?"#e0f2fe":"#fef3c7";
+  let h=`<rect x="0" y="300" width="600" height="30" fill="#c084fc"/><rect x="0" y="300" width="600" height="5" fill="#a855f7"/>
+   <rect x="20" y="30" width="8" height="270" fill="#475569"/><rect x="20" y="292" width="80" height="10" fill="#475569"/><rect x="28" y="140" width="62" height="7" fill="#475569"/>
+   <path d="M105 105v60l-55 120a8 8 0 0 0 7 12h112a8 8 0 0 0 7-12l-55-120v-60" fill="#fff" fill-opacity=".7" stroke="#1c1917" stroke-width="3"/>`;
+  if(liquid)h+=`<path d="M78 228h70l25 54a6 6 0 0 1-5 9H58a6 6 0 0 1-5-9z" fill="${fl}" stroke="${e===1?"#38bdf8":"#f59e0b"}" stroke-width="1.5"/>`;
+  if(closed&&e===1)h+=`<g fill="#d6b56d">${[70,92,112,135,155].map((x,i)=>`<circle cx="${x}" cy="${282-(i%2)*4}" r="4"/>`).join("")}</g>`;
+  if(closed&&e===2)h+=`<g fill="#fff" stroke="#94a3b8">${[85,110,140].map(x=>`<rect x="${x}" y="274" width="12" height="10" rx="2"/>`).join("")}</g>`;
+  if(react)h+=[80,100,118,138,156,95,128].map((x,i)=>`<circle class="b2" cx="${x}" cy="${280-i%3*8}" r="${3+i%2}" fill="#fff" stroke="#0ea5e9" style="animation-delay:${i*.17}s"/>`).join("");
+  if(closed)h+=`<rect x="100" y="88" width="30" height="22" rx="3" fill="#1f2937"/>`;
+  h+=`<rect x="300" y="190" width="270" height="112" rx="10" fill="${water}" fill-opacity=".55" stroke="#1c1917" stroke-width="3"/>`;
+  if(closed)h+=`<path d="M115 88V48H330V294H425V286" fill="none" stroke="#1c1917" stroke-width="6" stroke-linejoin="round"/><path d="M115 88V48H330V294H425V286" fill="none" stroke="#f1f5f9" stroke-width="2.5" stroke-linejoin="round"/>`;
+  h+=`<rect x="400" y="20" width="50" height="10" fill="#e2e8f0"/><rect x="400" y="30" width="50" height="262" fill="${water}"/><rect x="400" y="30" width="50" height="${gasY-30}" fill="#f8fafc"/>
+   <path d="M400 ${gasY} q25 5 50 0" fill="none" stroke="#1e3a8a" stroke-width="2"/>`;
+  if(react)h+=`<circle class="b2" cx="425" cy="284" r="4" fill="#fff" stroke="#0ea5e9"/><circle class="b2" cx="420" cy="284" r="3" fill="#fff" stroke="#0ea5e9" style="animation-delay:.6s"/>`;
+  for(let v=0;v<=100;v++){const y=30+2.5*v,Lt=v%10?v%5?6:10:16;h+=`<line x1="400" y1="${y}" x2="${400+Lt}" y2="${y}" stroke="#1c1917" stroke-width="${v%5?.8:1.4}"/>`;if(v%10===0)h+=`<text x="395" y="${y+4}" font-size="10" text-anchor="end" font-family="Arial" fill="#1c1917">${v}</text>`}
+  h+=`<path d="M400 20V292M450 20V292M400 20H450" fill="none" stroke="#1c1917" stroke-width="3"/>
+   <rect x="450" y="110" width="110" height="9" fill="#475569"/><rect x="556" y="10" width="9" height="292" fill="#475569"/>
+   <text x="460" y="40" font-size="12" font-family="Arial" font-weight="700" fill="#5b21b6">мл</text>`;
+  return h}
+function lensBench(e){const y=30+2.5*LS[e].lv;return `<svg viewBox="372 ${y-32} 64 64">${bench(e)}</svg>`}
+function expBlock(e){const L=LS[e],m=e===1?LAB.mp:LAB.mc,done=L.st===4;
+  const steps=e===1?["⚖️ Зважити розчин H₂O₂ (3 %)","🧪 Налити розчин у колбу","🍞 Додати сухі дріжджі й закрити корком"]:["⚖️ Зважити наважку крейди","🧪 Налити оцет у колбу","🪨 Внести крейду й закрити корком"];
+  const msg=["Почни зі зважування.","Запиши масу з табло ваг у таблицю нижче.","Тепер додай "+(e===1?"каталізатор":"крейду")+" й швидко закрий колбу корком з газовідвідною трубкою.","⏳ Іде реакція: газ витісняє "+(e===1?"воду":"розчин NaCl")+" з циліндра…","✅ Газ більше не виділяється. Натисни «Лупа» й зніми показ шкали за нижнім краєм меніска."][L.st];
+  return `<div class="benchrow"><div class="bench"><svg viewBox="0 0 600 330" id="bench${e}">${bench(e)}</svg></div>
+   <div class="side2"><div class="scale"><b style="font-size:13px">Електронні ваги</b><div class="lcd">${L.st>=1?m.toFixed(2):"0.00"} г</div></div>
+   ${steps.map((t,i)=>`<button class="lbtn ${["","sky","pink"][i]}" type="button" data-lab="${e}" data-st="${i+1}" ${L.st!==i?"disabled":""}>${t}</button>`).join("")}
+   <button class="lbtn mint" type="button" data-zoom="${e}" ${done?"":"disabled"}>🔍 Лупа ${L.zoom?"(сховати)":""}</button>
+   ${L.zoom?`<div class="lens">${lensBench(e)}</div>`:""}</div></div><div class="lstat">${msg}</div>`}
+function chain(){const d=k=>num(DATA[k]),p=d("p"),k0=p*0.0027/(d("t")+273.15);
+  return {p:d("pmm")*133.322,no:d("mp")*0.03/34/2,vno:d("vo")*k0,mo:d("vno")/1000/d("no"),nc:d("mc")/100,vnc:d("vc")*k0,mcv:d("vnc")/1000/d("nc")}}
 R.res=s=>{const done="res" in SCORE,locked=!("hyp" in SCORE);
   if(locked)return `<p class="hint">🔒 Спершу запиши гіпотезу (крок 2).</p>`;
-  let fb="";if(done){const e=expect();
-    fb=`<div class="fb ${SCORE.res===4?"ok":"info"}">Правильних обчислень ${REC.res}: +${fmt(SCORE.res)} б. Зелене — правильно, червоне — з помилкою. Перевірка за твоїми даними:<br>
-     O₂: n ≈ ${f3(e.no)} моль, V(н. у.) ≈ ${f3(e.vno)} мл, Vm ≈ ${f3(e.mo)} л/моль<br>CO₂: n ≈ ${f3(e.nc)} моль, V(н. у.) ≈ ${f3(e.vnc)} мл, Vm ≈ ${f3(e.mcv)} л/моль<br>Порівняй із 22,4 л/моль!</div>`}
-  return `<p class="hint">Зупиняй відео й записуй виміряні числа. Потім виконай обчислення (дробові числа пиши через кому, наприклад 0,0045). Обчислення перевіряються за <b>твоїми</b> даними.</p>
-  <div class="exp"><h3>🌡️ Умови досліду</h3><div class="num">${inp("t",FIELDS[0][1])}${inp("p",FIELDS[1][1])}</div>
-   <div class="formula">Зведення об'єму газу до нормальних умов (н. у.):<br>V(газу за н. у.) = V(газу) · p(Па) · 0,0027 / (t(°C) + 273,15)</div>
-   <p class="hint" style="font-size:13.5px">Тиск — у паскалях: наприклад, 100 500 Па (= 100,5 кПа). Якщо барометр показує мм рт. ст.: p (Па) = мм рт. ст. × 133,3.</p></div>
-  <div class="exp"><h3>Дослід 1. Кисень із пероксиду гідрогену (каталізатор — сухі дріжджі)</h3>
-   <div class="formula">2H₂O₂ → 2H₂O + O₂↑<br>m(H₂O₂) = m(розчину) · 0,03 &nbsp;·&nbsp; n(H₂O₂) = m(H₂O₂) / 34 г/моль<br>n(O₂) = n(H₂O₂) : 2 &nbsp;·&nbsp; Vm = V(O₂ за н. у.) : n(O₂) &nbsp;(мл → л: ÷ 1000)</div>
-   <div class="num">${FIELDS.slice(2,7).map(f=>inp(...f)).join("")}</div></div>
-  <div class="exp"><h3>Дослід 2. Вуглекислий газ із крейди та оцту</h3>
-   <div class="formula">CaCO₃ + 2CH₃COOH → (CH₃COO)₂Ca + H₂O + CO₂↑<br>n(CO₂) = n(CaCO₃) = m(CaCO₃) / 100 г/моль &nbsp;·&nbsp; Vm = V(CO₂ за н. у.) : n(CO₂)<br><small>CO₂ збирають над розчином NaCl, бо у воді він помітно розчиняється.</small></div>
-   <div class="num">${FIELDS.slice(7).map(f=>inp(...f)).join("")}</div></div>`+
-  (done?fb:`<div class="row"><button class="btn" type="button" data-chk="res">Перевірити обчислення</button></div>`)};
-B.res=s=>{if("res" in SCORE||!("hyp" in SCORE))return;
+  let fb="";if(done)fb=`<div class="fb ${SCORE.res===4?"ok":"info"}">Вимірювання: правильно ${REC.r1} (+${fmt(REC.s1)} б.) · обчислення: правильно ${REC.r2} (+${fmt(REC.s2)} б.).<br>
+    Справжні покази приладів у твоїй лабораторії: t = ${LAB.t} °C, p = ${LAB.pmm} мм рт. ст., m(розчину H₂O₂) = ${String(LAB.mp).replace(".",",")} г, V(O₂) = ${LAB.vo} мл, m(CaCO₃) = ${String(LAB.mc).replace(".",",")} г, V(CO₂) = ${LAB.vc} мл.
+    Зелене — правильно, червоне — з помилкою. Порівняй свої Vm із 22,4 л/моль!</div>`;
+  return `<div class="lab">
+   <div><h3>🔬 Віртуальна лабораторія</h3><p class="sub">У кожного учня — свої числа! Проведи досліди, зніми покази приладів (👁) і виконай обчислення (🧮).</p></div>
+   <h3>1 · Умови в лабораторії</h3>
+   <div class="inst"><div class="ic"><b>🌡️ Термометр</b>${ZT?`<div class="lens"><svg viewBox="38 ${280-6*LAB.t-32} 66 64">${thermo()}</svg></div>`:`<svg viewBox="0 0 120 320" style="max-height:260px">${thermo()}</svg>`}<button class="lbtn mint" type="button" id="zT">🔍 ${ZT?"Весь термометр":"Лупа"}</button></div>
+    <div class="ic"><b>🧭 Барометр-анероїд</b>${ZB?(()=>{const [x,y]=baroTip();return `<div class="lens"><svg viewBox="${x-30} ${y-30} 60 60">${baro()}</svg></div>`})():`<svg viewBox="0 0 240 240">${baro()}</svg>`}<button class="lbtn mint" type="button" id="zB">🔍 ${ZB?"Весь барометр":"Лупа"}</button></div></div>
+   <div class="rec"><div class="num">${inp("t")}${inp("pmm")}${inp("p")}</div><div class="formula" style="margin-top:8px">p (Па) = p (мм рт. ст.) · 133,3 &nbsp;·&nbsp; V(газу за н. у.) = V(газу) · p(Па) · 0,0027 / (t(°C) + 273,15)</div></div>
+   <h3>2 · Дослід 1: кисень із пероксиду гідрогену</h3>${expBlock(1)}
+   <div class="rec"><div class="formula">2H₂O₂ → 2H₂O + O₂↑ (каталізатор — дріжджі)<br>m(H₂O₂) = m(розчину) · 0,03 · n(H₂O₂) = m(H₂O₂) / 34 г/моль · n(O₂) = n(H₂O₂) : 2<br>Vm = V(O₂ за н. у.) : n(O₂) (мл → л: ÷ 1000)</div><div class="num" style="margin-top:8px">${["mp","vo","no","vno","mo"].map(inp).join("")}</div></div>
+   <h3>3 · Дослід 2: вуглекислий газ із крейди й оцту</h3>${expBlock(2)}
+   <div class="rec"><div class="formula">CaCO₃ + 2CH₃COOH → (CH₃COO)₂Ca + H₂O + CO₂↑ (CO₂ збираємо над розчином NaCl)<br>n(CO₂) = n(CaCO₃) = m(CaCO₃) / 100 г/моль · Vm = V(CO₂ за н. у.) : n(CO₂)</div><div class="num" style="margin-top:8px">${["mc","vc","nc","vnc","mcv"].map(inp).join("")}</div></div>
+  </div>`+(done?fb:`<div class="row"><button class="btn" type="button" data-chk="res">Перевірити вимірювання й обчислення</button></div>`)};
+function runGas(e){const L=LS[e],V=e===1?LAB.vo:LAB.vc,t0=performance.now(),D=6000;L.st=3;render();
+  const tick=now=>{const k=Math.min(1,(now-t0)/D);L.lv=V*(1-Math.pow(1-k,2.2));const el=$("bench"+e);if(el)el.innerHTML=bench(e);
+    if(k<1)requestAnimationFrame(tick);else{L.lv=V;L.st=4;render()}};requestAnimationFrame(tick)}
+B.res=s=>{if(!("hyp" in SCORE))return;
+  const zt=$("zT");if(zt)zt.onclick=()=>{ZT=!ZT;render()};const zb=$("zB");if(zb)zb.onclick=()=>{ZB=!ZB;render()};
+  document.querySelectorAll("[data-lab]").forEach(b=>b.onclick=()=>{const e=+b.dataset.lab,st=+b.dataset.st;if(st===3)runGas(e);else{LS[e].st=st;render()}});
+  document.querySelectorAll("[data-zoom]").forEach(b=>b.onclick=()=>{const e=+b.dataset.zoom;LS[e].zoom=!LS[e].zoom;render()});
+  if("res" in SCORE)return;
   document.querySelectorAll("[data-d]").forEach(i=>i.oninput=()=>DATA[i.dataset.d]=i.value);
   document.querySelector('[data-chk="res"]').onclick=()=>{
+    if(LS[1].st<4||LS[2].st<4)return warn(s,"Спершу проведи обидва досліди до кінця.");
     if(FIELDS.some(([k])=>!isFinite(num(DATA[k]))))return warn(s,"Заповни всі поля числами.");
-    const d=k=>num(DATA[k]);
-    if(d("t")<0||d("t")>40)return warn(s,"Перевір температуру (°C).");
-    if(d("p")<85000||d("p")>110000)return warn(s,"Тиск запиши в паскалях (близько 100 000 Па).");
-    if(d("mp")<=0||d("vo")<=0||d("mc")<=0||d("vc")<=0)return warn(s,"Маси й об'єми мають бути більшими за нуль.");
-    const e=expect(),chk={};let c=0;CALC.forEach(k=>{const ok=Math.abs(d(k)-e[k])<=Math.abs(e[k])*0.05;chk[k]=ok;if(ok)c++});
-    REC.chk=chk;SCORE.res=Math.round(c/6*4*2)/2;REC.res=`${c} з 6`;
-    REC.data=`t=${DATA.t}°C p=${DATA.p}Па | O₂: m(р-ну)=${DATA.mp}г V=${DATA.vo}мл n=${DATA.no} V(н.у.)=${DATA.vno} Vm=${DATA.mo} | CO₂: m=${DATA.mc}г V=${DATA.vc}мл n=${DATA.nc} V(н.у.)=${DATA.vnc} Vm=${DATA.mcv} | обчислень правильно ${c}/6`;render()}};
+    const d=k=>num(DATA[k]),chk={};let r1=0,r2=0;
+    Object.entries(READ).forEach(([k,[v,tol]])=>{const ok=Math.abs(d(k)-v)<=tol;chk[k]=ok;if(ok)r1++});
+    const e=chain();["p","no","vno","mo","nc","vnc","mcv"].forEach(k=>{const ok=isFinite(e[k])&&Math.abs(d(k)-e[k])<=Math.abs(e[k])*0.04;chk[k]=ok;if(ok)r2++});
+    REC.chk=chk;REC.s1=Math.round(r1/6*4)/2;REC.s2=Math.round(r2/7*4)/2;SCORE.res=REC.s1+REC.s2;REC.r1=`${r1} з 6`;REC.r2=`${r2} з 7`;REC.res=`${r1+r2} з 13`;
+    REC.data=`Прилади: t=${LAB.t}°C p=${LAB.pmm}мм m(H₂O₂ р-н)=${LAB.mp}г V(O₂)=${LAB.vo}мл m(CaCO₃)=${LAB.mc}г V(CO₂)=${LAB.vc}мл || Учень: t=${DATA.t} p=${DATA.pmm}мм=${DATA.p}Па | O₂: m=${DATA.mp} V=${DATA.vo} n=${DATA.no} V(н.у.)=${DATA.vno} Vm=${DATA.mo} | CO₂: m=${DATA.mc} V=${DATA.vc} n=${DATA.nc} V(н.у.)=${DATA.vnc} Vm=${DATA.mcv} | виміри ${r1}/6, обчислення ${r2}/7`;render()}};
 /* висновок */
 const C1=[["За нормальних умов молярні об'єми кисню й вуглекислого газу практично однакові (≈ 22,4 л/моль) — це підтверджує закон Авогадро.",1],
   ["Молярний об'єм CO₂ більший, ніж O₂, бо молярна маса CO₂ більша.",0],["Молярний об'єм газу залежить від того, скільки речовини взяли для досліду.",0],["Молярний об'єм газу за будь-яких умов дорівнює 22,4 л/моль.",0]];
