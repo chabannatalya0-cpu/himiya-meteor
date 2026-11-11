@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Майстерня йонів</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700;800&display=swap">
+<style>
+/* Neon "ion workshop": deep violet night, hot-pink anions vs electric-cyan cations, glowing Bohr models. */
+:root{color-scheme:light;
+  --bg:#1e1048;--bg2:#3b1d8f;--card:#fff;--ink:#1c1530;--muted:#6b6385;--line:#e6defa;
+  --cat:#06b6d4;--cat-bg:#cffafe;--an:#ec4899;--an-bg:#fce7f3;--gold:#facc15;--ok:#16a34a;--bad:#dc2626;--vio:#7c3aed;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;--f-body:"Golos Text",system-ui,sans-serif;--f-mono:"JetBrains Mono",ui-monospace,monospace}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0}
+body{min-height:100vh;color:var(--ink);font-family:var(--f-body);font-size:16.5px;line-height:1.45;
+  background:radial-gradient(circle at 10% 0%,#6d28d9 0%,transparent 40%),radial-gradient(circle at 100% 30%,#be185d 0%,transparent 35%),radial-gradient(circle at 0% 90%,#0e7490 0%,transparent 40%),linear-gradient(var(--bg2),var(--bg)) fixed}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:980px;margin:0 auto;padding-block:16px 48px;padding-left:max(14px,env(safe-area-inset-left,0px));padding-right:max(14px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
+header{color:#fff;text-align:center;display:flex;flex-direction:column;gap:6px;align-items:center}
+.eyebrow{font:800 11px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;opacity:.85}
+h1{margin:0;font-family:var(--f-display);font-size:clamp(26px,5.4vw,46px);line-height:1.05;text-shadow:0 0 18px rgba(236,72,153,.6)}
+h1 .p{color:#67e8f9;text-shadow:0 0 16px #06b6d4}h1 .m{color:#f9a8d4;text-shadow:0 0 16px #ec4899}
+header p{margin:0;max-width:680px;opacity:.92}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:#fff;border:3px solid var(--ink);border-radius:16px;padding:8px 14px;display:flex;gap:12px;align-items:center;justify-content:space-between;box-shadow:0 4px 0 var(--ink)}
+.bar b{font-family:var(--f-display);font-size:20px}
+.prog{flex:1;height:10px;background:#ede9fe;border-radius:99px;overflow:hidden;max-width:280px}.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--cat),var(--an));width:0;transition:width .4s}
+.part{background:var(--card);border-radius:24px;padding:16px;display:flex;flex-direction:column;gap:12px;border:3px solid var(--ink);box-shadow:0 6px 0 var(--ink)}
+.part h2{margin:0;font-family:var(--f-display);font-size:19px;display:flex;gap:10px;align-items:center}
+.part h2 .no{flex:none;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--cat),var(--an));color:#fff;font:800 17px var(--f-mono)}
+.part h2 .pts{margin-left:auto;font:800 12px var(--f-mono);background:#ede9fe;color:var(--vio);border-radius:99px;padding:4px 10px}
+.hint{margin:0;color:var(--muted);font-size:15px}
+.lab{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:760px){.lab{grid-template-columns:1fr}}
+.stage{background:radial-gradient(circle at 50% 45%,#312e81,#0f0a2e 75%);border-radius:20px;border:3px solid var(--ink);position:relative;overflow:hidden}
+.stage svg{display:block;width:100%;height:auto}
+.badge{position:absolute;top:10px;left:10px;font:800 14px var(--f-mono);color:#fff;background:rgba(255,255,255,.14);border:2px solid rgba(255,255,255,.4);border-radius:10px;padding:4px 8px}
+.chargeBig{position:absolute;top:8px;right:12px;font:800 34px var(--f-display);text-shadow:0 0 14px currentColor}
+.tasklist{display:flex;gap:8px;flex-wrap:wrap}
+.tk{font:800 14px var(--f-mono);border:2px solid var(--ink);border-radius:10px;padding:5px 10px;background:#fff;cursor:pointer;color:var(--ink)}
+.tk[aria-pressed="true"]{background:var(--gold)}
+.tk.ok{background:#bbf7d0;border-color:var(--ok)}.tk.no{background:#fecaca;border-color:var(--bad)}
+.ctl{display:flex;flex-direction:column;gap:10px}
+.goal{font-size:17px;font-weight:700;background:#f5f3ff;border:2px dashed #a78bfa;border-radius:14px;padding:10px 12px}
+.info{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.info div{background:#f8fafc;border:2px solid var(--line);border-radius:12px;padding:6px 8px;text-align:center;font-size:13px;font-weight:700;color:var(--muted)}
+.info b{display:block;font:800 22px var(--f-mono);color:var(--ink)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{font-family:var(--f-display);font-size:14px;border:3px solid var(--ink);border-radius:14px;padding:9px 14px;cursor:pointer;color:var(--ink);background:var(--gold);box-shadow:0 4px 0 var(--ink)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.btn.cat{background:var(--cat-bg)}.btn.an{background:var(--an-bg)}.btn.green{background:#4ade80}.btn.white{background:#fff}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.fb{font-size:15px;border-radius:12px;padding:9px 12px;font-weight:600}
+.fb.ok{background:#dcfce7;color:#14532d}.fb.bad{background:#fee2e2;color:#7f1d1d}.fb.info{background:#ede9fe;color:#4c1d95}
+.q{border:2px solid var(--line);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.q b{font-size:15.5px}
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+.op{font:inherit;font-size:15px;border:2px solid var(--line);background:#fff;border-radius:12px;padding:7px 12px;cursor:pointer;color:var(--ink)}
+.op[aria-pressed="true"]{border-color:var(--vio);background:#ede9fe}
+.op.ok{border-color:var(--ok);background:#dcfce7}.op.no{border-color:var(--bad);background:#fee2e2}.op.miss{border-color:var(--ok);border-style:dashed}
+.op[disabled]{cursor:default}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cmp .stage svg{max-height:260px}
+.pick{display:flex;gap:6px;flex-wrap:wrap}
+.pick button{font:800 17px var(--f-mono);min-width:46px;border:2px solid var(--ink);border-radius:12px;padding:6px 10px;cursor:pointer;background:#fff;color:var(--ink)}
+.pick button[aria-pressed="true"]{background:var(--vio);color:#fff}
+.pick button.cplus[aria-pressed="true"]{background:var(--cat);color:#06222a}.pick button.cminus[aria-pressed="true"]{background:var(--an)}
+.lbl{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--muted)}
+.bins{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.binbox{border-radius:18px;padding:10px;min-height:110px;display:flex;flex-direction:column;gap:8px}
+.binbox.c{background:var(--cat-bg);border:3px dashed var(--cat)}.binbox.a{background:var(--an-bg);border:3px dashed var(--an)}
+.binbox h3{margin:0;font-family:var(--f-display);font-size:15px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:800 18px var(--f-mono);border:2px solid var(--ink);border-radius:12px;padding:6px 12px;background:#fff;cursor:pointer;color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--gold)}
+.chip.ok{background:#bbf7d0;border-color:var(--ok)}.chip.no{background:#fecaca;border-color:var(--bad)}
+.chip[disabled]{cursor:default}
+input[type=text],select{font:inherit;font-size:16px;padding:11px 13px;border-radius:12px;border:2px solid var(--ink);background:#fff;color:var(--ink);width:100%}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.overlay{position:fixed;inset:0;z-index:30;background:rgba(15,10,46,.75);display:flex;align-items:center;justify-content:center;padding:20px max(16px,env(safe-area-inset-right,0px)) 20px max(16px,env(safe-area-inset-left,0px))}
+.overlay .part{max-width:540px;width:100%}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media (max-width:520px){.grid2{grid-template-columns:1fr}}
+.msg{font-weight:700;padding:9px 12px;border-radius:12px}
+.msg.ok{background:#e8f8ee;color:#166534}.msg.bad{background:#fdecec;color:#991b1b}.msg.info{background:#ede9fe;color:#4c1d95}
+.final{font-family:var(--f-display);font-size:38px;background:linear-gradient(90deg,var(--cat),var(--an));-webkit-background-clip:text;background-clip:text;color:transparent}
+.e{cursor:pointer}
+.e:hover circle{stroke:#fff;stroke-width:3}
+.pulse{animation:pl 1.6s ease-in-out infinite}@keyframes pl{50%{opacity:.55}}
+.spin{animation:sp 30s linear infinite;transform-origin:200px 170px}@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.pulse,.spin{animation:none}}
+.mini{font-size:13.5px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Хімія · 9 клас · моделювання йонів</span>
+    <h1>Майстерня <span class="p">йонів +</span> <span class="m">−</span></h1>
+    <p>Перетворюй атоми на йони, порівнюй їх, збирай багатоатомні йони й розрізняй їх за зарядом. Разом 12 балів.</p>
+  </header>
+  <div class="bar"><span id="who"></span><div class="prog"><i id="progI"></i></div><span>Бали: <b id="score">0</b> / 12</span></div>
+
+  <section class="part" id="p1">
+    <h2><span class="no">1</span>Атом → йон<span class="pts">4 б.</span></h2>
+    <p class="hint">Модель атома — як у 8 класі: ядро і електронні шари. Атом віддає або приймає електрони <b>зовнішнього</b> шару, щоб отримати завершений зовнішній шар (як в інертного елемента). <b>Натисни на електрон</b>, щоб його забрати, або «＋ електрон», щоб додати. Заряд йона = протони − електрони.</p>
+    <div class="tasklist" id="tl1"></div>
+    <div class="lab">
+      <div class="stage"><svg viewBox="0 0 400 340" id="bohr"></svg><span class="badge" id="bBadge"></span><span class="chargeBig" id="bCh"></span></div>
+      <div class="ctl">
+        <div class="goal" id="goal1"></div>
+        <div class="info"><div>протони<b id="iP"></b></div><div>електрони<b id="iE"></b></div><div>заряд<b id="iC"></b></div></div>
+        <div class="row"><button class="btn an" type="button" id="addE">＋ електрон</button><button class="btn white" type="button" id="resetE">↺ Знову атом</button></div>
+        <div class="row"><button class="btn" type="button" id="chk1">Перевірити йон</button></div>
+        <div id="fb1"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="part" id="p2">
+    <h2><span class="no">2</span>Атом чи йон: порівняй моделі<span class="pts">2 б.</span></h2>
+    <p class="hint">Порівняй модель атома й модель йона, який ти щойно отримав(ла), і дай відповіді.</p>
+    <div id="cmp"></div>
+  </section>
+
+  <section class="part" id="p3">
+    <h2><span class="no">3</span>Збери багатоатомний йон<span class="pts">4 б.</span></h2>
+    <p class="hint">Багатоатомний йон — група сполучених атомів, що має спільний заряд. Обери центральний атом, кількість приєднаних атомів і заряд — модель з'явиться у квадратних дужках.</p>
+    <div class="tasklist" id="tl3"></div>
+    <div class="lab">
+      <div class="stage"><svg viewBox="0 0 400 300" id="poly"></svg><span class="badge" id="pBadge"></span></div>
+      <div class="ctl">
+        <div class="goal" id="goal3"></div>
+        <div><span class="lbl">Центральний атом</span><div class="pick" id="pkC"></div></div>
+        <div><span class="lbl">Приєднані атоми</span><div class="pick" id="pkL"></div></div>
+        <div><span class="lbl">Скільки приєднаних атомів</span><div class="pick" id="pkN"></div></div>
+        <div><span class="lbl">Заряд йона</span><div class="pick" id="pkQ"></div></div>
+        <div class="row"><button class="btn" type="button" id="chk3">Перевірити йон</button></div>
+        <div id="fb3"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="part" id="p4">
+    <h2><span class="no">4</span>Розсортуй за зарядом<span class="pts">2 б.</span></h2>
+    <p class="hint">Натисни йон, а потім кошик: <b>катіони</b> (позитивно заряджені) чи <b>аніони</b> (негативно заряджені). Щоб повернути йон, натисни його в кошику.</p>
+    <div class="chips" id="pool4"></div>
+    <div class="bins"><div class="binbox c" data-bin="c"><h3>➕ Катіони</h3><div class="chips" id="binC"></div></div><div class="binbox a" data-bin="a"><h3>➖ Аніони</h3><div class="chips" id="binA"></div></div></div>
+    <div class="row"><button class="btn" type="button" id="chk4">Перевірити</button></div>
+    <div id="fb4"></div>
+  </section>
+
+  <section class="part" id="fin">
+    <h2><span class="no">★</span>Здати роботу</h2>
+    <p class="hint" id="finHint">Виконай усі чотири частини, тоді кнопка стане активною.</p>
+    <div class="row"><span>Результат: <span class="final" id="finScore">0</span> / 12</span></div>
+    <div class="row"><button class="btn green" type="button" id="submit" disabled>Надіслати вчителю</button></div>
+    <div id="sendMsg"></div>
+  </section>
+</div>
+
+<div class="overlay" id="start">
+  <div class="part">
+    <span class="eyebrow" style="color:var(--muted)">Перед початком</span>
+    <h2>Майстерня йонів</h2>
+    <p style="margin:0">Атом стає йоном, коли віддає або приймає електрони. Перевіримо, як це відбувається!</p>
+    <div class="grid2">
+      <div><label class="lbl" for="pname">Прізвище та ім'я</label><input type="text" id="pname" maxlength="60" autocomplete="name" placeholder="Іваненко Олена"></div>
+      <div><label class="lbl" for="pcls">Клас</label><select id="pcls"><option value="">— обери —</option><option>9-А</option><option>9-Б</option><option>Інший</option></select></div>
+    </div>
+    <p class="msg bad" id="startErr" hidden>Впиши прізвище, ім'я та обери клас.</p>
+    <div class="row"><button class="btn" id="startBtn" type="button">Почати</button></div>
+  </div>
+</div>
+
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="ionmod9";
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const fmt=x=>String(Math.round(x*10)/10).replace(".",",");
+const SUP=n=>{const m={"0":"⁰","1":"¹","2":"²","3":"³","4":"⁴","+":"⁺","-":"⁻"};const s=(Math.abs(n)>1?Math.abs(n):"")+(n>0?"+":"-");return n===0?"":[...String(s)].map(c=>m[c]).join("")};
+const SUB=s=>s.replace(/\d/g,d=>"₀₁₂₃₄₅₆₇₈₉"[d]);
+const SCORE={},REC={};
+
+/* ---------- 1. атом → йон ---------- */
+const EL={Li:{n:"Літій",z:3,sh:[2,1]},Na:{n:"Натрій",z:11,sh:[2,8,1]},K:{n:"Калій",z:19,sh:[2,8,8,1]},Mg:{n:"Магній",z:12,sh:[2,8,2]},Ca:{n:"Кальцій",z:20,sh:[2,8,8,2]},Al:{n:"Алюміній",z:13,sh:[2,8,3]},
+  F:{n:"Флуор",z:9,sh:[2,7]},Cl:{n:"Хлор",z:17,sh:[2,8,7]},O:{n:"Оксиген",z:8,sh:[2,6]},S:{n:"Сульфур",z:16,sh:[2,8,6]},N:{n:"Нітроген",z:7,sh:[2,5]}};
+const GN={Li:"Літію",Na:"Натрію",K:"Калію",Mg:"Магнію",Ca:"Кальцію",Al:"Алюмінію",F:"Флуору",Cl:"Хлору",O:"Оксигену",S:"Сульфуру",N:"Нітрогену"};
+const ionQ=s=>{const o=EL[s].sh.at(-1);return o<=3?o:o-8};// заряд стійкого йона
+const T1=[...shuffle(["Na","K","Li"]).slice(0,1),...shuffle(["Mg","Ca","Al"]).slice(0,1),...shuffle(["Cl","F"]).slice(0,1),...shuffle(["O","S","N"]).slice(0,1)];
+let cur1=0,sh=[];const R1={};
+function load1(i){cur1=i;sh=R1[i]?R1[i].sh.slice():EL[T1[i]].sh.slice();draw1();renderTL1();$("fb1").innerHTML=R1[i]?fbHtml1(i):""}
+function draw1(){const s=T1[cur1],z=EL[s].z,e=sh.reduce((a,b)=>a+b,0),q=z-e,cx=200,cy=170,R=[46,82,116,146];
+  let h=`<g class="spin">`;
+  const full=EL[s].sh.length;
+  for(let k=0;k<full;k++){const r=R[k];const empty=!sh[k];
+    h+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${empty?"rgba(255,255,255,.18)":"rgba(165,180,252,.55)"}" stroke-width="2" ${empty?'stroke-dasharray="4 6"':""}/>`;}
+  h+=`</g>`;
+  const outer=sh.reduce((a,v,i)=>v?i:a,0);
+  for(let k=0;k<sh.length;k++){const n=sh[k],r=R[k];for(let j=0;j<n;j++){const a=(j/n)*Math.PI*2-Math.PI/2+k*.3,x=cx+r*Math.cos(a),y=cy+r*Math.sin(a),out=k===outer&&!R1[cur1];
+    h+=`<g ${out?`class="e" data-e="${k}"`:""}><circle cx="${x}" cy="${y}" r="${out?10:8}" fill="${out?"#f472b6":"#a5b4fc"}" stroke="${out?"#fff":"#312e81"}" stroke-width="1.5"/><text x="${x}" y="${y+4}" text-anchor="middle" font-size="12" font-weight="800" fill="#1e1b4b" font-family="Arial">−</text></g>`}}
+  h+=`<circle cx="${cx}" cy="${cy}" r="28" fill="url(#ng)"/><defs><radialGradient id="ng"><stop offset="0" stop-color="#fde047"/><stop offset="1" stop-color="#f59e0b"/></radialGradient></defs>
+    <text x="${cx}" y="${cy+6}" text-anchor="middle" font-size="18" font-weight="800" fill="#451a03" font-family="JetBrains Mono, monospace">+${z}</text>`;
+  if(q!==0)h=`<circle cx="${cx}" cy="${cy}" r="${(R[sh.length-1]||46)+(sh.at(-1)?0:0)+16}" fill="none" stroke="${q>0?"#22d3ee":"#f472b6"}" stroke-width="3" class="pulse"/>`+h;
+  $("bohr").innerHTML=h;
+  $("bBadge").textContent=`${s} · ${EL[s].n} · Z = ${z}`;
+  $("bCh").textContent=q===0?"":s+SUP(q);$("bCh").style.color=q>0?"#67e8f9":"#f9a8d4";
+  $("iP").textContent=z;$("iE").textContent=e;$("iC").textContent=q>0?"+"+q:q;
+  $("goal1").innerHTML=`Перетвори атом <b>${GN[s]}</b> (${s}) на стійкий йон. Розподіл електронів в атомі: <b>${EL[s].sh.join(", ")}</b>. Зараз: <b>${sh.filter(v=>v).join(", ")}</b>`;
+  $("bohr").querySelectorAll("[data-e]").forEach(g=>g.onclick=()=>{const k=+g.dataset.e;sh[k]--;if(sh[k]===0&&k>0)sh.length=k;draw1()});
+  $("addE").disabled=$("resetE").disabled=$("chk1").disabled=!!R1[cur1];}
+$("addE").onclick=()=>{const k=sh.length-1;const cap=k===0?2:8;if(sh[k]>=cap){toastF("fb1","Зовнішній шар уже заповнений — більше електронів він не прийме.","info");return}sh[k]++;draw1()};
+$("resetE").onclick=()=>{sh=EL[T1[cur1]].sh.slice();draw1()};
+function renderTL1(){$("tl1").innerHTML=T1.map((s,i)=>`<button class="tk ${R1[i]?R1[i].ok?"ok":"no":""}" type="button" data-t="${i}" aria-pressed="${i===cur1}">${i+1}. ${s}</button>`).join("");
+  $("tl1").querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>load1(+b.dataset.t))}
+function fbHtml1(i){const r=R1[i],s=T1[i],q=ionQ(s);return `<div class="fb ${r.ok?"ok":"bad"}">${r.ok?"✓ Так!":"✗ Ні."} Атом ${GN[s]} ${q>0?`віддає ${q} е⁻`:`приймає ${-q} е⁻`} і стає йоном <b>${s}${SUP(q)}</b> (${q>0?"катіон":"аніон"}). Електронів у йоні: ${EL[s].z-q}${r.ok?"":`, а в тебе було ${r.e}`}.</div>`}
+$("chk1").onclick=()=>{const s=T1[cur1],e=sh.reduce((a,b)=>a+b,0),q=EL[s].z-e;
+  if(q===0)return toastF("fb1","Це ще атом: протонів і електронів порівну. Забери або додай електрони.","info");
+  const ok=q===ionQ(s);R1[cur1]={ok,e,q,sh:sh.slice()};SCORE.p1=Object.values(R1).filter(r=>r.ok).length;
+  draw1();renderTL1();$("fb1").innerHTML=fbHtml1(cur1);
+  if(Object.keys(R1).length===4)build2();else{const nx=[0,1,2,3].find(j=>!R1[j]);const was=cur1;setTimeout(()=>{if(cur1===was&&!R1[nx])load1(nx)},1400)}upd()};
+function toastF(id,t,c){$(id).innerHTML=`<div class="fb ${c}">${t}</div>`}
+
+/* ---------- 2. порівняння ---------- */
+function bohrMini(s,shl,q){const z=EL[s].z,cx=130,cy=120,R=[34,58,82,104];let h="";
+  EL[s].sh.forEach((_,k)=>{h+=`<circle cx="${cx}" cy="${cy}" r="${R[k]}" fill="none" stroke="${shl[k]?"rgba(165,180,252,.6)":"rgba(255,255,255,.15)"}" stroke-width="2" ${shl[k]?"":'stroke-dasharray="4 6"'}/>`});
+  shl.forEach((n,k)=>{for(let j=0;j<n;j++){const a=j/n*Math.PI*2-Math.PI/2+k*.3;h+=`<circle cx="${cx+R[k]*Math.cos(a)}" cy="${cy+R[k]*Math.sin(a)}" r="6.5" fill="#a5b4fc" stroke="#312e81"/>`}});
+  h+=`<circle cx="${cx}" cy="${cy}" r="20" fill="#fbbf24"/><text x="${cx}" y="${cy+5}" text-anchor="middle" font-size="14" font-weight="800" fill="#451a03" font-family="JetBrains Mono, monospace">+${z}</text>`;
+  const lab=q?s+SUP(q):s;h+=`<text x="12" y="26" font-size="22" font-weight="800" fill="${q>0?"#67e8f9":q<0?"#f9a8d4":"#fff"}" font-family="Unbounded, Arial">${lab}</text>`;
+  return `<svg viewBox="0 0 260 240">${h}</svg>`}
+let Q2=null;const A2={};
+function build2(){const cat=T1.find(s=>ionQ(s)>0&&T1.indexOf(s)<2)||T1[0],an=T1.find(s=>ionQ(s)<0)||T1[3];
+  const ionSh=s=>{const q=ionQ(s),a=EL[s].sh.slice();if(q>0)a.pop();else a[a.length-1]=8;return a};
+  Q2={cat,an,qs:[
+   {t:`Чим відрізняються атом ${cat} і йон ${cat}${SUP(ionQ(cat))}?`,o:["числом електронів","числом протонів","зарядом ядра","назвою елемента"],a:0},
+   {t:`Як змінився радіус частинки, коли атом ${cat} перетворився на йон ${cat}${SUP(ionQ(cat))}?`,o:["зменшився — зник зовнішній шар","збільшився","не змінився"],a:0},
+   {t:`Як змінився радіус частинки, коли атом ${an} перетворився на йон ${an}${SUP(ionQ(an))}?`,o:["трохи збільшився — електронів більше, ніж протонів","зменшився","не змінився"],a:0},
+   {t:`Чому атом електронейтральний, а йон має заряд?`,o:["в атомі протонів і електронів порівну, а в йоні — ні","в йоні змінюється кількість протонів","йон містить нейтрони, а атом — ні"],a:0}]};
+  Q2.qs.forEach(q=>q.ord=shuffle(q.o.map((_,j)=>j)));
+  $("cmp").innerHTML=`<div class="cmp"><div class="stage">${bohrMini(cat,EL[cat].sh,0)}</div><div class="stage">${bohrMini(cat,ionSh(cat),ionQ(cat))}</div>
+   <div class="stage">${bohrMini(an,EL[an].sh,0)}</div><div class="stage">${bohrMini(an,ionSh(an),ionQ(an))}</div></div><div id="q2"></div>`;render2()}
+function render2(){const done="p2" in SCORE;
+  $("q2").innerHTML=Q2.qs.map((q,i)=>`<div class="q"><b>${i+1}) ${q.t}</b><div class="opts">${q.ord.map(j=>{let c="";if(done){if(j===q.a)c=A2[i]===j?"ok":"miss";else if(A2[i]===j)c="no"}
+    return `<button class="op ${c}" type="button" data-q="${i}" data-j="${j}" aria-pressed="${A2[i]===j}" ${done?"disabled":""}>${q.o[j]}</button>`}).join("")}</div></div>`).join("")+
+    (done?`<div class="fb ${SCORE.p2===2?"ok":"info"}">Правильно ${REC.p2}: +${fmt(SCORE.p2)} б. Запам'ятай: у йоні <b>ядро те саме</b> (протонів стільки ж), змінюється лише кількість електронів. Катіон менший за атом, аніон — більший.</div>`:`<div class="row" style="margin-top:8px"><button class="btn" type="button" id="chk2">Перевірити</button></div><div id="fb2"></div>`);
+  $("q2").querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>{A2[+b.dataset.q]=+b.dataset.j;render2()});
+  if(!done)$("chk2").onclick=()=>{if(Object.keys(A2).length<4)return toastF("fb2","Дай відповідь на всі запитання.","info");
+    const c=Q2.qs.filter((q,i)=>A2[i]===q.a).length;SCORE.p2=c/2;REC.p2=`${c} з 4`;render2();upd()}}
+
+/* ---------- 3. багатоатомні йони ---------- */
+const PI=[{f:"OH",n:"гідроксид-йон",c:"O",l:"H",k:1,q:-1},{f:"NO3",n:"нітрат-йон",c:"N",l:"O",k:3,q:-1},{f:"SO4",n:"сульфат-йон",c:"S",l:"O",k:4,q:-2},
+  {f:"CO3",n:"карбонат-йон",c:"C",l:"O",k:3,q:-2},{f:"PO4",n:"ортофосфат-йон",c:"P",l:"O",k:4,q:-3},{f:"NH4",n:"амоній-йон",c:"N",l:"H",k:4,q:1}];
+const T3=[PI[5],...shuffle(PI.slice(0,5)).slice(0,3)].sort(()=>Math.random()-.5);
+const COL={H:"#ffffff",O:"#ef4444",N:"#3b82f6",S:"#facc15",C:"#334155",P:"#f97316"};
+let cur3=0;const S3={},R3={};
+function st3(){return S3[cur3]||(S3[cur3]={c:null,l:null,k:null,q:null})}
+function load3(i){cur3=i;draw3();$("fb3").innerHTML=R3[i]?fbHtml3(i):""}
+function polySVG(c,l,k,q){if(!c)return `<text x="200" y="155" text-anchor="middle" font-size="18" fill="#c4b5fd" font-family="Golos Text, Arial">Обери центральний атом →</text>`;
+  const cx=200,cy=150,ball=(e,x,y,r)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${COL[e]}" stroke="rgba(0,0,0,.45)" stroke-width="2"/><circle cx="${x-r*.35}" cy="${y-r*.35}" r="${r*.3}" fill="#fff" opacity=".5"/><text x="${x}" y="${y+5}" text-anchor="middle" font-size="${r>20?15:12}" font-weight="800" fill="${e==="H"||e==="S"?"#1c1530":"#fff"}" font-family="Arial">${e}</text>`;
+  let h="",pts=[];const n=l&&k?k:0,rr=l==="H"?78:86;
+  for(let j=0;j<n;j++){const a=j/n*Math.PI*2-Math.PI/2+(n===4?Math.PI/4:0)+(n===1?Math.PI/2:0);pts.push([cx+rr*Math.cos(a),cy+rr*Math.sin(a)])}
+  pts.forEach(([x,y])=>h+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#e2e8f0" stroke-width="8" stroke-linecap="round"/>`);
+  h+=ball(c,cx,cy,30);pts.forEach(([x,y])=>h+=ball(l,x,y,l==="H"?18:24));
+  const col=q>0?"#67e8f9":q<0?"#f9a8d4":"#fff";
+  h+=`<path d="M78 40h-18v220h18M322 40h18v220h-18" fill="none" stroke="${col}" stroke-width="5"/>`;
+  if(q)h+=`<text x="350" y="50" font-size="30" font-weight="800" fill="${col}" font-family="Unbounded, Arial">${(Math.abs(q)>1?Math.abs(q):"")+(q>0?"+":"−")}</text>`;
+  return h}
+function draw3(){const t=T3[cur3],s=st3(),done=!!R3[cur3];
+  $("tl3").innerHTML=T3.map((x,i)=>`<button class="tk ${R3[i]?R3[i].pts===1?"ok":"no":""}" type="button" data-t="${i}" aria-pressed="${i===cur3}">${i+1}. ${x.n}</button>`).join("");
+  $("tl3").querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>load3(+b.dataset.t));
+  $("goal3").innerHTML=`Збери модель: <b>${t.n}</b>${t.f==="NH4"?" (катіон амонію)":""}.`;
+  const pk=(id,vals,key,lab=v=>v,cls=()=> "")=>{$(id).innerHTML=vals.map(v=>`<button type="button" class="${cls(v)}" data-v="${v}" aria-pressed="${s[key]===v}" ${done?"disabled":""}>${lab(v)}</button>`).join("");
+    $(id).querySelectorAll("button").forEach(b=>b.onclick=()=>{const v=isNaN(+b.dataset.v)?b.dataset.v:+b.dataset.v;s[key]=v;draw3()})};
+  pk("pkC",["C","N","O","P","S"],"c");pk("pkL",["O","H"],"l");pk("pkN",[1,2,3,4],"k");
+  pk("pkQ",[-3,-2,-1,1,2,3],"q",v=>(Math.abs(v)>1?Math.abs(v):"")+(v>0?"+":"−"),v=>v>0?"cplus":"cminus");
+  $("poly").innerHTML=polySVG(s.c,s.l,s.k,s.q);
+  const f=s.c&&s.l&&s.k?s.c+s.l+(s.k>1?s.k:""):"";$("pBadge").textContent=f?SUB(f)+(s.q?SUP(s.q):""):"формула…";
+  $("chk3").disabled=done}
+function fbHtml3(i){const r=R3[i],t=T3[i];return `<div class="fb ${r.pts===1?"ok":r.pts?"info":"bad"}">${r.pts===1?"✓ Чудово!":r.pts?"Частково (+0,5 б.).":"✗ Ні."} ${t.n[0].toUpperCase()+t.n.slice(1)} — <b>${SUB(t.f)}${SUP(t.q)}</b>: ${t.k} ${t.l==="O"?"атом(и) Оксигену":"атом(и) Гідрогену"} навколо атома ${GN[t.c]}, заряд ${t.q>0?"+":"−"}${Math.abs(t.q)}. ${t.q>0?"Це катіон.":"Це аніон."}${r.pts<1?` У тебе: ${esc(r.got)}.`:""}</div>`}
+$("chk3").onclick=()=>{const t=T3[cur3],s=st3();if(!s.c||!s.l||!s.k||s.q==null)return toastF("fb3","Обери центральний атом, приєднані атоми, їх кількість і заряд.","info");
+  const fOk=s.c===t.c&&s.l===t.l&&s.k===t.k,qOk=s.q===t.q;
+  R3[cur3]={pts:(fOk?.5:0)+(qOk?.5:0),got:SUB(s.c+s.l+(s.k>1?s.k:""))+SUP(s.q)};SCORE.p3=Object.values(R3).reduce((a,r)=>a+r.pts,0);
+  draw3();$("fb3").innerHTML=fbHtml3(cur3);if(Object.keys(R3).length<4){const nx=[0,1,2,3].find(j=>!R3[j]);const was=cur3;setTimeout(()=>{if(cur3===was&&!R3[nx])load3(nx)},1600)}upd()};
+
+/* ---------- 4. сортування ---------- */
+const I4=shuffle([["Na",1],["Cl",-1],["SO4",-2],["NH4",1],["Al",3],["PO4",-3],["S",-2],["Ca",2],["NO3",-1],["OH",-1],["K",1],["CO3",-2]]).slice(0,10);
+const B4={};let sel4=null;
+function render4(){const done="p4" in SCORE,lab=([f,q])=>SUB(f)+SUP(q);
+  const chip=(i,where)=>{let c="";if(done)c=(B4[i]==="c")===(I4[i][1]>0)?"ok":"no";return `<button class="chip ${c}" type="button" data-i="${i}" data-w="${where}" aria-pressed="${sel4===i}" ${done?"disabled":""}>${lab(I4[i])}</button>`};
+  $("pool4").innerHTML=I4.map((x,i)=>B4[i]?"":chip(i,"pool")).join("")||'<span class="mini">Усі йони розкладено 👍</span>';
+  $("binC").innerHTML=I4.map((x,i)=>B4[i]==="c"?chip(i,"c"):"").join("");$("binA").innerHTML=I4.map((x,i)=>B4[i]==="a"?chip(i,"a"):"").join("");
+  document.querySelectorAll("#p4 .chip").forEach(b=>b.onclick=e=>{e.stopPropagation();const i=+b.dataset.i;if(b.dataset.w!=="pool"){delete B4[i];sel4=null}else sel4=sel4===i?null:i;render4()});
+  document.querySelectorAll("#p4 .binbox").forEach(b=>b.onclick=()=>{if(done||sel4==null)return;B4[sel4]=b.dataset.bin;sel4=null;render4()});
+  $("chk4").disabled=done}
+$("chk4").onclick=()=>{if(Object.keys(B4).length<I4.length)return toastF("fb4","Розклади всі йони по кошиках.","info");
+  const c=I4.filter((x,i)=>(B4[i]==="c")===(x[1]>0)).length;SCORE.p4=Math.round(c/I4.length*2*2)/2;REC.p4=`${c} з ${I4.length}`;render4();
+  $("fb4").innerHTML=`<div class="fb ${SCORE.p4===2?"ok":"info"}">Правильно ${REC.p4}: +${fmt(SCORE.p4)} б. Зелене — правильно, червоне — помилка. Катіони: йони металічних елементів і NH₄⁺. Аніони: йони неметалічних елементів і кислотні залишки (SO₄²⁻, NO₃⁻, PO₄³⁻, CO₃²⁻) та OH⁻.</div>`;upd()};
+
+/* ---------- загальне ---------- */
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let ME={},sent=false;
+function upd(){const done1=Object.keys(R1).length===4,done3=Object.keys(R3).length===4;
+  const sc=(SCORE.p1||0)+(SCORE.p2||0)+(SCORE.p3||0)+(SCORE.p4||0),n=[done1,"p2" in SCORE,done3,"p4" in SCORE].filter(Boolean).length;
+  $("score").textContent=fmt(sc);$("finScore").textContent=fmt(sc);$("progI").style.width=n/4*100+"%";
+  if(n===4){$("submit").disabled=sent;$("finHint").textContent="Усі частини виконано. Надішли роботу вчителю."}}
+$("submit").onclick=async()=>{const box=$("sendMsg");if(sent)return;$("submit").disabled=true;box.className="msg info";box.textContent="Надсилаю…";
+  const sc=SCORE.p1+SCORE.p2+SCORE.p3+SCORE.p4;
+  const rec={name:ME.name,cls:ME.cls,score:sc,max:12,ts:{".sv":"timestamp"},parts:[SCORE.p1,SCORE.p2,SCORE.p3,SCORE.p4].join(" "),
+    atoms:T1.map((s,i)=>`${s}→${s}${SUP(R1[i].q)}${R1[i].ok?"✓":"✗"}`).join(", "),
+    poly:T3.map((t,i)=>`${SUB(t.f)}${SUP(t.q)}: ${R3[i].got} ${R3[i].pts===1?"✓":R3[i].pts?"½":"✗"}`).join(", "),
+    sort:REC.p4,compare:REC.p2};
+  try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec)});if(!r.ok)throw new Error(r.status);
+    sent=true;box.className="msg ok";box.textContent=`✓ Роботу отримано вчителем: ${fmt(sc)} / 12. Молодець!`;
+  }catch(e){$("submit").disabled=false;box.className="msg bad";box.textContent="Не вдалося надіслати. Перевір інтернет і натисни ще раз."}};
+$("startBtn").onclick=()=>{const nm=$("pname").value.trim(),c=$("pcls").value;if(nm.length<3||!c){$("startErr").hidden=false;return}
+  ME={name:nm.slice(0,60),cls:c};$("who").textContent=`👤 ${ME.name} · ${ME.cls}`;$("start").hidden=true};
+$("cmp").innerHTML='<p class="hint">🔒 Спершу виконай частину 1 (усі 4 атоми).</p>';
+load1(0);load3(0);render4();upd();
+</script>
+</body>
+</html>

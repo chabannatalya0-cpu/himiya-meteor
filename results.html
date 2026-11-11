@@ -118,6 +118,7 @@ const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.fireba
 const API_KEY="AIzaSyAGOncvJIlGaJu14uqEWy6rQxdF7-pQYUI";
 const STATIONS=["Обладнання","Ризики","Рівняння","Хід роботи","Збирання","Виявлення","Каталізатори","Висновок"];
 const WORKS=[
+  {id:"ionmod9",date:"2026-11-12",cls:"9",url:"ionmod9.html",type:"Інтерактивна майстерня",label:"9 кл. · Майстерня йонів",title:"Майстерня йонів: моделювання простих і багатоатомних йонів (9 клас)",subject:"Хімія · 9 клас · моделювання йонів"},
   {id:"nd2mv8",date:"2026-11-12",cls:"8",url:"nd2gaz8.html",type:"Навчальне дослідження",label:"8 кл. · НД №2 «Молярний об'єм»",title:"Навчальне дослідження № 2 «Визначення молярного об'єму газів» (8 клас)",subject:"Хімія · 8 клас · молярний об'єм газів"},
   {id:"sklad7",date:"2026-11-11",cls:"7",url:"sklad7.html",type:"Тренажер",label:"7 кл. · Що показує формула",title:"Тренажер «Що показує формула? Якісний і кількісний склад» (7 клас)",subject:"Хімія · 7 клас · хімічні формули"},
   {id:"formuly7",date:"2026-11-11",cls:"7",url:"formuly7.html",type:"Інтерактивний аркуш",label:"7 кл. · Формули й молекули",title:"Інтерактивний аркуш «Хімічні формули. Молекули» (7 клас)",subject:"Хімія · 7 клас · хімічні формули"},
@@ -278,6 +279,21 @@ function render(){
         <div><b>Самооцінка</b>${esc(x.reflection||"—")}</div></div></details></td>
       <td class="muted">${when(x)}</td></tr>`}).join("")
       :'<tr><td colspan="7" class="muted">Ще ніхто не здав роботу. Коли учні натиснуть «Здати роботу», вони з\'являться тут.</td></tr>';
+  } else if(work.id==="ionmod9"){
+    const NM=["Атом → йон","Порівняння атома й йона","Багатоатомні йони","Сортування за зарядом"],MX=[4,2,4,2];
+    $("kAvg").textContent=best.length?(best.reduce((s,x)=>s+x.score,0)/best.length).toFixed(1):"0"; $("kAvgT").textContent="середній бал (з 12)";
+    $("kTop").textContent=best.filter(x=>x.score>=10).length; $("kTopT").textContent="учнів з балом 10–12";
+    const sum=Array(4).fill(0);best.forEach(x=>(x.parts||"").split(" ").forEach((v,i)=>sum[i]+=(+v||0)));
+    $("hardTitle").textContent="Частини, з якими клас впорався найгірше"; $("hardHint").textContent="Частка набраних балів за частиною (найкращі спроби учнів).";
+    $("hard").innerHTML=best.length?NM.map((n,i)=>[n,Math.round(sum[i]/(MX[i]*best.length)*100)]).sort((a,b)=>a[1]-b[1]).map(([n,p])=>`<span class="chip">${esc(n)} <small>${p}%</small></span>`).join(""):'<span class="muted">Поки немає даних</span>';
+    $("th").innerHTML=`<tr><th data-k="name">Учень</th><th data-k="cls">Клас</th><th data-k="score">Бали</th><th>Частини 1–4</th><th>Робота учня</th><th data-k="ts">Коли</th></tr>`;
+    $("tb").innerHTML=out.length?out.map(x=>{const p=x.score>=10?"g":x.score>=7?"m":"b";
+      return `<tr><td><strong>${esc(x.name)}</strong></td><td>${esc(x.cls)}</td><td><span class="pill ${p}">${String(x.score).replace(".",",")} / 12</span></td>
+      <td class="mono">${esc((x.parts||"").replace(/\./g,","))}</td>
+      <td><details><summary>Відкрити</summary><div class="work">
+        <div><b>Атом → йон</b>${esc(x.atoms)}</div><div><b>Багатоатомні йони</b>${esc(x.poly)}</div>
+        <div><b>Порівняння / сортування</b>${esc(x.compare)} · ${esc(x.sort)}</div></div></details></td><td class="muted">${when(x)}</td></tr>`}).join("")
+      :'<tr><td colspan="6" class="muted">Ще ніхто не здав.</td></tr>';
   } else if(work.id==="nd2mv8"){
     const NM=["Мета","Гіпотеза","Обладнання","Безпека","Схема приладу","Хід роботи","Обчислення","Висновок"],MX=[1,1,1,1,1,1,4,2];
     $("kAvg").textContent=best.length?(best.reduce((s,x)=>s+x.score,0)/best.length).toFixed(1):"0"; $("kAvgT").textContent="середній бал (з 12)";
@@ -572,6 +588,8 @@ function csv(){
     .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.detail,x.orders,x.weak,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="dys9"){lines=[["Учень","Клас","Бали (з 12)","Рівняння (з 6)","Визначення (з 2)","Ступінчаста (з 2)","Застосування (з 2)","Рівняння 1–6","Набір речовин","Помилки","Дата"]]
     .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.eq,x.set,x.weak,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
+  else if(work.id==="ionmod9"){lines=[["Учень","Клас","Бали (з 12)","Атом→йон (з 4)","Порівняння (з 2)","Багатоатомні (з 4)","Сортування (з 2)","Атоми","Багатоатомні йони","Порівняння","Сортування","Дата"]]
+    .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.atoms,x.poly,x.compare,x.sort,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="nd2mv8"){lines=[["Учень","Клас","Бали (з 12)","Мета","Гіпотеза","Обладнання","Безпека","Схема","Хід роботи","Обчислення (з 4)","Висновок (з 2)","Текст гіпотези","Дані й обчислення","Текст висновку","Дата"]]
     .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.hypothesis,x.observations,x.conclusion,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="nd8el9"){lines=[["Учень","Клас","Бали (з 12)","Мета","Гіпотеза","Обладнання","Безпека","Схема","Хід роботи","Результати (з 4)","Висновок (з 2)","Текст гіпотези","Результати","Текст висновку","Дата"]]
