@@ -118,6 +118,7 @@ const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.fireba
 const API_KEY="AIzaSyAGOncvJIlGaJu14uqEWy6rQxdF7-pQYUI";
 const STATIONS=["Обладнання","Ризики","Рівняння","Хід роботи","Збирання","Виявлення","Каталізатори","Висновок"];
 const WORKS=[
+  {id:"galvan11",date:"2026-11-12",cls:"11",url:"galvan11.html",type:"Віртуальна лабораторія",label:"11 кл. · Гальванічний елемент",title:"Віртуальна лабораторія «Гальванічний елемент — хімічне джерело струму» (11 клас)",subject:"Хімія · 11 клас · гальванічні елементи"},
   {id:"metro10",date:"2026-11-12",cls:"10",url:"metro10.html",type:"Тренажер-гра",label:"10 кл. · Метро вуглеводнів",title:"Тренажер «Метро вуглеводнів» — взаємозв'язки між гомологічними рядами (10 клас)",subject:"Хімія · 10 клас · генетичний зв'язок вуглеводнів"},
   {id:"misto10",date:"2026-11-12",cls:"10",url:"misto10.html",type:"Інтерактивна мапа",label:"10 кл. · Місто вуглеводнів",title:"Інтерактивне «Місто вуглеводнів» — застосування вуглеводнів (10 клас)",subject:"Хімія · 10 клас · застосування вуглеводнів"},
   {id:"elektr9",date:"2026-11-12",cls:"9",url:"elektrolity9.html",type:"Інтерактивний аркуш",label:"9 кл. · Сильні й слабкі електроліти",title:"Інтерактивний аркуш «Сильні та слабкі електроліти. Ступінь дисоціації» (9 клас)",subject:"Хімія · 9 клас · ступінь дисоціації"},
@@ -282,6 +283,19 @@ function render(){
         <div><b>Самооцінка</b>${esc(x.reflection||"—")}</div></div></details></td>
       <td class="muted">${when(x)}</td></tr>`}).join("")
       :'<tr><td colspan="7" class="muted">Ще ніхто не здав роботу. Коли учні натиснуть «Здати роботу», вони з\'являться тут.</td></tr>';
+  } else if(work.id==="galvan11"){
+    const NM=["Дослідження Zn–Cu","Мої гальванічні елементи","Джерела струму навколо нас"],MX=[3,6,3];
+    $("kAvg").textContent=best.length?(best.reduce((s,x)=>s+x.score,0)/best.length).toFixed(1):"0"; $("kAvgT").textContent="середній бал (з 12)";
+    $("kTop").textContent=best.filter(x=>x.score>=10).length; $("kTopT").textContent="учнів з балом 10–12";
+    const sum=Array(3).fill(0);best.forEach(x=>(x.parts||"").split(" ").forEach((v,i)=>sum[i]+=(+v||0)));
+    $("hardTitle").textContent="Частини, з якими клас впорався найгірше"; $("hardHint").textContent="Частка набраних балів за частиною (найкращі спроби учнів).";
+    $("hard").innerHTML=best.length?NM.map((n,i)=>[n,Math.round(sum[i]/(MX[i]*best.length)*100)]).sort((a,b)=>a[1]-b[1]).map(([n,p])=>`<span class="chip">${esc(n)} <small>${p}%</small></span>`).join(""):'<span class="muted">Поки немає даних</span>';
+    $("th").innerHTML=`<tr><th data-k="name">Учень</th><th data-k="cls">Клас</th><th data-k="score">Бали</th><th>Частини 1–3</th><th>Деталі</th><th data-k="ts">Коли</th></tr>`;
+    $("tb").innerHTML=out.length?out.map(x=>{const p=x.score>=10?"g":x.score>=7?"m":"b";
+      return `<tr><td><strong>${esc(x.name)}</strong></td><td>${esc(x.cls)}</td><td><span class="pill ${p}">${String(x.score).replace(".",",")} / 12</span></td>
+      <td class="mono">${esc((x.parts||"").replace(/\./g,","))}</td>
+      <td><details><summary>Відкрити</summary><div class="work"><div><b>Zn–Cu, показ вольтметра</b>${esc(x.zncu)} В</div><div><b>Пари учня</b>${esc(x.pairs)}</div><div><b>Виміряні пари</b>${esc(x.measured)}</div></div></details></td><td class="muted">${when(x)}</td></tr>`}).join("")
+      :'<tr><td colspan="6" class="muted">Ще ніхто не здав.</td></tr>';
   } else if(work.id==="metro10"){
     $("kAvg").textContent=best.length?(best.reduce((s,x)=>s+x.score,0)/best.length).toFixed(1):"0"; $("kAvgT").textContent="середній бал (з 12)";
     $("kTop").textContent=best.filter(x=>x.score>=10).length; $("kTopT").textContent="учнів з балом 10–12";
@@ -629,6 +643,8 @@ function csv(){
     .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.detail,x.orders,x.weak,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="dys9"){lines=[["Учень","Клас","Бали (з 12)","Рівняння (з 6)","Визначення (з 2)","Ступінчаста (з 2)","Застосування (з 2)","Рівняння 1–6","Набір речовин","Помилки","Дата"]]
     .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.eq,x.set,x.weak,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
+  else if(work.id==="galvan11"){lines=[["Учень","Клас","Бали (з 12)","Ч.1 (з 3)","Ч.2 (з 6)","Ч.3 (з 3)","Zn–Cu, В","Пари учня","Виміряні пари","Дата"]]
+    .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.zncu,x.pairs,x.measured,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="metro10"){lines=[["Учень","Клас","Бали (з 12)","Квиток 1","Квиток 2","Квиток 3","Квиток 4","Помилкові перегони","Маршрути","Перегони","Дата"]]
     .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.weak,x.routes,x.hops,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="misto10"){lines=[["Учень","Клас","Бали (з 12)","Місто (з 9)","Еко-вибір (з 3)","Об'єкти з помилками","Еко-вибір учня","Деталі","Дата"]]

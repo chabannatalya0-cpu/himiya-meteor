@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Гальванічний елемент</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700;800&display=swap">
+<style>
+/* Night electrochem bench: graphite room, glowing cyan electrons, amber voltmeter, coral anode / sky cathode labels. */
+:root{color-scheme:dark;
+  --bg:#0b1220;--panel:#121b2e;--card:#16223a;--ink:#e6edf7;--muted:#94a3b8;--line:#26344f;
+  --an:#fb7185;--cat:#38bdf8;--amber:#fbbf24;--el:#67e8f9;--ok:#4ade80;--bad:#f87171;--vio:#a78bfa;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;--f-body:"Golos Text",system-ui,sans-serif;--f-mono:"JetBrains Mono",ui-monospace,monospace}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0}
+body{background:radial-gradient(circle at 20% 0,#1e293b 0,transparent 45%),radial-gradient(circle at 90% 10%,#3b1d4a 0,transparent 35%),var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16.5px;line-height:1.45;min-height:100vh}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1100px;margin:0 auto;padding-block:16px 48px;padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:14px}
+.eyebrow{font:800 11px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--el)}
+h1{margin:4px 0 4px;font-family:var(--f-display);font-size:clamp(24px,4.6vw,40px);line-height:1.1}
+h1 span{color:var(--amber);text-shadow:0 0 18px rgba(251,191,36,.5)}
+header p{margin:0;color:var(--muted);max-width:760px}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:8;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:8px 14px;display:flex;gap:12px;align-items:center;justify-content:space-between;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.bar b{font-family:var(--f-display);font-size:20px;color:var(--amber)}
+.prog{flex:1;height:8px;background:#1e293b;border-radius:99px;overflow:hidden;max-width:300px}.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--an),var(--amber),var(--cat));width:0;transition:width .4s}
+.lab{background:var(--panel);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.ctrl{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;padding:12px 14px;border-bottom:1px solid var(--line);background:#0f172a}
+.ctrl label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ctrl select{font:inherit;font-size:16px;font-weight:700;padding:8px 10px;border-radius:10px;border:1px solid #334155;background:#1e293b;color:var(--ink);min-width:170px}
+.tg{font:inherit;font-weight:800;font-size:14.5px;border:1px solid #334155;border-radius:12px;padding:9px 14px;background:#1e293b;color:var(--ink);cursor:pointer}
+.tg[aria-pressed="true"]{background:var(--amber);color:#1c1917;border-color:var(--amber);box-shadow:0 0 14px rgba(251,191,36,.45)}
+.stage{background:linear-gradient(#1f2a3d,#2b3850 70%,#1a2333)}
+.stage svg{display:block;width:100%;height:auto}
+.half{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 14px;background:#0b1220;border-top:1px solid var(--line)}
+@media (max-width:640px){.half{grid-template-columns:1fr}}
+.hb{border-radius:12px;padding:8px 12px;font-family:var(--f-mono);font-size:15px;border:1px solid}
+.hb small{display:block;font:800 12px var(--f-body);letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
+.hb.a{border-color:var(--an);background:rgba(251,113,133,.08)}.hb.a small{color:var(--an)}
+.hb.c{border-color:var(--cat);background:rgba(56,189,248,.08)}.hb.c small{color:var(--cat)}
+.hb.n{grid-column:1/-1;border-color:#334155;color:var(--muted)}
+.note{padding:10px 14px;font-size:14.5px;color:var(--muted);border-top:1px solid var(--line)}
+.part{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.part.done{border-color:rgba(74,222,128,.6)}
+.part h2{margin:0;font-family:var(--f-display);font-size:18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.part h2 .no{flex:none;width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:var(--amber);color:#1c1917;font:800 16px var(--f-mono)}
+.part h2 .pts{margin-left:auto;font:800 12px var(--f-mono);background:rgba(167,139,250,.15);color:var(--vio);border-radius:99px;padding:4px 10px}
+.hint{margin:0;color:var(--muted);font-size:15px}
+.task{border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:10px;background:rgba(15,23,42,.5)}
+.task h3{margin:0;font-size:16.5px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.lock{font-size:14px;color:var(--amber)}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opts.col{flex-direction:column}
+.op{font:inherit;font-size:15px;text-align:left;border:1px solid #334155;background:#1e293b;border-radius:10px;padding:7px 11px;cursor:pointer;color:var(--ink)}
+.op.mono{font-family:var(--f-mono)}
+.op:hover:not([disabled]){border-color:var(--el)}
+.op[aria-pressed="true"]{border-color:var(--el);background:rgba(103,232,249,.14)}
+.op.ok{border-color:var(--ok);background:rgba(74,222,128,.15)}.op.no{border-color:var(--bad);background:rgba(248,113,113,.15)}.op.miss{border-color:var(--ok);border-style:dashed}
+.op[disabled]{cursor:default}
+.q{display:flex;flex-direction:column;gap:6px}
+.q b{font-size:15px}
+input.v{font:inherit;font-family:var(--f-mono);font-size:17px;padding:8px 10px;border-radius:10px;border:1px solid #334155;background:#0f172a;color:var(--ink);width:150px}
+input.v.ok{border-color:var(--ok)}input.v.no{border-color:var(--bad)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{font-family:var(--f-display);font-size:14px;border:0;border-radius:12px;padding:10px 16px;cursor:pointer;color:#1c1917;background:var(--amber);box-shadow:0 4px 0 #b45309}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #b45309}
+.btn.green{background:var(--ok);box-shadow:0 4px 0 #15803d}.btn[disabled]{opacity:.4;cursor:not-allowed}
+.fb{font-size:15px;border-radius:10px;padding:9px 12px;font-weight:600}
+.fb.ok{background:rgba(74,222,128,.15);color:#bbf7d0}.fb.bad{background:rgba(248,113,113,.15);color:#fecaca}.fb.info{background:rgba(167,139,250,.15);color:#ddd6fe}
+.match{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:center}
+.match select{font:inherit;font-size:15px;padding:7px;border-radius:10px;border:1px solid #334155;background:#1e293b;color:var(--ink);width:100%}
+.match select.ok{border-color:var(--ok)}.match select.no{border-color:var(--bad)}
+input[type=text],.overlay select{font:inherit;font-size:16px;padding:11px 13px;border-radius:12px;border:1px solid #334155;background:#0f172a;color:var(--ink);width:100%}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--el);outline-offset:2px}
+.overlay{position:fixed;inset:0;z-index:30;background:rgba(2,6,23,.8);display:flex;align-items:center;justify-content:center;padding:20px max(16px,env(safe-area-inset-right,0px)) 20px max(16px,env(safe-area-inset-left,0px))}
+.overlay .part{max-width:540px;width:100%}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media (max-width:520px){.grid2{grid-template-columns:1fr}}
+.lbl{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--muted)}
+.msg{font-weight:700;padding:9px 12px;border-radius:12px}
+.msg.ok{background:rgba(74,222,128,.15);color:#bbf7d0}.msg.bad{background:rgba(248,113,113,.15);color:#fecaca}.msg.info{background:rgba(167,139,250,.15);color:#ddd6fe}
+.final{font-family:var(--f-display);font-size:38px;color:var(--ok)}
+.series{display:flex;gap:4px;flex-wrap:wrap;font:800 14px var(--f-mono);align-items:center;color:var(--muted)}
+.series span{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:3px 8px;color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Хімія · 11 клас · хімічні джерела струму</span>
+    <h1>Гальванічний елемент: <span>енергія з реакції</span></h1>
+    <p>Збери гальванічний елемент із двох металів у розчинах їхніх солей, з'єднай їх сольовим містком і виміряй напругу. Досліджуй, а потім виконай завдання. Разом 12 балів.</p>
+  </header>
+  <div class="bar"><span id="who"></span><div class="prog"><i id="progI"></i></div><span>Бали: <b id="score">0</b> / 12</span></div>
+
+  <section class="lab">
+    <div class="ctrl">
+      <label>Ліва посудина<select id="mL"></select></label>
+      <label>Права посудина<select id="mR"></select></label>
+      <button class="tg" type="button" id="tBridge" aria-pressed="true">🧪 Сольовий місток KNO₃</button>
+      <button class="tg" type="button" id="tSwitch" aria-pressed="false">🔌 Замкнути коло</button>
+    </div>
+    <div class="stage"><svg viewBox="0 0 900 470" id="cell" aria-label="Гальванічний елемент"></svg></div>
+    <div class="half" id="half"></div>
+    <div class="note">🔎 Вольтметр підключено так: <b>чорний (COM)</b> дріт — до лівого електрода, <b>червоний</b> — до правого. Якщо на табло «мінус», полюси переплутано: справжній «+» — ліворуч.<br>
+      <span class="series" style="margin-top:6px">Ряд активності: <span>Mg</span><span>Zn</span><span>Fe</span><span>Ni</span><span>Pb</span><span>(H₂)</span><span>Cu</span><span>Ag</span> → активність металів зменшується</span></div>
+  </section>
+
+  <div id="parts" style="display:flex;flex-direction:column;gap:14px"></div>
+
+  <section class="part" id="fin">
+    <h2><span class="no">★</span>Здати роботу</h2>
+    <p class="hint" id="finHint">Виконай усі завдання, тоді кнопка стане активною.</p>
+    <div class="row"><span>Результат: <span class="final" id="finScore">0</span> / 12</span></div>
+    <div class="row"><button class="btn green" type="button" id="submit" disabled>Надіслати вчителю</button></div>
+    <div id="sendMsg"></div>
+  </section>
+</div>
+
+<div class="overlay" id="start">
+  <div class="part">
+    <span class="lbl">Перед початком</span>
+    <h2>Гальванічний елемент</h2>
+    <p style="margin:0">Цинк, поміщений у розчин купрум(II) сульфату, віддає електрони йонам Купруму — але енергія розсіюється як теплота. А що, коли змусити електрони бігти дротом? Перевіримо!</p>
+    <div class="grid2">
+      <div><label class="lbl" for="pname">Прізвище та ім'я</label><input type="text" id="pname" maxlength="60" autocomplete="name" placeholder="Іваненко Олена"></div>
+      <div><label class="lbl" for="pcls">Клас</label><select id="pcls"><option value="">— обери —</option><option>11-А</option><option>11-Б</option><option>Інший</option></select></div>
+    </div>
+    <p class="msg bad" id="startErr" hidden>Впиши прізвище, ім'я та обери клас.</p>
+    <div class="row"><button class="btn" id="startBtn" type="button">Увійти в лабораторію</button></div>
+  </div>
+</div>
+
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="galvan11";
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const fmt=x=>String(Math.round(x*10)/10).replace(".",",");
+const num=v=>{const x=parseFloat(String(v??"").replace(",",".").replace(/[^\d.\-]/g,""));return isFinite(x)?x:NaN};
+
+/* метали */
+const M={Mg:{n:"магній",E:-2.37,z:2,salt:"MgSO₄",sol:"#cbd5e1",col:"#e2e8f0"},Zn:{n:"цинк",E:-0.76,z:2,salt:"ZnSO₄",sol:"#cbd5e1",col:"#9ca3af"},Fe:{n:"залізо",E:-0.44,z:2,salt:"FeSO₄",sol:"#bbf7d0",col:"#6b7280"},
+  Ni:{n:"нікель",E:-0.25,z:2,salt:"NiSO₄",sol:"#4ade80",col:"#d6d3c4"},Pb:{n:"свинець",E:-0.13,z:2,salt:"Pb(NO₃)₂",sol:"#cbd5e1",col:"#64748b"},
+  Cu:{n:"мідь",E:0.34,z:2,salt:"CuSO₄",sol:"#3b82f6",col:"#c2703d"},Ag:{n:"срібло",E:0.80,z:1,salt:"AgNO₃",sol:"#cbd5e1",col:"#f1f5f9"}};
+const ION=m=>m+(M[m].z===2?"²⁺":"⁺");
+const NOISE={};const volt=(a,b)=>{const k=[a,b].sort().join("");if(NOISE[k]==null)NOISE[k]=(Math.random()-.5)*0.008;return M[b].E-M[a].E+(M[b].E>M[a].E?1:-1)*NOISE[k]};
+let L="Zn",R="Cu",bridge=true,closed=false,runT=0;const MEAS=new Set();let noBridgeSeen=false;
+["mL","mR"].forEach(id=>$(id).innerHTML=Object.keys(M).map(k=>`<option value="${k}">${k} · ${M[k].n} / ${M[k].salt}</option>`).join(""));
+$("mL").value=L;$("mR").value=R;
+$("mL").onchange=e=>{L=e.target.value;runT=0;drawCell()};$("mR").onchange=e=>{R=e.target.value;runT=0;drawCell()};
+$("tBridge").onclick=()=>{bridge=!bridge;$("tBridge").setAttribute("aria-pressed",bridge);drawCell()};
+$("tSwitch").onclick=()=>{closed=!closed;$("tSwitch").setAttribute("aria-pressed",closed);$("tSwitch").textContent=closed?"🔌 Коло замкнено":"🔌 Замкнути коло";drawCell()};
+
+function reading(){if(!closed||L===R)return 0;if(!bridge)return 0;return volt(L,R)}
+function drawCell(){const V=reading(),work=closed&&bridge&&L!==R,anL=work&&M[L].E<M[R].E,anR=work&&!anL;
+  if(work)MEAS.add([L,R].sort().join("-"));if(closed&&!bridge&&L!==R)noBridgeSeen=true;
+  const REV=work&&revealed(anL?L:R,anL?R:L);
+  const thin=k=>Math.min(6,runT/4)*(k?1:0);
+  const beaker=(x,m,isAn,isCat)=>`<path d="M${x} 210v170a14 14 0 0 0 14 14h152a14 14 0 0 0 14-14V210" fill="rgba(226,232,240,.08)" stroke="#cbd5e1" stroke-width="3"/>
+    <path d="M${x+3} 285h174v95a11 11 0 0 1-11 11H${x+14}a11 11 0 0 1-11-11z" fill="${M[m].sol}" opacity="${M[m].sol==="#cbd5e1"?.25:.55}"/>
+    <text x="${x+90}" y="383" text-anchor="middle" font-size="13" fill="#e2e8f0" font-family="Golos Text, Arial">${M[m].salt}</text>
+    <g>${[0,1,2,3].map(i=>`<text x="${x+30+i*38}" y="${310+(i%2)*40}" font-size="13" font-weight="700" fill="${M[m].sol==="#cbd5e1"?"#e2e8f0":"#fff"}" font-family="JetBrains Mono, monospace" opacity=".8">${ION(m)}</text>`).join("")}</g>
+    <rect x="${x+70+(isAn?thin(1)/2:0)}" y="110" width="${22-(isAn?thin(1):0)}" height="${255}" rx="3" fill="${M[m].col}" stroke="#0f172a" stroke-width="1.5"/>
+    ${isCat&&runT>2?`<rect x="${x+66}" y="285" width="30" height="80" rx="4" fill="${M[m].col}" opacity="${Math.min(.9,runT/20)}" stroke="#0f172a"/>`:""}
+    <text x="${x+81}" y="96" text-anchor="middle" font-size="18" font-weight="800" fill="#fff" font-family="Golos Text, Arial">${m}</text>
+    ${isAn&&REV?`<text x="${x+81}" y="74" text-anchor="middle" font-size="14" font-weight="800" fill="#fb7185" font-family="Golos Text, Arial">АНОД (−)</text>`:""}
+    ${isCat&&REV?`<text x="${x+81}" y="74" text-anchor="middle" font-size="14" font-weight="800" fill="#38bdf8" font-family="Golos Text, Arial">КАТОД (+)</text>`:""}`;
+  const W="M211 110V50H330V438H570V50H691V110";
+  let h=`<rect x="0" y="430" width="900" height="40" fill="#111827"/><rect x="0" y="426" width="900" height="6" fill="#374151"/>`;
+  h+=`<path d="${W}" fill="none" stroke="#111" stroke-width="7" stroke-linejoin="round"/><path d="M211 110V50H330V438H450" fill="none" stroke="#334155" stroke-width="4"/><path d="M450 438H570V50H691V110" fill="none" stroke="#b91c1c" stroke-width="4"/>`;
+  if(!closed)h+=`<g><rect x="315" y="190" width="30" height="40" fill="#0f172a"/><path d="M330 190l22 -16" stroke="#fbbf24" stroke-width="4"/><circle cx="330" cy="190" r="4" fill="#fbbf24"/><circle cx="330" cy="230" r="4" fill="#fbbf24"/><text x="360" y="215" font-size="13" fill="#fbbf24" font-family="Golos Text, Arial">ключ розімкнено</text></g>`;
+  h+=beaker(120,L,anL,anR)+beaker(600,R,anR,anL);
+  if(bridge)h+=`<path d="M250 370V150H650V370" fill="none" stroke="rgba(241,245,249,.75)" stroke-width="30" stroke-linejoin="round"/><path d="M250 370V150H650V370" fill="none" stroke="rgba(203,213,225,.35)" stroke-width="20" stroke-linejoin="round"/>
+    <rect x="410" y="132" width="80" height="22" rx="5" fill="#0f172a"/><text x="450" y="148" text-anchor="middle" font-size="13" font-weight="800" fill="#e2e8f0" font-family="Golos Text, Arial">KNO₃</text>`;
+  if(work){const dir=anL?"0;1":"1;0",dirI=anL?"1;0":"0;1";
+    for(let i=0;i<7;i++)h+=`<circle r="5" fill="#67e8f9"><animateMotion dur="3.5s" repeatCount="indefinite" begin="${-i*0.5}s" keyPoints="${dir}" keyTimes="0;1" calcMode="linear" path="${W}"/></circle>`;
+    for(let i=0;i<4;i++){h+=`<g><circle r="6" fill="#fbbf24"/><text y="4" text-anchor="middle" font-size="9" font-weight="800" fill="#1c1917">K⁺</text><animateMotion dur="5s" repeatCount="indefinite" begin="${-i*1.25}s" keyPoints="${dirI==="1;0"?"0;1":"1;0"}" keyTimes="0;1" calcMode="linear" path="M250 370V150H650V370"/></g>`;
+      h+=`<g><circle r="6" fill="#a78bfa"/><text y="4" text-anchor="middle" font-size="7" font-weight="800" fill="#fff">NO₃⁻</text><animateMotion dur="5s" repeatCount="indefinite" begin="${-i*1.25-0.6}s" keyPoints="${dirI}" keyTimes="0;1" calcMode="linear" path="M250 370V150H650V370"/></g>`}
+    if(REV)h+=`<text x="${anL?260:640}" y="40" text-anchor="${anL?"start":"end"}" font-size="14" font-weight="800" fill="#67e8f9" font-family="Golos Text, Arial">e⁻ ${anL?"→":"←"} рух електронів</text>`}
+  // вольтметр
+  h+=`<rect x="370" y="300" width="160" height="118" rx="14" fill="#facc15" stroke="#a16207" stroke-width="3"/><rect x="384" y="312" width="132" height="46" rx="6" fill="#9ca3af"/><rect x="388" y="316" width="124" height="38" rx="4" fill="#d9f99d"/>
+   <text x="504" y="345" text-anchor="end" font-size="26" font-weight="800" fill="#1f2937" font-family="JetBrains Mono, monospace">${V.toFixed(3)} V</text>
+   <text x="386" y="378" font-size="10" font-weight="800" fill="#422006" font-family="Arial">DC  2 V  AUTO</text><text x="514" y="378" text-anchor="end" font-size="10" font-weight="800" fill="#422006" font-family="Arial">10 MΩ</text>
+   <circle cx="410" cy="404" r="8" fill="#111"/><circle cx="490" cy="404" r="8" fill="#b91c1c"/><text x="410" y="396" text-anchor="middle" font-size="8" fill="#422006" font-family="Arial">COM</text>`;
+  $("cell").innerHTML=h;
+  // підписи анод/катод на правильних посудинах
+  const anM=work?(anL?L:R):null,catM=work?(anL?R:L):null;
+  drawHalf(anM,catM)}
+function eqAn(m){return `${m}⁰ − ${M[m].z===1?"":M[m].z}e⁻ → ${ION(m)}`}
+function eqCat(m){return `${ION(m)} + ${M[m].z===1?"":M[m].z}e⁻ → ${m}⁰`}
+function notation(a,c){return `${a} | ${ION(a)} || ${ION(c)} | ${c}`}
+function revealed(a,c){const k=[a,c].sort().join("-");return !PB.some(p=>[p.a,p.c].sort().join("-")===k&&!p.res)}
+function drawHalf(a,c){if(!a){$("half").innerHTML=`<div class="hb n">${L===R?"Однакові електроди не дають напруги — обери різні метали.":!bridge?"Без сольового містка коло розімкнене: йони не можуть переходити між розчинами.":"Замкни коло, щоб побачити роботу елемента."}</div>`;return}
+  if(!revealed(a,c)){$("half").innerHTML=`<div class="hb n">🔒 Це твоє завдання — процеси на електродах для цієї пари визнач у частині 2.</div>`;return}
+  $("half").innerHTML=`<div class="hb a"><small>Анод (−) · окиснення</small>${eqAn(a)}</div><div class="hb c"><small>Катод (+) · відновлення</small>${eqCat(c)}</div><div class="hb n">Схема: ${notation(a,c)} · E ≈ ${(M[c].E-M[a].E).toFixed(2)} В</div>`}
+setInterval(()=>{if(closed&&bridge&&L!==R&&runT<40){runT++;if(runT%2===0)drawCell()}},1000);
+
+/* ---------- завдання ---------- */
+const POOL=[["Mg","Cu"],["Zn","Ag"],["Fe","Cu"],["Ni","Ag"],["Zn","Pb"],["Mg","Zn"],["Fe","Ag"],["Pb","Ag"],["Zn","Ni"],["Mg","Fe"],["Ni","Cu"]];
+const PB=shuffle(POOL).slice(0,3).map(([x,y])=>{const a=M[x].E<M[y].E?x:y,c=a===x?y:x;return {a,c,ans:{},res:null,
+  oA:shuffle([eqAn(a),eqCat(a),eqAn(c)]),oC:shuffle([eqCat(c),eqAn(c),eqCat(a)]),oN:shuffle([notation(a,c),notation(c,a)])}});
+const A={v:"",q2:null,q3:null,res:null};
+const Q2=[["0 В: без містка коло розімкнене — йони не можуть переходити між розчинами, і заряди не врівноважуються",1],["напруга подвоюється",0],["напруга не змінюється — місток потрібен лише для краси",0]];
+const Q3=[["що далі один від одного розташовані метали в ряду активності",1],["що більша маса металевих пластинок",0],["що більший об'єм розчинів у склянках",0],["що ближче один до одного метали в ряду активності",0]];
+const O2=shuffle([0,1,2]),O3=shuffle([0,1,2,3]);
+const C={c1:null,m:{},c3:null,c4:null,res:null};
+const C1=[["хімічну енергію окисно-відновної реакції на електричну",1],["електричну енергію на хімічну",0],["теплову енергію на електричну",0]];
+const SRC=[["Лужна (сольова) батарейка","пульт ДК, ліхтарик"],["Свинцевий акумулятор","запуск двигуна автомобіля"],["Літій-йонний акумулятор","смартфон, ноутбук, електромобіль"],["Срібно-цинковий елемент «таблетка»","наручний годинник, слуховий апарат"]];
+const USE=shuffle(SRC.map(x=>x[1]));
+const C3=[["акумулятор можна заряджати багато разів, а батарейку — ні",1],["акумулятор не містить хімічних речовин",0],["батарейка дає змінний струм, а акумулятор — постійний",0]];
+const C4=[["здати в спеціальний пункт (бокс) збору батарейок",1],["викинути в контейнер для пластику",0],["закопати в землю подалі від дому",0]];
+const OC1=shuffle([0,1,2]),OC3=shuffle([0,1,2]),OC4=shuffle([0,1,2]);
+const SCORE={};
+function opBtns(list,ord,pick,key,done,right){return ord.map(j=>{let c="";if(done){if(list[j][1])c=pick===j?"ok":"miss";else if(pick===j)c="no"}return `<button class="op ${c}" type="button" data-k="${key}" data-j="${j}" aria-pressed="${pick===j}" ${done?"disabled":""}>${list[j][0]}</button>`}).join("")}
+function render(){let h="";
+  /* частина 1 */
+  const d1=!!A.res;
+  h+=`<section class="part ${d1?"done":""}"><h2><span class="no">1</span>Досліджуємо елемент Даніеля–Якобі<span class="pts">3 б.</span></h2>
+   <div class="task"><h3>1) Збери елемент Zn | ZnSO₄ || CuSO₄ | Cu (цинк ліворуч, мідь праворуч) зі сольовим містком, замкни коло й запиши показ вольтметра.</h3>
+    <div class="row"><input class="v ${d1?(A.res.v?"ok":"no"):""}" inputmode="decimal" id="aV" value="${A.v}" placeholder="0,000" ${d1?"readonly":""}> В ${MEAS.has("Cu-Zn")?"":`<span class="lock">← спершу виміряй у лабораторії</span>`}</div></div>
+   <div class="task"><h3>2) Прибери сольовий місток (кнопка «Сольовий місток») при замкненому колі. Що показує вольтметр і чому?</h3>${noBridgeSeen?"":`<span class="lock">🔒 Спершу спробуй у лабораторії.</span>`}
+    <div class="opts col">${opBtns(Q2,O2,A.q2,"q2",d1)}</div></div>
+   <div class="task"><h3>3) Збери кілька різних пар металів. Напруга гальванічного елемента тим більша, …</h3><span class="hint">Виміряно різних пар: ${MEAS.size}${MEAS.size<3?" (потрібно щонайменше 3)":" ✓"}</span>
+    <div class="opts col">${opBtns(Q3,O3,A.q3,"q3",d1)}</div></div>
+   ${d1?`<div class="fb ${A.res.s===3?"ok":"info"}">+${fmt(A.res.s)} б. Елемент Даніеля–Якобі дає ≈ 1,10 В. Сольовий місток замикає внутрішнє коло: йони K⁺ рухаються до катода, NO₃⁻ — до анода, врівноважуючи заряди розчинів.</div>`:`<div class="row"><button class="btn" type="button" id="chkA">Перевірити частину 1</button></div><div id="fbA"></div>`}</section>`;
+  /* частина 2 */
+  h+=`<section class="part ${PB.every(p=>p.res)?"done":""}"><h2><span class="no">2</span>Мої гальванічні елементи<span class="pts">6 б.</span></h2>
+   <p class="hint">Для кожної пари металів збери елемент у лабораторії, виміряй напругу і визнач, що відбувається на електродах. За кожну пару — 2 бали.</p>`;
+  PB.forEach((p,i)=>{const k=[p.a,p.c].sort().join("-"),ok=MEAS.has(k),d=!!p.res,s=p.ans;
+    const grp=(key,list)=>`<div class="opts">${list.map(v=>{let c="";if(d){const right=key==="an"?p.a:key==="eA"?eqAn(p.a):key==="eC"?eqCat(p.c):notation(p.a,p.c);if(v===right)c=s[key]===v?"ok":"miss";else if(s[key]===v)c="no"}
+      return `<button class="op ${key==="an"?"":"mono"} ${c}" type="button" data-p="${i}" data-key="${key}" data-v="${v}" aria-pressed="${s[key]===v}" ${d||!ok?"disabled":""}>${v}</button>`}).join("")}</div>`;
+    h+=`<div class="task"><h3>Пара ${i+1}: ${p.a} і ${p.c} ${ok?"":`<span class="lock">🔒 збери й виміряй цей елемент у лабораторії</span>`}</h3>
+     <div class="q"><b>а) Напруга елемента (додатне значення), В</b><input class="v ${d?(p.res.v?"ok":"no"):""}" inputmode="decimal" data-pv="${i}" value="${s.v||""}" placeholder="0,000" ${d||!ok?"readonly":""}></div>
+     <div class="q"><b>б) Який метал є анодом (−)?</b>${grp("an",[p.a,p.c].sort())}</div>
+     <div class="q"><b>в) Процес на аноді</b>${grp("eA",p.oA)}</div>
+     <div class="q"><b>г) Процес на катоді</b>${grp("eC",p.oC)}</div>
+     <div class="q"><b>ґ) Схема гальванічного елемента</b>${grp("nt",p.oN)}</div>
+     ${d?`<div class="fb ${p.res.s===2?"ok":"info"}">+${fmt(p.res.s)} б. ${p.a} активніший — він окиснюється й посилає електрони зовнішнім колом до ${p.c}. E ≈ ${(M[p.c].E-M[p.a].E).toFixed(2)} В.</div>`:ok?`<div class="row"><button class="btn" type="button" data-chkp="${i}">Перевірити пару ${i+1}</button></div><div id="fbP${i}"></div>`:""}</div>`});
+  h+=`</section>`;
+  /* частина 3 */
+  const d3=!!C.res;
+  h+=`<section class="part ${d3?"done":""}"><h2><span class="no">3</span>Хімічні джерела струму навколо нас<span class="pts">3 б.</span></h2>
+   <div class="task"><h3>1) Гальванічний елемент перетворює…</h3><div class="opts col">${opBtns(C1,OC1,C.c1,"c1",d3)}</div></div>
+   <div class="task"><h3>2) Де використовують ці джерела струму?</h3><div class="match">${SRC.map((s,i)=>`<b>${s[0]}</b><select data-mi="${i}" class="${d3?(C.m[i]===s[1]?"ok":"no"):""}" ${d3?"disabled":""}><option value="">— обери —</option>${USE.map(u=>`<option ${C.m[i]===u?"selected":""}>${u}</option>`).join("")}</select>`).join("")}</div></div>
+   <div class="task"><h3>3) Чим акумулятор відрізняється від батарейки?</h3><div class="opts col">${opBtns(C3,OC3,C.c3,"c3",d3)}</div></div>
+   <div class="task"><h3>4) Що робити з використаною батарейкою?</h3><div class="opts col">${opBtns(C4,OC4,C.c4,"c4",d3)}</div></div>
+   ${d3?`<div class="fb ${C.res===3?"ok":"info"}">+${fmt(C.res)} б. Батарейки містять сполуки важких металів і луги — одна батарейка може забруднити ґрунт і воду на великій площі, тому їх здають на переробку.</div>`:`<div class="row"><button class="btn" type="button" id="chkC">Перевірити частину 3</button></div><div id="fbC"></div>`}</section>`;
+  $("parts").innerHTML=h;bind();upd()}
+function bind(){
+  const aV=$("aV");if(aV)aV.oninput=e=>A.v=e.target.value;
+  document.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{const k=b.dataset.k,j=+b.dataset.j;if(k==="q2"&&!noBridgeSeen)return;if(["q2","q3"].includes(k))A[k]=j;else C[k]=j;render()});
+  const ca=$("chkA");if(ca)ca.onclick=()=>{if(!MEAS.has("Cu-Zn"))return fb("fbA","Спершу збери елемент Zn–Cu і виміряй напругу.");
+    if(!noBridgeSeen)return fb("fbA","Спершу прибери сольовий місток при замкненому колі й подивися на вольтметр.");
+    if(MEAS.size<3)return fb("fbA","Виміряй напругу щонайменше для 3 різних пар металів.");
+    if(!isFinite(num(A.v))||A.q2==null||A.q3==null)return fb("fbA","Запиши показ вольтметра й дай відповіді на запитання 2 і 3.");
+    const v=Math.abs(Math.abs(num(A.v))-1.10)<=0.02;A.res={v,s:(v?1:0)+(Q2[A.q2][1]?1:0)+(Q3[A.q3][1]?1:0)};render()};
+  document.querySelectorAll("[data-pv]").forEach(i=>i.oninput=()=>PB[+i.dataset.pv].ans.v=i.value);
+  document.querySelectorAll("[data-key]").forEach(b=>b.onclick=()=>{PB[+b.dataset.p].ans[b.dataset.key]=b.dataset.v;render()});
+  document.querySelectorAll("[data-chkp]").forEach(b=>b.onclick=()=>{const i=+b.dataset.chkp,p=PB[i],s=p.ans;
+    if(!isFinite(num(s.v))||!s.an||!s.eA||!s.eC||!s.nt)return fb("fbP"+i,"Заповни всі пункти а–ґ.");
+    const E=M[p.c].E-M[p.a].E,v=Math.abs(Math.abs(num(s.v))-E)<=0.02;
+    const sc=(v?.5:0)+(s.an===p.a?.5:0)+((s.eA===eqAn(p.a))&&(s.eC===eqCat(p.c))?.5:0)+(s.nt===notation(p.a,p.c)?.5:0);
+    p.res={v,s:sc,pick:`${v?"✓":"✗"}U ${s.an===p.a?"✓":"✗"}анод ${s.eA===eqAn(p.a)&&s.eC===eqCat(p.c)?"✓":"✗"}процеси ${s.nt===notation(p.a,p.c)?"✓":"✗"}схема`};render();drawCell()});
+  document.querySelectorAll("[data-mi]").forEach(x=>x.onchange=()=>{C.m[+x.dataset.mi]=x.value;render()});
+  const cc=$("chkC");if(cc)cc.onclick=()=>{if(C.c1==null||C.c3==null||C.c4==null||SRC.some((s,i)=>!C.m[i]))return fb("fbC","Дай відповіді на всі запитання.");
+    const mt=SRC.filter((s,i)=>C.m[i]===s[1]).length;C.res=(C1[C.c1][1]?1:0)+(mt===4?1:mt>=2?.5:0)+(C3[C.c3][1]?.5:0)+(C4[C.c4][1]?.5:0);render()}}
+function fb(id,t){const e=$(id);if(e)e.innerHTML=`<div class="fb info">${t}</div>`}
+
+/* здача */
+let ME={},sent=false;
+function total(){return (A.res?A.res.s:0)+PB.reduce((a,p)=>a+(p.res?p.res.s:0),0)+(C.res||0)}
+function upd(){const n=(A.res?1:0)+PB.filter(p=>p.res).length+(C.res!=null?1:0);$("score").textContent=fmt(total());$("finScore").textContent=fmt(total());$("progI").style.width=n/5*100+"%";
+  if(n===5){$("submit").disabled=sent;$("finHint").textContent="Усе виконано. Надішли роботу вчителю."}}
+$("submit").onclick=async()=>{const box=$("sendMsg");if(sent)return;$("submit").disabled=true;box.className="msg info";box.textContent="Надсилаю…";
+  const sc=total(),p2=PB.reduce((a,p)=>a+p.res.s,0);
+  const rec={name:ME.name,cls:ME.cls,score:sc,max:12,ts:{".sv":"timestamp"},parts:`${A.res.s} ${p2} ${C.res}`,
+    zncu:A.v,pairs:PB.map(p=>`${p.a}–${p.c}: U=${p.ans.v} ${p.res.pick}`).join("; "),measured:[...MEAS].join(", ")};
+  try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec)});if(!r.ok)throw new Error(r.status);
+    sent=true;box.className="msg ok";box.textContent=`✓ Роботу отримано вчителем: ${fmt(sc)} / 12. Молодець!`;
+  }catch(e){$("submit").disabled=false;box.className="msg bad";box.textContent="Не вдалося надіслати. Перевір інтернет і натисни ще раз."}};
+$("startBtn").onclick=()=>{const nm=$("pname").value.trim(),c=$("pcls").value;if(nm.length<3||!c){$("startErr").hidden=false;return}
+  ME={name:nm.slice(0,60),cls:c};$("who").textContent=`👤 ${ME.name} · ${ME.cls}`;$("start").hidden=true};
+const _dc=drawCell;drawCell=function(){const before=MEAS.size,nb=noBridgeSeen;_dc();if(MEAS.size!==before||nb!==noBridgeSeen)render()};
+drawCell();render();
+</script>
+</body>
+</html>
