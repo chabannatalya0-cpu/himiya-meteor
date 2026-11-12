@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SWOT-дошка ліцею — екран</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Golos+Text:wght@400;500;600;700;800&display=swap">
+<style>
+/* Strategy-room wall: clean white board, four saturated quadrants with giant letters, a big session timer as the conductor. */
+:root{color-scheme:light;--ink:#1c2230;--muted:#5b6474;--bg:#eef1f7;
+  --S:#16a34a;--S2:#dcfce7;--W:#d97706;--W2:#fef3c7;--O:#2563eb;--O2:#dbeafe;--T:#dc2626;--T2:#fee2e2;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;--f-body:"Golos Text",system-ui,sans-serif}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);overflow:hidden}
+.screen{height:100vh;display:flex;flex-direction:column;padding:1.2vh 1.2vw;gap:1.2vh}
+.top{display:flex;gap:1.2vw;align-items:center}
+.top h1{margin:0;font-family:var(--f-display);font-size:clamp(18px,2vw,38px);line-height:1.1;flex:1}
+.top h1 small{display:block;font-family:var(--f-body);font-weight:600;font-size:.5em;color:var(--muted);margin-top:.3vh}
+.timer{display:flex;align-items:center;gap:.8vw;background:#fff;border-radius:16px;padding:.6vh 1vw;box-shadow:0 4px 14px rgba(28,34,48,.08)}
+.timer .t{font:800 clamp(26px,3.2vw,60px) var(--f-display);font-variant-numeric:tabular-nums;min-width:3.4em;text-align:center}
+.timer .t.warn{color:#dc2626;animation:bl 1s steps(2) infinite}
+@keyframes bl{50%{opacity:.4}}
+.timer .ph{font-size:clamp(11px,.85vw,15px);font-weight:700;color:var(--muted);max-width:11em;line-height:1.2}
+.phs{display:flex;flex-wrap:wrap;gap:.35vw;max-width:22vw}
+.phs button{font:inherit;font-size:clamp(10px,.72vw,13px);font-weight:700;border:1.5px solid #d5dae5;border-radius:9px;padding:3px 7px;background:#fff;cursor:pointer}
+.phs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.cnt{background:#fff;border-radius:16px;padding:.6vh 1vw;box-shadow:0 4px 14px rgba(28,34,48,.08);text-align:center;font-size:clamp(10px,.8vw,14px);font-weight:700;color:var(--muted)}
+.cnt b{display:block;font:800 clamp(20px,2.2vw,40px) var(--f-display);color:var(--ink)}
+.matrix{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:1vw}
+.matrix.one{grid-template-columns:1fr;grid-template-rows:1fr}
+.q{background:#fff;border-radius:20px;display:flex;flex-direction:column;min-height:0;overflow:hidden;box-shadow:0 6px 18px rgba(28,34,48,.08);border:0;font:inherit;color:inherit;text-align:left;padding:0;cursor:pointer;position:relative}
+.qh{display:flex;align-items:center;gap:.8vw;padding:.9vh 1vw;color:#fff}
+.qh .L{font:800 clamp(28px,3.4vw,64px) var(--f-display);line-height:1}
+.one .qh .L{font-size:clamp(40px,5vw,96px)}
+.qh .tt{flex:1;line-height:1.15}
+.qh .tt b{display:block;font-size:clamp(13px,1.2vw,24px)}
+.one .qh .tt b{font-size:clamp(18px,2vw,38px)}
+.qh .tt span{font-size:clamp(10px,.82vw,15px);opacity:.92}
+.one .qh .tt span{font-size:clamp(13px,1.2vw,22px)}
+.qh .rc{display:flex;gap:.5vw;font-size:clamp(11px,.9vw,16px);font-weight:700;background:rgba(255,255,255,.2);border-radius:99px;padding:.3vh .7vw;white-space:nowrap}
+.qh img{width:clamp(44px,4.2vw,80px);height:auto;background:#fff;border-radius:8px;padding:3px;image-rendering:pixelated}
+.qb{flex:1;min-height:0;overflow:hidden;padding:.8vh 1vw;display:flex;flex-direction:column;gap:.7vh}
+.top3{border-radius:14px;padding:.6vh .8vw;border:2px solid;display:flex;flex-direction:column;gap:.3vh}
+.top3 h4{margin:0;font-size:clamp(11px,.85vw,15px);text-transform:uppercase;letter-spacing:.06em}
+.top3 ol{margin:0;padding-left:1.3em;font-weight:800;font-size:clamp(12px,1.05vw,20px);line-height:1.25}
+.one .top3 ol{font-size:clamp(18px,2vw,38px)}
+.one .top3 h4{font-size:clamp(13px,1.2vw,22px)}
+.ideas{display:flex;flex-wrap:wrap;gap:.5vw;align-content:flex-start;overflow:hidden;flex:1;min-height:0}
+.idea{font:inherit;font-size:var(--fs,clamp(11px,.95vw,18px));line-height:1.25;border-radius:12px;padding:.45vh .6vw;border:0;cursor:pointer;text-align:left;color:var(--ink);max-width:100%}
+.one .idea{font-size:clamp(16px,1.55vw,30px);padding:.8vh .9vw}
+.idea.new{animation:pop .8s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+.empty{color:var(--muted);font-size:clamp(12px,1vw,18px);font-style:italic}
+.bar{display:flex;gap:.5vw;justify-content:flex-end;flex-wrap:wrap}
+.bar button{font:inherit;font-size:clamp(10px,.75vw,13px);font-weight:700;border:1.5px solid #d5dae5;border-radius:9px;padding:4px 9px;background:#fff;cursor:pointer}
+.banner{position:fixed;left:50%;top:13vh;transform:translateX(-50%);z-index:30;background:#1c2230;color:#fff;border-radius:18px;padding:1.4vh 2vw;font-weight:800;font-size:clamp(16px,1.8vw,34px);box-shadow:0 12px 30px rgba(0,0,0,.3);text-align:center}
+.overlay{position:fixed;inset:0;z-index:40;background:rgba(28,34,48,.65);display:flex;align-items:center;justify-content:center;padding:3vw}
+.qrs{background:#fff;border-radius:24px;padding:2vw;display:grid;grid-template-columns:repeat(4,1fr);gap:2vw;max-width:1400px;width:100%}
+.qrs div{display:flex;flex-direction:column;align-items:center;gap:.8vh;text-align:center}
+.qrs img{width:100%;max-width:260px;height:auto;image-rendering:pixelated;border-radius:12px;border:6px solid}
+.qrs b{font:800 clamp(20px,2.4vw,44px) var(--f-display)}
+.qrs span{font-weight:700;font-size:clamp(12px,1vw,18px)}
+.qrs .hd{grid-column:1/-1;font:800 clamp(18px,1.8vw,32px) var(--f-display)}
+.modal .card{background:#fff;border-radius:22px;padding:3vw;max-width:900px;width:100%;font-size:clamp(22px,2.8vw,50px);font-weight:700;line-height:1.2}
+.modal .act{display:flex;gap:10px;margin-top:2vh}
+.modal .act button{font:inherit;font-size:16px;font-weight:700;border:2px solid var(--ink);border-radius:12px;padding:8px 14px;background:#fff;cursor:pointer}
+.login{position:fixed;inset:0;z-index:50;background:rgba(28,34,48,.75);display:flex;align-items:center;justify-content:center;padding:16px}
+.login form{background:#fff;border-radius:20px;padding:22px;max-width:420px;width:100%;display:flex;flex-direction:column;gap:12px}
+.login h2{margin:0;font-family:var(--f-display);font-size:22px}
+.login input{font:inherit;font-size:16px;padding:11px 13px;border-radius:12px;border:2px solid #d5dae5;width:100%}
+.login button{font:inherit;font-weight:800;font-size:17px;border:0;border-radius:14px;padding:12px;background:var(--ink);color:#fff;cursor:pointer}
+.login p{margin:0;color:var(--muted);font-size:14px}
+.err{color:#b91c1c;font-weight:700}
+#printArea{display:none}
+@media print{body{overflow:visible;background:#fff}.screen,.login,.overlay,.banner{display:none!important}#printArea{display:block;font-family:var(--f-body);color:#000}
+  #printArea h1{font-size:20pt;margin:0 0 4mm}#printArea h2{font-size:14pt;margin:5mm 0 2mm;padding:2mm 3mm;color:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #printArea ol,#printArea ul{margin:0 0 2mm;padding-left:7mm;font-size:11pt}#printArea p{font-size:10pt;color:#444;margin:0 0 3mm}}
+@media (prefers-reduced-motion:reduce){.idea.new,.timer .t.warn{animation:none}}
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="top">
+    <h1>SWOT-аналіз: батьки — співавтори стратегії<small>Профільне навчання в академічному ліцеї: кадри, матеріальна база й запити родин</small></h1>
+    <div class="cnt"><b id="nAll">0</b>думок</div>
+    <div class="timer"><div><div class="t" id="tm">9:00</div></div><div><div class="ph" id="ph">Обери етап →</div></div>
+      <div class="phs" id="phs"></div></div>
+  </div>
+  <div class="matrix" id="mx"></div>
+  <div class="bar"><button type="button" id="bQR">▦ QR-коди груп</button><button type="button" id="bAll">⊞ Уся матриця</button><button type="button" id="bFull">⛶ Весь екран</button><button type="button" id="bPrint">🖨 Зберегти матрицю (PDF)</button><button type="button" id="bCopy">📋 Копіювати текст</button><button type="button" id="bReset">🧹 Нова сесія</button><button type="button" id="bShow">↺ Показати всі</button></div>
+</div>
+<div class="banner" id="banner" hidden></div>
+<div class="overlay" id="qrO" hidden><div class="qrs" id="qrs"></div></div>
+<div class="overlay modal" id="modal" hidden><div class="card"><div id="mtext"></div><div class="act"><button type="button" id="mHide">🙈 Сховати з екрана</button><button type="button" id="mClose">Закрити</button></div></div></div>
+<div id="printArea"></div>
+<div class="login" id="login"><form id="lf">
+  <h2>⊞ SWOT-дошка для зали</h2>
+  <p>Увійдіть тим самим email і паролем, що й у журналі «Результати учнів». Учасникам входити не потрібно — вони сканують QR-код своєї групи.</p>
+  <input type="email" id="em" placeholder="Email" autocomplete="username" required>
+  <input type="password" id="pw" placeholder="Пароль" autocomplete="current-password" required>
+  <button type="submit">Відкрити SWOT-дошку</button><div class="err" id="lerr"></div></form></div>
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const API_KEY="AIzaSyAGOncvJIlGaJu14uqEWy6rQxdF7-pQYUI";
+const WORK_ID="swot";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const Q={S:{t:"Сильні сторони",n:1,f:"Який досвід, досягнення й ресурси ліцею є нашою опорою?"},W:{t:"Зони росту",n:2,f:"Яких ресурсів нам наразі бракує для повноцінного профільного навчання?"},
+  O:{t:"Можливості",n:3,f:"Які зовнішні партнерства й ресурси допоможуть розширити вибір курсів?"},T:{t:"Ризики",n:4,f:"Що може завадити дитині успішно навчатися за обраним маршрутом?"}};
+const CV=k=>getComputedStyle(document.documentElement).getPropertyValue("--"+k).trim();
+const RI={parent:"👨‍👩‍👧",teacher:"🧑‍🏫",community:"🏘️"};
+let token=null,refresh=null,DATA={},seen=new Set(),first=true,since=LS.get("swot:since",0),hidden=new Set(LS.get("swot:hidden",[])),focus=null,cur=null;
+/* таймер */
+const PH=[["Інструкція",60],["Робота в групах",540],["Презентація S",120],["Презентація W",120],["Презентація O",120],["Презентація T",120]];
+let tEnd=0,tPh=-1,tPause=0,warned=false;
+$("phs").innerHTML=PH.map((p,i)=>`<button type="button" data-ph="${i}">${p[0]} ${Math.floor(p[1]/60)}:${String(p[1]%60).padStart(2,"0")}</button>`).join("")+`<button type="button" id="tStop">⏸</button>`;
+$("phs").querySelectorAll("[data-ph]").forEach(b=>b.onclick=()=>{tPh=+b.dataset.ph;tEnd=Date.now()+PH[tPh][1]*1000;tPause=0;warned=false;$("ph").textContent=PH[tPh][0];
+  $("phs").querySelectorAll("[data-ph]").forEach(x=>x.classList.toggle("on",x===b));const m=PH[tPh][0].match(/Презентація (\w)/);focus=m?m[1]:null;render()});
+$("tStop").onclick=()=>{if(tPh<0)return;if(tPause){tEnd=Date.now()+tPause;tPause=0;$("tStop").textContent="⏸"}else{tPause=tEnd-Date.now();$("tStop").textContent="▶"}};
+setInterval(()=>{if(tPh<0)return;const left=Math.max(0,Math.ceil(((tPause||tEnd-Date.now()))/1000));$("tm").textContent=`${Math.floor(left/60)}:${String(left%60).padStart(2,"0")}`;
+  $("tm").classList.toggle("warn",left<=(tPh===1?60:15)&&left>0);
+  if(tPh===1&&left<=60&&left>0&&!warned){warned=true;banner("⏰ Залишилась 1 хвилина! Оберіть три найважливіші думки й представника групи.",9000)}
+  if(left===0&&!tPause&&tEnd){tEnd=0;banner(tPh===1?"⏱ Час роботи в групах завершено! Представники — готуйтеся до презентації.":"⏱ Час вичерпано — дякуємо!",5000)}},250);
+function banner(t,ms){$("banner").textContent=t;$("banner").hidden=false;clearTimeout(banner._t);banner._t=setTimeout(()=>$("banner").hidden=true,ms)}
+/* вхід */
+async function signIn(email,password){const r=await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password,returnSecureToken:true})});
+  const j=await r.json();if(!r.ok)throw new Error(j.error&&j.error.message||"LOGIN");token=j.idToken;refresh=j.refreshToken}
+async function renew(){try{const r=await fetch(`https://securetoken.googleapis.com/v1/token?key=${API_KEY}`,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:"grant_type=refresh_token&refresh_token="+encodeURIComponent(refresh)});const j=await r.json();if(j.id_token){token=j.id_token;refresh=j.refresh_token}}catch(e){}}
+async function ensureNode(){const r=await fetch(`${FIREBASE_URL}/worksheets/${WORK_ID}.json?auth=${token}`);const c=await r.json();
+  if(!c)await fetch(`${FIREBASE_URL}/worksheets/${WORK_ID}.json?auth=${token}`,{method:"PUT",body:JSON.stringify({title:"SWOT-аналіз ресурсів ліцею (батьківські збори)",subject:"Загальношкільні збори",open:true,game:true,created:Date.now(),exercises:[]})})}
+$("lf").onsubmit=async e=>{e.preventDefault();$("lerr").textContent="";try{await signIn($("em").value.trim(),$("pw").value);await ensureNode();$("login").hidden=true;poll();setInterval(poll,3000);setInterval(renew,45*60*1000)}
+  catch(err){$("lerr").textContent="Не вдалося увійти. Перевірте email і пароль."}};
+async function poll(){try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json?auth=${token}`);if(r.status===401){await renew();return}if(!r.ok)return;DATA=await r.json()||{};render()}catch(e){}}
+/* дані */
+function list(){return Object.entries(DATA).map(([id,x])=>({id,...x})).filter(x=>x&&Q[x.g]&&(x.ts||0)>=since&&!hidden.has(x.id)).sort((a,b)=>(a.ts||0)-(b.ts||0))}
+function render(){const L=list(),ideas=L.filter(x=>x.kind==="idea");$("nAll").textContent=ideas.length;
+  const mx=$("mx");mx.className="matrix"+(focus?" one":"");
+  mx.innerHTML=(focus?[focus]:["S","W","O","T"]).map(k=>{const q=Q[k],my=ideas.filter(x=>x.g===k),tops=L.filter(x=>x.kind==="top"&&x.g===k),top=tops[tops.length-1];
+    const rc=Object.keys(RI).map(r=>`${RI[r]} ${my.filter(x=>x.role===r).length}`).join(" · ");
+    const fs=my.length<=6?"clamp(13px,1.2vw,22px)":my.length<=12?"clamp(11px,.98vw,18px)":my.length<=20?"clamp(10px,.82vw,15px)":"clamp(9px,.7vw,13px)";
+    return `<button type="button" class="q" data-q="${k}"><div class="qh" style="background:${CV(k)}"><span class="L">${k}</span><span class="tt"><b>Група ${q.n} · ${q.t}</b><span>${q.f}</span></span><span class="rc">${rc}</span>${!focus?"":`<img src="img/swot-qr-${k}.png" alt="">`}</div>
+      <div class="qb">${top?`<div class="top3" style="border-color:${CV(k)};background:${CV(k+"2")}"><h4>⭐ Три головні думки групи${top.rep?` · представник: ${esc(top.rep)}`:""}</h4><ol><li>${esc(top.t1)}</li><li>${esc(top.t2)}</li><li>${esc(top.t3)}</li></ol></div>`:""}
+       <div class="ideas" style="--fs:${fs}">${my.length?my.map(x=>`<span class="idea ${!first&&!seen.has(x.id)?"new":""}" data-id="${x.id}" style="background:${CV(k+"2")}">${RI[x.role]||"💬"} ${esc(x.text)}</span>`).join(""):`<span class="empty">Чекаємо на думки групи ${q.n}… (QR-код на картці групи)</span>`}</div></div></button>`}).join("");
+  L.forEach(x=>seen.add(x.id));first=false;
+  mx.querySelectorAll(".q").forEach(el=>el.onclick=e=>{const id=e.target.closest(".idea");if(id){openM(id.dataset.id);return}focus=focus?null:el.dataset.q;render()})}
+function openM(id){const x=DATA[id];if(!x)return;cur=id;$("mtext").innerHTML=`<div style="font:800 .5em var(--f-display);color:${CV(x.g)}">${x.g} · ${Q[x.g].t}</div>${RI[x.role]||""} ${esc(x.text)}`;$("modal").hidden=false}
+$("mClose").onclick=()=>$("modal").hidden=true;$("modal").onclick=e=>{if(e.target.id==="modal")$("modal").hidden=true};
+$("mHide").onclick=()=>{hidden.add(cur);LS.set("swot:hidden",[...hidden]);$("modal").hidden=true;render()};
+/* QR */
+$("qrs").innerHTML=`<div class="hd">📱 Скануйте QR-код своєї групи</div>`+["S","W","O","T"].map(k=>`<div><b style="color:${CV(k)}">${k}</b><img src="img/swot-qr-${k}.png" alt="QR ${k}" style="border-color:${CV(k)}"><span>Група ${Q[k].n} · ${Q[k].t}</span></div>`).join("");
+$("bQR").onclick=()=>$("qrO").hidden=false;$("qrO").onclick=()=>$("qrO").hidden=true;
+$("bAll").onclick=()=>{focus=null;render()};
+$("bFull").onclick=()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}};
+$("bReset").onclick=()=>{if(!window.confirm("Почати нову сесію? Попередні думки зникнуть з екрана (але збережуться в базі)."))return;since=Date.now();LS.set("swot:since",since);seen=new Set();first=true;render()};
+$("bShow").onclick=()=>{since=0;hidden=new Set();LS.set("swot:since",0);LS.set("swot:hidden",[]);first=true;render()};
+function textOut(){const L=list();return ["S","W","O","T"].map(k=>{const my=L.filter(x=>x.kind==="idea"&&x.g===k),tops=L.filter(x=>x.kind==="top"&&x.g===k),top=tops[tops.length-1];
+  return {k,top,my}})}
+const RN={parent:"батьки",teacher:"педагог",community:"громада"};
+$("bCopy").onclick=async()=>{const t=textOut().map(({k,top,my})=>`${k} — ${Q[k].t.toUpperCase()}\n${top?`Три головні: 1) ${top.t1}; 2) ${top.t2}; 3) ${top.t3}\n`:""}${my.map(x=>`• ${x.text} (${RN[x.role]||"учасник"})`).join("\n")}`).join("\n\n");
+  try{await navigator.clipboard.writeText("SWOT-аналіз ресурсів ліцею\n\n"+t);banner("✓ Текст матриці скопійовано",2500)}catch(e){banner("Не вдалося скопіювати автоматично",2500)}};
+$("bPrint").onclick=()=>{const d=new Date().toLocaleDateString("uk-UA");$("printArea").innerHTML=`<h1>SWOT-аналіз ресурсів ліцею: батьки — співавтори стратегії</h1><p>Загальношкільні збори, ${d}. Думки учасників записано їхніми словами.</p>`+
+  textOut().map(({k,top,my})=>`<h2 style="background:${CV(k)}">${k} — ${Q[k].t} (група ${Q[k].n})</h2><p><i>${Q[k].f}</i></p>${top?`<b>Три головні думки:</b><ol><li>${esc(top.t1)}</li><li>${esc(top.t2)}</li><li>${esc(top.t3)}</li></ol>`:""}<b>Усі думки (${my.length}):</b><ul>${my.map(x=>`<li>${esc(x.text)} <span style="color:#666">(${RN[x.role]||"учасник"})</span></li>`).join("")}</ul>`).join("");window.print()};
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){focus=null;$("modal").hidden=true;$("qrO").hidden=true;render()}const m={s:"S",w:"W",o:"O",t:"T","1":"S","2":"W","3":"O","4":"T"}[e.key.toLowerCase()];if(m&&!e.ctrlKey&&!e.metaKey&&$("login").hidden){focus=m;render()}});
+render();
+</script>
+</body>
+</html>

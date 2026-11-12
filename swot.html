@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SWOT ліцею</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Golos+Text:wght@400;500;600;700;800&display=swap">
+<style>
+/* Participant phone: one quadrant colour drives the whole page (S green, W amber, O blue, T coral); chips as tappable prompts. */
+:root{color-scheme:light;--ink:#1c2230;--muted:#5b6474;--bg:#f6f7fb;--c:#16a34a;--c2:#dcfce7;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;--f-body:"Golos Text",system-ui,sans-serif}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0}
+body{min-height:100vh;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17.5px;line-height:1.45}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--c)}
+.wrap{max-width:580px;margin:0 auto;padding-block:max(14px,env(safe-area-inset-top,0px)) 40px;padding-left:max(14px,env(safe-area-inset-left,0px));padding-right:max(14px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:14px}
+.hero{background:var(--c);color:#fff;border-radius:22px;padding:16px;display:flex;gap:14px;align-items:center}
+.hero .L{flex:none;width:64px;height:64px;border-radius:18px;background:rgba(255,255,255,.22);display:grid;place-items:center;font:800 38px var(--f-display)}
+.hero h1{margin:0;font-family:var(--f-display);font-size:20px;line-height:1.15}
+.hero p{margin:3px 0 0;font-size:14.5px;opacity:.92}
+.card{background:#fff;border-radius:20px;padding:16px;box-shadow:0 6px 18px rgba(28,34,48,.08);display:flex;flex-direction:column;gap:10px}
+.card h2{margin:0;font-size:17px}
+.lbl{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--muted)}
+.grid4{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.qb{font:inherit;border:0;border-radius:18px;padding:14px;color:#fff;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:4px;min-height:110px}
+.qb b{font:800 30px var(--f-display);line-height:1}
+.qb span{font-weight:700;font-size:15px}
+.roles{display:flex;flex-wrap:wrap;gap:8px}
+.roles button{font:inherit;font-size:15.5px;font-weight:700;border:2px solid #dfe3ec;border-radius:14px;padding:10px 12px;background:#fff;cursor:pointer;flex:1;min-width:140px;color:var(--ink)}
+.roles button[aria-pressed="true"]{border-color:var(--c);background:var(--c2)}
+.focus{font-size:19px;font-weight:800;line-height:1.3;border-left:6px solid var(--c);padding-left:12px;margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{font:inherit;font-size:14px;border:1.5px dashed var(--c);background:var(--c2);border-radius:99px;padding:6px 10px;cursor:pointer;color:var(--ink);text-align:left}
+textarea,input[type=text]{font:inherit;font-size:17px;width:100%;border:2px solid #dfe3ec;border-radius:14px;padding:12px;background:#fff;color:var(--ink)}
+textarea{min-height:110px;resize:vertical}
+textarea:focus,input:focus{outline:3px solid var(--c);border-color:var(--c)}
+.cnt{font-size:13px;color:var(--muted);text-align:right;margin-top:-4px}
+.btn{font:inherit;font-weight:800;font-size:17.5px;border:0;border-radius:16px;padding:14px 16px;cursor:pointer;background:var(--c);color:#fff;width:100%;box-shadow:0 4px 0 rgba(0,0,0,.25)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.25)}
+.btn.ghost{background:#fff;color:var(--ink);border:2px solid #dfe3ec;box-shadow:none}
+.btn[disabled]{opacity:.5}
+.msg{font-weight:700;padding:10px 12px;border-radius:12px;font-size:15.5px}
+.msg.ok{background:#dcfce7;color:#14532d}.msg.bad{background:#fee2e2;color:#7f1d1d}.msg.info{background:#eef2ff;color:#3730a3}
+.mine{display:flex;flex-direction:column;gap:6px}
+.mine div{font-size:15px;background:var(--c2);border-radius:12px;padding:8px 10px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tabs button{font:inherit;font-weight:800;font-size:15px;border:2px solid #dfe3ec;border-radius:14px;padding:10px;background:#fff;cursor:pointer;color:var(--ink)}
+.tabs button[aria-pressed="true"]{background:var(--c);border-color:var(--c);color:#fff}
+.priv{font-size:13px;color:var(--muted);text-align:center}
+button:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section id="vPick">
+    <div class="hero" style="background:#334155"><div class="L">⊞</div><div><h1>SWOT-аналіз: батьки — співавтори стратегії</h1><p>Оберіть квадрант вашої групи (він указаний на картці на столі).</p></div></div>
+    <div class="grid4" style="margin-top:14px" id="qPick"></div>
+  </section>
+
+  <section id="vMain" hidden style="display:flex;flex-direction:column;gap:14px">
+    <div class="hero"><div class="L" id="hL"></div><div><h1 id="hT"></h1><p id="hP"></p></div></div>
+    <div class="card" id="roleCard"><span class="lbl">Хто ви?</span><div class="roles" id="roles"></div></div>
+    <div class="card"><span class="lbl">Фокусне запитання</span><p class="focus" id="focus"></p><span class="lbl">Орієнтири — натисніть, щоб почати з них</span><div class="chips" id="cues"></div></div>
+    <div class="tabs"><button type="button" id="tIdea" aria-pressed="true">💡 Додати думку</button><button type="button" id="tTop" aria-pressed="false">⭐ Три головні</button></div>
+    <div class="card" id="ideaCard">
+      <h2>💡 Ваша думка</h2>
+      <textarea id="txt" maxlength="200" placeholder="Одна думка — один стікер. Пишіть коротко й конкретно."></textarea><div class="cnt"><span id="cnt">0</span> / 200</div>
+      <button class="btn" type="button" id="send">Додати на SWOT-дошку</button><div id="msg"></div>
+      <div class="mine" id="mine"></div>
+    </div>
+    <div class="card" id="topCard" hidden>
+      <h2>⭐ Три найважливіші думки групи</h2>
+      <p style="margin:0;font-size:15px;color:var(--muted)">Заповнює <b>представник групи</b> після обговорення — ці пункти будуть виділені на екрані під час презентації.</p>
+      <input type="text" id="t1" maxlength="160" placeholder="1. …"><input type="text" id="t2" maxlength="160" placeholder="2. …"><input type="text" id="t3" maxlength="160" placeholder="3. …">
+      <input type="text" id="tn" maxlength="60" placeholder="Представник групи (ім'я, за бажанням)">
+      <button class="btn" type="button" id="sendTop">⭐ Надіслати три головні</button><div id="msgTop"></div>
+    </div>
+    <button class="btn ghost" type="button" id="change">↩ Змінити квадрант</button>
+  </section>
+  <p class="priv">🔒 Ваші думки потрапляють на загальну SWOT-дошку анонімно (лише з позначкою ролі).</p>
+</div>
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="swot";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const Q={S:{t:"S — сильні сторони",n:1,c:"#16a34a",c2:"#dcfce7",f:"Який досвід, досягнення й ресурси ліцею є нашою опорою?",
+   cues:["Профільні класи з філології, математики й природничих наук","Допрофільна підготовка в 5–9 класах","Досвід змішаного й дистанційного навчання","Google for Education","Кваліфіковані педагоги","Досягнення учнів в олімпіадах і конкурсах"]},
+ W:{t:"W — зони росту",n:2,c:"#d97706",c2:"#fef3c7",f:"Яких ресурсів нам наразі бракує для повноцінного профільного навчання?",
+   cues:["Обладнання для лабораторних і практичних робіт","Розклад для змінних груп","Поєднання очного й дистанційного форматів","Навантаження й тривожність учнів перед змінами"]},
+ O:{t:"O — можливості",n:3,c:"#2563eb",c2:"#dbeafe",f:"Які зовнішні партнерства й ресурси допоможуть розширити вибір курсів?",
+   cues:["Співпраця із закладами вищої освіти: дні відкритих дверей, лекції викладачів","Залучення фахівців-практиків, зокрема батьків","Онлайн-курси","Державні програми оснащення ліцеїв"]},
+ T:{t:"T — ризики",n:4,c:"#dc2626",c2:"#fee2e2",f:"Що може завадити дитині успішно навчатися за обраним маршрутом?",
+   cues:["Тиск дорослих: «обирай престижне, а не своє»","Вибір профілю «за компанію з другом»","Страх перед НМТ","Перевантаження","Переїзди родин","Замало заяв — група відкривається від 8 учнів"]}};
+const ROLES={parent:"👨‍👩‍👧 Батьки",teacher:"🧑‍🏫 Педагог",community:"🏘️ Громада"};
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let g=new URLSearchParams(location.search).get("g"),role=LS.get("swot:role",null),mine=LS.get("swot:mine",[]);
+if(g)g=g.toUpperCase();if(!Q[g])g=null;
+$("qPick").innerHTML=Object.entries(Q).map(([k,q])=>`<button class="qb" type="button" data-g="${k}" style="background:${q.c}"><b>${k}</b><span>Група ${q.n}: ${q.t.split("— ")[1]}</span></button>`).join("");
+$("qPick").querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{g=b.dataset.g;open()});
+function open(){const q=Q[g];document.documentElement.style.setProperty("--c",q.c);document.documentElement.style.setProperty("--c2",q.c2);
+  $("vPick").hidden=true;$("vMain").hidden=false;$("hL").textContent=g;$("hT").textContent=`Група ${q.n}: ${q.t}`;$("hP").textContent="Додавайте по одній думці. За 9 хвилин — 5–7 думок групи.";
+  $("focus").textContent=q.f;$("cues").innerHTML=q.cues.map(c=>`<button type="button">${esc(c)}</button>`).join("");
+  $("cues").querySelectorAll("button").forEach(b=>b.onclick=()=>{$("txt").value=b.textContent+": ";$("cnt").textContent=$("txt").value.length;$("txt").focus()});
+  drawRoles();drawMine();window.scrollTo({top:0})}
+function drawRoles(){$("roles").innerHTML=Object.entries(ROLES).map(([k,v])=>`<button type="button" data-r="${k}" aria-pressed="${role===k}">${v}</button>`).join("");
+  $("roles").querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{role=b.dataset.r;LS.set("swot:role",role);drawRoles()})}
+function drawMine(){const m=mine.filter(x=>x.g===g);$("mine").innerHTML=m.length?`<span class="lbl">Ви вже додали (${m.length})</span>`+m.map(x=>`<div>✓ ${esc(x.t)}</div>`).join(""):""}
+$("txt").oninput=e=>$("cnt").textContent=e.target.value.length;
+$("tIdea").onclick=()=>{$("tIdea").setAttribute("aria-pressed",true);$("tTop").setAttribute("aria-pressed",false);$("ideaCard").hidden=false;$("topCard").hidden=true};
+$("tTop").onclick=()=>{$("tTop").setAttribute("aria-pressed",true);$("tIdea").setAttribute("aria-pressed",false);$("ideaCard").hidden=true;$("topCard").hidden=false};
+$("change").onclick=()=>{$("vMain").hidden=true;$("vPick").hidden=false;history.replaceState(null,"",location.pathname)};
+async function post(rec){const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify({name:"Учасник",cls:"збори",score:0,max:1,ts:{".sv":"timestamp"},g,role:role||"parent",...rec})});if(!r.ok)throw new Error(r.status)}
+$("send").onclick=async()=>{const t=$("txt").value.trim();if(!role){$("msg").innerHTML=`<div class="msg bad">Оберіть угорі, хто ви: батьки, педагог чи представник громади.</div>`;$("roleCard").scrollIntoView({behavior:"smooth"});return}
+  if(t.length<3){$("msg").innerHTML=`<div class="msg bad">Напишіть думку (хоча б кілька слів).</div>`;return}
+  $("send").disabled=true;$("msg").innerHTML=`<div class="msg info">Додаємо…</div>`;
+  try{await post({kind:"idea",text:t.slice(0,200)});mine.push({g,t});LS.set("swot:mine",mine);$("txt").value="";$("cnt").textContent=0;
+    $("msg").innerHTML=`<div class="msg ok">✓ Думку додано на дошку! Можна додати ще одну.</div>`;drawMine()}
+  catch(e){$("msg").innerHTML=`<div class="msg bad">Не вдалося надіслати. Перевірте інтернет і спробуйте ще раз.</div>`}
+  $("send").disabled=false};
+$("sendTop").onclick=async()=>{const a=["t1","t2","t3"].map(id=>$(id).value.trim());if(a.some(x=>x.length<3)){$("msgTop").innerHTML=`<div class="msg bad">Заповніть усі три пункти.</div>`;return}
+  $("sendTop").disabled=true;$("msgTop").innerHTML=`<div class="msg info">Надсилаємо…</div>`;
+  try{await post({kind:"top",t1:a[0],t2:a[1],t3:a[2],rep:$("tn").value.trim().slice(0,60)});$("msgTop").innerHTML=`<div class="msg ok">⭐ Три головні думки групи вже на екрані. Дякуємо!</div>`}
+  catch(e){$("msgTop").innerHTML=`<div class="msg bad">Не вдалося надіслати. Спробуйте ще раз.</div>`}
+  $("sendTop").disabled=false};
+if(g)open();
+</script>
+</body>
+</html>
