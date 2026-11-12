@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Термометр свідомого вибору — екран</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Golos+Text:wght@400;500;600;700;800&display=swap">
+<style>
+/* Projector: the watercolor thermometer-path illustration fills the screen; live bar charts sit on the empty cream area on the right. */
+:root{color-scheme:light;
+  --ink:#2a2418;--muted:#7a6f5a;--coral:#ef6b4a;--leaf:#4d9a3a;--sun:#f5b301;--sky:#38a3c9;
+  --f-hand:"Caveat","Comic Sans MS",cursive;--f-body:"Golos Text",system-ui,sans-serif}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0;height:100%}
+body{background:#fdf6e7;color:var(--ink);font-family:var(--f-body);overflow:hidden;display:flex;align-items:center;justify-content:center}
+.stage{position:relative;width:min(100vw,177.7vh);aspect-ratio:1672/941;background:url(img/termometr.webp) center/cover no-repeat}
+.panel{position:absolute;left:35%;right:2.2%;top:3.5%;bottom:3.5%;display:flex;flex-direction:column;gap:2.2%}
+.head{display:flex;gap:2%;align-items:center}
+.head .t{flex:1}
+h1{margin:0;font-family:var(--f-hand);font-size:clamp(28px,4.1vw,78px);line-height:.92;color:#b4441f}
+.head p{margin:.4vw 0 0;font-size:clamp(12px,1.05vw,20px);color:var(--muted)}
+.qr{background:#fff;border-radius:14px;padding:.5vw;box-shadow:0 6px 18px rgba(120,80,20,.15);display:flex;flex-direction:column;align-items:center;gap:.2vw}
+.qr img{width:8.6vw;height:auto;display:block;image-rendering:pixelated}
+.qr small{font-size:clamp(9px,.68vw,13px);font-weight:700;color:var(--muted)}
+.cnt{text-align:center;background:#fff;border-radius:14px;padding:.6vw 1vw;box-shadow:0 6px 18px rgba(120,80,20,.15)}
+.cnt b{display:block;font-family:var(--f-hand);font-size:clamp(28px,3.6vw,68px);line-height:.9;color:var(--leaf)}
+.cnt span{font-size:clamp(10px,.8vw,15px);font-weight:700;color:var(--muted)}
+.grid{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:1.4vw}
+.grid.one{grid-template-columns:1fr;grid-template-rows:1fr}
+.qc{background:rgba(255,255,255,.82);border-radius:20px;padding:1.1vw 1.3vw;box-shadow:0 8px 20px rgba(120,80,20,.12);display:flex;flex-direction:column;gap:.7vw;cursor:pointer;min-height:0;overflow:hidden;border:0;font:inherit;text-align:left;color:inherit}
+.qc h2{margin:0;font-size:clamp(13px,1.15vw,22px);line-height:1.2;font-weight:800}
+.one .qc h2{font-size:clamp(20px,2.2vw,42px)}
+.bars{flex:1;display:flex;flex-direction:column;justify-content:space-around;gap:.4vw;min-height:0}
+.bar{display:grid;grid-template-columns:minmax(0,32%) minmax(0,1fr) 5.2em;gap:.6vw;align-items:center;font-size:clamp(11px,.95vw,18px);font-weight:700}
+.one .bar{font-size:clamp(16px,1.7vw,32px)}
+.bar .lb{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .tr{height:clamp(12px,1.5vw,28px);background:#f3ead6;border-radius:99px;overflow:hidden}
+.one .bar .tr{height:clamp(20px,2.6vw,50px)}
+.bar .tr i{display:block;height:100%;border-radius:99px;width:0;transition:width 1s cubic-bezier(.3,1.2,.4,1)}
+.bar .v{text-align:right;font-variant-numeric:tabular-nums}
+.bar .v small{color:var(--muted);font-weight:600}
+.avg{font-size:clamp(11px,.95vw,18px);color:var(--muted);font-weight:700}
+.one .avg{font-size:clamp(16px,1.6vw,30px)}
+.marker{position:absolute;left:6.6%;width:8.2%;height:0;transition:top 1.2s cubic-bezier(.3,1.2,.4,1);pointer-events:none}
+.marker i{position:absolute;left:0;right:0;top:-3px;height:6px;background:#b4441f;border-radius:4px;box-shadow:0 0 10px rgba(239,107,74,.9)}
+.bulbv{position:absolute;left:5.6%;top:80.5%;width:10.6%;text-align:center;color:#fff;font-weight:800;font-size:clamp(18px,2.6vw,50px);line-height:1;text-shadow:0 2px 6px rgba(120,30,10,.6);pointer-events:none}.bulbv small{display:block;font-size:.34em;letter-spacing:.04em}
+.ctrl{position:absolute;right:2.2%;bottom:.6%;display:flex;gap:.4vw;opacity:.35;transition:opacity .2s}
+.ctrl:hover{opacity:1}
+.ctrl button{font:inherit;font-size:clamp(10px,.75vw,13px);font-weight:700;border:2px solid #e2d6bb;border-radius:9px;padding:3px 8px;background:#fff;cursor:pointer}
+.login{position:fixed;inset:0;z-index:50;background:rgba(42,36,24,.7);display:flex;align-items:center;justify-content:center;padding:16px}
+.login form{background:#fff;border-radius:20px;padding:22px;max-width:420px;width:100%;display:flex;flex-direction:column;gap:12px}
+.login h2{margin:0;font-family:var(--f-hand);font-size:40px;color:#b4441f}
+.login input{font:inherit;font-size:16px;padding:11px 13px;border-radius:12px;border:2px solid #e2d6bb;width:100%}
+.login button{font:inherit;font-weight:800;font-size:17px;border:0;border-radius:14px;padding:12px;background:var(--coral);color:#fff;cursor:pointer}
+.login p{margin:0;color:var(--muted);font-size:14px}
+.err{color:#b91c1c;font-weight:700}
+@media (prefers-reduced-motion:reduce){.bar .tr i,.marker{transition:none}}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <div class="marker" id="marker" style="top:74%"><i></i></div><div class="bulbv" id="mk">—<small>усвідомленість</small></div>
+  <div class="panel">
+    <div class="head">
+      <div class="t"><h1>Термометр свідомого вибору</h1><p>Наскільки ми готові разом із дітьми обирати шлях у старшій школі?</p></div>
+      <div class="cnt"><b id="n">0</b><span>відповідей</span></div>
+      <div class="qr"><img src="img/termometr-qr.png" alt="QR-код опитування" width="512" height="512"><small>Скануйте й відповідайте</small></div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
+  <div class="ctrl"><button type="button" id="bAll4">▦ Усі запитання</button><button type="button" id="bFull">⛶ Весь екран</button><button type="button" id="bReset">🧹 Нова сесія</button><button type="button" id="bShow">↺ Показати всі</button></div>
+</div>
+
+<div class="login" id="login"><form id="lf">
+  <h2>🌡️ Екран для зали</h2>
+  <p>Увійдіть тим самим email і паролем, що й у журналі «Результати учнів». Батькам входити не потрібно — вони лише сканують QR-код.</p>
+  <input type="email" id="em" placeholder="Email" autocomplete="username" required>
+  <input type="password" id="pw" placeholder="Пароль" autocomplete="current-password" required>
+  <button type="submit">Відкрити термометр</button><div class="err" id="lerr"></div></form></div>
+
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const API_KEY="AIzaSyAGOncvJIlGaJu14uqEWy6rQxdF7-pQYUI";
+const WORK_ID="termometr";
+const $=id=>document.getElementById(id);
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const COL=["#4d9a3a","#f5b301","#ef6b4a","#38a3c9","#9b6bd3"];
+const Q=[
+ {q:"Чи обговорювали ви з дитиною, що буде після 9 класу?",o:["💬 Так, детально","🙂 Трохи","🤷 Ще ні"],w:[1,.5,0],c:["#4d9a3a","#f5b301","#ef6b4a"]},
+ {q:"Наскільки ви знаєте, які предмети дитині цікаві й даються найкраще?",o:["1","2","3","4","5"],w:[0,.25,.5,.75,1],scale:1,c:["#ef6b4a","#f59e4b","#f5b301","#9cc63a","#4d9a3a"]},
+ {q:"Що ви вже знаєте про академічний ліцей і профільне навчання?",o:["🌫️ Майже нічого","👂 Щось чув(-ла)","🧭 Добре орієнтуюся"],w:[0,.5,1],c:["#ef6b4a","#f5b301","#4d9a3a"]},
+ {q:"З якого класу варто починати думати про профіль?",o:["🌱 5–6 клас","🌿 7–8 клас","🌳 9 клас","⏳ Ще рано"],w:[1,.85,.45,0],c:["#4d9a3a","#38a3c9","#f5b301","#ef6b4a"]}];
+let token=null,refresh=null,DATA={},since=LS.get("termometr:since",0),focus=-1;
+async function signIn(email,password){const r=await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password,returnSecureToken:true})});
+  const j=await r.json();if(!r.ok)throw new Error(j.error&&j.error.message||"LOGIN");token=j.idToken;refresh=j.refreshToken}
+async function renew(){try{const r=await fetch(`https://securetoken.googleapis.com/v1/token?key=${API_KEY}`,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:"grant_type=refresh_token&refresh_token="+encodeURIComponent(refresh)});const j=await r.json();if(j.id_token){token=j.id_token;refresh=j.refresh_token}}catch(e){}}
+async function ensureNode(){const r=await fetch(`${FIREBASE_URL}/worksheets/${WORK_ID}.json?auth=${token}`);const cur=await r.json();
+  if(!cur)await fetch(`${FIREBASE_URL}/worksheets/${WORK_ID}.json?auth=${token}`,{method:"PUT",body:JSON.stringify({title:"Термометр свідомого вибору (батьківські збори)",subject:"Загальношкільні збори",open:true,game:true,created:Date.now(),exercises:[]})})}
+$("lf").onsubmit=async e=>{e.preventDefault();$("lerr").textContent="";try{await signIn($("em").value.trim(),$("pw").value);await ensureNode();$("login").hidden=true;poll();setInterval(poll,3000);setInterval(renew,45*60*1000)}
+  catch(err){$("lerr").textContent="Не вдалося увійти. Перевірте email і пароль."}};
+async function poll(){try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json?auth=${token}`);if(r.status===401){await renew();return}if(!r.ok)return;DATA=await r.json()||{};render()}catch(e){}}
+function rows(){return Object.values(DATA).filter(x=>x&&x.kind==="poll"&&typeof x.a==="string"&&(x.ts||0)>=since).map(x=>x.a.split(",").map(Number))}
+function render(){const R=rows(),N=R.length;$("n").textContent=N;
+  const idx=N?R.reduce((s,a)=>s+Q.reduce((t,q,k)=>t+(q.w[a[k]]??0),0)/Q.length,0)/N:0;
+  $("marker").style.top=(74-idx*52)+"%";$("mk").innerHTML=(N?Math.round(idx*100)+"%":"—")+"<small>усвідомленість</small>";
+  const g=$("grid");g.className="grid"+(focus>=0?" one":"");
+  const show=focus>=0?[focus]:[0,1,2,3];
+  const html=show.map(k=>{const q=Q[k],c=q.o.map((o,j)=>R.filter(a=>a[k]===j).length),mx=Math.max(1,...c);
+    const avg=q.scale&&N?(R.reduce((s,a)=>s+a[k]+1,0)/N).toFixed(1).replace(".",","):null;
+    return `<button type="button" class="qc" data-k="${k}"><h2>${k+1}. ${q.q}</h2><div class="bars">${q.o.map((o,j)=>`<div class="bar"><span class="lb">${q.scale?"⭐ ".repeat(1)+o:o}</span><span class="tr"><i data-w="${N?c[j]/N*100:0}" style="background:${(q.c||COL)[j]}"></i></span><span class="v">${N?Math.round(c[j]/N*100):0}% <small>(${c[j]})</small></span></div>`).join("")}</div>${avg?`<div class="avg">Середня оцінка: ${avg} з 5</div>`:""}</button>`}).join("");
+  if(g.dataset.sig!==show.join()){g.innerHTML=html;g.dataset.sig=show.join()}
+  else{const tmp=document.createElement("div");tmp.innerHTML=html;g.querySelectorAll(".qc").forEach((el,i)=>{const nw=tmp.children[i];el.querySelectorAll(".v").forEach((v,j)=>v.innerHTML=nw.querySelectorAll(".v")[j].innerHTML);
+    el.querySelectorAll(".tr i").forEach((b,j)=>b.dataset.w=nw.querySelectorAll(".tr i")[j].dataset.w);const a=el.querySelector(".avg"),na=nw.querySelector(".avg");if(a&&na)a.innerHTML=na.innerHTML;else if(na)el.appendChild(na)})}
+  requestAnimationFrame(()=>g.querySelectorAll(".tr i").forEach(b=>b.style.width=b.dataset.w+"%"));
+  g.querySelectorAll(".qc").forEach(el=>el.onclick=()=>{focus=focus>=0?-1:+el.dataset.k;render()})}
+$("bAll4").onclick=()=>{focus=-1;render()};
+$("bFull").onclick=()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}};
+$("bReset").onclick=()=>{if(!window.confirm("Почати нову сесію? Попередні відповіді зникнуть з екрана (але збережуться в базі)."))return;since=Date.now();LS.set("termometr:since",since);render()};
+$("bShow").onclick=()=>{since=0;LS.set("termometr:since",0);render()};
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){focus=-1;render()}if(/^[1-4]$/.test(e.key)){focus=+e.key-1;render()}});
+render();
+</script>
+</body>
+</html>

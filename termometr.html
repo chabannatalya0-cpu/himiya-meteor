@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Термометр свідомого вибору</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Golos+Text:wght@400;500;600;700;800&display=swap">
+<style>
+/* Parent phone poll: warm watercolor cream, coral thermometer progress, one question per screen with big tappable answers. */
+:root{color-scheme:light;
+  --bg:#fdf6e7;--ink:#1f2d16;--muted:#6b6455;--coral:#ef6b4a;--coral2:#f59e8b;--leaf:#4d9a3a;--sun:#facc15;
+  --f-hand:"Caveat","Comic Sans MS",cursive;--f-body:"Golos Text",system-ui,sans-serif}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0}
+body{min-height:100vh;background:radial-gradient(circle at 0 0,#fde68a 0,transparent 40%),radial-gradient(circle at 100% 100%,#bbf7d0 0,transparent 45%),var(--bg);color:var(--ink);font-family:var(--f-body);font-size:18px;line-height:1.45}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:560px;margin:0 auto;padding-block:max(16px,env(safe-area-inset-top,0px)) 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
+header{display:flex;gap:12px;align-items:center}
+.th{flex:none;width:34px;height:92px;position:relative}
+.th .tube{position:absolute;left:9px;top:0;width:16px;height:74px;border-radius:9px;background:#fff;border:3px solid #e7d7b5;overflow:hidden}
+.th .tube i{position:absolute;left:0;right:0;bottom:0;background:var(--coral);transition:height .6s}
+.th .bulb{position:absolute;left:0;bottom:0;width:34px;height:34px;border-radius:50%;background:var(--coral);border:3px solid #e7d7b5}
+h1{margin:0;font-family:var(--f-hand);font-size:40px;line-height:.95;color:#b4441f}
+header p{margin:4px 0 0;color:var(--muted);font-size:15.5px}
+.card{background:rgba(255,255,255,.85);border-radius:24px;padding:18px;box-shadow:0 10px 24px rgba(120,80,20,.12);display:flex;flex-direction:column;gap:12px}
+.step{font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--leaf)}
+.q{margin:0;font-size:21px;font-weight:800;line-height:1.25}
+.ans{display:flex;flex-direction:column;gap:10px}
+.ans button{font:inherit;font-size:18px;font-weight:700;text-align:left;border:3px solid #eadfc6;border-radius:16px;padding:14px 16px;background:#fff;cursor:pointer;color:var(--ink);display:flex;gap:10px;align-items:center}
+.ans button span{font-size:24px}
+.ans button[aria-pressed="true"]{border-color:var(--coral);background:#fff1ec}
+.scale{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.scale button{font:800 26px var(--f-body);aspect-ratio:1;border:3px solid #eadfc6;border-radius:16px;background:#fff;cursor:pointer;color:var(--ink)}
+.scale button[aria-pressed="true"]{border-color:var(--coral);background:var(--coral);color:#fff}
+.scl{display:flex;justify-content:space-between;font-size:13.5px;color:var(--muted)}
+.nav{display:flex;gap:10px}
+.btn{font:inherit;font-weight:800;font-size:18px;border:0;border-radius:16px;padding:14px 18px;cursor:pointer;background:var(--coral);color:#fff;box-shadow:0 5px 0 #a8391c;flex:1}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 #a8391c}
+.btn.ghost{background:#fff;color:var(--ink);box-shadow:0 4px 0 #e2d6bb;border:2px solid #e2d6bb;flex:0 0 auto}
+.btn[disabled]{opacity:.45}
+.msg{font-weight:700;padding:10px 12px;border-radius:12px;font-size:16px}
+.msg.bad{background:#fee2e2;color:#7f1d1d}.msg.info{background:#ecfccb;color:#365314}
+.done{text-align:center;align-items:center}
+.done .big{font-size:80px;line-height:1;animation:grow .8s cubic-bezier(.3,1.6,.5,1)}
+@keyframes grow{from{transform:scale(.2)}to{transform:scale(1)}}
+.done h2{margin:0;font-family:var(--f-hand);font-size:42px;color:#b4441f}
+.priv{font-size:13.5px;color:var(--muted);text-align:center}
+button:focus-visible{outline:3px solid var(--leaf);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){.done .big{animation:none}.th .tube i{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><div class="th" aria-hidden="true"><div class="tube"><i id="lvl" style="height:8%"></i></div><div class="bulb"></div></div>
+    <div><h1>Термометр свідомого вибору</h1><p>Батьківські збори · «Академічний ліцей: простір свідомого вибору та можливостей»</p></div></header>
+  <section class="card" id="qCard"></section>
+  <section class="card done" id="vDone" hidden><div class="big">🌡️</div><h2>Дякуємо!</h2><p style="margin:0">Ваші відповіді вже на екрані в залі. Подивіться, який «градус» у всіх разом!</p></section>
+  <p class="priv">🔒 Опитування анонімне: ми не збираємо імен чи контактів.</p>
+</div>
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="termometr";
+const $=id=>document.getElementById(id);
+const Q=[
+ {q:"Чи обговорювали ви з дитиною, що буде після 9 класу?",o:[["💬","Так, детально"],["🙂","Трохи"],["🤷","Ще ні"]]},
+ {q:"Наскільки ви знаєте, які предмети дитині цікаві й даються найкраще?",scale:["зовсім не знаю","знаю дуже добре"]},
+ {q:"Що ви вже знаєте про академічний ліцей і профільне навчання?",o:[["🌫️","Майже нічого"],["👂","Щось чув(-ла)"],["🧭","Добре орієнтуюся"]]},
+ {q:"З якого класу, на вашу думку, варто починати думати про профіль?",o:[["🌱","5–6 клас"],["🌿","7–8 клас"],["🌳","9 клас"],["⏳","Ще рано про це думати"]]}];
+const A=[null,null,null,null];let i=0;
+function draw(){const q=Q[i];$("lvl").style.height=(8+i/Q.length*80)+"%";
+  $("qCard").innerHTML=`<span class="step">Запитання ${i+1} з ${Q.length}</span><p class="q">${q.q}</p>`+
+   (q.scale?`<div class="scale">${[1,2,3,4,5].map(v=>`<button type="button" data-v="${v}" aria-pressed="${A[i]===v}">${v}</button>`).join("")}</div><div class="scl"><span>1 — ${q.scale[0]}</span><span>5 — ${q.scale[1]}</span></div>`
+    :`<div class="ans">${q.o.map(([e,t],j)=>`<button type="button" data-v="${j}" aria-pressed="${A[i]===j}"><span>${e}</span>${t}</button>`).join("")}</div>`)+
+   `<div class="nav">${i>0?`<button class="btn ghost" type="button" id="prev">←</button>`:""}<button class="btn" type="button" id="next" ${A[i]==null?"disabled":""}>${i<Q.length-1?"Далі →":"🌡️ Надіслати"}</button></div><div id="msg"></div>`;
+  $("qCard").querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>{A[i]=+b.dataset.v;if(i<Q.length-1){draw();setTimeout(()=>{i++;draw()},250)}else draw()});
+  const p=$("prev");if(p)p.onclick=()=>{i--;draw()};
+  $("next").onclick=()=>{if(A[i]==null)return;if(i<Q.length-1){i++;draw()}else send()}}
+async function send(){$("next").disabled=true;$("msg").innerHTML=`<div class="msg info">Надсилаємо…</div>`;
+  const rec={name:"Батьки",cls:"збори",score:0,max:1,ts:{".sv":"timestamp"},kind:"poll",a:A.join(",")};
+  try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec)});if(!r.ok)throw new Error(r.status);
+    try{localStorage.setItem("termometr:sent","1")}catch(e){}
+    $("lvl").style.height="100%";$("qCard").hidden=true;$("vDone").hidden=false;window.scrollTo({top:0,behavior:"smooth"});
+  }catch(e){$("next").disabled=false;$("msg").innerHTML=`<div class="msg bad">Не вдалося надіслати. Перевірте інтернет і спробуйте ще раз.</div>`}}
+draw();
+</script>
+</body>
+</html>
