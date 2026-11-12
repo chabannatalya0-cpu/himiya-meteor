@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Дерево сподівань — екран</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Golos+Text:wght@400;500;600;700;800&display=swap">
+<style>
+/* Projector wall: watercolor tree as hero, yellow paper notes nest in the crown ovals, green notes sink into a rich soil band with roots. */
+:root{color-scheme:light;
+  --bg:#f6fbef;--ink:#1f2d16;--muted:#5f6d55;--hope:#fde047;--worry:#86efac;--soil:#5b3a1e;--soil2:#3d2612;
+  --f-hand:"Caveat","Comic Sans MS",cursive;--f-body:"Golos Text",system-ui,sans-serif}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0;height:100%}
+body{background:radial-gradient(circle at 50% 0,#fefce8 0,transparent 55%),var(--bg);color:var(--ink);font-family:var(--f-body);overflow:hidden}
+.screen{height:100vh;display:grid;grid-template-rows:minmax(0,1fr) minmax(170px,30vh);}
+.top{display:grid;grid-template-columns:minmax(220px,21vw) minmax(0,1fr) minmax(240px,24vw);gap:1.2vw;padding:1.2vh 1.4vw 0;min-height:0}
+.side{display:flex;flex-direction:column;gap:1.2vh;min-height:0}
+.title{font-family:var(--f-hand);font-size:clamp(28px,3.3vw,60px);line-height:.95;color:#3f6212;margin:0}
+.sub{font-size:clamp(12px,1vw,17px);color:var(--muted);margin:0}
+.qr{background:#fff;border-radius:18px;padding:1vw;box-shadow:0 8px 20px rgba(0,0,0,.1);display:flex;flex-direction:column;align-items:center;gap:.6vh}
+.qr #qrc{width:min(15vw,26vh);aspect-ratio:1}
+.qr #qrc img{width:100%;height:auto;display:block;image-rendering:pixelated}
+.qr b{font-size:clamp(13px,1.1vw,19px);text-align:center}
+.qr small{font-size:clamp(10px,.75vw,13px);color:var(--muted);word-break:break-all;text-align:center}
+.cnts{display:grid;grid-template-columns:1fr 1fr;gap:.8vw}
+.cnt{border-radius:14px;padding:.8vh .6vw;text-align:center;box-shadow:0 6px 14px rgba(0,0,0,.08)}
+.cnt.h{background:var(--hope)}.cnt.w{background:var(--worry)}
+.cnt b{display:block;font-family:var(--f-hand);font-size:clamp(30px,3.4vw,64px);line-height:1}
+.cnt span{font-size:clamp(11px,.85vw,15px);font-weight:700}
+.treeBox{position:relative;height:100%;min-height:0;display:flex;justify-content:center}
+.tree{position:relative;height:100%;aspect-ratio:1055/1491;max-width:100%}
+.tree img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
+.oval{position:absolute;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:3%;padding:2%;overflow:hidden}
+.n{font-family:var(--f-hand);line-height:1.02;color:var(--ink);padding:.35em .45em;border-radius:3px 3px 12px 3px;box-shadow:0 4px 8px rgba(0,0,0,.18);cursor:pointer;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;word-break:break-word;border:0;text-align:left}
+.n.h{background:linear-gradient(160deg,#fef9c3,#fde047)}
+.n.w{background:linear-gradient(160deg,#dcfce7,#86efac)}
+.n.new{animation:pop .9s cubic-bezier(.3,1.7,.5,1)}
+@keyframes pop{from{transform:scale(.1) rotate(-20deg);opacity:0}to{transform:scale(1);opacity:1}}
+.spot{flex:1;min-height:0;display:flex;flex-direction:column;gap:.8vh}
+.spot h3{margin:0;font-size:clamp(13px,1vw,18px);color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.big{flex:1;min-height:0;border-radius:6px 6px 28px 6px;padding:1.2vw;font-family:var(--f-hand);font-size:clamp(22px,2.4vw,48px);line-height:1.05;box-shadow:0 12px 26px rgba(0,0,0,.16);display:flex;align-items:center;justify-content:center;text-align:center;transform:rotate(-1.5deg);overflow:hidden}
+.big.h{background:linear-gradient(160deg,#fef9c3,#fde047)}.big.w{background:linear-gradient(160deg,#dcfce7,#86efac)}
+.big.empty{background:#fff;color:var(--muted);font-size:clamp(18px,1.6vw,30px)}
+.ctrl{display:flex;flex-wrap:wrap;gap:.5vw}
+.ctrl button{font:inherit;font-size:clamp(11px,.8vw,14px);font-weight:700;border:2px solid #cbd5c0;border-radius:10px;padding:5px 9px;background:#fff;cursor:pointer;color:var(--ink)}
+.ctrl button:hover{border-color:#3f6212}
+.soil{position:relative;background:linear-gradient(#6b4423,var(--soil) 30%,var(--soil2));overflow:hidden;border-top:6px solid #7c4f27}
+.soil svg.roots{position:absolute;inset:0;width:100%;height:100%;opacity:.55;pointer-events:none}
+.soil .lab{position:absolute;left:1.4vw;top:1vh;color:#fde68a;font-family:var(--f-hand);font-size:clamp(22px,2.2vw,42px);z-index:2;text-shadow:0 2px 0 rgba(0,0,0,.4)}
+.worries{position:absolute;inset:6vh 1.4vw 1.2vh;display:flex;flex-wrap:wrap;align-content:flex-start;justify-content:center;gap:.7vw;overflow:hidden;z-index:1}
+.legend{position:absolute;right:1.4vw;top:1.2vh;color:#fde68a;font-size:clamp(11px,.85vw,15px);z-index:2}
+/* login */
+.login{position:fixed;inset:0;z-index:50;background:rgba(31,45,22,.75);display:flex;align-items:center;justify-content:center;padding:16px}
+.login form{background:#fff;border-radius:20px;padding:22px;max-width:420px;width:100%;display:flex;flex-direction:column;gap:12px}
+.login h2{margin:0;font-family:var(--f-hand);font-size:40px;color:#3f6212}
+.login input{font:inherit;font-size:16px;padding:11px 13px;border-radius:12px;border:2px solid #cbd5c0;width:100%}
+.login button{font:inherit;font-weight:800;font-size:17px;border:0;border-radius:14px;padding:12px;background:#3f6212;color:#fff;cursor:pointer}
+.login p{margin:0;color:var(--muted);font-size:14px}
+.err{color:#b91c1c;font-weight:700}
+/* modal & list */
+.modal{position:fixed;inset:0;z-index:40;background:rgba(31,45,22,.6);display:flex;align-items:center;justify-content:center;padding:4vw}
+.modal .card{max-width:900px;width:100%;border-radius:8px 8px 36px 8px;padding:4vw;font-family:var(--f-hand);font-size:clamp(30px,4vw,72px);line-height:1.05;box-shadow:0 20px 40px rgba(0,0,0,.3);position:relative}
+.modal .card.h{background:linear-gradient(160deg,#fef9c3,#fde047)}.modal .card.w{background:linear-gradient(160deg,#dcfce7,#86efac)}
+.modal .act{display:flex;gap:10px;margin-top:2vh;font-family:var(--f-body)}
+.modal .act button{font:inherit;font-size:16px;font-weight:700;border:2px solid var(--ink);border-radius:12px;padding:8px 14px;background:#fff;cursor:pointer}
+.listv{position:fixed;inset:0;z-index:35;background:var(--bg);display:grid;grid-template-columns:1fr 1fr;gap:2vw;padding:2vh 2vw;overflow:auto}
+.listv h2{font-family:var(--f-hand);font-size:clamp(30px,3vw,54px);margin:0 0 1vh}
+.listv ol{margin:0;padding-left:1.4em;font-size:clamp(16px,1.35vw,24px);display:flex;flex-direction:column;gap:.6vh}
+.listv .close{position:fixed;right:2vw;top:2vh}
+.listv .close button{font:inherit;font-weight:800;border:2px solid var(--ink);border-radius:12px;padding:8px 14px;background:#fff;cursor:pointer}
+@media (prefers-reduced-motion:reduce){.n.new{animation:none}}
+@media (max-width:900px){body{overflow:auto}.screen{height:auto}.top{grid-template-columns:1fr}.treeBox{height:80vh}.soil{min-height:50vh}}
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="top">
+    <div class="side">
+      <h1 class="title">Дерево сподівань і занепокоєнь</h1>
+      <p class="sub">Скануйте QR-код і додайте свій стікер</p>
+      <div class="qr"><div id="qrc"><img src="img/derevo-qr.png" alt="QR-код для батьків" width="512" height="512"></div><b>📱 Наведіть камеру телефону</b><small id="qrUrl"></small></div>
+      <div class="cnts"><div class="cnt h"><b id="cH">0</b><span>🌟 сподівань</span></div><div class="cnt w"><b id="cW">0</b><span>🌱 занепокоєнь</span></div></div>
+    </div>
+    <div class="treeBox"><div class="tree" id="tree"><img src="img/derevo.webp" alt="Дерево"></div></div>
+    <div class="side">
+      <div class="spot"><h3>✨ Щойно додано</h3><div class="big empty" id="spot">Чекаємо на перші стікери…</div></div>
+      <div class="ctrl"><button type="button" id="bList">📋 Список для обговорення</button><button type="button" id="bFull">⛶ На весь екран</button><button type="button" id="bReset">🧹 Нова сесія</button><button type="button" id="bAll">↺ Показати всі</button></div>
+    </div>
+  </div>
+  <div class="soil">
+    <svg class="roots" viewBox="0 0 1600 300" preserveAspectRatio="none" aria-hidden="true"><g fill="none" stroke="#a16207" stroke-linecap="round">
+      <path d="M800 0C780 80 700 120 560 170S260 250 80 280" stroke-width="16"/><path d="M800 0C820 90 900 130 1050 170S1350 240 1540 285" stroke-width="16"/>
+      <path d="M790 0C760 120 720 200 640 300" stroke-width="12"/><path d="M810 0C840 110 880 200 980 300" stroke-width="12"/>
+      <path d="M560 170C500 220 430 240 360 300" stroke-width="7"/><path d="M1050 170C1120 210 1180 250 1260 300" stroke-width="7"/>
+      <path d="M300 240C240 270 180 280 120 300M1300 250C1380 270 1450 290 1500 300" stroke-width="5"/></g></svg>
+    <div class="lab">🌱 Коріння — наші занепокоєння</div>
+    <div class="legend">Натисніть на стікер, щоб збільшити</div>
+    <div class="worries" id="worries"></div>
+  </div>
+</div>
+
+<div class="login" id="login"><form id="lf">
+  <h2>🌳 Екран для зали</h2>
+  <p>Увійдіть тим самим email і паролем, що й у журналі «Результати учнів». Батьки входити не потрібно — вони лише сканують QR-код.</p>
+  <input type="email" id="em" placeholder="Email" autocomplete="username" required>
+  <input type="password" id="pw" placeholder="Пароль" autocomplete="current-password" required>
+  <button type="submit">Відкрити дерево</button><div class="err" id="lerr"></div></form></div>
+<div class="modal" id="modal" hidden><div class="card" id="mcard"><div id="mtext"></div><div class="act"><button type="button" id="mHide">🙈 Сховати з екрана</button><button type="button" id="mClose">Закрити</button></div></div></div>
+<div class="listv" id="listv" hidden></div>
+
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const API_KEY="AIzaSyAGOncvJIlGaJu14uqEWy6rQxdF7-pQYUI";
+const WORK_ID="derevo";
+const PARENT_URL="https://chabannatalya0-cpu.github.io/himiya-meteor/derevo.html";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let token=null,refresh=null,DATA={},seen=new Set(),first=true,since=LS.get("derevo:since",0),hidden=new Set(LS.get("derevo:hidden",[])),cur=null;
+/* QR */
+$("qrUrl").textContent=PARENT_URL.replace(/^https?:\/\//,"");
+/* овали крони (у % від картинки) */
+const OV=[[9,8,38,18],[52,6,38,20],[4,30,36,18],[58,31,37,17],[4,55,36,17],[58,55,38,18]];
+OV.forEach((o,i)=>{const d=document.createElement("div");d.className="oval";d.id="ov"+i;Object.assign(d.style,{left:o[0]+"%",top:o[1]+"%",width:o[2]+"%",height:o[3]+"%"});$("tree").appendChild(d)});
+/* вхід */
+async function signIn(email,password){const r=await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password,returnSecureToken:true})});
+  const j=await r.json();if(!r.ok)throw new Error(j.error&&j.error.message||"LOGIN");token=j.idToken;refresh=j.refreshToken}
+async function renew(){try{const r=await fetch(`https://securetoken.googleapis.com/v1/token?key=${API_KEY}`,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:"grant_type=refresh_token&refresh_token="+encodeURIComponent(refresh)});const j=await r.json();if(j.id_token){token=j.id_token;refresh=j.refresh_token}}catch(e){}}
+async function ensureNode(){const r=await fetch(`${FIREBASE_URL}/worksheets/${WORK_ID}.json?auth=${token}`);const cur=await r.json();
+  if(!cur)await fetch(`${FIREBASE_URL}/worksheets/${WORK_ID}.json?auth=${token}`,{method:"PUT",body:JSON.stringify({title:"Дерево сподівань і занепокоєнь (батьківські збори)",subject:"Загальношкільні збори",open:true,game:true,created:Date.now(),exercises:[]})})}
+$("lf").onsubmit=async e=>{e.preventDefault();$("lerr").textContent="";try{await signIn($("em").value.trim(),$("pw").value);await ensureNode();$("login").hidden=true;poll();setInterval(poll,3000);setInterval(renew,45*60*1000)}
+  catch(err){$("lerr").textContent="Не вдалося увійти. Перевірте email і пароль."}};
+async function poll(){try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json?auth=${token}`);if(r.status===401){await renew();return}if(!r.ok)return;DATA=await r.json()||{};render()}catch(e){}}
+/* відображення */
+function items(){return Object.entries(DATA).map(([id,x])=>({id,...x})).filter(x=>x.text&&(x.kind==="hope"||x.kind==="worry")&&(x.ts||0)>=since&&!hidden.has(x.id)).sort((a,b)=>(a.ts||0)-(b.ts||0))}
+function render(){const all=items(),H=all.filter(x=>x.kind==="hope"),W=all.filter(x=>x.kind==="worry");
+  $("cH").textContent=H.length;$("cW").textContent=W.length;
+  const per=Math.ceil(H.length/6)||1,fs=per<=1?2.5:per<=2?2.05:per<=4?1.7:1.35;
+  OV.forEach((o,i)=>{const box=$("ov"+i),mine=H.filter((x,k)=>k%6===i),w=per<=1?82:per<=4?47:31;
+    box.innerHTML=mine.map(x=>`<button type="button" class="n h ${!first&&!seen.has(x.id)?"new":""}" data-id="${x.id}" style="width:${w}%;font-size:${fs}vh;-webkit-line-clamp:${per<=1?5:3};transform:rotate(${((x.id.charCodeAt(3)||0)%7)-3}deg)">${esc(x.text)}</button>`).join("")});
+  const wfs=W.length<=8?2.2:W.length<=16?1.8:W.length<=30?1.45:1.15,ww=W.length<=8?"23%":W.length<=16?"15%":W.length<=30?"11.5%":"9%";
+  $("worries").innerHTML=W.map(x=>`<button type="button" class="n w ${!first&&!seen.has(x.id)?"new":""}" data-id="${x.id}" style="width:${ww};font-size:${wfs}vh;-webkit-line-clamp:3;transform:rotate(${((x.id.charCodeAt(4)||0)%7)-3}deg)">${esc(x.text)}</button>`).join("");
+  const fresh=all.filter(x=>!seen.has(x.id));
+  if(fresh.length&&!first){const x=fresh[fresh.length-1];$("spot").className="big "+(x.kind==="hope"?"h":"w");$("spot").innerHTML=(x.kind==="hope"?"🌟 ":"🌱 ")+esc(x.text)}
+  else if(first&&all.length){const x=all[all.length-1];$("spot").className="big "+(x.kind==="hope"?"h":"w");$("spot").innerHTML=(x.kind==="hope"?"🌟 ":"🌱 ")+esc(x.text)}
+  else if(!all.length){$("spot").className="big empty";$("spot").textContent="Чекаємо на перші стікери…"}
+  all.forEach(x=>seen.add(x.id));first=false;
+  document.querySelectorAll(".n").forEach(b=>b.onclick=()=>openM(b.dataset.id));
+  if(!$("listv").hidden)drawList()}
+function openM(id){const x=DATA[id];if(!x)return;cur=id;$("mcard").className="card "+(x.kind==="hope"?"h":"w");$("mtext").innerHTML=(x.kind==="hope"?"🌟 ":"🌱 ")+esc(x.text);$("modal").hidden=false}
+$("mClose").onclick=()=>$("modal").hidden=true;$("modal").onclick=e=>{if(e.target.id==="modal")$("modal").hidden=true};
+$("mHide").onclick=()=>{hidden.add(cur);LS.set("derevo:hidden",[...hidden]);$("modal").hidden=true;render()};
+function drawList(){const all=items(),H=all.filter(x=>x.kind==="hope"),W=all.filter(x=>x.kind==="worry");
+  $("listv").innerHTML=`<div><h2>🌟 Сподівання (${H.length})</h2><ol>${H.map(x=>`<li>${esc(x.text)}</li>`).join("")}</ol></div><div><h2>🌱 Занепокоєння (${W.length})</h2><ol>${W.map(x=>`<li>${esc(x.text)}</li>`).join("")}</ol></div><div class="close"><button type="button" id="lClose">✕ Повернутися до дерева</button></div>`;
+  $("lClose").onclick=()=>$("listv").hidden=true}
+$("bList").onclick=()=>{$("listv").hidden=false;drawList()};
+$("bFull").onclick=()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}};
+$("bReset").onclick=()=>{if(!window.confirm("Почати нову сесію? Попередні стікери зникнуть з екрана (але збережуться в базі).")) return;since=Date.now();LS.set("derevo:since",since);seen=new Set();first=true;render()};
+$("bAll").onclick=()=>{since=0;hidden=new Set();LS.set("derevo:since",0);LS.set("derevo:hidden",[]);first=true;render()};
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){$("modal").hidden=true;$("listv").hidden=true}});
+</script>
+</body>
+</html>

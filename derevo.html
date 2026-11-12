@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Дерево сподівань</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Golos+Text:wght@400;500;600;700;800&display=swap">
+<style>
+/* Parent phone form: soft watercolor garden, two giant paper stickers to choose from, handwritten feel. */
+:root{color-scheme:light;
+  --bg:#f4fbe9;--ink:#1f2d16;--muted:#5f6d55;--hope:#fde047;--hope2:#facc15;--worry:#86efac;--worry2:#22c55e;--bark:#8b5a2b;--ok:#15803d;
+  --f-hand:"Caveat","Comic Sans MS",cursive;--f-body:"Golos Text",system-ui,sans-serif}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0}
+body{min-height:100vh;background:radial-gradient(circle at 10% 0,#fef9c3 0,transparent 45%),radial-gradient(circle at 100% 30%,#dcfce7 0,transparent 45%),var(--bg);color:var(--ink);font-family:var(--f-body);font-size:18px;line-height:1.45}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:560px;margin:0 auto;padding-block:max(16px,env(safe-area-inset-top,0px)) 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
+header{text-align:center}
+header .tree{font-size:56px;line-height:1}
+h1{margin:4px 0 0;font-family:var(--f-hand);font-size:46px;line-height:1;color:#3f6212}
+header p{margin:8px 0 0;color:var(--muted);font-size:17px}
+.choose{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.st{font:inherit;border:0;cursor:pointer;aspect-ratio:1;border-radius:6px 6px 22px 6px;padding:14px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;text-align:center;color:var(--ink);box-shadow:0 10px 18px rgba(0,0,0,.14);transition:transform .2s;position:relative}
+.st::before{content:"";position:absolute;top:-10px;left:50%;width:70px;height:22px;transform:translateX(-50%) rotate(-3deg);background:rgba(255,255,255,.6);border-radius:3px}
+.st.h{background:linear-gradient(160deg,#fef08a,#fde047);transform:rotate(-3deg)}
+.st.w{background:linear-gradient(160deg,#bbf7d0,#86efac);transform:rotate(3deg)}
+.st:hover,.st:focus-visible{transform:rotate(0) scale(1.04)}
+.st .e{font-size:44px}
+.st b{font-family:var(--f-hand);font-size:32px;line-height:1}
+.st small{font-size:14px;color:#3f4b36}
+.note{border-radius:6px 6px 26px 6px;padding:18px;box-shadow:0 12px 22px rgba(0,0,0,.15);display:flex;flex-direction:column;gap:10px;position:relative}
+.note.h{background:linear-gradient(160deg,#fef9c3,#fde047)}.note.w{background:linear-gradient(160deg,#dcfce7,#86efac)}
+.note h2{margin:0;font-family:var(--f-hand);font-size:36px;line-height:1}
+.note p{margin:0;font-size:16px}
+.ex{display:flex;flex-wrap:wrap;gap:6px}
+.ex button{font:inherit;font-size:14px;border:1px dashed rgba(31,45,22,.4);background:rgba(255,255,255,.55);border-radius:99px;padding:5px 10px;cursor:pointer;color:var(--ink)}
+textarea{font-family:var(--f-hand);font-size:28px;line-height:1.15;width:100%;min-height:150px;border:0;border-radius:10px;padding:12px;background:rgba(255,255,255,.7);color:var(--ink);resize:vertical}
+textarea:focus{outline:3px solid rgba(31,45,22,.35)}
+.cnt{font-size:13px;color:var(--muted);text-align:right;margin-top:-6px}
+.btn{font:inherit;font-weight:800;font-size:18px;border:0;border-radius:16px;padding:14px 18px;cursor:pointer;background:#3f6212;color:#fff;box-shadow:0 5px 0 #1a2e05;width:100%}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 #1a2e05}
+.btn.ghost{background:#fff;color:var(--ink);box-shadow:0 4px 0 #cbd5c0;border:2px solid #cbd5c0}
+.btn[disabled]{opacity:.5}
+.msg{font-weight:700;padding:10px 12px;border-radius:12px;font-size:16px}
+.msg.bad{background:#fee2e2;color:#7f1d1d}.msg.info{background:#ecfccb;color:#365314}
+.done{text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center}
+.done .big{font-size:84px;line-height:1;animation:grow .8s cubic-bezier(.3,1.6,.5,1)}
+@keyframes grow{from{transform:scale(.2)}to{transform:scale(1)}}
+.done h2{margin:0;font-family:var(--f-hand);font-size:40px;color:#3f6212}
+.done p{margin:0;color:var(--muted)}
+.priv{font-size:13.5px;color:var(--muted);text-align:center}
+button:focus-visible{outline:3px solid #3f6212;outline-offset:3px}
+@media (prefers-reduced-motion:reduce){.done .big{animation:none}.st{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><div class="tree">🌳</div><h1>Дерево сподівань і занепокоєнь</h1><p>Загальношкільні батьківські збори · старша профільна школа</p></header>
+
+  <section id="vChoose">
+    <p style="margin:0 0 14px;text-align:center;font-weight:600">Оберіть стікер — і напишіть свою думку. Можна заповнити обидва по черзі.</p>
+    <div class="choose">
+      <button class="st h" type="button" data-k="hope"><span class="e">🌟</span><b>Сподівання</b><small>моє очікування від старшої школи</small></button>
+      <button class="st w" type="button" data-k="worry"><span class="e">🌱</span><b>Занепокоєння</b><small>що мене турбує чи яке маю запитання</small></button>
+    </div>
+  </section>
+
+  <section id="vWrite" hidden>
+    <div class="note" id="note">
+      <h2 id="nTitle"></h2><p id="nHint"></p>
+      <div class="ex" id="ex"></div>
+      <label for="txt" class="priv" style="text-align:left">Ваш текст (анонімно):</label>
+      <textarea id="txt" maxlength="180" placeholder="Пишіть тут…"></textarea>
+      <div class="cnt"><span id="cnt">0</span> / 180</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:14px">
+      <button class="btn" type="button" id="send">🌳 Прикріпити на дерево</button>
+      <button class="btn ghost" type="button" id="back">← Обрати інший стікер</button>
+      <div id="msg"></div>
+    </div>
+  </section>
+
+  <section id="vDone" class="done" hidden>
+    <div class="big" id="dEmoji">🌟</div><h2>Дякуємо!</h2><p id="dText">Ваш стікер уже на дереві — подивіться на екран у залі.</p>
+    <button class="btn" type="button" id="more"></button>
+  </section>
+
+  <p class="priv">🔒 Стікери анонімні: ми не збираємо імен чи контактів.</p>
+</div>
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="derevo";
+const $=id=>document.getElementById(id);
+const K={hope:{t:"🌟 Моє сподівання",h:"Напишіть одне головне очікування або надію щодо старшої школи вашої дитини.",ex:["Що дитина знайде свій шлях","Сильна підготовка до НМТ","Цікаві профільні предмети","Підтримка вчителів"]},
+  worry:{t:"🌱 Моє занепокоєння",h:"Напишіть одне занепокоєння чи запитання, яке турбує найбільше.",ex:["А якщо помилиться з вибором профілю?","Як підготуватися до НМТ?","Чи вистачить учителів?","Чи не буде перевантаження?"]}};
+let kind=null,sentKinds=new Set();
+function show(v){["vChoose","vWrite","vDone"].forEach(id=>$(id).hidden=id!==v);window.scrollTo({top:0,behavior:"smooth"})}
+document.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{kind=b.dataset.k;const k=K[kind];
+  $("note").className="note "+(kind==="hope"?"h":"w");$("nTitle").textContent=k.t;$("nHint").textContent=k.h;
+  $("ex").innerHTML=k.ex.map(e=>`<button type="button">${e}</button>`).join("");
+  $("ex").querySelectorAll("button").forEach(x=>x.onclick=()=>{$("txt").value=x.textContent;$("cnt").textContent=$("txt").value.length;$("txt").focus()});
+  $("txt").value="";$("cnt").textContent=0;$("msg").innerHTML="";show("vWrite");setTimeout(()=>$("txt").focus(),300)});
+$("txt").oninput=e=>$("cnt").textContent=e.target.value.length;
+$("back").onclick=()=>show("vChoose");
+$("send").onclick=async()=>{const t=$("txt").value.trim();if(t.length<3){$("msg").innerHTML=`<div class="msg bad">Напишіть, будь ласка, хоча б кілька слів.</div>`;return}
+  $("send").disabled=true;$("msg").innerHTML=`<div class="msg info">Прикріплюємо…</div>`;
+  const rec={name:"Батьки",cls:"збори",score:0,max:1,ts:{".sv":"timestamp"},kind,text:t.slice(0,180)};
+  try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec)});if(!r.ok)throw new Error(r.status);
+    sentKinds.add(kind);$("dEmoji").textContent=kind==="hope"?"🌟":"🌱";
+    const other=kind==="hope"?"worry":"hope";
+    $("dText").textContent=kind==="hope"?"Ваше сподівання вже в кроні дерева — подивіться на екран у залі.":"Ваше занепокоєння вже серед коріння дерева — ми обов'язково його обговоримо.";
+    $("more").textContent=sentKinds.has(other)?"✍️ Написати ще один стікер":(other==="hope"?"🌟 Тепер напишіть сподівання":"🌱 Тепер напишіть занепокоєння");
+    show("vDone");
+  }catch(e){$("msg").innerHTML=`<div class="msg bad">Не вдалося надіслати. Перевірте інтернет і спробуйте ще раз.</div>`}
+  $("send").disabled=false};
+$("more").onclick=()=>show("vChoose");
+</script>
+</body>
+</html>
