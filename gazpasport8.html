@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Газовий паспорт</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700;800&display=swap">
+<style>
+/* Balloon-sky worksheet: pale sky page, chunky navy outlines, balloon colors (sun, mint, sky, coral) as section accents; s/p colors of the school periodic table. */
+:root{color-scheme:light;
+  --bg:#eaf6ff;--card:#fff;--ink:#10203f;--muted:#55607a;--line:#d6e4f5;
+  --sun:#facc15;--mint:#34d399;--sky:#60a5fa;--coral:#fb7185;--vio:#7c3aed;--vio-bg:#ede9fe;--ok:#16a34a;--bad:#dc2626;
+  --s:#fbcfe8;--p:#fef08a;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;--f-body:"Golos Text",system-ui,sans-serif;--f-mono:"JetBrains Mono",ui-monospace,monospace}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16.5px;line-height:1.45;
+  background-image:radial-gradient(circle at 0 0,#bae6fd 0,transparent 38%),radial-gradient(circle at 100% 10%,#fef9c3 0,transparent 30%),radial-gradient(circle at 50% 100%,#fce7f3 0,transparent 40%);background-attachment:fixed}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:980px;margin:0 auto;padding-block:16px 90px;padding-left:max(14px,env(safe-area-inset-left,0px));padding-right:max(14px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
+.hero{background:linear-gradient(135deg,#1e3a8a 0%,#2563eb 55%,#38bdf8 100%);color:#fff;border-radius:26px;padding:20px;position:relative;overflow:hidden;border:3px solid var(--ink);box-shadow:0 6px 0 var(--ink);min-height:170px}
+.hero svg.balloons{position:absolute;right:-6px;top:-4px;width:min(230px,42%);height:auto}
+.eyebrow{font:800 11px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;opacity:.9}
+h1{margin:4px 0 6px;font-family:var(--f-display);font-size:clamp(25px,5vw,40px);line-height:1.08;max-width:62%}
+h1 small{display:block;font-size:.45em;line-height:1.3;color:#fde68a;margin-top:6px}
+.hero p{margin:0;max-width:58%;opacity:.95}
+@media (max-width:560px){h1,.hero p{max-width:100%}.hero svg.balloons{opacity:.3}}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:#fff;border:3px solid var(--ink);border-radius:16px;padding:8px 14px;display:flex;gap:12px;align-items:center;justify-content:space-between;box-shadow:0 4px 0 var(--ink);flex-wrap:wrap}
+.bar b{font-family:var(--f-display);font-size:20px}
+.prog{flex:1;height:10px;background:#dbeafe;border-radius:99px;overflow:hidden;max-width:280px;min-width:80px}.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--sun),var(--mint),var(--sky),var(--coral));width:0;transition:width .4s}
+.card{background:var(--card);border:3px solid var(--ink);border-radius:22px;padding:16px;display:flex;flex-direction:column;gap:12px;box-shadow:0 5px 0 var(--ink);min-width:0}
+.card.done{border-color:var(--ok);box-shadow:0 5px 0 var(--ok)}
+.card h2{margin:0;font-size:19px;display:flex;gap:10px;align-items:flex-start}
+.card h2 .no{flex:none;width:38px;height:38px;border-radius:50% 50% 50% 50%/45% 45% 55% 55%;display:grid;place-items:center;color:var(--ink);font:800 16px var(--f-mono);border:2px solid var(--ink)}
+.c1 h2 .no{background:var(--sun)}.c2 h2 .no{background:var(--mint)}.c3 h2 .no{background:var(--sky)}.c4 h2 .no{background:var(--coral)}
+.card.done h2 .no{background:var(--ok);color:#fff;border-color:var(--ok)}
+.card h2 .pts{margin-left:auto;flex:none;font:800 12px var(--f-mono);background:var(--vio-bg);color:var(--vio);border-radius:99px;padding:4px 10px}
+.hint{margin:0;color:var(--muted);font-size:15px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{font-family:var(--f-display);font-size:14px;border:3px solid var(--ink);border-radius:14px;padding:9px 15px;cursor:pointer;color:var(--ink);background:var(--sun);box-shadow:0 4px 0 var(--ink)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.btn.sm{font-size:12px;padding:6px 10px;box-shadow:0 3px 0 var(--ink)}
+.btn.ghost{background:#fff}.btn.green{background:var(--ok);color:#fff}.btn[disabled]{opacity:.45;cursor:not-allowed}
+.fb{font-size:15px;border-radius:12px;padding:9px 12px;font-weight:600}
+.fb.ok{background:#dcfce7;color:#14532d}.fb.bad{background:#fee2e2;color:#7f1d1d}.fb.info{background:var(--vio-bg);color:#4c1d95}
+select,input[type=text]{font:inherit;font-size:16px;padding:10px 12px;border-radius:12px;border:2px solid var(--ink);background:#fff;color:var(--ink);width:100%}
+input.v{font:700 16px var(--f-mono);padding:8px 9px;border-radius:11px;border:2px solid var(--ink);background:#fff;color:var(--ink);width:100%;min-width:0}
+.ok-f{border-color:var(--ok)!important;background:#f0fdf4!important}.no-f{border-color:var(--bad)!important;background:#fef2f2!important}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--vio);outline-offset:2px}
+
+/* part 1: formula cards */
+.fcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.fc{border:3px solid var(--ink);border-radius:18px;padding:12px;display:flex;flex-direction:column;gap:10px;background:#fffbeb}
+.fc:nth-child(2){background:#ecfdf5}.fc:nth-child(3){background:#eff6ff}
+.fc h3{margin:0;font-family:var(--f-display);font-size:14px}
+.frac{display:flex;align-items:center;gap:12px;justify-content:center;font:800 28px var(--f-mono)}
+.frac .fr{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:110px}
+.frac .fr hr{width:100%;border:0;border-top:4px solid var(--ink);margin:0}
+.frac select{font:800 20px var(--f-mono);text-align:center;padding:6px;width:110px}
+.unit{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:15px;font-weight:700}
+.unit select{width:auto;flex:1;min-width:110px;font:800 16px var(--f-mono);padding:6px 8px}
+.cheat{border:3px dashed var(--mint);border-radius:18px;padding:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;background:#f0fdf4}
+.tri{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:14px;text-align:center}
+.tri svg{width:150px;height:auto}
+.tri b{font:800 15px var(--f-mono)}
+
+/* periodic table */
+.pt-wrap{border:3px solid var(--ink);border-radius:18px;padding:10px;background:#fff;display:flex;flex-direction:column;gap:8px}
+.pt-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.pt-head b{font-family:var(--f-display);font-size:14px}
+.pt{display:grid;grid-template-columns:22px repeat(8,minmax(0,1fr));gap:4px}
+.pt .gh,.pt .ph{font:800 11px var(--f-mono);color:var(--muted);display:grid;place-items:center}
+.el{position:relative;border:2px solid var(--ink);border-radius:9px;padding:14px 2px 3px;cursor:pointer;display:flex;flex-direction:column;align-items:center;font-family:var(--f-body);color:var(--ink);min-height:54px}
+.el.s{background:var(--s)}.el.p{background:var(--p)}
+.el .z{position:absolute;left:4px;top:2px;font:800 10px var(--f-mono)}
+.el .sy{font:800 19px var(--f-display);line-height:1}
+.el .ar{font:700 10.5px var(--f-mono);margin-top:2px}
+.el[aria-pressed="true"]{outline:4px solid var(--vio);outline-offset:1px;transform:scale(1.06);z-index:1}
+.lens{display:flex;gap:12px;align-items:center;background:var(--vio-bg);border-radius:14px;padding:8px 12px;min-height:62px}
+.lens .big{flex:none;width:58px;height:58px;border:3px solid var(--ink);border-radius:12px;display:grid;place-items:center;font:800 26px var(--f-display);background:#fff}
+.lens .big.s{background:var(--s)}.lens .big.p{background:var(--p)}
+.lens div{font-size:15px}
+.lens b.arv{font:800 20px var(--f-mono);color:var(--vio)}
+.pt-legend{display:flex;gap:14px;font-size:13px;color:var(--muted);flex-wrap:wrap}
+.pt-legend i{display:inline-block;width:14px;height:14px;border:2px solid var(--ink);border-radius:4px;vertical-align:-2px;margin-right:4px}
+
+/* part 2: gas table */
+.consts{display:flex;gap:10px;flex-wrap:wrap}
+.consts span{font:800 14px var(--f-mono);background:#fef9c3;border:2px solid var(--ink);border-radius:99px;padding:5px 12px}
+table.gas{width:100%;border-collapse:separate;border-spacing:0 8px}
+table.gas th{font:800 12.5px var(--f-mono);text-align:left;padding:4px 6px;color:var(--muted)}
+table.gas td{padding:6px;vertical-align:middle;background:#f8fbff;border-top:2px solid var(--line);border-bottom:2px solid var(--line)}
+table.gas td:first-child{border-left:2px solid var(--line);border-radius:14px 0 0 14px}
+table.gas td:last-child{border-right:2px solid var(--line);border-radius:0 14px 14px 0}
+table.gas tr.ok td{background:#f0fdf4;border-color:#bbf7d0}table.gas tr.part td{background:#fffbeb;border-color:#fde68a}table.gas tr.zero td{background:#fef2f2;border-color:#fecaca}
+.gf{font:800 22px var(--f-display);white-space:nowrap}.gn{display:block;font-size:12.5px;color:var(--muted);font-weight:600}
+.given{display:inline-block;font:800 15px var(--f-mono);background:var(--sun);border:2px solid var(--ink);border-radius:10px;padding:7px 9px;white-space:nowrap}
+.given small{display:block;font:700 10px var(--f-body);text-transform:uppercase;letter-spacing:.08em}
+.nwrap{display:flex;align-items:center;gap:3px;font:800 14px var(--f-mono)}
+.nwrap input.v{width:68px}.nwrap input.e{width:44px;padding:4px;font-size:13px;align-self:flex-start}
+.corr{display:block;font:800 12px var(--f-mono);color:var(--ok);margin-top:3px}
+td .lb{display:none}
+@media (max-width:760px){
+  table.gas thead{display:none}
+  table.gas,table.gas tbody,table.gas tr,table.gas td{display:block}
+  table.gas tr{border:2px solid var(--line);border-radius:16px;margin-bottom:10px;padding:8px;background:#f8fbff;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  table.gas tr.ok{background:#f0fdf4}table.gas tr.part{background:#fffbeb}table.gas tr.zero{background:#fef2f2}
+  table.gas td,table.gas td:first-child,table.gas td:last-child{border:0;border-radius:0;background:none!important;padding:0}
+  table.gas td:first-child,table.gas td:last-child{grid-column:1/-1}
+  td .lb{display:block;font:800 11px var(--f-mono);color:var(--muted);margin-bottom:3px}
+}
+
+/* part 3: balloons */
+.sky{position:relative;height:300px;border:3px solid var(--ink);border-radius:20px;background:linear-gradient(#bfdbfe,#e0f2fe 70%,#bbf7d0 70%,#86efac);overflow:hidden;display:grid;grid-template-columns:repeat(4,1fr);align-items:end;padding:0 6px 14px}
+.bl{border:0;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;transition:transform 1.6s cubic-bezier(.3,.8,.4,1);position:relative;padding:0}
+.bl svg{width:min(96px,100%);height:auto;overflow:visible}
+.bl .tag{position:absolute;top:22px;left:50%;transform:translateX(-50%);font:800 18px var(--f-display);color:var(--ink)}
+.bl .ord{position:absolute;top:-8px;left:calc(50% + 22px);width:30px;height:30px;border-radius:50%;background:var(--ink);color:#fff;font:800 16px var(--f-mono);display:grid;place-items:center}
+.bl .ms{color:var(--ink);font:800 13px var(--f-mono);background:#fff;border:2px solid var(--ink);border-radius:8px;padding:1px 6px;margin-top:2px}
+.bl[disabled]{cursor:default;color:var(--ink);opacity:1}
+.air{position:absolute;left:10px;top:10px;font:800 12px var(--f-mono);background:#ffffffcc;border-radius:8px;padding:3px 8px}
+.opts{display:flex;flex-direction:column;gap:6px}
+.op{font:inherit;font-size:15.5px;text-align:left;border:2px solid var(--line);background:#fff;border-radius:12px;padding:9px 12px;cursor:pointer;color:var(--ink)}
+.op:hover:not([disabled]){border-color:var(--vio)}
+.op[aria-pressed="true"]{border-color:var(--vio);background:var(--vio-bg)}
+.op.ok{border-color:var(--ok);background:#dcfce7}.op.no{border-color:var(--bad);background:#fee2e2}.op.miss{border-color:var(--ok);border-style:dashed}
+.op[disabled]{cursor:default}
+
+/* part 4 */
+.task{border:2px solid var(--line);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:10px;background:#fffafb}
+.task p{margin:0}
+.flds{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px}
+.flds label{display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:700}
+
+.overlay{position:fixed;inset:0;z-index:30;background:rgba(16,32,63,.7);display:flex;align-items:center;justify-content:center;padding:20px max(16px,env(safe-area-inset-right,0px)) 20px max(16px,env(safe-area-inset-left,0px))}
+.overlay .card{max-width:540px;width:100%}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media (max-width:520px){.grid2{grid-template-columns:1fr}}
+.lbl{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--muted)}
+.msg{font-weight:700;padding:9px 12px;border-radius:12px}
+.msg.ok{background:#e8f8ee;color:#166534}.msg.bad{background:#fdecec;color:#991b1b}.msg.info{background:var(--vio-bg);color:#4c1d95}
+.final{font-family:var(--f-display);font-size:38px;color:var(--ok)}
+.self{display:flex;gap:8px;flex-wrap:wrap}
+.self button{font:inherit;font-size:15px;border:2px solid var(--ink);border-radius:12px;padding:8px 12px;background:#fff;cursor:pointer;color:var(--ink)}
+.self button[aria-pressed="true"]{background:var(--sun)}
+.fab{position:fixed;right:max(14px,env(safe-area-inset-right,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));z-index:20;font:800 14px var(--f-display);border:3px solid var(--ink);border-radius:99px;padding:11px 16px;background:var(--p);box-shadow:0 4px 0 var(--ink);cursor:pointer;color:var(--ink)}
+.drawer{position:fixed;left:0;right:0;bottom:0;z-index:25;pointer-events:none;padding:0 max(10px,env(safe-area-inset-right,0px)) max(10px,env(safe-area-inset-bottom,0px)) max(10px,env(safe-area-inset-left,0px))}
+.drawer .pt-wrap{pointer-events:auto;max-width:620px;margin:0 auto;box-shadow:0 -6px 30px rgba(16,32,63,.35)}
+@media (prefers-reduced-motion:reduce){.bl{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <svg class="balloons" viewBox="0 0 230 190" aria-hidden="true">
+      <path d="M60 92q-6 40 10 96M120 70q4 50-6 118M180 100q-10 40 4 88" stroke="#fff" stroke-width="2" fill="none" opacity=".8"/>
+      <ellipse cx="60" cy="58" rx="34" ry="40" fill="#facc15" stroke="#10203f" stroke-width="3"/><text x="60" y="66" text-anchor="middle" font-family="Unbounded,Arial Black" font-weight="800" font-size="20" fill="#10203f">H₂</text>
+      <ellipse cx="122" cy="38" rx="34" ry="40" fill="#fb7185" stroke="#10203f" stroke-width="3"/><text x="122" y="46" text-anchor="middle" font-family="Unbounded,Arial Black" font-weight="800" font-size="20" fill="#10203f">O₂</text>
+      <ellipse cx="184" cy="66" rx="34" ry="40" fill="#34d399" stroke="#10203f" stroke-width="3"/><text x="184" y="74" text-anchor="middle" font-family="Unbounded,Arial Black" font-weight="800" font-size="18" fill="#10203f">CO₂</text>
+      <ellipse cx="50" cy="44" rx="8" ry="12" fill="#fff" opacity=".55"/><ellipse cx="112" cy="24" rx="8" ry="12" fill="#fff" opacity=".55"/><ellipse cx="174" cy="52" rx="8" ry="12" fill="#fff" opacity=".55"/>
+    </svg>
+    <span class="eyebrow">Хімія · 8 клас · урок 2 · інтерактивний аркуш</span>
+    <h1>Газовий паспорт<small>Молярний об'єм газів і кількість речовини</small></h1>
+    <p>Пов'яжи <b>n</b>, <b>m</b>, <b>V</b> і <b>N</b> в одну систему. Користуйся періодичною системою: вона під кнопкою 🧪 внизу. Кожне завдання перевіряється <b>один раз</b>. Разом 12 балів.</p>
+  </section>
+  <div class="bar"><span id="who"></span><div class="prog"><i id="progI"></i></div><span>Бали: <b id="score">0</b> / 12</span></div>
+
+  <section class="card c1" id="p1"></section>
+  <section class="card c2" id="p2"></section>
+  <section class="card c3" id="p3"></section>
+  <section class="card c4" id="p4"></section>
+
+  <section class="card" id="fin">
+    <h2><span class="no" style="background:var(--vio);color:#fff">★</span>Самооцінка й здача</h2>
+    <p class="hint">Як ти зараз розумієш зв'язок між n, m, V і N?</p>
+    <div class="self" id="self"><button type="button" data-v="🟢 Розумію й можу пояснити іншим">🟢 Розумію й можу пояснити</button><button type="button" data-v="🟡 Розумію, але ще помиляюся">🟡 Розумію, але ще помиляюся</button><button type="button" data-v="🔴 Потрібна допомога">🔴 Потрібна допомога</button></div>
+    <p class="hint" id="finHint">Виконай усі 4 завдання, тоді кнопка стане активною.</p>
+    <div class="row"><span>Результат: <span class="final" id="finScore">0</span> / 12</span></div>
+    <div class="row"><button class="btn green" type="button" id="submit" disabled>Надіслати вчителю</button></div>
+    <div id="sendMsg"></div>
+  </section>
+</div>
+
+<button class="fab" type="button" id="fab" aria-expanded="false">🧪 Періодична система</button>
+<div class="drawer" id="drawer" hidden><div class="pt-wrap" id="ptD"></div></div>
+
+<div class="overlay" id="start">
+  <div class="card">
+    <span class="lbl">Перед початком</span>
+    <h2 style="font-family:var(--f-display)">Газовий паспорт</h2>
+    <p style="margin:0">Чому 2 г водню й 32 г кисню займають однаковий об'єм? Заповни паспорти газів і з'ясуй!</p>
+    <div class="grid2">
+      <div><label class="lbl" for="pname">Прізвище та ім'я</label><input type="text" id="pname" maxlength="60" autocomplete="name" placeholder="Іваненко Олена"></div>
+      <div><label class="lbl" for="pcls">Клас</label><select id="pcls"><option value="">— обери —</option><option>8-А</option><option>8-Б</option><option>Інший</option></select></div>
+    </div>
+    <p class="msg bad" id="startErr" hidden>Впиши прізвище, ім'я та обери клас.</p>
+    <div class="row"><button class="btn" id="startBtn" type="button">Почати</button></div>
+  </div>
+</div>
+
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="gazpas8";
+const $=id=>document.getElementById(id);
+const fmt=x=>String(Math.round(x*1000)/1000).replace(".",",");
+const num=s=>{s=String(s==null?"":s).trim().replace(/\s/g,"").replace(",",".");if(!/^[-+]?(\d+\.?\d*|\.\d+)$/.test(s))return NaN;return +s};
+const near=(a,b)=>isFinite(a)&&Math.abs(a-b)<=Math.max(Math.abs(b)*0.02,0.005);
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const VM=22.4,NA=6.02;
+const SCORE={},REC={};
+
+/* ---------- періодична система (періоди 1–3, коротка форма) ---------- */
+const EL=[["H","Гідроген",1,"1",1,1,"s"],["He","Гелій",2,"4",1,8,"s"],
+ ["Li","Літій",3,"7",2,1,"s"],["Be","Берилій",4,"9",2,2,"s"],["B","Бор",5,"11",2,3,"p"],["C","Карбон",6,"12",2,4,"p"],["N","Нітроген",7,"14",2,5,"p"],["O","Оксиген",8,"16",2,6,"p"],["F","Флуор",9,"19",2,7,"p"],["Ne","Неон",10,"20",2,8,"p"],
+ ["Na","Натрій",11,"23",3,1,"s"],["Mg","Магній",12,"24",3,2,"s"],["Al","Алюміній",13,"27",3,3,"p"],["Si","Силіцій",14,"28",3,4,"p"],["P","Фосфор",15,"31",3,5,"p"],["S","Сульфур",16,"32",3,6,"p"],["Cl","Хлор",17,"35,5",3,7,"p"],["Ar","Аргон",18,"40",3,8,"p"]];
+let SEL=null;
+function ptHTML(id,closable){const R=["I","II","III","IV","V","VI","VII","VIII"];let g=`<div></div>`+R.map(r=>`<div class="gh">${r}</div>`).join("");
+  for(let p=1;p<=3;p++){g+=`<div class="ph">${p}</div>`;for(let c=1;c<=8;c++){const e=EL.find(x=>x[4]===p&&x[5]===c);
+    g+=e?`<button type="button" class="el ${e[6]}" data-el="${e[0]}" aria-pressed="${SEL===e[0]}" aria-label="${e[1]}, Ar ${e[3]}"><span class="z">${e[2]}</span><span class="sy">${e[0]}</span><span class="ar">${e[3]}</span></button>`:`<div></div>`}}
+  const e=EL.find(x=>x[0]===SEL);
+  return `<div class="pt-head"><b>🧪 Періодична система (періоди 1–3)</b>${closable?`<button class="btn sm ghost" type="button" data-close>✕ Сховати</button>`:""}</div>
+   <div class="pt">${g}</div>
+   <div class="lens">${e?`<div class="big ${e[6]}">${e[0]}</div><div><b>${e[1]}</b> · порядковий номер ${e[2]}<br>Відносна атомна маса A<sub>r</sub>(${e[0]}) = <b class="arv">${e[3]}</b></div>`:`<div>👆 Натисни на елемент, щоб побачити його відносну атомну масу A<sub>r</sub>.</div>`}</div>
+   <div class="pt-legend"><span><i style="background:var(--s)"></i>s-елементи</span><span><i style="background:var(--p)"></i>p-елементи</span><span>A<sub>r</sub> — під символом елемента</span></div>`}
+function drawPT(){["ptA","ptD"].forEach(id=>{const n=$(id);if(!n)return;n.innerHTML=ptHTML(id,id==="ptD");
+  n.querySelectorAll("[data-el]").forEach(b=>b.onclick=()=>{SEL=b.dataset.el;drawPT()});const c=n.querySelector("[data-close]");if(c)c.onclick=()=>toggleDrawer(false)})}
+function toggleDrawer(on){$("drawer").hidden=!on;document.body.style.paddingBottom=on?"360px":"";$("fab").hidden=on;$("fab").setAttribute("aria-expanded",on);$("fab").textContent=on?"✕ Сховати таблицю":"🧪 Періодична система";drawPT()}
+$("fab").onclick=()=>toggleDrawer($("drawer").hidden);
+
+/* ---------- 1. Ключ до формул ---------- */
+const QOPT=["m","M","V","Vₘ","N","Nₐ"],UOPT=["г","л","г/моль","л/моль","моль","моль⁻¹"];
+const SL=["m","M","V","Vₘ","N","Nₐ","г/моль","л/моль","моль⁻¹"];
+const U1={v:Array(9).fill("")};
+function sel(i,opts){const done="f" in SCORE,v=U1.v[i];const c=done?(v===SL[i]?"ok-f":"no-f"):"";
+  return `<select data-s="${i}" class="${c}" ${done?"disabled":""} aria-label="Поле ${i+1}"><option value="">?</option>${opts.map(o=>`<option ${v===o?"selected":""}>${o}</option>`).join("")}</select>`}
+function frac(a,b){return `<div class="frac"><span>n =</span><div class="fr">${sel(a,QOPT)}<hr>${sel(b,QOPT)}</div></div>`}
+function triSVG(t,l,r,col){return `<svg viewBox="0 0 150 120" aria-hidden="true"><path d="M75 6L144 114H6Z" fill="${col}" stroke="#10203f" stroke-width="4" stroke-linejoin="round"/><path d="M30 72H120M75 72V114" stroke="#10203f" stroke-width="3"/>
+  <text x="75" y="58" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="800" font-size="22" fill="#10203f">${t}</text><text x="52" y="102" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="800" font-size="20" fill="#10203f">n</text><text x="98" y="102" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="800" font-size="18" fill="#10203f">${r}</text></svg>`}
+function R1(){const done="f" in SCORE,n=$("p1");n.classList.toggle("done",done);
+  n.innerHTML=`<h2><span class="no">1</span>Ключ до формул: три шляхи до кількості речовини<span class="pts">2 б.</span></h2>
+  <p class="hint">Кількість речовини <b>n</b> (моль) можна знайти трьома шляхами. Обери, що стоїть у чисельнику й знаменнику, та одиниці вимірювання сталих.</p>
+  <div class="fcards">
+   <div class="fc"><h3>⚖️ Через масу</h3>${frac(0,1)}<div class="unit">Молярну масу M вимірюють у ${sel(6,UOPT)}</div></div>
+   <div class="fc"><h3>🎈 Через об'єм газу</h3>${frac(2,3)}<div class="unit">За н.у. V<sub>m</sub> = 22,4 ${sel(7,UOPT)}</div></div>
+   <div class="fc"><h3>🔢 Через число частинок</h3>${frac(4,5)}<div class="unit">N<sub>A</sub> = 6,02·10²³ ${sel(8,UOPT)}</div></div>
+  </div>`+(done?`<div class="fb ${SCORE.f===2?"ok":"info"}">+${fmt(SCORE.f)} б. (${REC.f}). Ось твоя шпаргалка для наступних завдань: закрий пальцем шукану величину, і трикутник підкаже формулу.</div>
+   <div class="cheat">
+    <div class="tri">${triSVG("m","n","M","#fef08a")}<b>n = m / M · m = n·M</b></div>
+    <div class="tri">${triSVG("V","n","Vₘ","#bbf7d0")}<b>n = V / Vₘ · V = n·Vₘ</b></div>
+    <div class="tri">${triSVG("N","n","Nₐ","#bfdbfe")}<b>n = N / Nₐ · N = n·Nₐ</b></div>
+    <div class="tri" style="justify-content:center;font-size:15px;text-align:left"><span>📌 <b>Н.у.</b> — нормальні умови: 0 °C і 101,3 кПа.<br>📌 1 моль <b>будь-якого</b> газу за н.у. займає 22,4 л.<br>📌 M чисельно дорівнює M<sub>r</sub>: M(O₂) = 2·16 = 32 г/моль.</span></div>
+   </div>`:`<div class="row"><button class="btn" type="button" id="chk1">Перевірити</button></div><div id="w1"></div>`);
+  if(done)return;
+  n.querySelectorAll("[data-s]").forEach(s=>s.onchange=()=>{U1.v[+s.dataset.s]=s.value});
+  $("chk1").onclick=()=>{if(U1.v.some(x=>!x)){$("w1").innerHTML=`<div class="fb bad">Заповни всі 9 полів.</div>`;return}
+    const c=U1.v.filter((x,i)=>x===SL[i]).length;SCORE.f=Math.round(c/9*4)/2;REC.f=`${c} з 9 правильно`;R1();upd()}}
+
+/* ---------- 2. Газовий паспорт ---------- */
+const GAS=[
+ {f:"H₂",nm:"водень",M:2,g:"V",ns:[.5,1.5,2,3]},
+ {f:"O₂",nm:"кисень",M:32,g:"m",ns:[.25,.5,1.5,2]},
+ {f:"CO₂",nm:"вуглекислий газ",M:44,g:"n",ns:[.1,.2,.25,.5]},
+ {f:"NH₃",nm:"амоніак",M:17,g:"N",ns:[.5,1.5,2,3]},
+ {f:"CH₄",nm:"метан",M:16,g:"m",ns:[.25,.5,.75,2]},
+ {f:"Cl₂",nm:"хлор",M:71,g:"V",ns:[.1,.2,.25,.5]}];
+GAS.forEach(x=>{x.n=pick(x.ns);x.v={M:x.M,n:x.n,m:+(x.n*x.M).toFixed(3),V:+(x.n*VM).toFixed(3),N:+(x.n*NA).toFixed(3)}});
+const COLS=[["M","M, г/моль"],["n","n, моль"],["m","m, г"],["V","V (н.у.), л"],["N","N, молекул"]];
+const UNIT={n:"моль",m:"г",V:"л"};
+const U2=GAS.map(()=>({M:"",n:"",m:"",V:"",N:"",Ne:"23"})),D2=GAS.map(()=>null);
+const givenTxt=x=>x.g==="N"?`${fmt(x.v.N)}·10²³`:`${fmt(x.v[x.g])} ${UNIT[x.g]}`;
+function cellVal(r,k){const u=U2[r];if(k==="N"){const a=num(u.N),e=num(u.Ne);return isFinite(a)&&isFinite(e)?a*Math.pow(10,e-23):NaN}return num(u[k])}
+function R2(){const n=$("p2"),all=D2.every(Boolean);n.classList.toggle("done",all);
+  n.innerHTML=`<h2><span class="no">2</span>Газовий паспорт: заповни таблицю<span class="pts">6 б.</span></h2>
+  <p class="hint">У кожному рядку відома <b>одна</b> величина (жовта). Спершу обчисли молярну масу M за періодичною системою, потім знайди n, а через n — усе інше. Кожен рядок перевіряй окремо. Для N впиши число й показник степеня: наприклад, 3,01 · 10<sup>23</sup>.</p>
+  <div class="consts"><span>V<sub>m</sub> = 22,4 л/моль</span><span>N<sub>A</sub> = 6,02·10²³ моль⁻¹</span><span>н.у.: 0 °C, 101,3 кПа</span></div>
+  <div class="pt-wrap" id="ptA"></div>
+  <table class="gas"><thead><tr><th>Газ</th>${COLS.map(c=>`<th>${c[1]}</th>`).join("")}<th></th></tr></thead><tbody>
+  ${GAS.map((x,r)=>{const d=D2[r];const cls=d?(d.c===4?"ok":d.c?"part":"zero"):"";
+    return `<tr class="${cls}"><td><span class="gf">${x.f}</span><span class="gn">${x.nm}</span></td>${COLS.map(([k,l])=>{
+      if(k===x.g)return `<td><span class="lb">${l}</span><span class="given"><small>дано</small>${givenTxt(x)}</span></td>`;
+      const st=d?(d.ok[k]?"ok-f":"no-f"):"",dis=d?"disabled":"";const corr=d&&!d.ok[k]?`<span class="corr">✓ ${k==="N"?fmt(x.v.N)+"·10²³":fmt(x.v[k])}</span>`:"";
+      if(k==="N")return `<td><span class="lb">${l}</span><span class="nwrap"><input class="v ${st}" inputmode="decimal" data-r="${r}" data-k="N" value="${esc(U2[r].N)}" ${dis} aria-label="N для ${x.f}, число">·10<input class="v e ${st}" inputmode="numeric" data-r="${r}" data-k="Ne" value="${esc(U2[r].Ne)}" ${dis} aria-label="показник степеня"></span>${corr}</td>`;
+      return `<td><span class="lb">${l}</span><input class="v ${st}" inputmode="decimal" data-r="${r}" data-k="${k}" value="${esc(U2[r][k])}" ${dis} aria-label="${l} для ${x.f}">${corr}</td>`}).join("")}
+      <td>${d?`<b style="font-family:var(--f-mono)">${d.c}/4</b>`:`<button class="btn sm" type="button" data-chk="${r}">Перевірити</button>`}</td></tr>`}).join("")}
+  </tbody></table><div id="w2"></div>`+
+  (all?`<div class="fb ${SCORE.t===6?"ok":"info"}">+${fmt(SCORE.t)} б. Помітив? Однакова кількість речовини будь-якого газу займає однаковий об'єм: 0,5 моль і водню, і хлору — це 11,2 л. А от маси зовсім різні!</div>`:"");
+  drawPT();
+  n.querySelectorAll("input[data-r]").forEach(i=>i.oninput=()=>{U2[+i.dataset.r][i.dataset.k]=i.value});
+  n.querySelectorAll("[data-chk]").forEach(b=>b.onclick=()=>{const r=+b.dataset.chk,x=GAS[r],keys=COLS.map(c=>c[0]).filter(k=>k!==x.g);
+    if(keys.some(k=>!String(U2[r][k]).trim())||(keys.includes("N")&&!String(U2[r].Ne).trim())){$("w2").innerHTML=`<div class="fb bad">Заповни всі клітинки рядка ${x.f}.</div>`;return}
+    const ok={};keys.forEach(k=>ok[k]=k==="M"?Math.abs(num(U2[r].M)-x.M)<0.01:near(cellVal(r,k),x.v[k]));
+    D2[r]={ok,c:keys.filter(k=>ok[k]).length};$("w2").innerHTML="";
+    if(D2.every(Boolean)){SCORE.t=D2.reduce((s,d)=>s+d.c,0)/4;
+      REC.t=GAS.map((x,i)=>`${x.f} (дано ${givenTxt(x)}): `+COLS.filter(c=>c[0]!==x.g).map(([k])=>`${k}=${k==="N"?(U2[i].N+"·10^"+U2[i].Ne):U2[i][k]}${D2[i].ok[k]?"✓":"✗"}`).join(" ")).join("; ");upd()}
+    R2()})}
+
+/* ---------- 3. Повітряні кульки ---------- */
+const BL=[{f:"H₂",M:2,c:"#facc15"},{f:"CH₄",M:16,c:"#34d399"},{f:"O₂",M:32,c:"#60a5fa"},{f:"CO₂",M:44,c:"#fb7185"}].sort(()=>Math.random()-.5);
+const MOL=[["У кульці з вуглекислим газом: його молекули найважчі",0],["У кульці з воднем: його молекули найменші",0],["Однаково: по 3,01·10²³ молекул у кожній",1],["Неможливо визначити без маси",0]];
+const U3={ord:[],mol:null};
+function balSVG(b){return `<svg viewBox="0 0 100 150" aria-hidden="true"><path d="M50 98q-8 22 4 52" stroke="#10203f" stroke-width="2" fill="none"/><ellipse cx="50" cy="50" rx="40" ry="46" fill="${b.c}" stroke="#10203f" stroke-width="3.5"/><path d="M44 95h12l-6 7z" fill="${b.c}" stroke="#10203f" stroke-width="2.5" stroke-linejoin="round"/><ellipse cx="36" cy="32" rx="9" ry="14" fill="#fff" opacity=".5"/></svg>`}
+function R3(){const done="b" in SCORE,n=$("p3");n.classList.toggle("done",done);
+  const rk=[...BL].sort((a,b)=>a.M-b.M);
+  n.innerHTML=`<h2><span class="no">3</span>Повітряні кульки<span class="pts">2 б.</span></h2>
+  <p class="hint">У кожній кульці <b>11,2 л</b> газу (н.у.). <b>а)</b> Натискай на кульки по черзі: від <b>найлегшої</b> до <b>найважчої</b> за масою газу. Повторне натискання знімає номер.</p>
+  <div class="sky">${done?`<span class="air">M(повітря) ≈ 29 г/моль</span>`:""}${BL.map((b,i)=>{const o=U3.ord.indexOf(i);
+    return `<button type="button" class="bl" data-b="${i}" ${done?"disabled":""} style="transform:translateY(${done?(b.M<10?-98:b.M<29?-52:6):0}px)" aria-label="Кулька з ${b.f}">${balSVG(b)}<span class="tag">${b.f}</span>${o>=0?`<span class="ord">${o+1}</span>`:""}${done?`<span class="ms">${fmt(b.M/2)} г</span>`:""}</button>`}).join("")}</div>
+  ${done?"":`<div class="row"><button class="btn sm ghost" type="button" id="rst3">↺ Скинути порядок</button></div>`}
+  <p class="hint" style="color:var(--ink);font-weight:700">б) У якій кульці більше молекул?</p>
+  <div class="opts">${MOL.map(([t,k],j)=>{const c=done?(j===U3.mol?(k?"ok":"no"):(k?"miss":"")):"";return `<button type="button" class="op ${c}" data-m="${j}" aria-pressed="${U3.mol===j}" ${done?"disabled":""}>${t}</button>`}).join("")}</div>`+
+  (done?`<div class="fb ${SCORE.b===2?"ok":"info"}">+${fmt(SCORE.b)} б. У кожній кульці 11,2 / 22,4 = 0,5 моль газу, отже <b>однакова кількість молекул</b> (закон Авогадро). А маса m = 0,5·M: ${rk.map(b=>`${b.f} — ${fmt(b.M/2)} г`).join(", ")}. Кульки з газами, легшими за повітря (M &lt; 29 г/моль), злітають угору!</div>`
+   :`<div class="row"><button class="btn" type="button" id="chk3">Перевірити</button></div><div id="w3"></div>`);
+  if(done)return;
+  n.querySelectorAll("[data-b]").forEach(b=>b.onclick=()=>{const i=+b.dataset.b,o=U3.ord.indexOf(i);o>=0?U3.ord.splice(o,1):U3.ord.push(i);R3()});
+  n.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{U3.mol=+b.dataset.m;R3()});
+  $("rst3").onclick=()=>{U3.ord=[];R3()};
+  $("chk3").onclick=()=>{if(U3.ord.length<4||U3.mol==null){$("w3").innerHTML=`<div class="fb bad">Пронумеруй усі 4 кульки й обери відповідь у пункті б.</div>`;return}
+    const pos=U3.ord.filter((i,k)=>BL[i].M===rk[k].M).length;const a=pos===4?1:pos>=2?.5:0,b=MOL[U3.mol][1]?1:0;
+    SCORE.b=a+b;REC.b=`порядок: ${U3.ord.map(i=>BL[i].f).join(" < ")} (${pos}/4 на місці); молекули: ${MOL[U3.mol][0]}`;R3();upd()}}
+
+/* ---------- 4. Задачі ---------- */
+const U4={vh:"",vo:"",ch:null,n:"",N:"",Ne:"23",m:""};
+const CH=["Водень","Кисень","Однаково"];
+function inp(k,lab,st){const d="z" in SCORE;return `<label>${lab}<input class="v ${st||""}" inputmode="decimal" data-z="${k}" value="${esc(U4[k])}" ${d?"disabled":""}></label>`}
+function R4(){const done="z" in SCORE,n=$("p4"),k=REC.zk||{};n.classList.toggle("done",done);
+  const s=x=>done?(k[x]?"ok-f":"no-f"):"";
+  n.innerHTML=`<h2><span class="no">4</span>Задачі-перевертні<span class="pts">2 б.</span></h2>
+  <div class="task"><p><b>а)</b> Що займає більший об'єм (н.у.): <b>4 г водню H₂</b> чи <b>64 г кисню O₂</b>? Обчисли обидва об'єми.</p>
+   <div class="flds">${inp("vh","V(H₂), л",s("vh"))}${inp("vo","V(O₂), л",s("vo"))}</div>
+   <div class="opts" style="flex-direction:row;flex-wrap:wrap">${CH.map((t,j)=>{const c=done?(j===U4.ch?(j===2?"ok":"no"):(j===2?"miss":"")):"";return `<button type="button" class="op ${c}" data-c="${j}" aria-pressed="${U4.ch===j}" ${done?"disabled":""}>${t}</button>`}).join("")}</div></div>
+  <div class="task"><p><b>б)</b> Балон містить <b>5,6 л азоту N₂</b> (н.у.). Яка кількість речовини, скільки молекул і яка маса цього азоту?</p>
+   <div class="flds">${inp("n","n(N₂), моль",s("n"))}
+    <label>N(N₂), молекул<span class="nwrap"><input class="v ${s("N")}" inputmode="decimal" data-z="N" value="${esc(U4.N)}" ${done?"disabled":""} aria-label="N, число">·10<input class="v e ${s("N")}" inputmode="numeric" data-z="Ne" value="${esc(U4.Ne)}" ${done?"disabled":""} aria-label="показник степеня"></span></label>
+    ${inp("m","m(N₂), г",s("m"))}</div></div>`+
+  (done?`<div class="fb ${SCORE.z===2?"ok":"info"}">+${fmt(SCORE.z)} б. а) n(H₂) = 4/2 = 2 моль, n(O₂) = 64/32 = 2 моль, тож V = 2·22,4 = <b>44,8 л</b> в обох: <b>однаково</b>! б) n = 5,6/22,4 = <b>0,25 моль</b>; N = 0,25·6,02·10²³ = <b>1,505·10²³</b>; m = 0,25·28 = <b>7 г</b>.</div>`
+   :`<div class="row"><button class="btn" type="button" id="chk4">Перевірити</button></div><div id="w4"></div>`);
+  if(done)return;
+  n.querySelectorAll("[data-z]").forEach(i=>i.oninput=()=>{U4[i.dataset.z]=i.value});
+  n.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{U4.ch=+b.dataset.c;n.querySelectorAll("[data-c]").forEach(x=>x.setAttribute("aria-pressed",x===b))});
+  $("chk4").onclick=()=>{if(["vh","vo","n","N","Ne","m"].some(x=>!String(U4[x]).trim())||U4.ch==null){$("w4").innerHTML=`<div class="fb bad">Заповни всі поля й обери відповідь у задачі а.</div>`;return}
+    const Nv=num(U4.N)*Math.pow(10,num(U4.Ne)-23);
+    const kk={vh:near(num(U4.vh),44.8),vo:near(num(U4.vo),44.8),n:near(num(U4.n),.25),N:near(Nv,1.505),m:near(num(U4.m),7)};
+    const a=(kk.vh?.25:0)+(kk.vo?.25:0)+(U4.ch===2?.5:0),c=["n","N","m"].filter(x=>kk[x]).length,b=c===3?1:c===2?.5:0;
+    SCORE.z=a+b;REC.zk=kk;REC.z=`а) V(H₂)=${U4.vh}${kk.vh?"✓":"✗"}, V(O₂)=${U4.vo}${kk.vo?"✓":"✗"}, вибір: ${CH[U4.ch]}; б) n=${U4.n}${kk.n?"✓":"✗"}, N=${U4.N}·10^${U4.Ne}${kk.N?"✓":"✗"}, m=${U4.m}${kk.m?"✓":"✗"}`;R4();upd()}}
+
+/* ---------- здача ---------- */
+const ORDER=["f","t","b","z"];
+let ME={},sent=false,SELF="";
+document.querySelectorAll("#self button").forEach(b=>b.onclick=()=>{SELF=b.dataset.v;document.querySelectorAll("#self button").forEach(x=>x.setAttribute("aria-pressed",x===b))});
+function total(){return ORDER.reduce((a,k)=>a+(SCORE[k]||0),0)}
+function upd(){const sc=total(),n=ORDER.filter(k=>k in SCORE).length+(("t" in SCORE)?0:D2.filter(Boolean).length/6);
+  $("score").textContent=fmt(sc);$("finScore").textContent=fmt(sc);$("progI").style.width=n/4*100+"%";
+  if(ORDER.every(k=>k in SCORE)){$("submit").disabled=sent;$("finHint").textContent="Усі завдання виконано. Обери самооцінку й надішли роботу вчителю."}}
+$("submit").onclick=async()=>{const box=$("sendMsg");if(sent)return;if(!SELF){box.className="msg bad";box.textContent="Обери самооцінку вище.";return}
+  $("submit").disabled=true;box.className="msg info";box.textContent="Надсилаю…";
+  const sc=total();
+  const rec={name:ME.name,cls:ME.cls,score:sc,max:12,ts:{".sv":"timestamp"},parts:ORDER.map(k=>SCORE[k]).join(" "),
+    formulas:REC.f||"",table:REC.t||"",balloons:REC.b||"",tasks:REC.z||"",self:SELF};
+  try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec)});if(!r.ok)throw new Error(r.status);
+    sent=true;box.className="msg ok";box.textContent=`✓ Роботу отримано вчителем: ${fmt(sc)} / 12. Молодець!`;
+  }catch(e){$("submit").disabled=false;box.className="msg bad";box.textContent="Не вдалося надіслати. Перевір інтернет і натисни ще раз."}};
+$("startBtn").onclick=()=>{const nm=$("pname").value.trim(),c=$("pcls").value;if(nm.length<3||!c){$("startErr").hidden=false;return}
+  ME={name:nm.slice(0,60),cls:c};$("who").textContent=`👤 ${ME.name} · ${ME.cls}`;$("start").hidden=true};
+R1();R2();R3();R4();
+</script>
+</body>
+</html>
