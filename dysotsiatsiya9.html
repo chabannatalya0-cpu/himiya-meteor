@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Лабораторія дисоціації</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700;800&display=swap">
+<style>
+/* Ion lab: aqua beaker on a soft mint bench, coral cations vs blue anions, violet OH⁻ and pink H⁺ as the stars of acids and bases. */
+:root{color-scheme:light;
+  --bg:#ecfeff;--card:#fff;--ink:#0b1f33;--muted:#4f6475;--line:#d3ecf2;
+  --h:#fb7185;--cat:#f97316;--oh:#a855f7;--an:#3b82f6;--neu:#94a3b8;
+  --acid:#fb7185;--acid-bg:#ffe4e6;--base:#a855f7;--base-bg:#f3e8ff;--salt:#14b8a6;--salt-bg:#ccfbf1;--oth:#64748b;--oth-bg:#f1f5f9;
+  --sun:#facc15;--ok:#16a34a;--bad:#dc2626;--vio-bg:#ede9fe;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;--f-body:"Golos Text",system-ui,sans-serif;--f-mono:"JetBrains Mono",ui-monospace,monospace}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16.5px;line-height:1.45;
+  background-image:radial-gradient(circle at 0 0,#a5f3fc 0,transparent 35%),radial-gradient(circle at 100% 0,#fecdd3 0,transparent 30%),radial-gradient(circle at 60% 100%,#e9d5ff 0,transparent 40%);background-attachment:fixed}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1180px;margin:0 auto;padding-block:16px 48px;padding-left:max(14px,env(safe-area-inset-left,0px));padding-right:max(14px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
+.hero{background:linear-gradient(120deg,#0b1f33 0%,#0e4f6b 55%,#0891b2 100%);color:#fff;border-radius:26px;padding:18px 20px;border:3px solid var(--ink);box-shadow:0 6px 0 var(--ink);position:relative;overflow:hidden}
+.hero .ions{position:absolute;right:10px;top:8px;display:flex;gap:6px;flex-wrap:wrap;max-width:40%;justify-content:flex-end}
+.hero .ions span{font:800 14px var(--f-mono);border:2px solid #fff;border-radius:99px;padding:4px 10px}
+.eyebrow{font:800 11px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;opacity:.85}
+h1{margin:4px 0 6px;font-family:var(--f-display);font-size:clamp(23px,4.4vw,36px);line-height:1.1;max-width:60%}
+.hero p{margin:0;max-width:60%;opacity:.93}
+@media (max-width:720px){h1,.hero p{max-width:100%}.hero .ions{display:none}}
+.lab{display:grid;grid-template-columns:330px minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:900px){.lab{grid-template-columns:1fr}}
+.card{background:var(--card);border:3px solid var(--ink);border-radius:22px;padding:14px;display:flex;flex-direction:column;gap:12px;box-shadow:0 5px 0 var(--ink);min-width:0}
+.card h2{margin:0;font-family:var(--f-display);font-size:16px}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.tab{font:800 13px var(--f-body);border:2px solid var(--ink);border-radius:12px;padding:8px 4px;cursor:pointer;background:#fff;color:var(--ink)}
+.tab[aria-selected="true"]{color:#fff}
+.tab.acid[aria-selected="true"]{background:var(--acid)}.tab.base[aria-selected="true"]{background:var(--base)}.tab.salt[aria-selected="true"]{background:var(--salt)}.tab.oth[aria-selected="true"]{background:var(--oth)}
+.shelf{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.sub{font:inherit;text-align:left;border:3px solid var(--ink);border-radius:16px;padding:8px 10px;cursor:pointer;background:#fff;color:var(--ink);display:flex;flex-direction:column;gap:2px;box-shadow:0 3px 0 var(--ink);transition:transform .1s}
+.sub:hover{transform:translateY(-2px)}.sub:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.sub b{font:800 19px var(--f-mono)}
+.sub small{font-size:12.5px;color:var(--muted);line-height:1.25}
+.sub.acid{background:var(--acid-bg)}.sub.base{background:var(--base-bg)}.sub.salt{background:var(--salt-bg)}.sub.oth{background:var(--oth-bg)}
+.sub .wk{font:800 10.5px var(--f-mono);color:#b45309}
+.tog{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;cursor:pointer;border:2px solid var(--line);border-radius:14px;padding:8px 10px;background:#f8fdff}
+.tog input{width:22px;height:22px;accent-color:#0891b2;flex:none}
+.btn{font-family:var(--f-display);font-size:13.5px;border:3px solid var(--ink);border-radius:14px;padding:9px 14px;cursor:pointer;color:var(--ink);background:var(--sun);box-shadow:0 4px 0 var(--ink)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.btn.ghost{background:#fff}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.stage{padding:10px}
+.stage svg{width:100%;height:auto;display:block;border-radius:16px;background:linear-gradient(#f0fdff,#e0f7fb)}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:13.5px;color:var(--muted);align-items:center}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:50%;border:2px solid var(--ink);vertical-align:-2px;margin-right:4px}
+.eqcard{border:3px solid var(--ink);border-radius:18px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;background:#fff}
+.eq{font:800 clamp(19px,3.4vw,28px) var(--f-mono);text-align:center;line-height:1.3;word-break:break-word}
+.eq .c{color:#ea580c}.eq .hp{color:#e11d48}.eq .a{color:#2563eb}.eq .ohc{color:#9333ea}.eq .ar{color:var(--ink);padding:0 .3em}
+.tag{align-self:center;font:800 12px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;border-radius:99px;padding:4px 12px;border:2px solid var(--ink)}
+.tag.acid{background:var(--acid-bg)}.tag.base{background:var(--base-bg)}.tag.salt{background:var(--salt-bg)}.tag.oth{background:var(--oth-bg)}
+.why{margin:0;font-size:15.5px;text-align:center}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.box{border:2px solid var(--line);border-radius:14px;padding:10px;background:#f8fdff;font-size:15px}
+.box b.t{display:block;font:800 11px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.ch{font:800 14px var(--f-mono);border-radius:99px;padding:3px 10px;color:#fff;border:2px solid var(--ink)}
+.bal{font:800 14px var(--f-mono)}
+.quiz{border:3px dashed #0891b2;border-radius:18px;padding:12px;display:flex;flex-direction:column;gap:10px;background:#f0fdff}
+.quiz h3{margin:0;font-family:var(--f-display);font-size:15px}
+.seg{display:flex;border:2px solid var(--ink);border-radius:12px;overflow:hidden;flex-wrap:wrap}
+.seg button{flex:1;font:700 14px var(--f-body);border:0;background:#fff;padding:8px 6px;cursor:pointer;color:var(--ink);min-width:90px}
+.seg button+button{border-left:2px solid var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.ionrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-weight:700}
+.ionrow select{font:800 16px var(--f-mono);border:2px solid var(--ink);border-radius:10px;padding:6px 8px;background:#fff;color:var(--ink)}
+.fb{font-size:15px;border-radius:12px;padding:9px 12px;font-weight:600}
+.fb.ok{background:#dcfce7;color:#14532d}.fb.bad{background:#fee2e2;color:#7f1d1d}.fb.info{background:var(--vio-bg);color:#4c1d95}
+.score{font:800 14px var(--f-mono);background:var(--sun);border:2px solid var(--ink);border-radius:99px;padding:4px 12px}
+.missions{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px}
+.mi{display:flex;gap:10px;align-items:flex-start;border:2px solid var(--line);border-radius:14px;padding:10px;background:#fff;font-size:15px;cursor:pointer}
+.mi input{width:22px;height:22px;accent-color:var(--ok);flex:none;margin-top:1px}
+.mi:has(input:checked){background:#f0fdf4;border-color:#86efac}
+.theory{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.th{border-radius:16px;padding:12px;border:2px solid var(--ink);font-size:15px}
+.th b.t{display:block;font-family:var(--f-display);font-size:14px;margin-bottom:4px}
+.th.acid{background:var(--acid-bg)}.th.base{background:var(--base-bg)}.th.salt{background:var(--salt-bg)}.th.oth{background:var(--oth-bg)}
+.th code{font:800 15px var(--f-mono)}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #0891b2;outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <div class="ions" aria-hidden="true"><span style="background:#fb7185">H⁺</span><span style="background:#3b82f6">Cl⁻</span><span style="background:#a855f7">OH⁻</span><span style="background:#f97316">Na⁺</span><span style="background:#3b82f6">SO₄²⁻</span><span style="background:#f97316">Al³⁺</span></div>
+    <span class="eyebrow">Хімія · 9 клас · віртуальна лабораторія</span>
+    <h1>Лабораторія дисоціації: кислоти, основи, солі</h1>
+    <p>Кидай речовини у воду та спостерігай, як вони розпадаються на йони. Вмикай прилад для перевірки електропровідності, а потім перевір себе: чи вмієш ти сам записувати рівняння дисоціації?</p>
+  </section>
+
+  <div class="lab">
+    <section class="card">
+      <h2>🧪 Полиця з реактивами</h2>
+      <div class="tabs" role="tablist" id="tabs"></div>
+      <div class="shelf" id="shelf"></div>
+      <label class="tog"><input type="checkbox" id="tHyd" checked> 💧 Показувати гідратні оболонки</label>
+      <label class="tog"><input type="checkbox" id="tCur"> ⚡ Замкнути коло (подати напругу)</label>
+      <label class="tog"><input type="checkbox" id="tQuiz"> 🎯 Режим «Перевір себе»: спершу запиши рівняння</label>
+      <div class="row"><button class="btn ghost" type="button" id="clear">🧽 Вимити склянку</button><span class="score" id="score" hidden></span></div>
+    </section>
+
+    <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+      <section class="card stage">
+        <svg viewBox="0 0 600 470" id="sv" role="img" aria-label="Склянка з водою, прилад для перевірки електропровідності та йони в розчині">
+          <defs>
+            <radialGradient id="glow"><stop offset="0" stop-color="#fde047" stop-opacity=".95"/><stop offset="1" stop-color="#fde047" stop-opacity="0"/></radialGradient>
+            <linearGradient id="water" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#bae6fd" stop-opacity=".55"/><stop offset="1" stop-color="#38bdf8" stop-opacity=".45"/></linearGradient>
+          </defs>
+          <rect x="0" y="436" width="600" height="34" fill="#cbd5e1"/><rect x="0" y="436" width="600" height="5" fill="#94a3b8"/>
+          <!-- circuit -->
+          <path id="wire" d="M118 112V44H262M338 44H482V112" stroke="#334155" stroke-width="4" fill="none" stroke-linejoin="round"/>
+          <g id="bat" transform="translate(395 44)"><rect x="-26" y="-14" width="52" height="28" rx="5" fill="#fde68a" stroke="#0b1f33" stroke-width="3"/><text x="-14" y="5" font-family="JetBrains Mono" font-weight="800" font-size="15" text-anchor="middle" fill="#0b1f33">−</text><text x="14" y="5" font-family="JetBrains Mono" font-weight="800" font-size="15" text-anchor="middle" fill="#0b1f33">+</text></g>
+          <g id="sw" transform="translate(190 44)"><circle cx="-14" cy="0" r="4" fill="#0b1f33"/><circle cx="14" cy="0" r="4" fill="#0b1f33"/><line id="swl" x1="-14" y1="0" x2="12" y2="-14" stroke="#0b1f33" stroke-width="4" stroke-linecap="round"/></g>
+          <rect x="172" y="38" width="36" height="12" fill="#f0fdff" opacity="0" id="swgap"/>
+          <circle cx="300" cy="44" r="60" fill="url(#glow)" id="halo" opacity="0"/>
+          <g transform="translate(300 44)"><circle r="22" fill="#fff" stroke="#0b1f33" stroke-width="3" id="bulb"/><path d="M-9 4q4-12 9 0t9 0" stroke="#78350f" stroke-width="2.5" fill="none"/><rect x="-10" y="20" width="20" height="12" rx="3" fill="#94a3b8" stroke="#0b1f33" stroke-width="2"/></g>
+          <!-- beaker -->
+          <path d="M70 92V408q0 24 24 24H506q24 0 24-24V92" fill="#ffffff" fill-opacity=".55"/>
+          <rect x="72" y="128" width="456" height="302" rx="20" fill="url(#water)"/>
+          <path d="M72 128H528" stroke="#0891b2" stroke-width="2" stroke-dasharray="8 6" opacity=".6"/>
+          <g id="wat"></g>
+          <g id="parts"></g>
+          <!-- electrodes -->
+          <rect x="108" y="104" width="20" height="270" rx="5" fill="#475569" stroke="#0b1f33" stroke-width="3"/>
+          <rect x="472" y="104" width="20" height="270" rx="5" fill="#475569" stroke="#0b1f33" stroke-width="3"/>
+          <circle cx="150" cy="108" r="13" fill="#fff" stroke="#0b1f33" stroke-width="3"/><text x="150" y="114" text-anchor="middle" font-family="JetBrains Mono" font-weight="800" font-size="17" fill="#0b1f33">−</text>
+          <circle cx="450" cy="108" r="13" fill="#fff" stroke="#0b1f33" stroke-width="3"/><text x="450" y="114" text-anchor="middle" font-family="JetBrains Mono" font-weight="800" font-size="17" fill="#0b1f33">+</text>
+          <text x="168" y="113" font-family="Golos Text,sans-serif" font-weight="700" font-size="13" fill="#0b1f33">катод</text>
+          <text x="432" y="113" text-anchor="end" font-family="Golos Text,sans-serif" font-weight="700" font-size="13" fill="#0b1f33">анод</text>
+          <path d="M70 92V408q0 24 24 24H506q24 0 24-24V92" fill="none" stroke="#0b1f33" stroke-width="4"/>
+          <path d="M62 92H78M522 92H538" stroke="#0b1f33" stroke-width="4" stroke-linecap="round"/>
+          <text x="300" y="460" text-anchor="middle" font-family="Golos Text,sans-serif" font-weight="700" font-size="13" fill="#334155" id="cap">Обери речовину на полиці, щоб кинути її у воду</text>
+        </svg>
+        <div class="legend"><span><i style="background:var(--h)"></i>H⁺</span><span><i style="background:var(--cat)"></i>катіони металів</span><span><i style="background:var(--oh)"></i>OH⁻</span><span><i style="background:var(--an)"></i>аніони кислотних залишків</span><span><i style="background:#fff;border-color:#dc2626"></i>молекула води (O червоний, H білі)</span></div>
+      </section>
+
+      <section class="card" id="info">
+        <div id="quizBox" class="quiz" hidden></div>
+        <div class="eqcard" id="eqcard"><span class="tag oth" id="tag">Порожня склянка</span><div class="eq" id="eq">H₂O</div><p class="why" id="why">Чиста вода майже не проводить електричний струм: йонів у ній дуже мало.</p></div>
+        <div class="stats">
+          <div class="box"><b class="t">Йони в розчині</b><div class="chips" id="ionList"><span style="color:var(--muted)">поки немає</span></div></div>
+          <div class="box"><b class="t">Баланс зарядів</b><div class="bal" id="bal">0 = 0</div></div>
+          <div class="box"><b class="t">Лампочка</b><div id="lampTxt">коло розімкнене</div></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <section class="card">
+    <h2>🚀 Місії дослідника</h2>
+    <div class="missions">
+      <label class="mi"><input type="checkbox"><span>Кинь у воду <b>три кислоти</b>. Який йон утворюється в усіх кислот? Запиши висновок.</span></label>
+      <label class="mi"><input type="checkbox"><span>Те саме для <b>лугів</b>: який аніон спільний для всіх основ?</span></label>
+      <label class="mi"><input type="checkbox"><span>Порівняй яскравість лампочки з <b>HCl</b> та з <b>CH₃COOH</b>. Поясни різницю.</span></label>
+      <label class="mi"><input type="checkbox"><span>Додай <b>цукор</b> і <b>CaCO₃</b>. Чому лампочка не світить, хоча цукор розчинився?</span></label>
+      <label class="mi"><input type="checkbox"><span>Знайди сіль, яка з <b>однієї</b> формульної одиниці дає <b>найбільше</b> йонів.</span></label>
+      <label class="mi"><input type="checkbox"><span>Замкни коло. Куди рухаються <b>катіони</b>, а куди <b>аніони</b>? Чому вони так називаються?</span></label>
+      <label class="mi"><input type="checkbox"><span>У режимі «Перевір себе» склади <b>5 рівнянь</b> поспіль без помилок.</span></label>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>📘 Шпаргалка з теорії електролітичної дисоціації</h2>
+    <div class="theory">
+      <div class="th acid"><b class="t">Кислоти</b>Електроліти, які дисоціюють з утворенням катіонів <b>лише Гідрогену H⁺</b> та аніонів кислотного залишку.<br><code>HNO₃ → H⁺ + NO₃⁻</code></div>
+      <div class="th base"><b class="t">Основи (луги)</b>Електроліти, які дисоціюють з утворенням катіонів металу та аніонів <b>лише гідроксид-іонів OH⁻</b>.<br><code>Ba(OH)₂ → Ba²⁺ + 2OH⁻</code></div>
+      <div class="th salt"><b class="t">Солі</b>Електроліти, які дисоціюють з утворенням <b>катіонів металу</b> та <b>аніонів кислотного залишку</b>.<br><code>Al(NO₃)₃ → Al³⁺ + 3NO₃⁻</code></div>
+      <div class="th oth"><b class="t">Пам'ятай</b>Сума зарядів катіонів дорівнює сумі зарядів аніонів: розчин <b>електронейтральний</b>. Нерозчинні речовини та неелектроліти на йони не розпадаються. У слабких електролітів ставимо знак <b>⇄</b>. Насправді йон H⁺ у воді гідратований (H₃O⁺).</div>
+    </div>
+  </section>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const NS="http://www.w3.org/2000/svg";
+/* [lab, charge, coef] ; kind: strong | weak | insol | non */
+const SUBS={
+ acid:[["HCl","хлоридна кислота","strong",[["H⁺",1,1],["Cl⁻",-1,1]]],["HNO₃","нітратна кислота","strong",[["H⁺",1,1],["NO₃⁻",-1,1]]],["H₂SO₄","сульфатна кислота","strong",[["H⁺",1,2],["SO₄²⁻",-2,1]]],["CH₃COOH","етанова (оцтова) кислота","weak",[["H⁺",1,1],["CH₃COO⁻",-1,1]]]],
+ base:[["NaOH","натрій гідроксид","strong",[["Na⁺",1,1],["OH⁻",-1,1]]],["KOH","калій гідроксид","strong",[["K⁺",1,1],["OH⁻",-1,1]]],["Ba(OH)₂","барій гідроксид","strong",[["Ba²⁺",2,1],["OH⁻",-1,2]]],["Cu(OH)₂","купрум(II) гідроксид — нерозчинний","insol",[["Cu²⁺",2,1],["OH⁻",-1,2]]]],
+ salt:[["NaCl","натрій хлорид","strong",[["Na⁺",1,1],["Cl⁻",-1,1]]],["CaCl₂","кальцій хлорид","strong",[["Ca²⁺",2,1],["Cl⁻",-1,2]]],["K₂SO₄","калій сульфат","strong",[["K⁺",1,2],["SO₄²⁻",-2,1]]],["Al(NO₃)₃","алюміній нітрат","strong",[["Al³⁺",3,1],["NO₃⁻",-1,3]]],["Na₃PO₄","натрій ортофосфат","strong",[["Na⁺",1,3],["PO₄³⁻",-3,1]]],["Fe₂(SO₄)₃","ферум(III) сульфат","strong",[["Fe³⁺",3,2],["SO₄²⁻",-2,3]]],["CaCO₃","кальцій карбонат — нерозчинний","insol",[["Ca²⁺",2,1],["CO₃²⁻",-2,1]]]],
+ oth:[["C₁₂H₂₂O₁₁","цукор (сахароза)","non",[["C₁₂H₂₂O₁₁",0,1]]]]};
+const TABN={acid:"Кислоти",base:"Основи",salt:"Солі",oth:"Інші"};
+const CLS_TXT={acid:"кислота",base:"основа",salt:"сіль",oth:"неелектроліт"};
+let TAB="acid";
+const ionCol=(l,c)=>c===0?"#94a3b8":l==="H⁺"?"#fb7185":l==="OH⁻"?"#a855f7":c>0?"#f97316":"#3b82f6";
+const ionR=l=>Math.min(26,10+l.replace(/[⁺⁻⁰¹²³₀-₉]/g,"").length*2.6+(l.length>4?2:0));
+
+/* ---------- shelf ---------- */
+function drawShelf(){$("tabs").innerHTML=Object.keys(SUBS).map(k=>`<button type="button" role="tab" class="tab ${k}" data-tab="${k}" aria-selected="${TAB===k}">${TABN[k]}</button>`).join("");
+  $("shelf").innerHTML=SUBS[TAB].map((s,i)=>`<button type="button" class="sub ${TAB}" data-s="${i}"><b>${s[0]}</b><small>${s[1]}</small>${s[2]==="weak"?`<span class="wk">слабкий електроліт</span>`:""}</button>`).join("");
+  document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{TAB=b.dataset.tab;drawShelf()});
+  document.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>pickSub(TAB,+b.dataset.s))}
+
+/* ---------- equation text ---------- */
+function ionSpan(l,c){const cls=l==="H⁺"?"hp":l==="OH⁻"?"ohc":c>0?"c":"a";return `<span class="${cls}">${l}</span>`}
+function eqHTML(s){const [f,,k,ions]=s;if(k==="non")return `${f} <span class="ar">→</span> йонів не утворює`;
+  if(k==="insol")return `${f}↓ <span class="ar">—</span> нерозчинна, не дисоціює`;
+  return `${f} <span class="ar">${k==="weak"?"⇄":"→"}</span> `+ions.map(([l,c,n])=>(n>1?n:"")+ionSpan(l,c)).join(" + ")}
+function whyTxt(cls,s){const k=s[2];
+  if(k==="non")return "Цукор розчиняється, але його молекули не розпадаються на йони. Це неелектроліт, тож лампочка не світиться.";
+  if(k==="insol")return `${s[0]} — нерозчинна речовина: вона осідає на дно, йонів у розчині майже немає.`;
+  if(k==="weak")return "Слабкий електроліт: на йони розпадається лише невелика частина молекул, а йони знову з'єднуються. Процес оборотний (⇄), тож лампочка світить тьмяно.";
+  return cls==="acid"?"Це кислота: єдиний катіон, що утворюється, — H⁺. Аніон — кислотний залишок."
+    :cls==="base"?"Це основа (луг): єдиний аніон, що утворюється, — гідроксид-іон OH⁻. Катіон — йон металу."
+    :"Це сіль: утворюються катіони металу та аніони кислотного залишку."}
+
+/* ---------- simulation ---------- */
+const W={x0:84,x1:516,y0:140,y1:418};
+const MOLS=[];let FRAME=0;
+const g=(tag,attrs,par)=>{const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(par)par.appendChild(e);return e};
+function mkIon(lab,ch,sq){const el=g("g",{});const r=sq?28:ionR(lab);
+  const hyd=g("g",{class:"hyd"},el);
+  if(ch!==0)for(let i=0;i<6;i++){const a=i/6*Math.PI*2,d=r+8,w=g("g",{transform:`rotate(${a*180/Math.PI})`},hyd);
+    if(ch>0){g("circle",{cx:d,cy:0,r:3.6,fill:"#ef4444",stroke:"#7f1d1d","stroke-width":1},w);g("circle",{cx:d+5,cy:-3.4,r:2.4,fill:"#fff",stroke:"#64748b","stroke-width":.8},w);g("circle",{cx:d+5,cy:3.4,r:2.4,fill:"#fff",stroke:"#64748b","stroke-width":.8},w)}
+    else{g("circle",{cx:d,cy:0,r:2.4,fill:"#fff",stroke:"#64748b","stroke-width":.8},w);g("circle",{cx:d+5,cy:-2.6,r:3.6,fill:"#ef4444",stroke:"#7f1d1d","stroke-width":1},w);g("circle",{cx:d+3,cy:4.6,r:2.4,fill:"#fff",stroke:"#64748b","stroke-width":.8},w)}}
+  if(sq)g("rect",{x:-34,y:-17,width:68,height:34,rx:4,fill:lab.startsWith("Cu")?"#7dd3fc":"#e2e8f0",stroke:"#0b1f33","stroke-width":2.5},el);
+  else g("circle",{r,fill:ionCol(lab,ch),stroke:"#0b1f33","stroke-width":2.5},el);
+  const t=g("text",{"text-anchor":"middle",y:4.5,"font-family":"JetBrains Mono,monospace","font-weight":800,"font-size":sq?12:lab.length>5?10:12.5,fill:sq?"#0b1f33":"#fff"},el);t.textContent=lab;
+  $("parts").appendChild(el);return {lab,ch,r,el,hyd,x:0,y:0,vx:0,vy:0}}
+function offsets(m){const n=m.ions.length;if(n===1)return [[0,0]];
+  if(n===2){const d=(m.ions[0].r+m.ions[1].r)*.5;return [[-d,0],[d,0]]}
+  const big=m.ions.reduce((a,b)=>a.r>b.r?a:b),R=big.r*.55+10+n*2;return m.ions.map((o,i)=>[Math.cos(i/n*Math.PI*2-Math.PI/2)*R,Math.sin(i/n*Math.PI*2-Math.PI/2)*R])}
+function addPortion(cls,s){const units=s[2]==="weak"?4:s[2]==="insol"?3:s[2]==="non"?3:3;
+  const total=MOLS.reduce((a,m)=>a+m.ions.length,0);
+  if(total>70){$("cap").textContent="Склянка переповнена: натисни «Вимити склянку»";return}
+  for(let u=0;u<units;u++){const ions=[];
+    if(s[2]==="insol")ions.push(mkIon(s[0],0,true));
+    else s[3].forEach(([l,c,n])=>{for(let k=0;k<n;k++)ions.push(mkIon(l,c))});
+    // interleave so clusters look mixed
+    const m={s,cls,ions,state:"fall",x:170+Math.random()*260,y:70-u*36,vx:0,vy:1.8+Math.random()*.8,split:200+Math.random()*120,t:0};
+    m.off=offsets(m);MOLS.push(m)}
+  $("cap").textContent=`${s[0]} у воді`}
+function freeMol(m){m.state="free";m.ions.forEach((o,i)=>{const [dx,dy]=m.off[i],l=Math.hypot(dx,dy)||1;o.vx=dx/l*1.8+(Math.random()-.5);o.vy=dy/l*1.8+(Math.random()-.5)})}
+function clamp(o){const r=o.r;if(o.x<W.x0+r){o.x=W.x0+r;o.vx=Math.abs(o.vx)}if(o.x>W.x1-r){o.x=W.x1-r;o.vx=-Math.abs(o.vx)}if(o.y<W.y0+r){o.y=W.y0+r;o.vy=Math.abs(o.vy)}if(o.y>W.y1-r){o.y=W.y1-r;o.vy=-Math.abs(o.vy)}}
+function step(){FRAME++;const cur=$("tCur").checked;
+  const settled=MOLS.filter(m=>m.state==="settled");
+  for(const m of MOLS){
+    if(m.state==="fall"){m.y+=m.vy;m.x+=Math.sin((FRAME+m.split)*.05)*.4;
+      if(m.y>=m.split&&m.s[2]==="strong")freeMol(m);
+      else if(m.y>=m.split&&(m.s[2]==="weak"||m.s[2]==="non")){m.state="bound";m.vx=(Math.random()-.5);m.vy=0}
+      else if(m.s[2]==="insol"){const k=settled.indexOf(m);const bottom=W.y1-20;if(m.y>=bottom){m.state="settled";m.y=bottom;}}}
+    else if(m.state==="bound"){m.vx+=(Math.random()-.5)*.12;m.vy+=(Math.random()-.5)*.12;m.vx*=.97;m.vy*=.97;m.x+=m.vx;m.y+=m.vy;
+      const R=32;if(m.x<W.x0+R+40){m.x=W.x0+R+40;m.vx=Math.abs(m.vx)}if(m.x>W.x1-R-40){m.x=W.x1-R-40;m.vx=-Math.abs(m.vx)}if(m.y<W.y0+R){m.y=W.y0+R;m.vy=Math.abs(m.vy)}if(m.y>W.y1-R){m.y=W.y1-R;m.vy=-Math.abs(m.vy)}}
+    else if(m.state==="rebind"){m.t--;m.ions.forEach((o,i)=>{o.x+=(m.x+m.off[i][0]-o.x)*.12;o.y+=(m.y+m.off[i][1]-o.y)*.12});if(m.t<=0){m.state="bound";m.vx=0;m.vy=0}}
+    if(m.state==="free"){for(const o of m.ions){o.vx+=(Math.random()-.5)*.35;o.vy+=(Math.random()-.5)*.35;
+      if(cur){o.vx+=o.ch>0?-.035:.035}
+      o.vx*=.95;o.vy*=.95;o.x+=o.vx;o.y+=o.vy;clamp(o);
+      if(cur){if(o.ch>0&&o.x<128+o.r){o.x=128+o.r}if(o.ch<0&&o.x>472-o.r){o.x=472-o.r}}}}
+    else if(m.state!=="rebind"){m.ions.forEach((o,i)=>{o.x=m.x+m.off[i][0];o.y=m.y+m.off[i][1]})}
+  }
+  // settled layout: spread along the bottom
+  settled.forEach((m,i)=>{const tx=170+((i*74)%270);m.y=W.y1-20-Math.floor(i/4)*36;m.x+=(tx-m.x)*.08;m.ions.forEach((o,j)=>{o.x=m.x+m.off[j][0];o.y=m.y+m.off[j][1]})});
+  // weak equilibrium
+  if(FRAME%110===0){const groups={};MOLS.filter(m=>m.s[2]==="weak"&&m.state!=="fall").forEach(m=>(groups[m.s[0]]=groups[m.s[0]]||[]).push(m));
+    for(const k in groups){const a=groups[k],fr=a.filter(m=>m.state==="free"),bd=a.filter(m=>m.state==="bound");const want=Math.max(1,Math.round(a.length/4));
+      if(fr.length<want&&bd.length){freeMol(bd[Math.floor(Math.random()*bd.length)])}
+      else if(fr.length&&bd.length&&Math.random()<.6){const r=fr[Math.floor(Math.random()*fr.length)];r.x=(r.ions[0].x+r.ions[1].x)/2;r.y=(r.ions[0].y+r.ions[1].y)/2;r.state="rebind";r.t=30;freeMol(bd[Math.floor(Math.random()*bd.length)])}}}
+  const hyd=$("tHyd").checked,rot=FRAME*.4;
+  for(const m of MOLS)for(const o of m.ions){o.el.setAttribute("transform",`translate(${o.x.toFixed(1)} ${o.y.toFixed(1)})`);
+    const show=hyd&&(m.state==="free"||(m.s[2]==="non"&&m.state==="bound"));o.hyd.style.display=show&&o.ch!==0?"":"none";if(show)o.hyd.setAttribute("transform",`rotate(${o.ch>0?rot:-rot})`)}
+  waterStep();
+  if(FRAME%15===0)stats();
+  requestAnimationFrame(step)}
+
+/* background water molecules */
+const WM=[];
+for(let i=0;i<34;i++){const e=g("g",{opacity:.55},$("wat"));g("circle",{r:3.4,fill:"#ef4444"},e);g("circle",{cx:4.5,cy:-3.2,r:2.2,fill:"#fff",stroke:"#94a3b8","stroke-width":.7},e);g("circle",{cx:-4.5,cy:-3.2,r:2.2,fill:"#fff",stroke:"#94a3b8","stroke-width":.7},e);
+  WM.push({e,x:W.x0+Math.random()*(W.x1-W.x0),y:W.y0+Math.random()*(W.y1-W.y0),a:Math.random()*360,vx:0,vy:0})}
+function waterStep(){for(const w of WM){w.vx+=(Math.random()-.5)*.3;w.vy+=(Math.random()-.5)*.3;w.vx*=.9;w.vy*=.9;w.x+=w.vx;w.y+=w.vy;w.a+=w.vx*3;
+  if(w.x<W.x0)w.x=W.x1;if(w.x>W.x1)w.x=W.x0;if(w.y<W.y0)w.y=W.y1;if(w.y>W.y1)w.y=W.y0;w.e.setAttribute("transform",`translate(${w.x.toFixed(1)} ${w.y.toFixed(1)}) rotate(${w.a.toFixed(0)})`)}}
+
+/* stats & lamp */
+function stats(){const cnt={};let pos=0,neg=0,free=0;
+  MOLS.forEach(m=>{if(m.state!=="free")return;m.ions.forEach(o=>{cnt[o.lab]=cnt[o.lab]||{n:0,c:o.ch};cnt[o.lab].n++;free++;o.ch>0?pos+=o.ch:neg+=-o.ch})});
+  const keys=Object.keys(cnt).sort((a,b)=>cnt[b].c-cnt[a].c);
+  $("ionList").innerHTML=keys.length?keys.map(k=>`<span class="ch" style="background:${ionCol(k,cnt[k].c)}">${k} × ${cnt[k].n}</span>`).join(""):`<span style="color:var(--muted)">поки немає</span>`;
+  $("bal").innerHTML=free?`(+${pos}) + (−${neg}) = ${pos-neg} ${pos===neg?"✓ розчин електронейтральний":"…"}`:"йонів немає";
+  const on=$("tCur").checked,b=on?Math.min(1,free/16):0;
+  $("halo").setAttribute("opacity",b.toFixed(2));$("bulb").setAttribute("fill",b>0?`rgb(255,${Math.round(255-35*b)},${Math.round(255-200*b)})`:"#fff");
+  $("lampTxt").textContent=!on?"коло розімкнене: замкни його":free===0?"⚫ не світиться: йонів немає":b<.35?"🔅 світить тьмяно: йонів мало":"💡 світить яскраво: йонів багато"}
+$("tCur").onchange=()=>{const on=$("tCur").checked;$("swl").setAttribute("x2",on?14:12);$("swl").setAttribute("y2",on?0:-14);stats()};
+$("clear").onclick=()=>{MOLS.forEach(m=>m.ions.forEach(o=>o.el.remove()));MOLS.length=0;$("cap").textContent="Склянка чиста. Обери речовину на полиці";
+  $("tag").className="tag oth";$("tag").textContent="Порожня склянка";$("eq").innerHTML="H₂O";$("why").textContent="Чиста вода майже не проводить електричний струм: йонів у ній дуже мало.";stats()};
+
+/* ---------- pick / quiz ---------- */
+const CATS=["H⁺","Na⁺","K⁺","Ba²⁺","Ca²⁺","Cu²⁺","Al³⁺","Fe²⁺","Fe³⁺"],ANS=["Cl⁻","NO₃⁻","SO₄²⁻","SO₃²⁻","OH⁻","PO₄³⁻","CO₃²⁻","CH₃COO⁻"];
+let QS={ok:0,all:0,streak:0};
+function show(cls,s){$("tag").className=`tag ${cls}`;$("tag").textContent=s[2]==="non"?"неелектроліт":s[2]==="insol"?`${CLS_TXT[cls]} · нерозчинна`:`${CLS_TXT[cls]}${s[2]==="weak"?" · слабкий електроліт":""}`;
+  $("eq").innerHTML=eqHTML(s);$("why").textContent=whyTxt(cls,s)}
+function pickSub(cls,i){const s=SUBS[cls][i];
+  const narrow=window.innerWidth<900;
+  if(!$("tQuiz").checked){$("quizBox").hidden=true;show(cls,s);addPortion(cls,s);if(narrow)document.querySelector(".stage").scrollIntoView({behavior:"smooth",block:"start"});return}
+  setTimeout(()=>{if(narrow)$("quizBox").scrollIntoView({behavior:"smooth",block:"start"})},50);
+  const q={mode:null};$("quizBox").hidden=false;
+  const opt=(arr)=>`<option value="">—</option>`+arr.map(x=>`<option>${x}</option>`).join("");
+  $("quizBox").innerHTML=`<h3>🎯 Як дисоціює ${s[0]}?</h3>
+   <div class="seg" id="qm"><button type="button" data-m="strong">повністю (→)</button><button type="button" data-m="weak">частково (⇄)</button><button type="button" data-m="no">не дисоціює</button></div>
+   <div id="qi" hidden style="display:flex;flex-direction:column;gap:8px">
+    <div class="ionrow">Катіони: <select id="qcn" aria-label="Коефіцієнт катіона"><option>1</option><option>2</option><option>3</option></select><select id="qc" aria-label="Катіон">${opt(CATS)}</select></div>
+    <div class="ionrow">Аніони: <select id="qan" aria-label="Коефіцієнт аніона"><option>1</option><option>2</option><option>3</option></select><select id="qa" aria-label="Аніон">${opt(ANS)}</select></div></div>
+   <div class="row"><button class="btn" type="button" id="qchk">Перевірити й кинути у воду</button></div><div id="qfb"></div>`;
+  $("eq").innerHTML=`${s[0]} <span class="ar">?</span>`;$("tag").className="tag oth";$("tag").textContent="запиши рівняння";$("why").textContent="Спершу склади рівняння дисоціації, потім перевір його в склянці.";
+  document.querySelectorAll("#qm button").forEach(b=>b.onclick=()=>{q.mode=b.dataset.m;document.querySelectorAll("#qm button").forEach(x=>x.setAttribute("aria-pressed",x===b));$("qi").hidden=q.mode==="no"});
+  $("qchk").onclick=()=>{if(!q.mode){$("qfb").innerHTML=`<div class="fb bad">Обери, як дисоціює речовина.</div>`;return}
+    const truth=s[2]==="strong"?"strong":s[2]==="weak"?"weak":"no";let ok=q.mode===truth;
+    if(ok&&truth!=="no"){const [c,a]=s[3];if(!$("qc").value||!$("qa").value){$("qfb").innerHTML=`<div class="fb bad">Обери катіон і аніон.</div>`;return}
+      ok=$("qc").value===c[0]&&+$("qcn").value===c[2]&&$("qa").value===a[0]&&+$("qan").value===a[2]}
+    QS.all++;if(ok){QS.ok++;QS.streak++}else QS.streak=0;
+    $("score").hidden=false;$("score").textContent=`✔ ${QS.ok} з ${QS.all} · серія ${QS.streak}${QS.streak>=5?" 🏆":""}`;
+    $("quizBox").hidden=true;show(cls,s);
+    $("why").textContent=(ok?"✅ Правильно! ":"❌ Є помилка. Подивись на правильне рівняння. ")+whyTxt(cls,s);addPortion(cls,s);
+    if(window.innerWidth<900)document.querySelector(".stage").scrollIntoView({behavior:"smooth",block:"start"})}}
+$("tQuiz").onchange=()=>{if(!$("tQuiz").checked)$("quizBox").hidden=true};
+
+drawShelf();stats();requestAnimationFrame(step);
+</script>
+</body>
+</html>
