@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>НД № 3 «Виявлення кислот і лугів у розчинах» — 8 клас</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1d2a3a;--ink2:#46556a;--muted:#6f7c8f;--bg:#f4f6f8;--line:#dfe5ec;--teal:#0f7a63;--teal2:#14a083;--mint:#e6f4ee;--blue:#2563eb;--sky:#e8f0fe;
+ --ok:#14864f;--ok-t:#e1f6ea;--bad:#d33a4a;--bad-t:#fde7e9;--warn-t:#fff4dc;--focus:#4f5cf0;--sh:0 8px 24px rgba(29,42,58,.07),0 1px 3px rgba(29,42,58,.06)}
+*{box-sizing:border-box}html,body{margin:0}
+body{font-family:'Noto Sans',system-ui,'Segoe UI',Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+button,input,select,textarea{font:inherit;color:inherit}
+button:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+[hidden]{display:none!important}
+.wrap{max-width:940px;margin:0 auto;padding:18px 14px 60px}
+.hero{background:linear-gradient(120deg,#e8f0fe,#e6f4ee);border-radius:18px;padding:22px 24px;margin-bottom:14px}
+.kicker{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--blue);text-transform:uppercase}
+.hero h1{font-size:clamp(24px,4.4vw,34px);margin:4px 0;font-weight:800;line-height:1.2}
+.hero p{margin:0;color:var(--ink2)}
+.who{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:14px;color:var(--ink2);margin:0 4px 14px}
+.task{background:#fff;border-radius:18px;box-shadow:var(--sh);padding:20px 22px;margin:0 0 16px;border-top:5px solid var(--blue)}
+.task.g{border-top-color:var(--teal2)} .task.n{border-top-color:#8aa0b8}
+.th{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.num{flex:none;min-width:36px;height:32px;padding:0 8px;border-radius:9px;display:grid;place-items:center;color:#fff;font-weight:800;background:var(--blue)}
+.g .num{background:var(--teal)} .n .num{background:#5d7189}
+.th h2{margin:0;font-size:20px;font-weight:800;flex:1}
+.pts{font-size:13px;font-weight:700;color:var(--muted);white-space:nowrap}
+.lead{margin:6px 0 12px;color:var(--ink2)}
+.box{background:var(--sky);border-radius:12px;padding:12px 14px;margin:8px 0 12px}
+.box.g{background:var(--mint)}
+.q{font-weight:700;margin:14px 0 8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:680px){.grid2{grid-template-columns:1fr}}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:560px}
+th,td{border:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:middle}
+th{background:#f3f6f9;font-size:14px}
+td select{width:100%;padding:7px 8px;border:2px solid var(--line);border-radius:9px;background:#fff}
+td select.right,input.right{border-color:var(--ok);background:var(--ok-t)} td select.wrong,input.wrong{border-color:var(--bad);background:var(--bad-t)}
+.corr{display:block;font-size:12px;color:var(--ok);font-weight:700;margin-top:3px}
+textarea{width:100%;min-height:76px;border:2px solid var(--line);border-radius:12px;padding:10px 12px;resize:vertical}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:2px solid var(--line);background:#fff;border-radius:12px;padding:8px 14px;font-weight:700;cursor:pointer}
+.chip.sel{border-color:var(--ink);background:var(--ink);color:#fff}
+.chip.done{border-color:var(--ok)}
+/* склянка */
+.bench{display:flex;gap:18px;align-items:flex-end;flex-wrap:wrap;justify-content:center;background:#f7f9fc;border-radius:14px;padding:14px}
+.beaker{width:130px;text-align:center}
+.beaker svg{width:130px;height:150px}
+.beaker .lbl{font-weight:700;font-size:14px;min-height:22px}
+.liq{transition:fill .9s ease}
+.phbadge{display:inline-block;margin-top:4px;font-weight:800;border-radius:999px;padding:2px 10px;background:#fff;border:2px solid var(--line);font-size:14px}
+.scale{display:flex;border-radius:10px;overflow:hidden;margin:10px 0 4px}
+.scale div{flex:1;text-align:center;font-size:12px;font-weight:800;padding:6px 0;color:#1d2a3a}
+.scale-cap{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-weight:700}
+.btn{border:0;border-radius:12px;padding:11px 20px;font-weight:800;cursor:pointer;background:var(--ink);color:#fff;box-shadow:0 3px 0 #0b1320}
+.btn.s{padding:8px 14px;font-size:14px;box-shadow:0 2px 0 #0b1320}
+.btn.lt{background:#fff;color:var(--ink);box-shadow:0 0 0 2px var(--ink) inset}
+.btn[disabled]{opacity:.4;cursor:not-allowed}.btn.big{font-size:18px;padding:14px 28px}
+.act{display:flex;justify-content:flex-end;gap:10px;margin-top:14px;align-items:center;flex-wrap:wrap}
+.need{font-size:13px;color:var(--muted)}
+.fb{margin-top:12px;border-radius:12px;padding:10px 14px;border-left:5px solid;font-size:15px}
+.fb.ok{background:var(--ok-t);border-color:var(--ok)}.fb.mid{background:var(--warn-t);border-color:#e0a530}.fb.bad{background:var(--bad-t);border-color:var(--bad)}
+.fb b.h{display:block;font-size:16px}
+.eq{font-size:20px;font-weight:700;display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:8px 0}
+.eq input{width:52px;text-align:center;padding:6px;border:2px solid var(--line);border-radius:9px;font-weight:800}
+.eq select{padding:6px 8px;border:2px solid var(--line);border-radius:9px;font-weight:700}
+.log{font-size:14px;color:var(--ink2);min-height:22px;margin-top:8px;text-align:center}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:10px;text-align:left;border:2px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;cursor:pointer;font-weight:600}
+.opt.sel{border-color:var(--ink);background:#f2f4fb}.opt.right{border-color:var(--ok);background:var(--ok-t)}.opt.wrong{border-color:var(--bad);background:var(--bad-t)}.opt.miss{border-color:var(--ok);border-style:dashed}
+.modal{position:fixed;inset:0;background:rgba(20,30,45,.55);display:grid;place-items:center;z-index:50;padding:14px}
+.dlg{background:#fff;border-radius:20px;max-width:460px;width:100%;padding:24px}
+.dlg h2{margin:4px 0;font-size:22px}.dlg p{margin:0 0 14px;color:var(--ink2)}
+.inp{width:100%;font-size:17px;padding:11px 13px;border-radius:12px;border:2px solid var(--line);margin-bottom:10px;background:#fff}
+.err{color:var(--bad);font-weight:700;font-size:14px;margin:0 0 10px}
+.final{background:#fff;border-radius:18px;box-shadow:var(--sh);padding:22px;text-align:center}
+.seg{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}.seg .opt{flex:1;justify-content:center;min-width:110px}
+.msg{margin-top:12px;border-radius:12px;padding:10px 14px;font-weight:700}
+.msg.ok{background:var(--ok-t);color:var(--ok)}.msg.bad{background:var(--bad-t);color:var(--bad)}.msg.info{background:#eef2fb;color:var(--ink2)}
+.sw{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;border:1px solid rgba(0,0,0,.15)}
+
+/* ===== яскрава тема ===== */
+body{background:radial-gradient(circle at 10% 0%,#ffe3f1 0,transparent 40%),radial-gradient(circle at 90% 10%,#dff6ff 0,transparent 40%),radial-gradient(circle at 50% 100%,#fff3c4 0,transparent 45%),#f7f5ff}
+.hero{background:linear-gradient(120deg,#ff3d7f 0%,#ff8a3d 35%,#ffd23d 55%,#2ec4b6 78%,#3d6bff 100%);color:#fff;box-shadow:0 12px 30px rgba(255,61,127,.25)}
+.hero .kicker,.hero p{color:#fff}.hero h1{text-shadow:0 2px 0 rgba(0,0,0,.15)}
+.task{border-top-width:7px}
+.task:nth-of-type(7n+1){border-top-color:#ff3d7f}.task:nth-of-type(7n+2){border-top-color:#ff8a3d}.task:nth-of-type(7n+3){border-top-color:#f5b800}
+.task:nth-of-type(7n+4){border-top-color:#2ec4b6}.task:nth-of-type(7n+5){border-top-color:#3d6bff}.task:nth-of-type(7n+6){border-top-color:#9b5de5}.task:nth-of-type(7n){border-top-color:#00b86b}
+.task:nth-of-type(7n+1) .num{background:#ff3d7f}.task:nth-of-type(7n+2) .num{background:#ff8a3d}.task:nth-of-type(7n+3) .num{background:#f5b800}
+.task:nth-of-type(7n+4) .num{background:#2ec4b6}.task:nth-of-type(7n+5) .num{background:#3d6bff}.task:nth-of-type(7n+6) .num{background:#9b5de5}.task:nth-of-type(7n) .num{background:#00b86b}
+.num{font-size:17px;box-shadow:0 3px 0 rgba(0,0,0,.15)}
+.box{background:linear-gradient(135deg,#ffe8f1,#fff1e3)}.box.g{background:linear-gradient(135deg,#dcfbf4,#e3f0ff)}
+.chip{border-color:#d9d2ff;background:#f4f1ff;color:#4a2fb0}
+.chip:nth-child(6n+1){background:#ffe6ef;border-color:#ffc0d5;color:#c2185b}.chip:nth-child(6n+2){background:#fff0e0;border-color:#ffd2a6;color:#c25a00}
+.chip:nth-child(6n+3){background:#fff8d6;border-color:#ffe48a;color:#8a6a00}.chip:nth-child(6n+4){background:#ddf8f3;border-color:#9ce8db;color:#0b7a6c}
+.chip:nth-child(6n+5){background:#e3ebff;border-color:#b3c6ff;color:#2443b8}.chip:nth-child(6n){background:#f0e6ff;border-color:#d4b8ff;color:#6a2fb8}
+.chip.sel{background:#1d2a3a!important;border-color:#1d2a3a!important;color:#fff!important;transform:translateY(-1px)}
+.chip.done::after{content:" ✓"}
+.btn{background:linear-gradient(135deg,#3d6bff,#9b5de5);box-shadow:0 4px 0 #2c3fa8}
+.btn.lt{background:#fff;color:#3d6bff;box-shadow:0 0 0 2px #3d6bff inset}
+.btn.big{background:linear-gradient(135deg,#ff3d7f,#ff8a3d);box-shadow:0 4px 0 #b8255a}
+.bench{background:linear-gradient(180deg,#f2f7ff,#fdf2ff)}
+th{background:linear-gradient(135deg,#eef3ff,#f7ecff);color:#2c3a6b}
+.who{background:#fff;border-radius:999px;padding:8px 16px;box-shadow:var(--sh)}
+.final{background:linear-gradient(135deg,#fff,#fff6e8)}
+.dlg{border-top:8px solid #ff3d7f}
+.modal{background:rgba(61,40,120,.55)}
+
+.rack{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;background:linear-gradient(180deg,#f2f7ff,#fdf2ff);border-radius:14px;padding:14px}
+.series{background:#fff;border-radius:14px;padding:10px 12px;box-shadow:var(--sh);text-align:center}
+.series h4{margin:0 0 4px;font-size:15px}
+.tubes{display:flex;gap:10px;justify-content:center}
+.tube{width:46px;text-align:center;cursor:pointer;border:0;background:none;padding:0}
+.tube svg{width:46px;height:120px}
+.tube .t{font-size:11px;font-weight:700;color:var(--ink2);display:block;line-height:1.2;min-height:28px}
+.tube[disabled]{cursor:default}
+.multi .opt{align-items:flex-start}
+.multi .opt::before{content:"";flex:none;width:20px;height:20px;border-radius:6px;border:2px solid #b7c2d0;margin-top:2px}
+.multi .opt.sel::before{background:#1d2a3a;border-color:#1d2a3a}
+.vlink{display:inline-flex;gap:8px;align-items:center;background:linear-gradient(135deg,#ff3d7f,#ff8a3d);color:#fff;text-decoration:none;font-weight:800;border-radius:12px;padding:10px 16px}
+</style>
+</head>
+<body>
+<div class="modal" id="start"><div class="dlg">
+  <div class="kicker">Навчальне дослідження · Хімія · 8 клас</div>
+  <h2>НД № 3 «Виявлення кислот і лугів у розчинах»</h2>
+  <p>Переглянь відео досліду, проведи віртуальні досліди з індикаторами й заповни картку. Бали (з 12) зараховуються за першою перевіркою кожного кроку.</p>
+  <input class="inp" id="pname" maxlength="60" placeholder="Прізвище та ім’я" autocomplete="name">
+  <select class="inp" id="pcls"><option value="">Обери клас</option><option>8-А</option><option>8-Б</option><option>Інший</option></select>
+  <p class="err" id="startErr" hidden>Впиши прізвище, ім’я та обери клас.</p>
+  <button class="btn big" id="startBtn" type="button" style="width:100%">Почати дослідження ▶</button>
+</div></div>
+
+<main class="wrap">
+  <header class="hero">
+    <div class="kicker">Навчальне дослідження № 3 · 8 клас</div>
+    <h1>Виявлення кислот і лугів у розчинах</h1>
+    <p>Інструктивна картка за підручником О. В. Григоровича</p>
+  </header>
+  <div class="who"><span id="who">👤 —</span><span>Набрано: <b id="sum">0</b> з 12 · перевірено кроків: <b id="nDone">0</b> з 4</span></div>
+
+  <section class="task n">
+    <div class="th"><span class="num">🎯</span><h2>Мета й обладнання</h2></div>
+    <p><b>Мета:</b> відпрацювати навички виявлення кислот і лугів у розчинах.</p>
+    <p><b>Обладнання:</b> штатив із пробірками.<br><b>Речовини:</b> дистильована вода, розчини питної соди й кухонної солі, столовий оцет, розбавлені розчини кислот і лугів, розчини (або індикаторні папірці) лакмусу, метилоранжу, фенолфталеїну (спиртовий розчин), універсального індикатора.</p>
+    <a class="vlink" href="https://ua.izzi.digital/DOS/1265662/1404513.html#block-16594132" target="_blank" rel="noopener">▶ Відкрити відео досліду</a>
+  </section>
+
+  <section class="task" id="t1">
+    <div class="th"><span class="num">1</span><h2>Визначаємо ризики</h2><span class="pts">2 бали</span></div>
+    <p class="lead">У дослідженні є дії з лугами та кислотами. Які небезпечні ситуації можуть статися під час роботи з цими реактивами?</p>
+    <textarea id="risk" maxlength="500" placeholder="Можуть статися такі ситуації: …"></textarea>
+    <p class="q">Познач усі ПРАВИЛЬНІ дії (кілька відповідей):</p>
+    <div class="opts multi" id="safe"></div>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <section class="task g" id="t2">
+    <div class="th"><span class="num">2–3</span><h2>Чотири серії пробірок</h2><span class="pts">5 балів</span></div>
+    <p class="lead">У кожній серії три пробірки: <b>луг</b>, <b>кислота</b>, <b>дистильована вода</b> (по 1–2 мл). Натисни на пробірку — у неї додадуться 2–3 краплі індикатора цієї серії. Спостерігай і заповни таблицю.</p>
+    <div class="rack" id="rack"></div>
+    <p class="q">Таблиця 1. Забарвлення індикаторів</p>
+    <div class="tw"><table><thead><tr><th>Індикатор</th><th>Розчин лугу</th><th>Розчин кислоти</th><th>Дистильована вода</th></tr></thead><tbody id="tb2"></tbody></table></div>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <section class="task" id="t3">
+    <div class="th"><span class="num">4</span><h2>Що в пробірках: кислота чи луг?</h2><span class="pts">3 бали</span></div>
+    <p class="lead">Три пробірки: розчин кухонної солі, розчин питної соди та оцет. Обери індикатор на свій вибір, натисни на пробірку й визнач середовище.</p>
+    <div class="q">Мій індикатор:</div><div class="chips" id="myInd"></div>
+    <div class="rack" id="rack2" style="margin-top:10px"></div>
+    <p class="q">Таблиця 2. Результати</p>
+    <div class="tw"><table><thead><tr><th>Розчин</th><th>Забарвлення індикатора (опиши)</th><th>Середовище</th></tr></thead><tbody id="tb3"></tbody></table></div>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <section class="task g" id="t4">
+    <div class="th"><span class="num">✓</span><h2>Висновки</h2><span class="pts">2 бали</span></div>
+    <p class="q">1) Який індикатор змінює забарвлення лише в лужному середовищі?</p><div class="opts" data-g="a"></div>
+    <p class="q">2) Яким індикатором можна визначити і кислотне, і лужне середовище, ще й оцінити pH?</p><div class="opts" data-g="b"></div>
+    <p class="q">Загальний висновок: як виявити кислоту й луг у розчині? Що ти з'ясував(-ла) про розчини солі, соди й оцту?</p>
+    <textarea id="concl" maxlength="800" placeholder="Щоб виявити кислоту або луг, потрібно… У розчині солі… соди… оцту…"></textarea>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <section class="final" id="fin">
+    <h2>Здати роботу</h2>
+    <p id="finalLine" class="need" style="font-size:15px">Перевір усі 4 кроки, щоб здати роботу.</p>
+    <p class="q">Як ти оцінюєш себе? Я вмію за допомогою індикаторів виявляти кислоти й луги:</p>
+    <div class="seg" id="selfSeg"></div>
+    <p style="margin-top:16px"><button class="btn big" id="submit" type="button" disabled>Здати роботу вчителю</button></p>
+    <div class="msg" id="sendBox" hidden></div>
+  </section>
+</main>
+
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="nd3kysl8";
+const $=id=>document.getElementById(id);
+const shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const fmt=x=>String(Math.round(x*100)/100).replace(".",",");
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const half=x=>Math.floor(x*2+1e-9)/2;
+let ME=null,sent=false,SELF=null; const SCORE={},REC={},READY={};
+const CLEAR="#e6f0fb";
+function tubeSVG(id,fill){return `<svg viewBox="0 0 46 120" aria-hidden="true"><path d="M8 4 h30 v92 a15 15 0 0 1 -30 0z" fill="#fff" stroke="#8aa0b8" stroke-width="2.5"/><path id="${id}" d="M10 52 h26 v44 a13 13 0 0 1 -26 0z" fill="${fill}" style="transition:fill .9s"/><path d="M15 12 v80" stroke="#fff" stroke-width="3" opacity=".7" stroke-linecap="round"/></svg>`}
+/* індикатори: [луг, кислота, вода] */
+const IND={"Лакмус":{c:["#2c5fb8","#d7263d","#8a4fb0"],n:["синій","червоний","фіолетовий"]},
+ "Метилоранж":{c:["#f2cd2e","#e8436a","#f39a2c"],n:["жовтий","рожевий (червоний)","оранжевий"]},
+ "Фенолфталеїн":{c:["#d6247e",CLEAR,CLEAR],n:["малиновий","безбарвний","безбарвний"]},
+ "Універсальний індикатор":{c:["#4b3f9e","#d7263d","#3fae49"],n:["синьо-фіолетовий","червоний","зелений"]}};
+const INDK=Object.keys(IND), MEDIA=["Луг","Кислота","Вода"];
+const COLS=["червоний","рожевий (червоний)","оранжевий","жовтий","зелений","синій","синьо-фіолетовий","фіолетовий","малиновий","безбарвний"];
+function sel(o,a){return `<select ${a}><option value="">—</option>${o.map(x=>`<option>${esc(x)}</option>`).join("")}</select>`}
+
+/* 1 ризики */
+const SAFE=[["Працювати в захисних окулярах і рукавичках",1],["Наливати лише 1–2 мл розчину, як зазначено в інструкції",1],["У разі потрапляння кислоти чи лугу на шкіру — змити великою кількістю води й повідомити вчителя",1],
+ ["Не змішувати реактиви без вказівки вчителя",1],["Понюхати розчин, піднісши пробірку до носа",0],["Опік кислотою відразу «нейтралізувати» розчином лугу",0],["Скуштувати оцет, щоб переконатися, що це кислота",0]];
+const safeSel=new Set();
+shuf(SAFE).forEach(([t])=>{const b=document.createElement("button");b.type="button";b.className="opt";b.dataset.v=t;b.textContent=t;b.onclick=()=>{if(b.disabled)return;safeSel.has(t)?safeSel.delete(t):safeSel.add(t);b.classList.toggle("sel");refresh("t1")};$("safe").appendChild(b)});
+READY.t1=()=>$("risk").value.trim().length>=10&&safeSel.size>0;
+
+/* 2 серії */
+const added=new Set();
+$("rack").innerHTML=INDK.map((k,s)=>`<div class="series"><h4>Серія ${s+1}: ${k}</h4><div class="tubes">${MEDIA.map((m,j)=>`<button class="tube" type="button" data-s="${s}" data-j="${j}" aria-label="${m}: додати ${k}">${tubeSVG(`tb_${s}_${j}`,CLEAR)}<span class="t">${m}</span></button>`).join("")}</div></div>`).join("");
+$("rack").querySelectorAll(".tube").forEach(b=>b.onclick=()=>{const s=+b.dataset.s,j=+b.dataset.j;$(`tb_${s}_${j}`).setAttribute("fill",IND[INDK[s]].c[j]);added.add(s+"_"+j);b.querySelector(".t").textContent=MEDIA[j]+" ✓";refresh("t2")});
+$("tb2").innerHTML=INDK.map((k,i)=>`<tr><td><b>${k}</b></td>${[0,1,2].map(j=>`<td>${sel(COLS,`data-r="${i}" data-j="${j}"`)}</td>`).join("")}</tr>`).join("");
+READY.t2=()=>added.size===12&&[...$("tb2").querySelectorAll("select")].every(s=>s.value);
+
+/* 3 сіль, сода, оцет */
+const SOL=[["Розчин кухонної солі","нейтральне",[ "#8a4fb0","#f39a2c",CLEAR,"#3fae49"]],["Розчин питної соди","лужне",["#2c5fb8","#f2cd2e","#f2a6c8","#1f9e89"]],["Столовий оцет","кислотне",["#d7263d","#e8436a",CLEAR,"#f2702a"]]];
+let myI=null; const tested=new Set();
+$("myInd").innerHTML=INDK.map(k=>`<button type="button" class="chip" data-v="${k}">${k}</button>`).join("");
+$("myInd").querySelectorAll(".chip").forEach(c=>c.onclick=()=>{$("myInd").querySelectorAll(".chip").forEach(x=>x.classList.remove("sel"));c.classList.add("sel");myI=c.dataset.v;
+  SOL.forEach((_,i)=>$("s3_"+i).setAttribute("fill",CLEAR)); tested.clear(); refresh("t3")});
+$("rack2").innerHTML=`<div class="series"><div class="tubes">${SOL.map((s,i)=>`<button class="tube" type="button" data-i="${i}" style="width:70px" aria-label="${s[0]}: додати індикатор">${tubeSVG("s3_"+i,CLEAR)}<span class="t">${s[0]}</span></button>`).join("")}</div></div>`;
+$("rack2").querySelectorAll(".tube").forEach(b=>b.onclick=()=>{ if(!myI){$("t3").querySelector(".need").textContent="Спочатку обери індикатор";return}
+  const i=+b.dataset.i; $("s3_"+i).setAttribute("fill",SOL[i][2][INDK.indexOf(myI)]); tested.add(i); refresh("t3")});
+$("tb3").innerHTML=SOL.map((s,i)=>`<tr><td><b>${s[0]}</b></td><td><input data-i="${i}" maxlength="40" placeholder="наприклад: синій" style="width:100%;padding:7px 8px;border:2px solid var(--line);border-radius:9px"></td><td>${sel(["кислотне","нейтральне","лужне"],`data-i="${i}"`)}</td></tr>`).join("");
+READY.t3=()=>tested.size===3&&[...$("tb3").querySelectorAll("select")].every(s=>s.value)&&[...$("tb3").querySelectorAll("input")].every(x=>x.value.trim());
+
+/* 4 висновки */
+function group(id,g,items){const box=document.querySelector(`#${id} [data-g="${g}"]`),st={box,val:null};items.forEach(t=>{const b=document.createElement("button");b.type="button";b.className="opt";b.dataset.v=t;b.textContent=t;b.onclick=()=>{if(b.disabled)return;box.querySelectorAll(".opt").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");st.val=t;refresh(id)};box.appendChild(b)});return st}
+function mark(st,ok){st.box.querySelectorAll(".opt").forEach(b=>{b.disabled=true;const v=b.dataset.v;b.classList.remove("sel");if(v===st.val&&v===ok)b.classList.add("right");else if(v===st.val)b.classList.add("wrong");else if(v===ok)b.classList.add("miss")})}
+const G={a:group("t4","a",shuf(["Фенолфталеїн","Лакмус","Метилоранж","Універсальний індикатор"])),b:group("t4","b",shuf(["Універсальний індикатор","Фенолфталеїн","Метилоранж","Жоден із них"]))};
+READY.t4=()=>G.a.val&&G.b.val&&$("concl").value.trim().length>=20;
+
+/* загальне */
+function refresh(t){const sec=$(t);if(!sec||sec.dataset.done)return;const ok=READY[t]();sec.querySelector(".chk").disabled=!ok;
+  let h="Заповни все, щоб перевірити"; if(t==="t2"&&added.size<12)h=`Додай індикатор в усі пробірки (${added.size} з 12) і заповни таблицю`; if(t==="t3"&&tested.size<3)h=`Обери індикатор і досліди всі три розчини (${tested.size} з 3)`;
+  sec.querySelector(".need").textContent=ok?"":h}
+document.addEventListener("input",e=>{const s=e.target.closest(".task");if(s)refresh(s.id)});
+document.addEventListener("change",e=>{const s=e.target.closest(".task");if(s)refresh(s.id)});
+function markSel(s,ok){s.disabled=true;const good=s.value===ok;s.classList.add(good?"right":"wrong");if(!good){const c=document.createElement("span");c.className="corr";c.textContent="✓ "+ok;s.after(c)}return good}
+function feedback(t,p,max,html){const sec=$(t),fb=sec.querySelector(".fb");fb.hidden=false;fb.className="fb "+(p>=max?"ok":p>0?"mid":"bad");
+  fb.innerHTML=`<b class="h">${p>=max?"✓ Чудово!":p>0?"◐ Частково правильно":"✗ Є помилки"} — ${fmt(p)} з ${max}</b>${html}`;sec.dataset.done="1";sec.querySelector(".chk").hidden=true;sec.querySelector(".need").textContent="";
+  SCORE[t]=p;const v=Object.values(SCORE);$("sum").textContent=fmt(v.reduce((s,x)=>s+x,0));$("nDone").textContent=v.length;finalState()}
+const CHECK={
+ t1(){let ok=0;const e=[];$("safe").querySelectorAll(".opt").forEach(b=>{b.disabled=true;const good=SAFE.find(s=>s[0]===b.dataset.v)[1]===1,ch=safeSel.has(b.dataset.v);b.classList.remove("sel");
+   if(ch&&good){b.classList.add("right");ok++}else if(ch){b.classList.add("wrong");e.push("обрано хибне: "+b.dataset.v)}else if(good){b.classList.add("miss");e.push("пропущено: "+b.dataset.v)}else ok++});
+   $("risk").readOnly=true;const p=half(ok/SAFE.length*2);REC.t1=`${ok}/${SAFE.length}`+(e.length?"; "+e.join("; "):"");REC.risk=$("risk").value.trim().slice(0,500);
+   feedback("t1",p,2,"<p>Кислоти й луги можуть спричинити хімічні опіки шкіри й очей. Тому працюємо в окулярах, беремо малі об'єми, не нюхаємо й не куштуємо реактиви. Якщо реактив потрапив на шкіру, змиваємо його великою кількістю води й одразу повідомляємо вчителя. Нейтралізувати опік кислоти лугом <b>не можна</b>: це спричинить ще один опік.</p>")},
+ t2(){let ok=0;const e=[];$("tb2").querySelectorAll("select").forEach(s=>{const k=INDK[+s.dataset.r],j=+s.dataset.j;if(markSel(s,IND[k].n[j]))ok++;else e.push(`${k}/${MEDIA[j]}: «${s.value}»`)});
+   const p=half(ok/12*5);REC.t2=`${ok}/12`+(e.length?"; помилки: "+e.join("; "):"");
+   feedback("t2",p,5,"<p><b>Лакмус</b>: луг — синій, кислота — червоний, вода — фіолетовий. <b>Метилоранж</b>: жовтий — рожевий — оранжевий. <b>Фенолфталеїн</b> малиновий лише в лузі, у кислоті й воді безбарвний. <b>Універсальний</b>: луг — синьо-фіолетовий, кислота — червоний, вода — зелений.</p>")},
+ t3(){let ok=0;const e=[];$("tb3").querySelectorAll("select").forEach(s=>{const i=+s.dataset.i;if(markSel(s,SOL[i][1]))ok++;else e.push(`${SOL[i][0]}: «${s.value}»`)});
+   $("tb3").querySelectorAll("input").forEach(x=>x.readOnly=true);
+   const p=ok;REC.t3=`індикатор: ${myI}; ${ok}/3`+(e.length?"; помилки: "+e.join("; "):"")+"; кольори: "+[...$("tb3").querySelectorAll("input")].map((x,i)=>SOL[i][0].split(" ").pop()+" — "+x.value.trim()).join(", ");
+   feedback("t3",p,3,"<p>Розчин <b>кухонної солі</b> — нейтральне середовище: у ньому немає ні кислоти, ні лугу. <b>Оцет</b> — кислотне середовище, бо містить оцтову кислоту. Розчин <b>питної соди</b> має слабколужне середовище: фенолфталеїн забарвлюється в ньому лише блідо-рожево.</p>")},
+ t4(){const a=G.a.val==="Фенолфталеїн",b=G.b.val==="Універсальний індикатор";mark(G.a,"Фенолфталеїн");mark(G.b,"Універсальний індикатор");$("concl").readOnly=true;
+   const p=(a?1:0)+(b?1:0);REC.t4=`фенолфталеїн ${a?"✓":"✗ «"+G.a.val+"»"}; універсальний ${b?"✓":"✗ «"+G.b.val+"»"}`;REC.concl=$("concl").value.trim().slice(0,800);
+   feedback("t4",p,2,"<p>Кислоти й луги виявляють за допомогою індикаторів. Фенолфталеїн «бачить» лише луги. Лакмус, метилоранж і універсальний індикатор розрізняють обидва середовища, а універсальний ще й дає змогу оцінити pH за шкалою. Твій висновок прочитає вчитель.</p>")}};
+["t1","t2","t3","t4"].forEach(t=>{$(t).querySelector(".chk").onclick=()=>{if(!$(t).dataset.done&&READY[t]())CHECK[t]()};refresh(t)});
+["Так, упевнено","Частково","Поки що ні"].forEach(t=>{const b=document.createElement("button");b.type="button";b.className="opt";b.textContent=t;b.onclick=()=>{$("selfSeg").querySelectorAll(".opt").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");SELF=t;finalState()};$("selfSeg").appendChild(b)});
+function finalState(){const n=Object.keys(SCORE).length,tot=Object.values(SCORE).reduce((s,x)=>s+x,0);
+  $("finalLine").innerHTML=n<4?`Перевірено ${n} з 4 кроків. Перевір усі, щоб здати роботу.`:`Усі кроки перевірено: <b>${fmt(tot)} з 12 балів</b>. Оціни себе й здай роботу.`;$("submit").disabled=sent||n<4||!SELF}
+$("submit").onclick=async()=>{if(sent)return;const box=$("sendBox");$("submit").disabled=true;box.hidden=false;box.className="msg info";box.textContent="Надсилаю…";
+  const O=["t1","t2","t3","t4"],sc=Math.round(O.reduce((s,k)=>s+SCORE[k],0)*100)/100;
+  const rec={name:ME.name,cls:ME.cls,score:sc,max:12,ts:{".sv":"timestamp"},parts:O.map(k=>SCORE[k]).join(" "),risk:REC.risk,t1:REC.t1,t2:REC.t2,t3:REC.t3,t4:REC.t4,concl:REC.concl,self:SELF};
+  try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec)});if(!r.ok)throw new Error(r.status);
+    sent=true;box.className="msg ok";box.textContent=`✓ Роботу отримано вчителем: ${fmt(sc)} / 12. Молодець!`}catch(e){$("submit").disabled=false;box.className="msg bad";box.textContent="Не вдалося надіслати. Перевір інтернет і натисни ще раз."}};
+$("startBtn").onclick=()=>{const nm=$("pname").value.trim().replace(/\s+/g," "),c=$("pcls").value;if(nm.length<3||nm.split(" ").length<2||!c){$("startErr").hidden=false;return}
+  ME={name:nm.slice(0,60),cls:c};$("who").textContent=`👤 ${ME.name} · ${ME.cls}`;$("start").hidden=true};
+$("pname").addEventListener("keydown",e=>{if(e.key==="Enter")$("startBtn").click()});
+window.addEventListener("beforeunload",e=>{if(Object.keys(SCORE).length&&!sent){e.preventDefault();e.returnValue=""}});
+</script>
+</body>
+</html>
