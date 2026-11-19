@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Водневий показник pH. Дослідження індикаторами — 9 клас</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1d2a3a;--ink2:#46556a;--muted:#6f7c8f;--bg:#f4f6f8;--line:#dfe5ec;--teal:#0f7a63;--teal2:#14a083;--mint:#e6f4ee;--blue:#2563eb;--sky:#e8f0fe;
+ --ok:#14864f;--ok-t:#e1f6ea;--bad:#d33a4a;--bad-t:#fde7e9;--warn-t:#fff4dc;--focus:#4f5cf0;--sh:0 8px 24px rgba(29,42,58,.07),0 1px 3px rgba(29,42,58,.06)}
+*{box-sizing:border-box}html,body{margin:0}
+body{font-family:'Noto Sans',system-ui,'Segoe UI',Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+button,input,select,textarea{font:inherit;color:inherit}
+button:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+[hidden]{display:none!important}
+.wrap{max-width:940px;margin:0 auto;padding:18px 14px 60px}
+.hero{background:linear-gradient(120deg,#e8f0fe,#e6f4ee);border-radius:18px;padding:22px 24px;margin-bottom:14px}
+.kicker{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--blue);text-transform:uppercase}
+.hero h1{font-size:clamp(24px,4.4vw,34px);margin:4px 0;font-weight:800;line-height:1.2}
+.hero p{margin:0;color:var(--ink2)}
+.who{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:14px;color:var(--ink2);margin:0 4px 14px}
+.task{background:#fff;border-radius:18px;box-shadow:var(--sh);padding:20px 22px;margin:0 0 16px;border-top:5px solid var(--blue)}
+.task.g{border-top-color:var(--teal2)} .task.n{border-top-color:#8aa0b8}
+.th{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.num{flex:none;min-width:36px;height:32px;padding:0 8px;border-radius:9px;display:grid;place-items:center;color:#fff;font-weight:800;background:var(--blue)}
+.g .num{background:var(--teal)} .n .num{background:#5d7189}
+.th h2{margin:0;font-size:20px;font-weight:800;flex:1}
+.pts{font-size:13px;font-weight:700;color:var(--muted);white-space:nowrap}
+.lead{margin:6px 0 12px;color:var(--ink2)}
+.box{background:var(--sky);border-radius:12px;padding:12px 14px;margin:8px 0 12px}
+.box.g{background:var(--mint)}
+.q{font-weight:700;margin:14px 0 8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:680px){.grid2{grid-template-columns:1fr}}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:560px}
+th,td{border:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:middle}
+th{background:#f3f6f9;font-size:14px}
+td select{width:100%;padding:7px 8px;border:2px solid var(--line);border-radius:9px;background:#fff}
+td select.right,input.right{border-color:var(--ok);background:var(--ok-t)} td select.wrong,input.wrong{border-color:var(--bad);background:var(--bad-t)}
+.corr{display:block;font-size:12px;color:var(--ok);font-weight:700;margin-top:3px}
+textarea{width:100%;min-height:76px;border:2px solid var(--line);border-radius:12px;padding:10px 12px;resize:vertical}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:2px solid var(--line);background:#fff;border-radius:12px;padding:8px 14px;font-weight:700;cursor:pointer}
+.chip.sel{border-color:var(--ink);background:var(--ink);color:#fff}
+.chip.done{border-color:var(--ok)}
+/* склянка */
+.bench{display:flex;gap:18px;align-items:flex-end;flex-wrap:wrap;justify-content:center;background:#f7f9fc;border-radius:14px;padding:14px}
+.beaker{width:130px;text-align:center}
+.beaker svg{width:130px;height:150px}
+.beaker .lbl{font-weight:700;font-size:14px;min-height:22px}
+.liq{transition:fill .9s ease}
+.phbadge{display:inline-block;margin-top:4px;font-weight:800;border-radius:999px;padding:2px 10px;background:#fff;border:2px solid var(--line);font-size:14px}
+.scale{display:flex;border-radius:10px;overflow:hidden;margin:10px 0 4px}
+.scale div{flex:1;text-align:center;font-size:12px;font-weight:800;padding:6px 0;color:#1d2a3a}
+.scale-cap{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-weight:700}
+.btn{border:0;border-radius:12px;padding:11px 20px;font-weight:800;cursor:pointer;background:var(--ink);color:#fff;box-shadow:0 3px 0 #0b1320}
+.btn.s{padding:8px 14px;font-size:14px;box-shadow:0 2px 0 #0b1320}
+.btn.lt{background:#fff;color:var(--ink);box-shadow:0 0 0 2px var(--ink) inset}
+.btn[disabled]{opacity:.4;cursor:not-allowed}.btn.big{font-size:18px;padding:14px 28px}
+.act{display:flex;justify-content:flex-end;gap:10px;margin-top:14px;align-items:center;flex-wrap:wrap}
+.need{font-size:13px;color:var(--muted)}
+.fb{margin-top:12px;border-radius:12px;padding:10px 14px;border-left:5px solid;font-size:15px}
+.fb.ok{background:var(--ok-t);border-color:var(--ok)}.fb.mid{background:var(--warn-t);border-color:#e0a530}.fb.bad{background:var(--bad-t);border-color:var(--bad)}
+.fb b.h{display:block;font-size:16px}
+.eq{font-size:20px;font-weight:700;display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:8px 0}
+.eq input{width:52px;text-align:center;padding:6px;border:2px solid var(--line);border-radius:9px;font-weight:800}
+.eq select{padding:6px 8px;border:2px solid var(--line);border-radius:9px;font-weight:700}
+.log{font-size:14px;color:var(--ink2);min-height:22px;margin-top:8px;text-align:center}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:10px;text-align:left;border:2px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;cursor:pointer;font-weight:600}
+.opt.sel{border-color:var(--ink);background:#f2f4fb}.opt.right{border-color:var(--ok);background:var(--ok-t)}.opt.wrong{border-color:var(--bad);background:var(--bad-t)}.opt.miss{border-color:var(--ok);border-style:dashed}
+.modal{position:fixed;inset:0;background:rgba(20,30,45,.55);display:grid;place-items:center;z-index:50;padding:14px}
+.dlg{background:#fff;border-radius:20px;max-width:460px;width:100%;padding:24px}
+.dlg h2{margin:4px 0;font-size:22px}.dlg p{margin:0 0 14px;color:var(--ink2)}
+.inp{width:100%;font-size:17px;padding:11px 13px;border-radius:12px;border:2px solid var(--line);margin-bottom:10px;background:#fff}
+.err{color:var(--bad);font-weight:700;font-size:14px;margin:0 0 10px}
+.final{background:#fff;border-radius:18px;box-shadow:var(--sh);padding:22px;text-align:center}
+.seg{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}.seg .opt{flex:1;justify-content:center;min-width:110px}
+.msg{margin-top:12px;border-radius:12px;padding:10px 14px;font-weight:700}
+.msg.ok{background:var(--ok-t);color:var(--ok)}.msg.bad{background:var(--bad-t);color:var(--bad)}.msg.info{background:#eef2fb;color:var(--ink2)}
+.sw{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;border:1px solid rgba(0,0,0,.15)}
+
+/* ===== яскрава тема ===== */
+body{background:radial-gradient(circle at 10% 0%,#ffe3f1 0,transparent 40%),radial-gradient(circle at 90% 10%,#dff6ff 0,transparent 40%),radial-gradient(circle at 50% 100%,#fff3c4 0,transparent 45%),#f7f5ff}
+.hero{background:linear-gradient(120deg,#ff3d7f 0%,#ff8a3d 35%,#ffd23d 55%,#2ec4b6 78%,#3d6bff 100%);color:#fff;box-shadow:0 12px 30px rgba(255,61,127,.25)}
+.hero .kicker,.hero p{color:#fff}.hero h1{text-shadow:0 2px 0 rgba(0,0,0,.15)}
+.task{border-top-width:7px}
+.task:nth-of-type(7n+1){border-top-color:#ff3d7f}.task:nth-of-type(7n+2){border-top-color:#ff8a3d}.task:nth-of-type(7n+3){border-top-color:#f5b800}
+.task:nth-of-type(7n+4){border-top-color:#2ec4b6}.task:nth-of-type(7n+5){border-top-color:#3d6bff}.task:nth-of-type(7n+6){border-top-color:#9b5de5}.task:nth-of-type(7n){border-top-color:#00b86b}
+.task:nth-of-type(7n+1) .num{background:#ff3d7f}.task:nth-of-type(7n+2) .num{background:#ff8a3d}.task:nth-of-type(7n+3) .num{background:#f5b800}
+.task:nth-of-type(7n+4) .num{background:#2ec4b6}.task:nth-of-type(7n+5) .num{background:#3d6bff}.task:nth-of-type(7n+6) .num{background:#9b5de5}.task:nth-of-type(7n) .num{background:#00b86b}
+.num{font-size:17px;box-shadow:0 3px 0 rgba(0,0,0,.15)}
+.box{background:linear-gradient(135deg,#ffe8f1,#fff1e3)}.box.g{background:linear-gradient(135deg,#dcfbf4,#e3f0ff)}
+.chip{border-color:#d9d2ff;background:#f4f1ff;color:#4a2fb0}
+.chip:nth-child(6n+1){background:#ffe6ef;border-color:#ffc0d5;color:#c2185b}.chip:nth-child(6n+2){background:#fff0e0;border-color:#ffd2a6;color:#c25a00}
+.chip:nth-child(6n+3){background:#fff8d6;border-color:#ffe48a;color:#8a6a00}.chip:nth-child(6n+4){background:#ddf8f3;border-color:#9ce8db;color:#0b7a6c}
+.chip:nth-child(6n+5){background:#e3ebff;border-color:#b3c6ff;color:#2443b8}.chip:nth-child(6n){background:#f0e6ff;border-color:#d4b8ff;color:#6a2fb8}
+.chip.sel{background:#1d2a3a!important;border-color:#1d2a3a!important;color:#fff!important;transform:translateY(-1px)}
+.chip.done::after{content:" ✓"}
+.btn{background:linear-gradient(135deg,#3d6bff,#9b5de5);box-shadow:0 4px 0 #2c3fa8}
+.btn.lt{background:#fff;color:#3d6bff;box-shadow:0 0 0 2px #3d6bff inset}
+.btn.big{background:linear-gradient(135deg,#ff3d7f,#ff8a3d);box-shadow:0 4px 0 #b8255a}
+.bench{background:linear-gradient(180deg,#f2f7ff,#fdf2ff)}
+th{background:linear-gradient(135deg,#eef3ff,#f7ecff);color:#2c3a6b}
+.who{background:#fff;border-radius:999px;padding:8px 16px;box-shadow:var(--sh)}
+.final{background:linear-gradient(135deg,#fff,#fff6e8)}
+.dlg{border-top:8px solid #ff3d7f}
+.modal{background:rgba(61,40,120,.55)}
+
+.phet{position:relative;border-radius:16px;overflow:hidden;border:4px solid #3d6bff;background:#000;aspect-ratio:16/10}
+.phet iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vlink{display:inline-flex;gap:8px;align-items:center;background:linear-gradient(135deg,#3d6bff,#9b5de5);color:#fff;text-decoration:none;font-weight:800;border-radius:12px;padding:9px 14px;margin-top:8px}
+td input{width:100%;padding:7px 8px;border:2px solid var(--line);border-radius:9px;background:#fff}
+.formula{font-size:22px;font-weight:800;text-align:center;background:linear-gradient(135deg,#fff1e3,#ffe8f1);border-radius:14px;padding:10px;margin:8px 0}
+.qq{margin:14px 0 6px;font-weight:700}
+.opts.row{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+.numin{width:110px;padding:8px 10px;border:2px solid var(--line);border-radius:10px;font-weight:800;font-size:16px}
+.numin.right{border-color:var(--ok);background:var(--ok-t)}.numin.wrong{border-color:var(--bad);background:var(--bad-t)}
+</style>
+</head>
+<body>
+<div class="modal" id="start"><div class="dlg">
+  <div class="kicker">Інтерактивна робота · Хімія · 9 клас</div>
+  <h2>Кислотність розчинів. Водневий показник pH</h2>
+  <p>Працюй із симуляцією PhET «Шкала pH», вимірюй, досліджуй і заповнюй роботу. Бали (з 12) зараховуються за першою перевіркою кожного завдання.</p>
+  <input class="inp" id="pname" maxlength="60" placeholder="Прізвище та ім’я" autocomplete="name">
+  <select class="inp" id="pcls"><option value="">Обери клас</option><option>9-А</option><option>9-Б</option><option>Інший</option></select>
+  <p class="err" id="startErr" hidden>Впиши прізвище, ім’я та обери клас.</p>
+  <button class="btn big" id="startBtn" type="button" style="width:100%">Почати роботу ▶</button>
+</div></div>
+
+<main class="wrap">
+  <header class="hero">
+    <div class="kicker">Хімія · 9 клас · інтерактивна робота на уроці</div>
+    <h1>Кислотність розчинів. Водневий показник pH. Визначення pH середовищ</h1>
+    <p>Вимірюємо pH у віртуальній лабораторії, досліджуємо розбавлення, пов'язуємо pH із концентрацією йонів H⁺ і працюємо з індикаторами.</p>
+  </header>
+  <div class="who"><span id="who">👤 —</span><span>Набрано: <b id="sum">0</b> з 12 · перевірено завдань: <b id="nDone">0</b> з 5</span></div>
+
+  <section class="task n">
+    <div class="th"><span class="num">📘</span><h2>Пригадай</h2></div>
+    <div class="grid2">
+      <div class="box"><b>Водневий показник pH</b> характеризує кислотність розчину:<div class="formula">pH = −lg[H⁺]</div>[H⁺] — молярна концентрація йонів Гідрогену, моль/л. Якщо [H⁺] = 10⁻ⁿ моль/л, то pH = n.</div>
+      <div class="box g"><b>Шкала pH</b><br>pH &lt; 7 — кислотне середовище ([H⁺] &gt; [OH⁻])<br>pH = 7 — нейтральне ([H⁺] = [OH⁻])<br>pH &gt; 7 — лужне ([H⁺] &lt; [OH⁻])<br>Зміна pH на 1 означає зміну [H⁺] у 10 разів.</div>
+    </div>
+    <div class="scale" id="uScale"></div><div class="scale-cap"><span>кислотне</span><span>нейтральне</span><span>лужне</span></div>
+  </section>
+
+  <section class="task" id="lab">
+    <div class="th"><span class="num">🔬</span><h2>Віртуальна лабораторія PhET</h2></div>
+    <p class="lead">Обери вкладку <b>«Макро»</b>. Вибирай рідину зі списку, наливай її у склянку й опускай <b>pH-метр</b> (зонд) у розчин. Кранами можна додавати воду або зливати розчин.</p>
+    <div class="phet"><iframe src="https://phet.colorado.edu/sims/html/ph-scale-basics/latest/ph-scale-basics_uk.html" title="Симуляція PhET «Шкала pH: основи»" allowfullscreen loading="lazy"></iframe></div>
+    <a class="vlink" href="https://phet.colorado.edu/sims/html/ph-scale-basics/latest/ph-scale-basics_uk.html" target="_blank" rel="noopener">↗ Відкрити симуляцію в новій вкладці</a>
+    <p class="need">Якщо симуляція не відображається на сторінці, відкрий її в новій вкладці й перемикайся між вкладками.</p>
+  </section>
+
+  <section class="task g" id="t1">
+    <div class="th"><span class="num">1</span><h2>Виміряй pH рідин</h2><span class="pts">3 бали</span></div>
+    <p class="lead">Виміряй pH-метром кожну рідину (не додаючи води) і запиши значення з точністю до десятих. Визнач середовище. Назви в симуляції можуть трохи відрізнятися.</p>
+    <div class="tw"><table><thead><tr><th>Рідина</th><th>pH (виміряй)</th><th>Середовище</th></tr></thead><tbody id="tb1"></tbody></table></div>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <section class="task" id="t2">
+    <div class="th"><span class="num">2</span><h2>Дослід: розбавлення водою</h2><span class="pts">2 бали</span></div>
+    <p class="lead">Обери <b>апельсиновий сік</b>, налий 0,5 л і виміряй pH. Потім долий воду до 1,0 л і виміряй ще раз.</p>
+    <p class="qq">pH соку (0,5 л): <input class="numin" id="j1" inputmode="decimal" placeholder="напр. 3,5"> &nbsp; pH після розбавлення (1,0 л): <input class="numin" id="j2" inputmode="decimal" placeholder="?"></p>
+    <p class="qq">Як змінюється pH кислого розчину під час розбавлення водою?</p><div class="opts" data-g="a"></div>
+    <p class="qq">А як зміниться pH засобу для чищення труб (лужного розчину), якщо його розбавити?</p><div class="opts" data-g="b"></div>
+    <p class="qq">Чи можна, доливаючи воду, перетворити кислий розчин на лужний?</p><div class="opts row" data-g="c"></div>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <section class="task g" id="t3">
+    <div class="th"><span class="num">3</span><h2>pH і концентрація йонів H⁺</h2><span class="pts">3 бали</span></div>
+    <p class="lead">Скористайся формулою pH = −lg[H⁺]. На вкладці «Мікро» в симуляції можна побачити співвідношення йонів H₃O⁺ і OH⁻.</p>
+    <p class="qq">1) pH розчину дорівнює 3. Чому дорівнює [H⁺]?</p><div class="opts row" data-g="h1"></div>
+    <p class="qq">2) У розчині [H⁺] = 10⁻¹⁰ моль/л. Чому дорівнює pH? <input class="numin" id="h2" inputmode="numeric" placeholder="pH"></p>
+    <p class="qq">3) Яке середовище в розчині із завдання 2?</p><div class="opts row" data-g="h3"></div>
+    <p class="qq">4) У скільки разів концентрація йонів H⁺ у розчині з pH 2 більша, ніж у розчині з pH 5?</p><div class="opts row" data-g="h4"></div>
+    <p class="qq">5) Розчин кислоти з pH 2 розбавили водою в 10 разів. Яким став pH?</p><div class="opts row" data-g="h5"></div>
+    <p class="qq">6) Який розчин найкисліший?</p><div class="opts row" data-g="h6"></div>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <section class="task" id="t4">
+    <div class="th"><span class="num">4</span><h2>Дослідження індикаторами</h2><span class="pts">3 бали</span></div>
+    <p class="lead">Ти вже знаєш pH цих рідин. Передбач, якого кольору стане індикатор, якщо додати його до рідини.</p>
+    <div class="box" style="font-size:14px"><b>Довідка.</b> Фенолфталеїн: pH &lt; 8,2 — безбарвний, pH &gt; 10 — малиновий. Метиловий оранжевий: pH &lt; 3,1 — червоний, pH &gt; 4,4 — жовтий. Лакмус: pH &lt; 5 — червоний, pH &gt; 8 — синій. Універсальний індикатор — за шкалою pH.</div>
+    <div class="tw"><table><thead><tr><th>Рідина (pH)</th><th>Індикатор</th><th>Колір</th></tr></thead><tbody id="tb4"></tbody></table></div>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <section class="task g" id="t5">
+    <div class="th"><span class="num">✓</span><h2>Висновки</h2><span class="pts">1 бал</span></div>
+    <p class="qq">Чим менше значення pH, тим…</p><div class="opts" data-g="z1"></div>
+    <p class="qq">Загальний висновок своїми словами: що показує pH, як його визначають (pH-метр, індикатори) і для чого це потрібно в житті (харчування, медицина, сільське господарство)?</p>
+    <textarea id="concl" maxlength="900" placeholder="pH показує… Визначити pH можна… У житті це важливо, тому що…"></textarea>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <section class="final" id="fin">
+    <h2>Здати роботу</h2>
+    <p id="finalLine" class="need" style="font-size:15px">Перевір усі 5 завдань, щоб здати роботу.</p>
+    <p class="q">Як ти оцінюєш себе? Я вмію визначати pH середовища й пов'язувати його з концентрацією йонів H⁺:</p>
+    <div class="seg" id="selfSeg"></div>
+    <p style="margin-top:16px"><button class="btn big" id="submit" type="button" disabled>Здати роботу вчителю</button></p>
+    <div class="msg" id="sendBox" hidden></div>
+  </section>
+</main>
+
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="phet9";
+const $=id=>document.getElementById(id);
+const shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const fmt=x=>String(Math.round(x*100)/100).replace(".",",");
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const half=x=>Math.floor(x*4+1e-9)/4;
+const num=v=>parseFloat(String(v).replace(",","."));
+let ME=null,sent=false,SELF=null; const SCORE={},REC={},READY={};
+const UNI=["#d7263d","#e8432f","#f2702a","#f79d2c","#f5c531","#c9d23a","#3fae49","#1f9e89","#2a8fc0","#2a6fbf","#2f5fb3","#4b3f9e","#5e2c8c","#6b1f78"];
+$("uScale").innerHTML=UNI.map((c,i)=>`<div style="background:${c};color:${i>9||i<2?'#fff':'#1d2a3a'}">${i+1}</div>`).join("");
+function sel(o,a){return `<select ${a}><option value="">—</option>${o.map(x=>`<option>${esc(x)}</option>`).join("")}</select>`}
+const MED=["кислотне","нейтральне","лужне"];
+
+/* 1 */
+const L1=shuf([["Кислота акумулятора",1.0,"кислотне"],["Газована вода (содова)",2.5,"кислотне"],["Апельсиновий сік",3.5,"кислотне"],["Кава",5.0,"кислотне"],["Молоко",6.5,"кислотне"],["Вода",7.0,"нейтральне"],["Кров",7.4,"лужне"],["Мило для рук",10.0,"лужне"],["Засіб для чищення труб",13.0,"лужне"]]).slice(0,6);
+$("tb1").innerHTML=L1.map((l,i)=>`<tr><td><b>${l[0]}</b></td><td><input data-i="${i}" inputmode="decimal" placeholder="pH"></td><td>${sel(MED,`data-i="${i}"`)}</td></tr>`).join("");
+READY.t1=()=>[...$("tb1").querySelectorAll("input")].every(x=>!isNaN(num(x.value)))&&[...$("tb1").querySelectorAll("select")].every(s=>s.value);
+
+/* групи */
+function group(id,g,items){const box=document.querySelector(`#${id} [data-g="${g}"]`),st={box,val:null};items.forEach(t=>{const b=document.createElement("button");b.type="button";b.className="opt";b.dataset.v=t;b.textContent=t;b.onclick=()=>{if(b.disabled)return;box.querySelectorAll(".opt").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");st.val=t;refresh(id)};box.appendChild(b)});return st}
+function mark(st,ok){st.box.querySelectorAll(".opt").forEach(b=>{b.disabled=true;const v=b.dataset.v;b.classList.remove("sel");if(v===st.val&&v===ok)b.classList.add("right");else if(v===st.val)b.classList.add("wrong");else if(v===ok)b.classList.add("miss")});return st.val===ok}
+const A={a:"pH збільшується, наближаючись до 7",b:"pH зменшується, наближаючись до 7",c:"Ні",h1:"10⁻³ моль/л",h3:"лужне",h4:"у 1000 разів",h5:"pH = 3",h6:"pH = 1",z1:"кислотніший розчин (більша [H⁺])"};
+const G={
+ a:group("t2","a",shuf([A.a,"pH зменшується","pH не змінюється","pH стає більшим за 7"])),
+ b:group("t2","b",shuf([A.b,"pH збільшується","pH не змінюється","pH стає меншим за 7"])),
+ c:group("t2","c",shuf([A.c,"Так"])),
+ h1:group("t3","h1",shuf([A.h1,"10³ моль/л","3 моль/л","10⁻¹¹ моль/л"])),
+ h3:group("t3","h3",shuf(["кислотне","нейтральне","лужне"])),
+ h4:group("t3","h4",shuf([A.h4,"у 3 рази","у 30 разів","у 100 разів"])),
+ h5:group("t3","h5",shuf([A.h5,"pH = 1","pH = 20","pH = 2,1"])),
+ h6:group("t3","h6",shuf(["pH = 1","pH = 4","pH = 7","pH = 12"])),
+ z1:group("t5","z1",shuf([A.z1,"лужніший розчин","менша [H⁺]","ближче розчин до нейтрального"]))};
+READY.t2=()=>!isNaN(num($("j1").value))&&!isNaN(num($("j2").value))&&G.a.val&&G.b.val&&G.c.val;
+READY.t3=()=>["h1","h3","h4","h5","h6"].every(k=>G[k].val)&&$("h2").value.trim();
+READY.t5=()=>G.z1.val&&$("concl").value.trim().length>=30;
+
+/* 4 */
+const L4=[["Засіб для чищення труб (13)","Фенолфталеїн","малиновий"],["Вода (7)","Фенолфталеїн","безбарвний"],["Кислота акумулятора (1)","Метиловий оранжевий","червоний"],["Мило для рук (10)","Лакмус","синій"],["Газована вода (2,5)","Лакмус","червоний"],["Кава (5)","Метиловий оранжевий","жовтий"]];
+const C4=["червоний","оранжевий","жовтий","зелений","синій","фіолетовий","малиновий","безбарвний"];
+$("tb4").innerHTML=L4.map((l,i)=>`<tr><td><b>${l[0]}</b></td><td>${l[1]}</td><td>${sel(C4,`data-i="${i}"`)}</td></tr>`).join("");
+READY.t4=()=>[...$("tb4").querySelectorAll("select")].every(s=>s.value);
+
+/* загальне */
+function refresh(t){const sec=$(t);if(!sec||sec.dataset.done||!sec.querySelector(".chk"))return;const ok=READY[t]();sec.querySelector(".chk").disabled=!ok;sec.querySelector(".need").textContent=ok?"":"Заповни все, щоб перевірити"}
+document.addEventListener("input",e=>{const s=e.target.closest(".task");if(s)refresh(s.id)});
+document.addEventListener("change",e=>{const s=e.target.closest(".task");if(s)refresh(s.id)});
+function markEl(el,good,ok){el.disabled=true;el.classList.add(good?"right":"wrong");if(!good&&ok!=null){const c=document.createElement("span");c.className="corr";c.textContent="✓ "+ok;el.after(c)}return good}
+function feedback(t,p,max,html){const sec=$(t),fb=sec.querySelector(".fb");fb.hidden=false;fb.className="fb "+(p>=max?"ok":p>0?"mid":"bad");
+  fb.innerHTML=`<b class="h">${p>=max?"✓ Чудово!":p>0?"◐ Частково правильно":"✗ Є помилки"} — ${fmt(p)} з ${max}</b>${html}`;sec.dataset.done="1";sec.querySelector(".chk").hidden=true;sec.querySelector(".need").textContent="";
+  SCORE[t]=p;const v=Object.values(SCORE);$("sum").textContent=fmt(v.reduce((s,x)=>s+x,0));$("nDone").textContent=v.length;finalState()}
+const CHECK={
+ t1(){let ok=0;const e=[];L1.forEach((l,i)=>{const inp=$("tb1").querySelector(`input[data-i="${i}"]`),s=$("tb1").querySelector(`select[data-i="${i}"]`);
+   if(markEl(inp,Math.abs(num(inp.value)-l[1])<=0.3,String(l[1]).replace(".",",")))ok++;else e.push(`${l[0]} pH «${inp.value}»`);
+   if(markEl(s,s.value===l[2],l[2]))ok++;else e.push(`${l[0]} середовище «${s.value}»`)});
+   const p=half(ok/12*3);REC.t1=`${ok}/12`+(e.length?"; помилки: "+e.join("; "):"");
+   feedback("t1",p,3,"<p>Кислотні рідини (pH &lt; 7): кислота акумулятора, газована вода, апельсиновий сік, кава, молоко. Вода нейтральна (pH 7). Кров, мило й засіб для чищення труб мають лужне середовище (pH &gt; 7). Кров (7,4) — слабколужна.</p>")},
+ t2(){const j1=num($("j1").value),j2=num($("j2").value),meas=j2>j1&&j2<=7;markEl($("j1"),meas);markEl($("j2"),meas);
+   const p=(meas?.5:0)+(mark(G.a,A.a)?.5:0)+(mark(G.b,A.b)?.5:0)+(mark(G.c,A.c)?.5:0);
+   REC.t2=`виміри ${$("j1").value} → ${$("j2").value} ${meas?"✓":"✗"}; кисл. ${G.a.val===A.a?"✓":"✗"}; луж. ${G.b.val===A.b?"✓":"✗"}; чи можна ${G.c.val}`;
+   feedback("t2",p,2,"<p>Під час розбавлення концентрація йонів H⁺ (або OH⁻) зменшується, тому pH кислого розчину <b>зростає</b>, а лужного — <b>зменшується</b>. В обох випадках pH наближається до 7, але не переходить через цю межу. Вода не може перетворити кислоту на луг.</p>")},
+ t3(){let ok=0;const e=[];[["h1",A.h1],["h3",A.h3],["h4",A.h4],["h5",A.h5],["h6",A.h6]].forEach(([k,v])=>{if(mark(G[k],v))ok++;else e.push(`${k}: «${G[k].val}»`)});
+   if(markEl($("h2"),num($("h2").value)===10,"10"))ok++;else e.push(`pH для 10⁻¹⁰: «${$("h2").value}»`);
+   const p=ok*.5;REC.t3=`${ok}/6`+(e.length?"; помилки: "+e.join("; "):"");
+   feedback("t3",p,3,"<p>1) pH 3 → [H⁺] = 10⁻³ моль/л. 2) [H⁺] = 10⁻¹⁰ → pH = 10, 3) середовище лужне. 4) pH 2 і pH 5 відрізняються на 3 одиниці, отже [H⁺] відрізняється в 10³ = 1000 разів. 5) Розбавлення в 10 разів зменшує [H⁺] у 10 разів: pH зростає на 1 і дорівнює 3. 6) Найкисліший розчин має найменший pH, тобто 1.</p>")},
+ t4(){let ok=0;const e=[];$("tb4").querySelectorAll("select").forEach(s=>{const l=L4[+s.dataset.i];if(markEl(s,s.value===l[2],l[2]))ok++;else e.push(`${l[0]} + ${l[1]}: «${s.value}»`)});
+   const p=half(ok/6*3);REC.t4=`${ok}/6`+(e.length?"; помилки: "+e.join("; "):"");
+   feedback("t4",p,3,"<p>Кожен індикатор змінює колір у своєму інтервалі pH. Фенолфталеїн «бачить» лише лужне середовище (pH &gt; 8,2). Метиловий оранжевий червоний у сильно кислому середовищі й жовтий уже за pH &gt; 4,4, тому в каві він жовтий. Лакмус червоний у кислотному середовищі й синій у лужному. Найточніше pH показує універсальний індикатор або pH-метр.</p>")},
+ t5(){const z=mark(G.z1,A.z1);$("concl").readOnly=true;REC.t5=`${z?"✓":"✗ «"+G.z1.val+"»"}`;REC.concl=$("concl").value.trim().slice(0,900);
+   feedback("t5",z?1:0,1,"<p>Чим менший pH, тим більша концентрація йонів H⁺ і тим кислотніший розчин. pH визначають pH-метром або індикаторами. Його контролюють у медицині (pH крові 7,35–7,45), харчовій промисловості, сільському господарстві (кислотність ґрунту) та в басейнах. Твій висновок прочитає вчитель.</p>")}};
+["t1","t2","t3","t4","t5"].forEach(t=>{$(t).querySelector(".chk").onclick=()=>{if(!$(t).dataset.done&&READY[t]())CHECK[t]()};refresh(t)});
+["Так, упевнено","Частково","Поки що ні"].forEach(t=>{const b=document.createElement("button");b.type="button";b.className="opt";b.textContent=t;b.onclick=()=>{$("selfSeg").querySelectorAll(".opt").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");SELF=t;finalState()};$("selfSeg").appendChild(b)});
+function finalState(){const n=Object.keys(SCORE).length,tot=Object.values(SCORE).reduce((s,x)=>s+x,0);
+  $("finalLine").innerHTML=n<5?`Перевірено ${n} з 5 завдань. Перевір усі, щоб здати роботу.`:`Усі завдання перевірено: <b>${fmt(tot)} з 12 балів</b>. Оціни себе й здай роботу.`;$("submit").disabled=sent||n<5||!SELF}
+$("submit").onclick=async()=>{if(sent)return;const box=$("sendBox");$("submit").disabled=true;box.hidden=false;box.className="msg info";box.textContent="Надсилаю…";
+  const O=["t1","t2","t3","t4","t5"],sc=Math.round(O.reduce((s,k)=>s+SCORE[k],0)*100)/100;
+  const rec={name:ME.name,cls:ME.cls,score:sc,max:12,ts:{".sv":"timestamp"},parts:O.map(k=>SCORE[k]).join(" "),t1:REC.t1,t2:REC.t2,t3:REC.t3,t4:REC.t4,t5:REC.t5,concl:REC.concl,self:SELF};
+  try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec)});if(!r.ok)throw new Error(r.status);
+    sent=true;box.className="msg ok";box.textContent=`✓ Роботу отримано вчителем: ${fmt(sc)} / 12. Молодець!`}catch(e){$("submit").disabled=false;box.className="msg bad";box.textContent="Не вдалося надіслати. Перевір інтернет і натисни ще раз."}};
+$("startBtn").onclick=()=>{const nm=$("pname").value.trim().replace(/\s+/g," "),c=$("pcls").value;if(nm.length<3||nm.split(" ").length<2||!c){$("startErr").hidden=false;return}
+  ME={name:nm.slice(0,60),cls:c};$("who").textContent=`👤 ${ME.name} · ${ME.cls}`;$("start").hidden=true};
+$("pname").addEventListener("keydown",e=>{if(e.key==="Enter")$("startBtn").click()});
+window.addEventListener("beforeunload",e=>{if(Object.keys(SCORE).length&&!sent){e.preventDefault();e.returnValue=""}});
+</script>
+</body>
+</html>
