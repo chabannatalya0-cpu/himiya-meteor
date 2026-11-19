@@ -118,6 +118,7 @@ const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.fireba
 const API_KEY="AIzaSyAGOncvJIlGaJu14uqEWy6rQxdF7-pQYUI";
 const STATIONS=["Обладнання","Ризики","Рівняння","Хід роботи","Збирання","Виявлення","Каталізатори","Висновок"];
 const WORKS=[
+  {id:"konstruktor8",date:"2026-11-20",cls:"8",url:"konstruktor8.html",type:"Симулятор",label:"8 кл. · Конструктор кислот і основ",title:"Симулятор «Конструктор: кислоти й основи з оксидів» (8 клас)",subject:"Хімія · 8 клас · оксиди + вода"},
   {id:"oksydy8",date:"2026-11-19",cls:"8",url:"oksydy8.html",type:"Супровід уроку",label:"8 кл. · Оксиди + вода, кислоти й основи",title:"Супровід уроку «Взаємодія оксидів із водою. Поняття про кислоти й основи» (8 клас)",subject:"Хімія · 8 клас · індикатори, pH"},
   {id:"nd4metal7",date:"2026-11-19",cls:"7",url:"nd4metal7.html",type:"Навчальне дослідження",label:"7 кл. · НД №4 «Метали й неметали»",title:"Навчальне дослідження № 4 «Порівняння фізичних властивостей металів і неметалів» (7 клас)",subject:"Хімія · 7 клас · §8"},
   {id:"detektyvy7",date:"2026-11-19",cls:"7",url:"detektyvy7.html",type:"Інтерактивний аркуш",label:"7 кл. · Хімічні детективи",title:"Інтерактивний аркуш «Хімічні детективи» — прості речовини, метали та неметали (7 клас)",subject:"Хімія · 7 клас · прості речовини, метали й неметали"},
@@ -289,6 +290,20 @@ function render(){
         <div><b>Самооцінка</b>${esc(x.reflection||"—")}</div></div></details></td>
       <td class="muted">${when(x)}</td></tr>`}).join("")
       :'<tr><td colspan="7" class="muted">Ще ніхто не здав роботу. Коли учні натиснуть «Здати роботу», вони з\'являться тут.</td></tr>';
+  } else if(work.id==="konstruktor8"){
+    $("kAvg").textContent=best.length?(best.reduce((s,x)=>s+x.score,0)/best.length).toFixed(1):"0"; $("kAvgT").textContent="середній бал (з 12)";
+    $("kTop").textContent=best.filter(x=>x.score>=10).length; $("kTopT").textContent="учнів з балом 10–12";
+    const A=best.reduce((s,x)=>s+(+x.acids||0),0),B=best.reduce((s,x)=>s+(+x.bases||0),0),cnt={};
+    best.forEach(x=>(x.mistakes||"").split("; ").filter(Boolean).forEach(m=>{const k=m.split(":")[0];cnt[k]=(cnt[k]||0)+1}));
+    $("hardTitle").textContent="Оксиди, з якими найчастіше помиляються"; $("hardHint").textContent=best.length?`Кислоти: ${Math.round(A/(6*best.length)*100)}% балів · основи: ${Math.round(B/(6*best.length)*100)}% балів (найкращі спроби).`:"";
+    const hard=Object.entries(cnt).sort((a,b)=>b[1]-a[1]);
+    $("hard").innerHTML=hard.length?hard.map(([s,n])=>`<span class="chip">${esc(s)} <small>${n} уч.</small></span>`).join(""):'<span class="muted">Поки немає даних</span>';
+    $("th").innerHTML=`<tr><th data-k="name">Учень</th><th data-k="cls">Клас</th><th data-k="score">Бали</th><th>Кислоти / основи</th><th>Підказок</th><th>Самооцінка</th><th>Помилки</th><th data-k="ts">Коли</th></tr>`;
+    $("tb").innerHTML=out.length?out.map(x=>{const p=x.score>=10?"g":x.score>=7?"m":"b";
+      return `<tr><td><strong>${esc(x.name)}</strong></td><td>${esc(x.cls)}</td><td><span class="pill ${p}">${String(x.score).replace(".",",")} / 12</span></td>
+      <td class="mono">${String(x.acids??"–").replace(".",",")} / ${String(x.bases??"–").replace(".",",")}</td><td class="mono">${esc(x.hints??0)}</td><td>${esc(x.self||"")}</td>
+      <td>${x.mistakes||x.typeErr?`<details><summary>Відкрити</summary><div class="work"><div><b>Помилки</b>${esc(x.mistakes||"—")}</div><div><b>Помилився з типом оксиду</b>${esc(x.typeErr||"—")}</div></div></details>`:"—"}</td><td class="muted">${when(x)}</td></tr>`}).join("")
+      :'<tr><td colspan="8" class="muted">Ще ніхто не здав.</td></tr>';
   } else if(work.id==="oksydy8"){
     const NM=["Індикатори","Лабораторія оксидів","Рівняння","pH навколо нас","Висновки"],MX=[3,4,2,2,1];
     $("kAvg").textContent=best.length?(best.reduce((s,x)=>s+x.score,0)/best.length).toFixed(1):"0"; $("kAvgT").textContent="середній бал (з 12)";
@@ -735,6 +750,8 @@ function csv(){
     .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.detail,x.orders,x.weak,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="dys9"){lines=[["Учень","Клас","Бали (з 12)","Рівняння (з 6)","Визначення (з 2)","Ступінчаста (з 2)","Застосування (з 2)","Рівняння 1–6","Набір речовин","Помилки","Дата"]]
     .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.eq,x.set,x.weak,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
+  else if(work.id==="konstruktor8"){lines=[["Учень","Клас","Бали (з 12)","Кислоти (з 6)","Основи (з 6)","Підказок","Самооцінка","Помилки","Помилки з типом оксиду","Дата"]]
+    .concat(out.map(x=>[x.name,x.cls,x.score,x.acids,x.bases,x.hints,x.self,x.mistakes,x.typeErr,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="oksydy8"){lines=[["Учень","Клас","Бали (з 12)","Індикатори (з 3)","Лабораторія (з 4)","Рівняння (з 2)","pH (з 2)","Висновки (з 1)","Самооцінка","Гіпотеза","1. Індикатори","2. Лабораторія","3. Рівняння","4. pH","5. Висновки","Висновок учня","Дата"]]
     .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.self,x.hyp,x.t1,x.t2,x.t3,x.t4,x.t5,x.concl,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="nd4metal7"){lines=[["Учень","Клас","Бали (з 12)","Кроки 2–4 (з 4)","Крок 5 (з 1)","Крок 6 (з 3)","Крок 7 (з 2)","Висновки (з 2)","Самооцінка","Гіпотеза","Таблиця 1","Крок 5","Пояснення послідовності","Крок 6","Крок 7","Таблиця висновків","Висновок учня","Дата"]]
