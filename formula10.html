@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Виведення формули за загальною формулою ряду та густиною — 10 клас</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1d2a3a;--ink2:#46556a;--muted:#6f7c8f;--bg:#f4f6f8;--line:#dfe5ec;--teal:#0f7a63;--teal2:#14a083;--mint:#e6f4ee;--blue:#2563eb;--sky:#e8f0fe;
+ --ok:#14864f;--ok-t:#e1f6ea;--bad:#d33a4a;--bad-t:#fde7e9;--warn-t:#fff4dc;--focus:#4f5cf0;--sh:0 8px 24px rgba(29,42,58,.07),0 1px 3px rgba(29,42,58,.06)}
+*{box-sizing:border-box}html,body{margin:0}
+body{font-family:'Noto Sans',system-ui,'Segoe UI',Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+button,input,select,textarea{font:inherit;color:inherit}
+button:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+[hidden]{display:none!important}
+.wrap{max-width:940px;margin:0 auto;padding:18px 14px 60px}
+.hero{background:linear-gradient(120deg,#e8f0fe,#e6f4ee);border-radius:18px;padding:22px 24px;margin-bottom:14px}
+.kicker{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--blue);text-transform:uppercase}
+.hero h1{font-size:clamp(24px,4.4vw,34px);margin:4px 0;font-weight:800;line-height:1.2}
+.hero p{margin:0;color:var(--ink2)}
+.who{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:14px;color:var(--ink2);margin:0 4px 14px}
+.task{background:#fff;border-radius:18px;box-shadow:var(--sh);padding:20px 22px;margin:0 0 16px;border-top:5px solid var(--blue)}
+.task.g{border-top-color:var(--teal2)} .task.n{border-top-color:#8aa0b8}
+.th{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.num{flex:none;min-width:36px;height:32px;padding:0 8px;border-radius:9px;display:grid;place-items:center;color:#fff;font-weight:800;background:var(--blue)}
+.g .num{background:var(--teal)} .n .num{background:#5d7189}
+.th h2{margin:0;font-size:20px;font-weight:800;flex:1}
+.pts{font-size:13px;font-weight:700;color:var(--muted);white-space:nowrap}
+.lead{margin:6px 0 12px;color:var(--ink2)}
+.box{background:var(--sky);border-radius:12px;padding:12px 14px;margin:8px 0 12px}
+.box.g{background:var(--mint)}
+.q{font-weight:700;margin:14px 0 8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:680px){.grid2{grid-template-columns:1fr}}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:560px}
+th,td{border:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:middle}
+th{background:#f3f6f9;font-size:14px}
+td select{width:100%;padding:7px 8px;border:2px solid var(--line);border-radius:9px;background:#fff}
+td select.right,input.right{border-color:var(--ok);background:var(--ok-t)} td select.wrong,input.wrong{border-color:var(--bad);background:var(--bad-t)}
+.corr{display:block;font-size:12px;color:var(--ok);font-weight:700;margin-top:3px}
+textarea{width:100%;min-height:76px;border:2px solid var(--line);border-radius:12px;padding:10px 12px;resize:vertical}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:2px solid var(--line);background:#fff;border-radius:12px;padding:8px 14px;font-weight:700;cursor:pointer}
+.chip.sel{border-color:var(--ink);background:var(--ink);color:#fff}
+.chip.done{border-color:var(--ok)}
+/* склянка */
+.bench{display:flex;gap:18px;align-items:flex-end;flex-wrap:wrap;justify-content:center;background:#f7f9fc;border-radius:14px;padding:14px}
+.beaker{width:130px;text-align:center}
+.beaker svg{width:130px;height:150px}
+.beaker .lbl{font-weight:700;font-size:14px;min-height:22px}
+.liq{transition:fill .9s ease}
+.phbadge{display:inline-block;margin-top:4px;font-weight:800;border-radius:999px;padding:2px 10px;background:#fff;border:2px solid var(--line);font-size:14px}
+.scale{display:flex;border-radius:10px;overflow:hidden;margin:10px 0 4px}
+.scale div{flex:1;text-align:center;font-size:12px;font-weight:800;padding:6px 0;color:#1d2a3a}
+.scale-cap{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-weight:700}
+.btn{border:0;border-radius:12px;padding:11px 20px;font-weight:800;cursor:pointer;background:var(--ink);color:#fff;box-shadow:0 3px 0 #0b1320}
+.btn.s{padding:8px 14px;font-size:14px;box-shadow:0 2px 0 #0b1320}
+.btn.lt{background:#fff;color:var(--ink);box-shadow:0 0 0 2px var(--ink) inset}
+.btn[disabled]{opacity:.4;cursor:not-allowed}.btn.big{font-size:18px;padding:14px 28px}
+.act{display:flex;justify-content:flex-end;gap:10px;margin-top:14px;align-items:center;flex-wrap:wrap}
+.need{font-size:13px;color:var(--muted)}
+.fb{margin-top:12px;border-radius:12px;padding:10px 14px;border-left:5px solid;font-size:15px}
+.fb.ok{background:var(--ok-t);border-color:var(--ok)}.fb.mid{background:var(--warn-t);border-color:#e0a530}.fb.bad{background:var(--bad-t);border-color:var(--bad)}
+.fb b.h{display:block;font-size:16px}
+.eq{font-size:20px;font-weight:700;display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:8px 0}
+.eq input{width:52px;text-align:center;padding:6px;border:2px solid var(--line);border-radius:9px;font-weight:800}
+.eq select{padding:6px 8px;border:2px solid var(--line);border-radius:9px;font-weight:700}
+.log{font-size:14px;color:var(--ink2);min-height:22px;margin-top:8px;text-align:center}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:10px;text-align:left;border:2px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;cursor:pointer;font-weight:600}
+.opt.sel{border-color:var(--ink);background:#f2f4fb}.opt.right{border-color:var(--ok);background:var(--ok-t)}.opt.wrong{border-color:var(--bad);background:var(--bad-t)}.opt.miss{border-color:var(--ok);border-style:dashed}
+.modal{position:fixed;inset:0;background:rgba(20,30,45,.55);display:grid;place-items:center;z-index:50;padding:14px}
+.dlg{background:#fff;border-radius:20px;max-width:460px;width:100%;padding:24px}
+.dlg h2{margin:4px 0;font-size:22px}.dlg p{margin:0 0 14px;color:var(--ink2)}
+.inp{width:100%;font-size:17px;padding:11px 13px;border-radius:12px;border:2px solid var(--line);margin-bottom:10px;background:#fff}
+.err{color:var(--bad);font-weight:700;font-size:14px;margin:0 0 10px}
+.final{background:#fff;border-radius:18px;box-shadow:var(--sh);padding:22px;text-align:center}
+.seg{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}.seg .opt{flex:1;justify-content:center;min-width:110px}
+.msg{margin-top:12px;border-radius:12px;padding:10px 14px;font-weight:700}
+.msg.ok{background:var(--ok-t);color:var(--ok)}.msg.bad{background:var(--bad-t);color:var(--bad)}.msg.info{background:#eef2fb;color:var(--ink2)}
+.sw{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;border:1px solid rgba(0,0,0,.15)}
+
+/* ===== яскрава тема ===== */
+body{background:radial-gradient(circle at 10% 0%,#ffe3f1 0,transparent 40%),radial-gradient(circle at 90% 10%,#dff6ff 0,transparent 40%),radial-gradient(circle at 50% 100%,#fff3c4 0,transparent 45%),#f7f5ff}
+.hero{background:linear-gradient(120deg,#ff3d7f 0%,#ff8a3d 35%,#ffd23d 55%,#2ec4b6 78%,#3d6bff 100%);color:#fff;box-shadow:0 12px 30px rgba(255,61,127,.25)}
+.hero .kicker,.hero p{color:#fff}.hero h1{text-shadow:0 2px 0 rgba(0,0,0,.15)}
+.task{border-top-width:7px}
+.task:nth-of-type(7n+1){border-top-color:#ff3d7f}.task:nth-of-type(7n+2){border-top-color:#ff8a3d}.task:nth-of-type(7n+3){border-top-color:#f5b800}
+.task:nth-of-type(7n+4){border-top-color:#2ec4b6}.task:nth-of-type(7n+5){border-top-color:#3d6bff}.task:nth-of-type(7n+6){border-top-color:#9b5de5}.task:nth-of-type(7n){border-top-color:#00b86b}
+.task:nth-of-type(7n+1) .num{background:#ff3d7f}.task:nth-of-type(7n+2) .num{background:#ff8a3d}.task:nth-of-type(7n+3) .num{background:#f5b800}
+.task:nth-of-type(7n+4) .num{background:#2ec4b6}.task:nth-of-type(7n+5) .num{background:#3d6bff}.task:nth-of-type(7n+6) .num{background:#9b5de5}.task:nth-of-type(7n) .num{background:#00b86b}
+.num{font-size:17px;box-shadow:0 3px 0 rgba(0,0,0,.15)}
+.box{background:linear-gradient(135deg,#ffe8f1,#fff1e3)}.box.g{background:linear-gradient(135deg,#dcfbf4,#e3f0ff)}
+.chip{border-color:#d9d2ff;background:#f4f1ff;color:#4a2fb0}
+.chip:nth-child(6n+1){background:#ffe6ef;border-color:#ffc0d5;color:#c2185b}.chip:nth-child(6n+2){background:#fff0e0;border-color:#ffd2a6;color:#c25a00}
+.chip:nth-child(6n+3){background:#fff8d6;border-color:#ffe48a;color:#8a6a00}.chip:nth-child(6n+4){background:#ddf8f3;border-color:#9ce8db;color:#0b7a6c}
+.chip:nth-child(6n+5){background:#e3ebff;border-color:#b3c6ff;color:#2443b8}.chip:nth-child(6n){background:#f0e6ff;border-color:#d4b8ff;color:#6a2fb8}
+.chip.sel{background:#1d2a3a!important;border-color:#1d2a3a!important;color:#fff!important;transform:translateY(-1px)}
+.chip.done::after{content:" ✓"}
+.btn{background:linear-gradient(135deg,#3d6bff,#9b5de5);box-shadow:0 4px 0 #2c3fa8}
+.btn.lt{background:#fff;color:#3d6bff;box-shadow:0 0 0 2px #3d6bff inset}
+.btn.big{background:linear-gradient(135deg,#ff3d7f,#ff8a3d);box-shadow:0 4px 0 #b8255a}
+.bench{background:linear-gradient(180deg,#f2f7ff,#fdf2ff)}
+th{background:linear-gradient(135deg,#eef3ff,#f7ecff);color:#2c3a6b}
+.who{background:#fff;border-radius:999px;padding:8px 16px;box-shadow:var(--sh)}
+.final{background:linear-gradient(135deg,#fff,#fff6e8)}
+.dlg{border-top:8px solid #ff3d7f}
+.modal{background:rgba(61,40,120,.55)}
+
+.tcard{background:#fff;border-radius:18px;box-shadow:var(--sh);padding:20px 22px;margin-bottom:16px;border-top:7px solid #3d6bff}
+.cond{font-size:19px;font-weight:700;background:linear-gradient(135deg,#fff7e0,#ffe8f1);border-radius:14px;padding:14px 16px;margin:10px 0}
+.stp{border:2px solid var(--line);border-radius:14px;padding:12px 14px;margin:10px 0;background:#fbfaff}
+.stp h4{margin:0 0 8px;font-size:16px;display:flex;align-items:center;gap:8px}
+.stp h4 i{font-style:normal;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:13px}
+.line{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:17px;font-weight:700}
+.line input,.line select{padding:8px 10px;border:2px solid var(--line);border-radius:10px;font-weight:800;font-size:16px;background:#fff}
+.line input.w{width:110px}.line input.f{width:180px}
+.line input.right,.line select.right{border-color:var(--ok);background:var(--ok-t)}.line input.wrong,.line select.wrong{border-color:var(--bad);background:var(--bad-t)}
+.hint{font-size:14px;background:#fff8d6;border:2px dashed #ffd76a;border-radius:12px;padding:8px 12px;margin-top:8px}
+.hbtn{border:0;background:none;color:#3d6bff;font-weight:800;cursor:pointer;font-size:14px;padding:4px 0}
+.sol{background:var(--ok-t);border-radius:12px;padding:10px 14px;margin-top:10px;font-size:15px;line-height:1.7}
+.dots{display:flex;gap:5px;flex:1;min-width:160px}.dots i{flex:1;height:10px;border-radius:5px;background:#e8e3f7}
+.dots i.cur{background:#c9bdf3;box-shadow:0 0 0 2px #9b5de5 inset}.dots i.ok{background:var(--ok)}.dots i.mid{background:#f5b800}.dots i.bad{background:var(--bad)}
+.ref{width:100%;border-collapse:collapse;min-width:0;font-size:15px}.ref td,.ref th{padding:6px 8px}
+.rev{list-style:none;padding:0;margin:12px 0;display:grid;gap:6px;text-align:left}
+.rev li{background:#faf9ff;border-left:6px solid var(--ok);border-radius:10px;padding:8px 12px;font-size:14px}.rev li.mid{border-color:#f5b800}.rev li.bad{border-color:var(--bad)}
+</style>
+</head>
+<body>
+<div class="modal" id="start"><div class="dlg">
+  <div class="kicker">Тренажер · Хімія · 10 клас</div>
+  <h2>Виведення формули за загальною формулою ряду та густиною</h2>
+  <p>8 задач, у кожній 3 кроки: молярна маса → n → формула. За кожен правильний крок — 0,5 бала, разом 12.</p>
+  <input class="inp" id="pname" maxlength="60" placeholder="Прізвище та ім’я" autocomplete="name">
+  <select class="inp" id="pcls"><option value="">Обери клас</option><option>10-А</option><option>10-Б</option><option>Інший</option></select>
+  <p class="err" id="startErr" hidden>Впиши прізвище, ім’я та обери клас.</p>
+  <button class="btn big" id="startBtn" type="button" style="width:100%">Почати ▶</button>
+</div></div>
+
+<main class="wrap">
+  <header class="hero">
+    <div class="kicker">Хімія · 10 клас · тренажер розрахункових задач</div>
+    <h1>Виведення молекулярної формули за загальною формулою ряду та густиною</h1>
+    <p>Відпрацьовуємо алгоритм: M → n → формула.</p>
+  </header>
+  <div class="who"><span id="who">👤 —</span><div class="dots" id="dots"></div><span>Бали: <b id="sum">0</b> з 12</span></div>
+
+  <section class="task n" id="algo">
+    <div class="th"><span class="num">📘</span><h2>Алгоритм і довідка</h2></div>
+    <div class="grid2">
+      <div class="box"><b>Крок 1. Молярна маса</b><br>• за воднем: M = 2·D(H₂)<br>• за повітрям: M = 29·D(пов.)<br>• за киснем: M = 32·D(O₂); за азотом: M = 28·D(N₂); за гелієм: M = 4·D(He)<br>• за густиною (н. у.): M = ρ·V<sub>m</sub> = ρ·22,4 л/моль</div>
+      <div class="box g"><b>Кроки 2–3. Загальна формула → n → формула</b><br>Підстав атомні маси: M(CₙH₂ₙ₊₂) = 12n + 2n + 2 = 14n + 2.<br>Прирівняй до M і знайди n.<br><i>Приклад:</i> D(H₂) алкену = 21 → M = 42; 14n = 42 → n = 3 → <b>C₃H₆</b> (пропен).</div>
+    </div>
+    <div class="tw"><table class="ref"><thead><tr><th>Гомологічний ряд</th><th>Загальна формула</th><th>M, г/моль</th></tr></thead><tbody>
+      <tr><td>Алкани</td><td>CₙH₂ₙ₊₂</td><td>14n + 2</td></tr><tr><td>Алкени (циклоалкани)</td><td>CₙH₂ₙ</td><td>14n</td></tr><tr><td>Алкіни (алкадієни)</td><td>CₙH₂ₙ₋₂</td><td>14n − 2</td></tr>
+      <tr><td>Насичені одноатомні спирти</td><td>CₙH₂ₙ₊₁OH</td><td>14n + 18</td></tr><tr><td>Насичені одноосновні карбонові кислоти</td><td>CₙH₂ₙO₂</td><td>14n + 32</td></tr></tbody></table></div>
+    <p class="need">Формулу можна вводити звичайними цифрами: C3H8, C2H5OH, CH3COOH.</p>
+  </section>
+
+  <section class="tcard" id="game">
+    <div class="th"><span class="num" id="qn">1</span><h2 id="qh">Задача 1 з 8</h2><span class="pts">1,5 бала</span></div>
+    <div class="cond" id="cond"></div>
+    <div class="stp"><h4><i style="background:#ff3d7f">1</i>Обчисли молярну масу речовини</h4>
+      <div class="line">M = <input class="w" id="iM" inputmode="decimal" placeholder="?"> г/моль</div>
+      <button class="hbtn" type="button" data-h="1">💡 Підказка</button><div class="hint" id="h1" hidden></div></div>
+    <div class="stp"><h4><i style="background:#ff8a3d">2</i>Склади рівняння за загальною формулою й знайди n</h4>
+      <div class="line">Загальна формула: <select id="iS"><option value="">—</option><option value="alk">CₙH₂ₙ₊₂ (14n + 2)</option><option value="ene">CₙH₂ₙ (14n)</option><option value="yne">CₙH₂ₙ₋₂ (14n − 2)</option><option value="ol">CₙH₂ₙ₊₁OH (14n + 18)</option><option value="acid">CₙH₂ₙO₂ (14n + 32)</option></select></div>
+      <div class="line" style="margin-top:8px">n = <input class="w" id="iN" inputmode="numeric" placeholder="?"></div>
+      <button class="hbtn" type="button" data-h="2">💡 Підказка</button><div class="hint" id="h2" hidden></div></div>
+    <div class="stp"><h4><i style="background:#3d6bff">3</i>Запиши молекулярну формулу речовини</h4>
+      <div class="line">Формула: <input class="f" id="iF" placeholder="напр. C3H8" autocomplete="off" spellcheck="false"></div></div>
+    <div class="fb" id="fb" hidden></div>
+    <div class="act"><span class="need" id="need"></span><button class="btn" id="chk" type="button" disabled>Перевірити</button><button class="btn big" id="next" type="button" hidden>Наступна задача ▶</button></div>
+  </section>
+
+  <section class="final" id="fin" hidden>
+    <div style="font-size:64px;font-weight:900;color:#3d6bff;line-height:1" id="big">0 / 12</div>
+    <h2 id="finT"></h2>
+    <ul class="rev" id="rev"></ul>
+    <p class="q">Як ти оцінюєш себе? Я вмію виводити формулу речовини за загальною формулою ряду та густиною:</p>
+    <div class="seg" id="selfSeg"></div>
+    <p style="margin-top:16px"><button class="btn big" id="submit" type="button" disabled>Здати роботу вчителю</button></p>
+    <div class="msg" id="sendBox" hidden></div>
+  </section>
+</main>
+
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="formula10";
+const $=id=>document.getElementById(id);
+const shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const fmt=x=>String(Math.round(x*1000)/1000).replace(".",",");
+const num=v=>parseFloat(String(v).replace(",","."));
+const SUBS="₀₁₂₃₄₅₆₇₈₉";const sub=n=>n>1?String(n).split("").map(d=>SUBS[+d]).join(""):"";
+const SER={
+ alk:{nm:"алкан",gen:"алкану",k:2,ns:[1,2,3,4,5,6,7,8],f:n=>`C${sub(n)}H${sub(2*n+2)}`,c:n=>({C:n,H:2*n+2,O:0}),names:["метан","етан","пропан","бутан","пентан","гексан","гептан","октан"]},
+ ene:{nm:"алкен",gen:"алкену",k:0,ns:[2,3,4,5,6,7],f:n=>`C${sub(n)}H${sub(2*n)}`,c:n=>({C:n,H:2*n,O:0}),names:[,,"етен","пропен","бутен","пентен","гексен","гептен"]},
+ yne:{nm:"алкін",gen:"алкіну",k:-2,ns:[2,3,4,5,6],f:n=>`C${sub(n)}H${sub(2*n-2)}`,c:n=>({C:n,H:2*n-2,O:0}),names:[,,"етин","пропін","бутин","пентин","гексин"]},
+ ol:{nm:"насичений одноатомний спирт",gen:"насиченого одноатомного спирту",k:18,ns:[1,2,3,4,5],f:n=>`C${sub(n)}H${sub(2*n+1)}OH`,c:n=>({C:n,H:2*n+2,O:1}),names:[,"метанол","етанол","пропанол","бутанол","пентанол"]},
+ acid:{nm:"насичена одноосновна карбонова кислота",gen:"насиченої одноосновної карбонової кислоти",k:32,ns:[1,2,3,4,5],f:n=>`C${sub(n)}H${sub(2*n)}O₂`,c:n=>({C:n,H:2*n,O:2}),names:[,"метанова (мурашина) кислота","етанова (оцтова) кислота","пропанова кислота","бутанова кислота","пентанова кислота"]}};
+const DENS=[
+ {t:"H2",txt:(d)=>`Відносна густина за воднем становить ${d}`,k:2,dec:1,sol:"M = 2·D(H₂)"},
+ {t:"air",txt:(d)=>`Відносна густина за повітрям становить ${d}`,k:29,dec:3,sol:"M = 29·D(пов.)"},
+ {t:"O2",txt:(d)=>`Відносна густина за киснем становить ${d}`,k:32,dec:3,sol:"M = 32·D(O₂)"},
+ {t:"N2",txt:(d)=>`Відносна густина за азотом становить ${d}`,k:28,dec:3,sol:"M = 28·D(N₂)"},
+ {t:"He",txt:(d)=>`Відносна густина за гелієм становить ${d}`,k:4,dec:2,sol:"M = 4·D(He)"},
+ {t:"rho",txt:(d)=>`Густина речовини в газоподібному стані за нормальних умов становить ${d} г/л`,k:22.4,dec:3,sol:"M = ρ·22,4"}];
+const round=(x,d)=>Math.round(x*10**d)/10**d;
+function makeTask(s){const S=SER[s],n=pick(S.ns),M=14*n+S.k;let D=pick(s==="ol"||s==="acid"?DENS.filter(d=>d.t!=="rho"||M<=60):DENS);
+  const d=round(M/D.k,D.dec);const cap=S.nm[0].toUpperCase()+S.nm.slice(1);
+  return {s,n,M,D,d,text:`${D.txt(String(d).replace(".",","))}. Виведіть молекулярну формулу ${S.gen}.`,name:S.names[n]};}
+function parseF(str){let s=String(str).trim().replace(/\s+/g,"").replace(/[₀-₉]/g,c=>SUBS.indexOf(c)).replace(/С/g,"C").replace(/Н/g,"H").replace(/О/g,"O").replace(/с/g,"C").replace(/н/g,"H").replace(/о/g,"O");
+  if(!/^[CHOcho0-9]+$/.test(s))return null;s=s.toUpperCase();const cnt={C:0,H:0,O:0};const re=/([CHO])(\d*)/g;let m,len=0;while((m=re.exec(s))){cnt[m[1]]+=m[2]?+m[2]:1;len+=m[0].length}return len===s.length?cnt:null}
+
+let ME=null,Q=[],qi=0,RES=[],HINT=new Set(),sent=false,SELF=null;
+function dots(){ $("dots").innerHTML=Q.map((_,k)=>`<i class="${k<RES.length?(RES[k].p>=1.5?"ok":RES[k].p>0?"mid":"bad"):k===qi?"cur":""}"></i>`).join(""); $("sum").textContent=String(RES.reduce((s,r)=>s+r.p,0)).replace(".",","); }
+function show(){const t=Q[qi];HINT=new Set();$("qn").textContent=qi+1;$("qh").textContent=`Задача ${qi+1} з ${Q.length}`;$("cond").textContent=t.text;
+  ["iM","iS","iN","iF"].forEach(id=>{const e=$(id);e.value="";e.disabled=false;e.classList.remove("right","wrong")});
+  document.querySelectorAll(".hint").forEach(h=>h.hidden=true);document.querySelectorAll(".hbtn").forEach(b=>b.disabled=false);
+  $("fb").hidden=true;$("chk").hidden=false;$("next").hidden=true;ready();dots();$("game").scrollIntoView({behavior:"smooth",block:"start"});}
+function ready(){const ok=$("iM").value.trim()&&$("iS").value&&$("iN").value.trim()&&$("iF").value.trim();$("chk").disabled=!ok;$("need").textContent=ok?"":"Заповни всі три кроки"}
+["iM","iS","iN","iF"].forEach(id=>{$(id).addEventListener("input",ready);$(id).addEventListener("change",ready)});
+document.querySelectorAll(".hbtn").forEach(b=>b.onclick=()=>{const t=Q[qi],h=b.dataset.h;HINT.add(h);b.disabled=true;const el=$("h"+h);el.hidden=false;
+  el.innerHTML=h==="1"?`${t.D.sol}. Підстав число з умови.`:`Ряд — ${SER[t.s].nm}. Його загальна формула дає M = 14n ${SER[t.s].k>0?"+ "+SER[t.s].k:SER[t.s].k<0?"− "+(-SER[t.s].k):""}. Прирівняй до знайденої M і розв'яжи рівняння.`});
+$("chk").onclick=()=>{const t=Q[qi],S=SER[t.s];
+  const mOk=Math.abs(num($("iM").value)-t.M)<=0.6, nOk=$("iS").value===t.s&&num($("iN").value)===t.n;
+  const c=parseF($("iF").value),need=S.c(t.n),fOk=!!c&&c.C===need.C&&c.H===need.H&&c.O===need.O;
+  $("iM").classList.add(mOk?"right":"wrong");$("iS").classList.add($("iS").value===t.s?"right":"wrong");$("iN").classList.add(num($("iN").value)===t.n?"right":"wrong");$("iF").classList.add(fOk?"right":"wrong");
+  ["iM","iS","iN","iF"].forEach(id=>$(id).disabled=true);document.querySelectorAll(".hbtn").forEach(b=>b.disabled=true);
+  const p=(mOk?.5:0)+(nOk?.5:0)+(fOk?.5:0);
+  RES.push({p,txt:t.text,ans:S.f(t.n),M:t.M,n:t.n,given:`M=${$("iM").value}; ${$("iS").value||"—"}; n=${$("iN").value}; ${$("iF").value}`,hints:HINT.size,s:t.s});
+  const k=S.k,eq=k>0?`14n + ${k} = ${t.M}`:k<0?`14n − ${-k} = ${t.M}`:`14n = ${t.M}`;
+  const f=$("fb");f.hidden=false;f.className="fb "+(p>=1.5?"ok":p>0?"mid":"bad");
+  f.innerHTML=`<b class="h">${p>=1.5?"✓ Задачу розв'язано!":p>0?"◐ Частково правильно":"✗ Є помилки"} — ${String(p).replace(".",",")} з 1,5</b>
+   <div class="sol"><b>Розв'язання:</b><br>1) ${t.D.sol} = ${String(t.D.k).replace(".",",")} · ${String(t.d).replace(".",",")} ≈ <b>${t.M} г/моль</b><br>
+   2) ${S.nm[0].toUpperCase()+S.nm.slice(1)}: M = 14n ${k>0?"+ "+k:k<0?"− "+(-k):""}; ${eq}; 14n = ${t.M-k}; <b>n = ${t.n}</b><br>3) Формула: <b>${S.f(t.n)}</b>${t.name?` — ${t.name}`:""}.</div>`;
+  $("chk").hidden=true;$("next").hidden=false;$("next").textContent=qi<Q.length-1?"Наступна задача ▶":"Результати ▶";dots();};
+$("next").onclick=()=>{if(qi<Q.length-1){qi++;show()}else finish()};
+function finish(){$("game").hidden=true;$("algo").hidden=true;$("fin").hidden=false;qi=Q.length;dots();
+  const tot=RES.reduce((s,r)=>s+r.p,0);$("big").textContent=`${String(tot).replace(".",",")} / 12`;
+  $("finT").textContent=tot>=10.5?"Чудово! Алгоритм опановано 🏆":tot>=7.5?"Добрий результат 👍":"Повтори алгоритм і розв'яжи ще раз";
+  $("rev").innerHTML=RES.map((r,k)=>`<li class="${r.p>=1.5?"":r.p>0?"mid":"bad"}"><b>${k+1}.</b> ${r.txt}<br>Відповідь: <b>${r.ans}</b> (M = ${r.M}, n = ${r.n}) · твої бали: ${String(r.p).replace(".",",")}${r.hints?" · 💡"+r.hints:""}</li>`).join("");window.scrollTo({top:0,behavior:"smooth"})}
+["Так, упевнено","Частково","Поки що ні"].forEach(t=>{const b=document.createElement("button");b.type="button";b.className="opt";b.textContent=t;b.onclick=()=>{$("selfSeg").querySelectorAll(".opt").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");SELF=t;$("submit").disabled=sent};$("selfSeg").appendChild(b)});
+$("submit").onclick=async()=>{if(sent)return;const box=$("sendBox");$("submit").disabled=true;box.hidden=false;box.className="msg info";box.textContent="Надсилаю…";
+  const tot=RES.reduce((s,r)=>s+r.p,0);
+  const rec={name:ME.name,cls:ME.cls,score:tot,max:12,ts:{".sv":"timestamp"},parts:RES.map(r=>r.p).join(" "),hints:RES.reduce((s,r)=>s+r.hints,0),
+    tasks:RES.map((r,k)=>`${k+1}) ${r.txt} → ${r.ans}; учень: ${r.given}; ${r.p} б.`).join(" | "),self:SELF};
+  try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec)});if(!r.ok)throw new Error(r.status);
+    sent=true;box.className="msg ok";box.textContent=`✓ Роботу отримано вчителем: ${String(tot).replace(".",",")} / 12. Молодець!`}catch(e){$("submit").disabled=false;box.className="msg bad";box.textContent="Не вдалося надіслати. Перевір інтернет і натисни ще раз."}};
+$("startBtn").onclick=()=>{const nm=$("pname").value.trim().replace(/\s+/g," "),c=$("pcls").value;if(nm.length<3||nm.split(" ").length<2||!c){$("startErr").hidden=false;return}
+  ME={name:nm.slice(0,60),cls:c};$("who").textContent=`👤 ${ME.name} · ${ME.cls}`;$("start").hidden=true;
+  Q=shuf(["alk","ene","yne","ol","acid","alk","ene","yne"]).map(makeTask);qi=0;RES=[];show()};
+$("pname").addEventListener("keydown",e=>{if(e.key==="Enter")$("startBtn").click()});
+window.addEventListener("beforeunload",e=>{if(RES.length&&!sent){e.preventDefault();e.returnValue=""}});
+</script>
+</body>
+</html>

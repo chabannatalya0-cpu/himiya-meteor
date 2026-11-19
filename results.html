@@ -118,6 +118,7 @@ const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.fireba
 const API_KEY="AIzaSyAGOncvJIlGaJu14uqEWy6rQxdF7-pQYUI";
 const STATIONS=["Обладнання","Ризики","Рівняння","Хід роботи","Збирання","Виявлення","Каталізатори","Висновок"];
 const WORKS=[
+  {id:"formula10",date:"2026-11-20",cls:"10",url:"formula10.html",type:"Тренажер",label:"10 кл. · Формула за загальною формулою ряду та густиною",title:"Тренажер «Виведення молекулярної формули за загальною формулою ряду та густиною» (10 клас)",subject:"Хімія · 10 клас · розрахункові задачі"},
   {id:"phet9",date:"2026-11-20",cls:"9",url:"ph9-phet.html",type:"Інтерактивна робота",label:"9 кл. · pH і індикатори (PhET)",title:"Інтерактивна робота «Кислотність розчинів. Водневий показник pH. Дослідження індикаторами» (9 клас, PhET)",subject:"Хімія · 9 клас · pH"},
   {id:"sadph8",date:"2026-11-20",cls:"8",url:"sad-ph8.html",type:"Гра",label:"8 кл. · Гра «Чарівний сад pH»",title:"Гра «Чарівний сад pH» — кислоти, луги, індикатори, оксиди (8 клас)",subject:"Хімія · 8 клас · pH, індикатори"},
   {id:"nd3kysl8",date:"2026-11-20",cls:"8",url:"nd3kysl8.html",type:"Навчальне дослідження",label:"8 кл. · НД №3 «Виявлення кислот і лугів»",title:"Навчальне дослідження № 3 «Виявлення кислот і лугів у розчинах» (8 клас)",subject:"Хімія · 8 клас · індикатори"},
@@ -293,6 +294,17 @@ function render(){
         <div><b>Самооцінка</b>${esc(x.reflection||"—")}</div></div></details></td>
       <td class="muted">${when(x)}</td></tr>`}).join("")
       :'<tr><td colspan="7" class="muted">Ще ніхто не здав роботу. Коли учні натиснуть «Здати роботу», вони з\'являться тут.</td></tr>';
+  } else if(work.id==="formula10"){
+    $("kAvg").textContent=best.length?(best.reduce((s,x)=>s+x.score,0)/best.length).toFixed(1):"0"; $("kAvgT").textContent="середній бал (з 12)";
+    $("kTop").textContent=best.filter(x=>x.score>=10).length; $("kTopT").textContent="учнів з балом 10–12";
+    $("hardTitle").textContent="Як клас розв'язує задачі"; $("hardHint").textContent="Кількість повністю розв'язаних задач (з 8) і використаних підказок, найкращі спроби.";
+    $("hard").innerHTML=best.length?best.map(x=>`<span class="chip">${esc(x.name.split(" ")[0])} <small>${(x.parts||"").split(" ").filter(v=>+v>=1.5).length}/8 · 💡${x.hints||0}</small></span>`).join(""):'<span class="muted">Поки немає даних</span>';
+    $("th").innerHTML=`<tr><th data-k="name">Учень</th><th data-k="cls">Клас</th><th data-k="score">Бали</th><th>Задачі 1–8</th><th data-k="hints">Підказок</th><th>Самооцінка</th><th>Розв'язання</th><th data-k="ts">Коли</th></tr>`;
+    $("tb").innerHTML=out.length?out.map(x=>{const p=x.score>=10?"g":x.score>=7?"m":"b";
+      return `<tr><td><strong>${esc(x.name)}</strong></td><td>${esc(x.cls)}</td><td><span class="pill ${p}">${String(x.score).replace(".",",")} / 12</span></td>
+      <td class="mono">${esc((x.parts||"").replace(/\./g,","))}</td><td class="mono">${esc(x.hints??0)}</td><td>${esc(x.self||"")}</td>
+      <td><details><summary>Відкрити</summary><div class="work">${(x.tasks||"").split(" | ").map(t=>`<div>${esc(t)}</div>`).join("")}</div></details></td><td class="muted">${when(x)}</td></tr>`}).join("")
+      :'<tr><td colspan="8" class="muted">Ще ніхто не здав.</td></tr>';
   } else if(work.id==="phet9"){
     const NM=["Вимірювання pH","Розбавлення","pH і [H⁺]","Індикатори","Висновки"],MX=[3,2,3,3,1];
     $("kAvg").textContent=best.length?(best.reduce((s,x)=>s+x.score,0)/best.length).toFixed(1):"0"; $("kAvgT").textContent="середній бал (з 12)";
@@ -794,6 +806,8 @@ function csv(){
     .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.detail,x.orders,x.weak,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="dys9"){lines=[["Учень","Клас","Бали (з 12)","Рівняння (з 6)","Визначення (з 2)","Ступінчаста (з 2)","Застосування (з 2)","Рівняння 1–6","Набір речовин","Помилки","Дата"]]
     .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.eq,x.set,x.weak,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
+  else if(work.id==="formula10"){lines=[["Учень","Клас","Бали (з 12)","Задачі 1–8 (по 1,5)","Підказок","Самооцінка","Розв'язання","Дата"]]
+    .concat(out.map(x=>[x.name,x.cls,x.score,x.parts,x.hints,x.self,x.tasks,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="phet9"){lines=[["Учень","Клас","Бали (з 12)","Вимірювання (з 3)","Розбавлення (з 2)","pH і [H⁺] (з 3)","Індикатори (з 3)","Висновки (з 1)","Самооцінка","1. Вимірювання","2. Розбавлення","3. pH і [H⁺]","4. Індикатори","5. Висновки","Висновок учня","Дата"]]
     .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.self,x.t1,x.t2,x.t3,x.t4,x.t5,x.concl,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="sadph8"){lines=[["Учень","Клас","Бали (з 12)","Правильних","З","Місії 1–4","Очки гри","Помилки","Дата"]]
