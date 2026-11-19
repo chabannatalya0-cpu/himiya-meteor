@@ -118,6 +118,7 @@ const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.fireba
 const API_KEY="AIzaSyAGOncvJIlGaJu14uqEWy6rQxdF7-pQYUI";
 const STATIONS=["Обладнання","Ризики","Рівняння","Хід роботи","Збирання","Виявлення","Каталізатори","Висновок"];
 const WORKS=[
+  {id:"oksydy8",date:"2026-11-19",cls:"8",url:"oksydy8.html",type:"Супровід уроку",label:"8 кл. · Оксиди + вода, кислоти й основи",title:"Супровід уроку «Взаємодія оксидів із водою. Поняття про кислоти й основи» (8 клас)",subject:"Хімія · 8 клас · індикатори, pH"},
   {id:"nd4metal7",date:"2026-11-19",cls:"7",url:"nd4metal7.html",type:"Навчальне дослідження",label:"7 кл. · НД №4 «Метали й неметали»",title:"Навчальне дослідження № 4 «Порівняння фізичних властивостей металів і неметалів» (7 клас)",subject:"Хімія · 7 клас · §8"},
   {id:"detektyvy7",date:"2026-11-19",cls:"7",url:"detektyvy7.html",type:"Інтерактивний аркуш",label:"7 кл. · Хімічні детективи",title:"Інтерактивний аркуш «Хімічні детективи» — прості речовини, метали та неметали (7 клас)",subject:"Хімія · 7 клас · прості речовини, метали й неметали"},
   {id:"terminy7",date:"2026-11-17",cls:"7",url:"terminy7.html",type:"Інтерактив",label:"7 кл. · Словник атома",title:"Інтерактив «Словник атома» — перевірка термінів § 5–6 (7 клас)",subject:"Хімія · 7 клас · атом, йони, хімічний елемент"},
@@ -288,6 +289,21 @@ function render(){
         <div><b>Самооцінка</b>${esc(x.reflection||"—")}</div></div></details></td>
       <td class="muted">${when(x)}</td></tr>`}).join("")
       :'<tr><td colspan="7" class="muted">Ще ніхто не здав роботу. Коли учні натиснуть «Здати роботу», вони з\'являться тут.</td></tr>';
+  } else if(work.id==="oksydy8"){
+    const NM=["Індикатори","Лабораторія оксидів","Рівняння","pH навколо нас","Висновки"],MX=[3,4,2,2,1];
+    $("kAvg").textContent=best.length?(best.reduce((s,x)=>s+x.score,0)/best.length).toFixed(1):"0"; $("kAvgT").textContent="середній бал (з 12)";
+    $("kTop").textContent=best.filter(x=>x.score>=10).length; $("kTopT").textContent="учнів з балом 10–12";
+    const sum=Array(5).fill(0);best.forEach(x=>(x.parts||"").split(" ").forEach((v,i)=>sum[i]+=(+v||0)));
+    $("hardTitle").textContent="Розділи, з якими клас впорався найгірше"; $("hardHint").textContent="Частка набраних балів за розділом (найкращі спроби учнів).";
+    $("hard").innerHTML=best.length?NM.map((n,i)=>[n,Math.round(sum[i]/(MX[i]*best.length)*100)]).sort((a,b)=>a[1]-b[1]).map(([n,p])=>`<span class="chip">${esc(n)} <small>${p}%</small></span>`).join(""):'<span class="muted">Поки немає даних</span>';
+    $("th").innerHTML=`<tr><th data-k="name">Учень</th><th data-k="cls">Клас</th><th data-k="score">Бали</th><th>Розділи 1–5</th><th>Самооцінка</th><th>Робота учня</th><th data-k="ts">Коли</th></tr>`;
+    $("tb").innerHTML=out.length?out.map(x=>{const p=x.score>=10?"g":x.score>=7?"m":"b";
+      return `<tr><td><strong>${esc(x.name)}</strong></td><td>${esc(x.cls)}</td><td><span class="pill ${p}">${String(x.score).replace(".",",")} / 12</span></td>
+      <td class="mono">${esc((x.parts||"").replace(/\./g,","))}</td><td>${esc(x.self||"")}</td>
+      <td><details><summary>Відкрити</summary><div class="work">
+        <div><b>Гіпотеза (капуста)</b>${esc(x.hyp||"—")}</div><div><b>1. Індикатори</b>${esc(x.t1||"—")}</div><div><b>2. Лабораторія</b>${esc(x.t2||"—")}</div>
+        <div><b>3. Рівняння</b>${esc(x.t3||"—")}</div><div><b>4. pH</b>${esc(x.t4||"—")}</div><div><b>5. Висновки</b>${esc(x.t5||"—")}</div><div><b>Висновок учня</b>${esc(x.concl||"—")}</div></div></details></td><td class="muted">${when(x)}</td></tr>`}).join("")
+      :'<tr><td colspan="7" class="muted">Ще ніхто не здав.</td></tr>';
   } else if(work.id==="nd4metal7"){
     const NM=["Блиск, колір, крихкість","Теплота в металі","Теплопровідність матеріалів","Електропровідність","Висновки"],MX=[4,1,3,2,2];
     $("kAvg").textContent=best.length?(best.reduce((s,x)=>s+x.score,0)/best.length).toFixed(1):"0"; $("kAvgT").textContent="середній бал (з 12)";
@@ -719,6 +735,8 @@ function csv(){
     .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.detail,x.orders,x.weak,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="dys9"){lines=[["Учень","Клас","Бали (з 12)","Рівняння (з 6)","Визначення (з 2)","Ступінчаста (з 2)","Застосування (з 2)","Рівняння 1–6","Набір речовин","Помилки","Дата"]]
     .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.eq,x.set,x.weak,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
+  else if(work.id==="oksydy8"){lines=[["Учень","Клас","Бали (з 12)","Індикатори (з 3)","Лабораторія (з 4)","Рівняння (з 2)","pH (з 2)","Висновки (з 1)","Самооцінка","Гіпотеза","1. Індикатори","2. Лабораторія","3. Рівняння","4. pH","5. Висновки","Висновок учня","Дата"]]
+    .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.self,x.hyp,x.t1,x.t2,x.t3,x.t4,x.t5,x.concl,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="nd4metal7"){lines=[["Учень","Клас","Бали (з 12)","Кроки 2–4 (з 4)","Крок 5 (з 1)","Крок 6 (з 3)","Крок 7 (з 2)","Висновки (з 2)","Самооцінка","Гіпотеза","Таблиця 1","Крок 5","Пояснення послідовності","Крок 6","Крок 7","Таблиця висновків","Висновок учня","Дата"]]
     .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.self,x.hyp,x.t1,x.t2,x.seq,x.t3,x.t4,x.t5,x.concl,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="detektyvy7"){lines=[["Учень","Клас","Бали (з 12)","Шифр (з 3)","Два зразки (з 2)","Помилка (з 2)","Майстерня (з 2)","Молекули (з 2)","Міф чи факт (з 1)","Самооцінка","1. Шифр","2. Два зразки","3. Помилка","4. Майстерня","5. Молекули","6. Міф чи факт","Пояснення про графіт","Дата"]]

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Взаємодія оксидів із водою. Кислоти й основи — 8 клас</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1d2a3a;--ink2:#46556a;--muted:#6f7c8f;--bg:#f4f6f8;--line:#dfe5ec;--teal:#0f7a63;--teal2:#14a083;--mint:#e6f4ee;--blue:#2563eb;--sky:#e8f0fe;
+ --ok:#14864f;--ok-t:#e1f6ea;--bad:#d33a4a;--bad-t:#fde7e9;--warn-t:#fff4dc;--focus:#4f5cf0;--sh:0 8px 24px rgba(29,42,58,.07),0 1px 3px rgba(29,42,58,.06)}
+*{box-sizing:border-box}html,body{margin:0}
+body{font-family:'Noto Sans',system-ui,'Segoe UI',Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+button,input,select,textarea{font:inherit;color:inherit}
+button:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+[hidden]{display:none!important}
+.wrap{max-width:940px;margin:0 auto;padding:18px 14px 60px}
+.hero{background:linear-gradient(120deg,#e8f0fe,#e6f4ee);border-radius:18px;padding:22px 24px;margin-bottom:14px}
+.kicker{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--blue);text-transform:uppercase}
+.hero h1{font-size:clamp(24px,4.4vw,34px);margin:4px 0;font-weight:800;line-height:1.2}
+.hero p{margin:0;color:var(--ink2)}
+.who{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:14px;color:var(--ink2);margin:0 4px 14px}
+.task{background:#fff;border-radius:18px;box-shadow:var(--sh);padding:20px 22px;margin:0 0 16px;border-top:5px solid var(--blue)}
+.task.g{border-top-color:var(--teal2)} .task.n{border-top-color:#8aa0b8}
+.th{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.num{flex:none;min-width:36px;height:32px;padding:0 8px;border-radius:9px;display:grid;place-items:center;color:#fff;font-weight:800;background:var(--blue)}
+.g .num{background:var(--teal)} .n .num{background:#5d7189}
+.th h2{margin:0;font-size:20px;font-weight:800;flex:1}
+.pts{font-size:13px;font-weight:700;color:var(--muted);white-space:nowrap}
+.lead{margin:6px 0 12px;color:var(--ink2)}
+.box{background:var(--sky);border-radius:12px;padding:12px 14px;margin:8px 0 12px}
+.box.g{background:var(--mint)}
+.q{font-weight:700;margin:14px 0 8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:680px){.grid2{grid-template-columns:1fr}}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:560px}
+th,td{border:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:middle}
+th{background:#f3f6f9;font-size:14px}
+td select{width:100%;padding:7px 8px;border:2px solid var(--line);border-radius:9px;background:#fff}
+td select.right,input.right{border-color:var(--ok);background:var(--ok-t)} td select.wrong,input.wrong{border-color:var(--bad);background:var(--bad-t)}
+.corr{display:block;font-size:12px;color:var(--ok);font-weight:700;margin-top:3px}
+textarea{width:100%;min-height:76px;border:2px solid var(--line);border-radius:12px;padding:10px 12px;resize:vertical}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:2px solid var(--line);background:#fff;border-radius:12px;padding:8px 14px;font-weight:700;cursor:pointer}
+.chip.sel{border-color:var(--ink);background:var(--ink);color:#fff}
+.chip.done{border-color:var(--ok)}
+/* склянка */
+.bench{display:flex;gap:18px;align-items:flex-end;flex-wrap:wrap;justify-content:center;background:#f7f9fc;border-radius:14px;padding:14px}
+.beaker{width:130px;text-align:center}
+.beaker svg{width:130px;height:150px}
+.beaker .lbl{font-weight:700;font-size:14px;min-height:22px}
+.liq{transition:fill .9s ease}
+.phbadge{display:inline-block;margin-top:4px;font-weight:800;border-radius:999px;padding:2px 10px;background:#fff;border:2px solid var(--line);font-size:14px}
+.scale{display:flex;border-radius:10px;overflow:hidden;margin:10px 0 4px}
+.scale div{flex:1;text-align:center;font-size:12px;font-weight:800;padding:6px 0;color:#1d2a3a}
+.scale-cap{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-weight:700}
+.btn{border:0;border-radius:12px;padding:11px 20px;font-weight:800;cursor:pointer;background:var(--ink);color:#fff;box-shadow:0 3px 0 #0b1320}
+.btn.s{padding:8px 14px;font-size:14px;box-shadow:0 2px 0 #0b1320}
+.btn.lt{background:#fff;color:var(--ink);box-shadow:0 0 0 2px var(--ink) inset}
+.btn[disabled]{opacity:.4;cursor:not-allowed}.btn.big{font-size:18px;padding:14px 28px}
+.act{display:flex;justify-content:flex-end;gap:10px;margin-top:14px;align-items:center;flex-wrap:wrap}
+.need{font-size:13px;color:var(--muted)}
+.fb{margin-top:12px;border-radius:12px;padding:10px 14px;border-left:5px solid;font-size:15px}
+.fb.ok{background:var(--ok-t);border-color:var(--ok)}.fb.mid{background:var(--warn-t);border-color:#e0a530}.fb.bad{background:var(--bad-t);border-color:var(--bad)}
+.fb b.h{display:block;font-size:16px}
+.eq{font-size:20px;font-weight:700;display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:8px 0}
+.eq input{width:52px;text-align:center;padding:6px;border:2px solid var(--line);border-radius:9px;font-weight:800}
+.eq select{padding:6px 8px;border:2px solid var(--line);border-radius:9px;font-weight:700}
+.log{font-size:14px;color:var(--ink2);min-height:22px;margin-top:8px;text-align:center}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:10px;text-align:left;border:2px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;cursor:pointer;font-weight:600}
+.opt.sel{border-color:var(--ink);background:#f2f4fb}.opt.right{border-color:var(--ok);background:var(--ok-t)}.opt.wrong{border-color:var(--bad);background:var(--bad-t)}.opt.miss{border-color:var(--ok);border-style:dashed}
+.modal{position:fixed;inset:0;background:rgba(20,30,45,.55);display:grid;place-items:center;z-index:50;padding:14px}
+.dlg{background:#fff;border-radius:20px;max-width:460px;width:100%;padding:24px}
+.dlg h2{margin:4px 0;font-size:22px}.dlg p{margin:0 0 14px;color:var(--ink2)}
+.inp{width:100%;font-size:17px;padding:11px 13px;border-radius:12px;border:2px solid var(--line);margin-bottom:10px;background:#fff}
+.err{color:var(--bad);font-weight:700;font-size:14px;margin:0 0 10px}
+.final{background:#fff;border-radius:18px;box-shadow:var(--sh);padding:22px;text-align:center}
+.seg{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}.seg .opt{flex:1;justify-content:center;min-width:110px}
+.msg{margin-top:12px;border-radius:12px;padding:10px 14px;font-weight:700}
+.msg.ok{background:var(--ok-t);color:var(--ok)}.msg.bad{background:var(--bad-t);color:var(--bad)}.msg.info{background:#eef2fb;color:var(--ink2)}
+.sw{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;border:1px solid rgba(0,0,0,.15)}
+
+/* ===== яскрава тема ===== */
+body{background:radial-gradient(circle at 10% 0%,#ffe3f1 0,transparent 40%),radial-gradient(circle at 90% 10%,#dff6ff 0,transparent 40%),radial-gradient(circle at 50% 100%,#fff3c4 0,transparent 45%),#f7f5ff}
+.hero{background:linear-gradient(120deg,#ff3d7f 0%,#ff8a3d 35%,#ffd23d 55%,#2ec4b6 78%,#3d6bff 100%);color:#fff;box-shadow:0 12px 30px rgba(255,61,127,.25)}
+.hero .kicker,.hero p{color:#fff}.hero h1{text-shadow:0 2px 0 rgba(0,0,0,.15)}
+.task{border-top-width:7px}
+.task:nth-of-type(7n+1){border-top-color:#ff3d7f}.task:nth-of-type(7n+2){border-top-color:#ff8a3d}.task:nth-of-type(7n+3){border-top-color:#f5b800}
+.task:nth-of-type(7n+4){border-top-color:#2ec4b6}.task:nth-of-type(7n+5){border-top-color:#3d6bff}.task:nth-of-type(7n+6){border-top-color:#9b5de5}.task:nth-of-type(7n){border-top-color:#00b86b}
+.task:nth-of-type(7n+1) .num{background:#ff3d7f}.task:nth-of-type(7n+2) .num{background:#ff8a3d}.task:nth-of-type(7n+3) .num{background:#f5b800}
+.task:nth-of-type(7n+4) .num{background:#2ec4b6}.task:nth-of-type(7n+5) .num{background:#3d6bff}.task:nth-of-type(7n+6) .num{background:#9b5de5}.task:nth-of-type(7n) .num{background:#00b86b}
+.num{font-size:17px;box-shadow:0 3px 0 rgba(0,0,0,.15)}
+.box{background:linear-gradient(135deg,#ffe8f1,#fff1e3)}.box.g{background:linear-gradient(135deg,#dcfbf4,#e3f0ff)}
+.chip{border-color:#d9d2ff;background:#f4f1ff;color:#4a2fb0}
+.chip:nth-child(6n+1){background:#ffe6ef;border-color:#ffc0d5;color:#c2185b}.chip:nth-child(6n+2){background:#fff0e0;border-color:#ffd2a6;color:#c25a00}
+.chip:nth-child(6n+3){background:#fff8d6;border-color:#ffe48a;color:#8a6a00}.chip:nth-child(6n+4){background:#ddf8f3;border-color:#9ce8db;color:#0b7a6c}
+.chip:nth-child(6n+5){background:#e3ebff;border-color:#b3c6ff;color:#2443b8}.chip:nth-child(6n){background:#f0e6ff;border-color:#d4b8ff;color:#6a2fb8}
+.chip.sel{background:#1d2a3a!important;border-color:#1d2a3a!important;color:#fff!important;transform:translateY(-1px)}
+.chip.done::after{content:" ✓"}
+.btn{background:linear-gradient(135deg,#3d6bff,#9b5de5);box-shadow:0 4px 0 #2c3fa8}
+.btn.lt{background:#fff;color:#3d6bff;box-shadow:0 0 0 2px #3d6bff inset}
+.btn.big{background:linear-gradient(135deg,#ff3d7f,#ff8a3d);box-shadow:0 4px 0 #b8255a}
+.bench{background:linear-gradient(180deg,#f2f7ff,#fdf2ff)}
+th{background:linear-gradient(135deg,#eef3ff,#f7ecff);color:#2c3a6b}
+.who{background:#fff;border-radius:999px;padding:8px 16px;box-shadow:var(--sh)}
+.final{background:linear-gradient(135deg,#fff,#fff6e8)}
+.dlg{border-top:8px solid #ff3d7f}
+.modal{background:rgba(61,40,120,.55)}
+</style>
+</head>
+<body>
+<div class="modal" id="start"><div class="dlg">
+  <div class="kicker">Супровід уроку · Хімія · 8 клас</div>
+  <h2>Взаємодія оксидів із водою. Кислоти й основи</h2>
+  <p>Проведи віртуальні досліди, познайомся з індикаторами, визнач pH і заповни журнал. Бали (з 12) зараховуються за першою перевіркою кожного розділу.</p>
+  <input class="inp" id="pname" maxlength="60" placeholder="Прізвище та ім’я" autocomplete="name">
+  <select class="inp" id="pcls"><option value="">Обери клас</option><option>8-А</option><option>8-Б</option><option>Інший</option></select>
+  <p class="err" id="startErr" hidden>Впиши прізвище, ім’я та обери клас.</p>
+  <button class="btn big" id="startBtn" type="button" style="width:100%">Почати урок ▶</button>
+</div></div>
+
+<main class="wrap">
+  <header class="hero">
+    <div class="kicker">Хімія · 8 клас · супровід уроку</div>
+    <h1>Взаємодія оксидів із водою. Поняття про кислоти й основи</h1>
+    <p>Досліджуємо, що утворюється, коли оксид потрапляє у воду, і як це «побачити» за допомогою індикаторів.</p>
+  </header>
+  <div class="who"><span id="who">👤 —</span><span>Набрано: <b id="sum">0</b> з 12 · перевірено розділів: <b id="nDone">0</b> з 5</span></div>
+
+  <!-- 0 -->
+  <section class="task n" id="s0">
+    <div class="th"><span class="num">🥬</span><h2>Загадка: капуста-хамелеон</h2><span class="pts">без балів</span></div>
+    <p class="lead">Відвар червонокачанної капусти фіолетовий. Додай його до різних рідин і поспостерігай.</p>
+    <div class="bench" id="cabBench"></div>
+    <p class="q">Як ти думаєш, чому колір змінюється? Запиши свою гіпотезу:</p>
+    <textarea id="hyp" maxlength="500" placeholder="Мені здається, що колір змінюється, тому що…"></textarea>
+    <p class="need">Наприкінці уроку ти зможеш перевірити свою гіпотезу. Дослід легко повторити вдома: відвар капусти, оцет, вода, розчин харчової соди.</p>
+  </section>
+
+  <!-- теорія -->
+  <section class="task n">
+    <div class="th"><span class="num">📘</span><h2>Коротко про головне</h2></div>
+    <div class="grid2">
+      <div class="box"><b>Оксид неметалу + вода → кислота</b><br>SO₃ + H₂O → H₂SO₄<br>Такі оксиди називають <b>кислотними</b>. Розчин кислоти має <b>кислотне</b> середовище: pH &lt; 7.</div>
+      <div class="box g"><b>Оксид активного металу + вода → луг</b><br>CaO + H₂O → Ca(OH)₂<br>Такі оксиди називають <b>основними</b>. Розчинна основа (луг) створює <b>лужне</b> середовище: pH &gt; 7.</div>
+    </div>
+    <p><b>Кислоти</b> — сполуки, молекули яких містять атоми Гідрогену й кислотний залишок (HCl, H₂SO₄, H₃PO₄).<br>
+    <b>Основи</b> — сполуки, що складаються з атомів металу й однієї або кількох гідроксильних груп OH (NaOH, Ca(OH)₂). Розчинні у воді основи називають <b>лугами</b>.<br>
+    <b>Індикатори</b> — речовини, що змінюють колір залежно від середовища. <b>pH</b> — показник середовища: від 0 до 14; 7 — нейтральне.</p>
+    <p><b>Увага!</b> Не всі оксиди реагують із водою: SiO₂ (пісок) і CuO з водою не взаємодіють. З водою реагують оксиди лужних і лужноземельних металів (Na₂O, K₂O, CaO, BaO) і більшість оксидів неметалів.</p>
+    <div class="scale" id="uScale"></div><div class="scale-cap"><span>кислотне</span><span>нейтральне</span><span>лужне</span></div>
+  </section>
+
+  <!-- 1 Індикатори -->
+  <section class="task" id="t1">
+    <div class="th"><span class="num">1</span><h2>Знайомство з індикаторами</h2><span class="pts">3 бали</span></div>
+    <p class="lead">Обери індикатор і середовище, натисни «Додати» й подивись на колір. Потім заповни таблицю.</p>
+    <div class="q">Індикатор:</div><div class="chips" id="indChips"></div>
+    <div class="q">Розчин:</div><div class="chips" id="medChips"></div>
+    <div class="bench" style="margin-top:12px"><div class="beaker" id="indBeaker"></div></div>
+    <div style="text-align:center;margin-top:8px"><button class="btn s" id="indAdd" type="button">💧 Додати індикатор</button></div>
+    <p class="q">Таблиця 1. Забарвлення індикаторів</p>
+    <div class="tw"><table><thead><tr><th>Індикатор</th><th>Кислотне середовище</th><th>Нейтральне середовище</th><th>Лужне середовище</th></tr></thead><tbody id="tb1"></tbody></table></div>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <!-- 2 Лабораторія -->
+  <section class="task g" id="t2">
+    <div class="th"><span class="num">2</span><h2>Віртуальна лабораторія: оксид + вода</h2><span class="pts">4 бали</span></div>
+    <p class="lead">Обери оксид, насип у склянку з водою, перемішай і додай кілька крапель <b>універсального індикатора</b>. За кольором визнач середовище. Проведи дослід з <b>усіма</b> оксидами й заповни журнал.</p>
+    <div class="chips" id="oxChips"></div>
+    <div class="bench" style="margin-top:12px"><div class="beaker" id="labBeaker"></div></div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px">
+      <button class="btn s" id="labAdd" type="button">1. Насипати оксид у воду</button>
+      <button class="btn s" id="labInd" type="button" disabled>2. Додати універсальний індикатор</button>
+      <button class="btn s lt" id="labReset" type="button">↺ Нова склянка</button>
+    </div>
+    <div class="log" id="labLog">Обери оксид.</div>
+    <p class="q">Таблиця 2. Журнал досліджень</p>
+    <div class="tw"><table><thead><tr><th>Оксид</th><th>Тип оксиду</th><th>Середовище розчину</th><th>Що утворилося</th></tr></thead><tbody id="tb2"></tbody></table></div>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <!-- 3 Рівняння -->
+  <section class="task" id="t3">
+    <div class="th"><span class="num">3</span><h2>Рівняння реакцій</h2><span class="pts">2 бали</span></div>
+    <p class="lead">Допиши рівняння: обери продукт і постав коефіцієнти (коефіцієнт 1 також записуй).</p>
+    <div class="eq">SO₂ + H₂O → <select data-e="p1"><option value="">?</option><option>H₂SO₃</option><option>H₂SO₄</option><option>H₂S</option></select></div>
+    <div class="eq">BaO + H₂O → <select data-e="p2"><option value="">?</option><option>Ba(OH)₂</option><option>BaOH</option><option>BaH₂</option></select></div>
+    <div class="eq">Na₂O + H₂O → <input data-e="k1" inputmode="numeric" maxlength="1" aria-label="коефіцієнт перед NaOH"> NaOH</div>
+    <div class="eq">P₂O₅ + <input data-e="k2" inputmode="numeric" maxlength="1" aria-label="коефіцієнт перед H2O"> H₂O → <input data-e="k3" inputmode="numeric" maxlength="1" aria-label="коефіцієнт перед H3PO4"> H₃PO₄</div>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <!-- 4 pH навколо нас -->
+  <section class="task g" id="t4">
+    <div class="th"><span class="num">4</span><h2>pH навколо нас</h2><span class="pts">2 бали</span></div>
+    <p class="lead">Натисни на склянку: в неї додасться універсальний індикатор. Порівняй колір зі шкалою й визнач середовище.</p>
+    <div class="scale" id="uScale2"></div><div class="scale-cap"><span>pH 1</span><span>pH 7</span><span>pH 14</span></div>
+    <div class="bench" id="lifeBench"></div>
+    <p class="q">Таблиця 3. Середовище розчинів</p>
+    <div class="tw"><table><thead><tr><th>Розчин</th><th>Середовище</th></tr></thead><tbody id="tb4"></tbody></table></div>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <!-- 5 Висновок -->
+  <section class="task" id="t5">
+    <div class="th"><span class="num">5</span><h2>Висновки</h2><span class="pts">1 бал</span></div>
+    <p class="q">Під час взаємодії кислотного оксиду з водою утворюється…</p><div class="opts" data-g="a"></div>
+    <p class="q">Під час взаємодії оксиду лужного металу з водою утворюється…</p><div class="opts" data-g="b"></div>
+    <p class="q">Поверніться до загадки про капусту. Поясни своїми словами, чому змінювався колір, і зроби загальний висновок уроку:</p>
+    <textarea id="concl" maxlength="800" placeholder="Капустяний відвар — це… Оксиди неметалів з водою… Оксиди лужних металів…"></textarea>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <section class="final" id="fin">
+    <h2>Здати роботу</h2>
+    <p id="finalLine" class="need" style="font-size:15px">Перевір усі 5 розділів, щоб здати роботу.</p>
+    <p class="q">Як ти оцінюєш себе? Я вмію за допомогою індикатора визначати середовище розчину й складати рівняння реакцій оксидів із водою:</p>
+    <div class="seg" id="selfSeg"></div>
+    <p style="margin-top:16px"><button class="btn big" id="submit" type="button" disabled>Здати роботу вчителю</button></p>
+    <div class="msg" id="sendBox" hidden></div>
+  </section>
+</main>
+
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="oksydy8";
+const $=id=>document.getElementById(id);
+const shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const fmt=x=>String(Math.round(x*100)/100).replace(".",",");
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const half=x=>Math.floor(x*2+1e-9)/2;
+let ME=null,sent=false,SELF=null; const SCORE={},REC={},READY={};
+
+/* ---------- кольори ---------- */
+const UNI=["#d7263d","#e8432f","#f2702a","#f79d2c","#f5c531","#c9d23a","#3fae49","#1f9e89","#2a8fc0","#2a6fbf","#2f5fb3","#4b3f9e","#5e2c8c","#6b1f78"]; // pH 1..14
+const uniColor=ph=>UNI[Math.max(1,Math.min(14,Math.round(ph)))-1];
+function buildScale(id){ $(id).innerHTML=UNI.map((c,i)=>`<div style="background:${c};color:${i>9||i<2?'#fff':'#1d2a3a'}">${i+1}</div>`).join(""); }
+buildScale("uScale"); buildScale("uScale2");
+const WATER="#dbeafe";
+function beakerSVG(fill,label,id){
+  return `<svg viewBox="0 0 130 150" aria-hidden="true"><path d="M22 10 h86 v6 h-6 v112 a12 12 0 0 1 -12 12 h-50 a12 12 0 0 1 -12 -12 v-112 h-6z" fill="#fff" stroke="#8aa0b8" stroke-width="3"/>
+  <path class="liq" ${id?`id="${id}"`:""} d="M31 62 h68 v66 a8 8 0 0 1 -8 8 h-52 a8 8 0 0 1 -8 -8z" fill="${fill}"/>
+  <path d="M40 30 v90" stroke="#fff" stroke-width="5" opacity=".6" stroke-linecap="round"/></svg>${label!=null?`<div class="lbl">${label}</div>`:""}`;
+}
+
+/* ---------- 0 капуста ---------- */
+const CAB=[["Лимонний сік","#e0457b","кислотне"],["Вода","#7b4fa8","нейтральне"],["Розчин харчової соди","#2c7bb6","лужне"],["Мильний розчин","#2a9d6f","лужне"]];
+$("cabBench").innerHTML=CAB.map((c,i)=>`<div class="beaker" style="cursor:pointer" data-i="${i}" role="button" tabindex="0" aria-label="${c[0]}: додати капустяний відвар">${beakerSVG("#eef2f7",c[0],"cab"+i)}<button class="btn s lt" type="button" style="margin-top:4px">+ відвар</button></div>`).join("");
+$("cabBench").querySelectorAll(".beaker").forEach(b=>b.onclick=()=>{ $("cab"+b.dataset.i).setAttribute("fill",CAB[+b.dataset.i][1]); b.querySelector("button").textContent="✓ додано"; });
+
+/* ---------- 1 індикатори ---------- */
+const IND={ "Лакмус":{c:["#d7263d","#8a4fb0","#2c5fb8"],n:["червоний","фіолетовий","синій"]},
+  "Метиловий оранжевий":{c:["#e8436a","#f39a2c","#f2cd2e"],n:["рожевий (червоний)","оранжевий","жовтий"]},
+  "Фенолфталеїн":{c:[WATER,WATER,"#d6247e"],n:["безбарвний","безбарвний","малиновий"]},
+  "Універсальний індикатор":{c:[uniColor(2),uniColor(7),uniColor(12)],n:["червоний","зелений","синьо-фіолетовий"]}};
+const MED=["кислотне","нейтральне","лужне"], MEDN={кислотне:"Кислотне (розчин кислоти)",нейтральне:"Нейтральне (вода)",лужне:"Лужне (розчин лугу)"};
+let indSel=null,medSel=null; const seen=new Set();
+function chips(box,items,onPick){ box.innerHTML=items.map(t=>`<button type="button" class="chip" data-v="${esc(t)}">${esc(t)}</button>`).join(""); box.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{box.querySelectorAll(".chip").forEach(x=>x.classList.remove("sel"));c.classList.add("sel");onPick(c.dataset.v,c)}); }
+chips($("indChips"),Object.keys(IND),v=>{indSel=v;resetInd()});
+chips($("medChips"),MED.map(m=>MEDN[m]),(v)=>{medSel=MED.find(m=>MEDN[m]===v);resetInd()});
+function resetInd(){ $("indBeaker").innerHTML=beakerSVG(WATER,(medSel?MEDN[medSel]:"обери розчин")+(indSel?" + "+indSel.toLowerCase():""),"indLiq"); }
+resetInd();
+$("indAdd").onclick=()=>{ if(!indSel||!medSel){ $("indBeaker").querySelector(".lbl").textContent="Спочатку обери індикатор і розчин"; return; }
+  const k=MED.indexOf(medSel); setTimeout(()=>$("indLiq").setAttribute("fill",IND[indSel].c[k]),60); seen.add(indSel+k); };
+const IND_ROWS=["Лакмус","Метиловий оранжевий","Фенолфталеїн"];
+const COLS=["червоний","рожевий (червоний)","фіолетовий","оранжевий","жовтий","синій","малиновий","безбарвний"];
+function sel(opts,attrs){return `<select ${attrs}><option value="">—</option>${opts.map(o=>`<option>${esc(o)}</option>`).join("")}</select>`}
+$("tb1").innerHTML=IND_ROWS.map((r,i)=>`<tr><td><b>${r}</b></td>${[0,1,2].map(k=>`<td>${sel(COLS,`data-r="${i}" data-k="${k}"`)}</td>`).join("")}</tr>`).join("");
+READY.t1=()=>[...$("tb1").querySelectorAll("select")].every(s=>s.value);
+
+/* ---------- 2 лабораторія ---------- */
+const OX={ "CaO":{type:"основний",med:"лужне",prod:"Ca(OH)₂",ph:12,t:"Порошок «шипить» і нагрівається — утворюється гашене вапно Ca(OH)₂."},
+ "Na₂O":{type:"основний",med:"лужне",prod:"NaOH",ph:13,t:"Оксид швидко розчиняється — утворюється луг NaOH."},
+ "CuO":{type:"основний",med:"нейтральне",prod:"реакція не відбувається",ph:7,t:"Чорний порошок осідає на дно й не розчиняється. Реакції немає."},
+ "CO₂":{type:"кислотний",med:"кислотне",prod:"H₂CO₃",ph:5,t:"Газ частково розчиняється — утворюється слабка вугільна кислота H₂CO₃."},
+ "SO₃":{type:"кислотний",med:"кислотне",prod:"H₂SO₄",ph:1,t:"Бурхлива реакція — утворюється сульфатна кислота H₂SO₄."},
+ "P₂O₅":{type:"кислотний",med:"кислотне",prod:"H₃PO₄",ph:2,t:"Білий порошок розчиняється — утворюється ортофосфатна кислота H₃PO₄."},
+ "SiO₂":{type:"кислотний",med:"нейтральне",prod:"реакція не відбувається",ph:7,t:"Пісок не розчиняється й лежить на дні. Реакції немає."}};
+const OXK=Object.keys(OX), PRODS=["Ca(OH)₂","NaOH","Cu(OH)₂","H₂CO₃","H₂SO₄","H₃PO₄","H₂SiO₃","реакція не відбувається"];
+let ox=null,stage=0; const tried=new Set();
+chips($("oxChips"),OXK,v=>{ox=v;labReset()});
+function labReset(){ stage=0; $("labBeaker").innerHTML=beakerSVG(WATER,ox?`H₂O + ${ox}?`:"H₂O","labLiq"); $("labInd").disabled=true; $("labAdd").disabled=!ox; $("labLog").textContent=ox?`Готово: склянка з водою й ${ox}.`:"Обери оксид."; }
+labReset(); $("labReset").onclick=labReset;
+$("labAdd").onclick=()=>{ if(!ox)return; stage=1; const o=OX[ox]; $("labBeaker").querySelector(".lbl").textContent=`H₂O + ${ox}`; $("labLiq").setAttribute("fill",o.prod.startsWith("реакція")?"#cfd8e3":"#e8eef6"); $("labLog").textContent=o.t; $("labInd").disabled=false; $("labAdd").disabled=true; };
+$("labInd").onclick=()=>{ const o=OX[ox]; setTimeout(()=>$("labLiq").setAttribute("fill",uniColor(o.ph)),60); $("labBeaker").querySelector(".lbl").innerHTML=`H₂O + ${ox} + індикатор<br><span class="phbadge">порівняй колір зі шкалою</span>`; $("labInd").disabled=true; tried.add(ox);
+  $("oxChips").querySelectorAll(".chip").forEach(c=>c.classList.toggle("done",tried.has(c.dataset.v))); $("labLog").textContent+=` Тепер визнач середовище за шкалою. Проведено дослідів: ${tried.size} з ${OXK.length}.`; refresh("t2"); };
+$("tb2").innerHTML=OXK.map((k,i)=>`<tr><td><b>${k}</b></td><td>${sel(["кислотний","основний"],`data-r="${i}" data-c="type"`)}</td><td>${sel(MED,`data-r="${i}" data-c="med"`)}</td><td>${sel(PRODS,`data-r="${i}" data-c="prod"`)}</td></tr>`).join("");
+READY.t2=()=>[...$("tb2").querySelectorAll("select")].every(s=>s.value)&&tried.size===OXK.length;
+
+/* ---------- 3 рівняння ---------- */
+const EQ={p1:"H₂SO₃",p2:"Ba(OH)₂",k1:"2",k2:"3",k3:"2"};
+READY.t3=()=>Object.keys(EQ).every(k=>document.querySelector(`[data-e="${k}"]`).value.trim());
+
+/* ---------- 4 pH навколо нас ---------- */
+const LIFE=[["Лимонний сік",2,"кислотне"],["Столовий оцет",3,"кислотне"],["Газована вода",4,"кислотне"],["Дистильована вода",7,"нейтральне"],["Розчин харчової соди",9,"лужне"],["Мильний розчин",10,"лужне"],["Нашатирний спирт",11,"лужне"]];
+const lifeShown=new Set();
+$("lifeBench").innerHTML=LIFE.map((l,i)=>`<div class="beaker" style="cursor:pointer;width:110px" data-i="${i}" role="button" tabindex="0" aria-label="${l[0]}: додати індикатор">${beakerSVG(WATER,l[0],"life"+i)}</div>`).join("");
+$("lifeBench").querySelectorAll(".beaker").forEach(b=>{ b.querySelector("svg").style.width="110px"; b.onclick=()=>{ const i=+b.dataset.i; $("life"+i).setAttribute("fill",uniColor(LIFE[i][1])); lifeShown.add(i); refresh("t4"); }; });
+$("tb4").innerHTML=LIFE.map((l,i)=>`<tr><td><b>${l[0]}</b></td><td>${sel(MED,`data-r="${i}"`)}</td></tr>`).join("");
+READY.t4=()=>[...$("tb4").querySelectorAll("select")].every(s=>s.value)&&lifeShown.size===LIFE.length;
+
+/* ---------- 5 висновки ---------- */
+function group(id,g,items){ const box=document.querySelector(`#${id} [data-g="${g}"]`),st={box,val:null};
+  items.forEach(t=>{const b=document.createElement("button");b.type="button";b.className="opt";b.dataset.v=t;b.textContent=t;b.onclick=()=>{if(b.disabled)return;box.querySelectorAll(".opt").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");st.val=t;refresh(id)};box.appendChild(b)});
+  return st; }
+function mark(st,ok){ st.box.querySelectorAll(".opt").forEach(b=>{b.disabled=true;const v=b.dataset.v;b.classList.remove("sel");if(v===st.val&&v===ok)b.classList.add("right");else if(v===st.val)b.classList.add("wrong");else if(v===ok)b.classList.add("miss")}); }
+const A_OK="кислота", B_OK="луг (розчинна основа)";
+const G={a:group("t5","a",shuf([A_OK,"луг (розчинна основа)","сіль","вода й кисень"])),b:group("t5","b",shuf([B_OK,"кислота","оксид неметалу","реакція не відбувається"]))};
+READY.t5=()=>G.a.val&&G.b.val&&$("concl").value.trim().length>=20&&$("hyp").value.trim().length>=5;
+
+/* ---------- загальне ---------- */
+function refresh(t){ const sec=$(t); if(!sec||sec.dataset.done||!sec.querySelector(".chk"))return; const ok=READY[t](); sec.querySelector(".chk").disabled=!ok;
+  let hint="Заповни все, щоб перевірити"; if(t==="t2"&&tried.size<OXK.length)hint=`Проведи досліди з усіма оксидами (${tried.size} з ${OXK.length}) і заповни журнал`;
+  if(t==="t4"&&lifeShown.size<LIFE.length)hint=`Додай індикатор у всі склянки (${lifeShown.size} з ${LIFE.length})`; if(t==="t5"&&$("hyp").value.trim().length<5)hint="Не забудь записати гіпотезу в загадці про капусту";
+  sec.querySelector(".need").textContent=ok?"":hint; }
+document.addEventListener("input",e=>{const s=e.target.closest(".task");if(s)refresh(s.id);if(e.target.id==="hyp")refresh("t5")});
+document.addEventListener("change",e=>{const s=e.target.closest(".task");if(s)refresh(s.id)});
+function markSel(s,ok){ s.disabled=true; const good=s.value===ok; s.classList.add(good?"right":"wrong"); if(!good){const c=document.createElement("span");c.className="corr";c.textContent="✓ "+ok;s.after(c)} return good; }
+function feedback(t,p,max,html){ const sec=$(t),fb=sec.querySelector(".fb"); fb.hidden=false; fb.className="fb "+(p>=max?"ok":p>0?"mid":"bad");
+  fb.innerHTML=`<b class="h">${p>=max?"✓ Чудово!":p>0?"◐ Частково правильно":"✗ Є помилки"} — ${fmt(p)} з ${max}</b>${html}`; sec.dataset.done="1"; sec.querySelector(".chk").hidden=true; sec.querySelector(".need").textContent="";
+  SCORE[t]=p; const v=Object.values(SCORE); $("sum").textContent=fmt(v.reduce((s,x)=>s+x,0)); $("nDone").textContent=v.length; finalState(); }
+
+const CHECK={
+ t1(){ let ok=0;const e=[]; $("tb1").querySelectorAll("select").forEach(s=>{const r=IND_ROWS[+s.dataset.r],k=+s.dataset.k; if(markSel(s,IND[r].n[k]))ok++; else e.push(`${r}/${MED[k]}: «${s.value}»`)});
+   const p=half(ok/9*3); REC.t1=`${ok}/9`+(e.length?"; помилки: "+e.join("; "):"");
+   feedback("t1",p,3,"<p><b>Лакмус</b>: кислотне — червоний, нейтральне — фіолетовий, лужне — синій. <b>Метиловий оранжевий</b>: рожевий — оранжевий — жовтий. <b>Фенолфталеїн</b> безбарвний у кислотному й нейтральному середовищі та малиновий у лужному, тому ним зручно виявляти луги.</p>"); },
+ t2(){ let ok=0;const e=[]; $("tb2").querySelectorAll("select").forEach(s=>{const k=OXK[+s.dataset.r],c=s.dataset.c; if(markSel(s,OX[k][c]))ok++; else e.push(`${k} (${c==="type"?"тип":c==="med"?"середовище":"продукт"}): «${s.value}»`)});
+   const p=half(ok/21*4); REC.t2=`${ok}/21`+(e.length?"; помилки: "+e.join("; "):"");
+   feedback("t2",p,4,"<p>Оксиди неметалів (CO₂, SO₃, P₂O₅) — <b>кислотні</b>: з водою утворюють кислоти, середовище кислотне. Оксиди лужних і лужноземельних металів (Na₂O, CaO) — <b>основні</b>: з водою утворюють луги, середовище лужне. <b>CuO</b> — основний, а <b>SiO₂</b> — кислотний оксид, але обидва з водою не реагують, тому середовище залишається нейтральним.</p>"); },
+ t3(){ let ok=0;const e=[]; Object.entries(EQ).forEach(([k,v])=>{const el=document.querySelector(`[data-e="${k}"]`); el.disabled=true; const good=el.value.trim()===v; el.classList.add(good?"right":"wrong"); if(good)ok++; else e.push(`${k}: «${el.value}» (треба ${v})`)});
+   const p=half(ok/5*2); REC.t3=`${ok}/5`+(e.length?"; помилки: "+e.join("; "):"");
+   feedback("t3",p,2,"<p>SO₂ + H₂O → H₂SO₃ (сульфітна кислота)<br>BaO + H₂O → Ba(OH)₂ (Барій — двовалентний, тому дві групи OH)<br>Na₂O + H₂O → <b>2</b>NaOH<br>P₂O₅ + <b>3</b>H₂O → <b>2</b>H₃PO₄</p>"); },
+ t4(){ let ok=0;const e=[]; $("tb4").querySelectorAll("select").forEach(s=>{const l=LIFE[+s.dataset.r]; if(markSel(s,l[2]))ok++; else e.push(`${l[0]}: «${s.value}»`)});
+   const p=half(ok/7*2); REC.t4=`${ok}/7`+(e.length?"; помилки: "+e.join("; "):"");
+   feedback("t4",p,2,"<p>pH &lt; 7 — кислотне середовище: лимонний сік (≈2), оцет (≈3), газована вода (≈4; вона містить вугільну кислоту з CO₂). pH = 7 — нейтральне: дистильована вода. pH &gt; 7 — лужне: розчин соди (≈9), мило (≈10), нашатирний спирт (≈11).</p>"); },
+ t5(){ const a=G.a.val===A_OK,b=G.b.val===B_OK; mark(G.a,A_OK); mark(G.b,B_OK); $("concl").readOnly=true; $("hyp").readOnly=true;
+   const p=(a?.5:0)+(b?.5:0); REC.t5=`кислотний оксид→ ${a?"✓":"✗ «"+G.a.val+"»"}; оксид лужн. металу→ ${b?"✓":"✗ «"+G.b.val+"»"}`;
+   feedback("t5",p,1,"<p>Відвар червонокачанної капусти — природний <b>індикатор</b>: у кислотному середовищі він червоніє, у нейтральному залишається фіолетовим, у лужному синіє або зеленіє. Головний висновок: оксид неметалу + вода → кислота (кислотне середовище), оксид активного металу + вода → луг (лужне середовище). Твій висновок прочитає вчитель.</p>"); }
+};
+["t1","t2","t3","t4","t5"].forEach(t=>{$(t).querySelector(".chk").onclick=()=>{if(!$(t).dataset.done&&READY[t]())CHECK[t]()};refresh(t)});
+
+["Так, упевнено","Частково","Поки що ні"].forEach(t=>{const b=document.createElement("button");b.type="button";b.className="opt";b.textContent=t;b.onclick=()=>{$("selfSeg").querySelectorAll(".opt").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");SELF=t;finalState()};$("selfSeg").appendChild(b)});
+function finalState(){ const n=Object.keys(SCORE).length,tot=Object.values(SCORE).reduce((s,x)=>s+x,0);
+  $("finalLine").innerHTML=n<5?`Перевірено ${n} з 5 розділів. Перевір усі, щоб здати роботу.`:`Усі розділи перевірено: <b>${fmt(tot)} з 12 балів</b>. Оціни себе й здай роботу.`;
+  $("submit").disabled=sent||n<5||!SELF; }
+$("submit").onclick=async()=>{ if(sent)return; const box=$("sendBox"); $("submit").disabled=true; box.hidden=false; box.className="msg info"; box.textContent="Надсилаю…";
+  const O=["t1","t2","t3","t4","t5"],sc=Math.round(O.reduce((s,k)=>s+SCORE[k],0)*100)/100;
+  const rec={name:ME.name,cls:ME.cls,score:sc,max:12,ts:{".sv":"timestamp"},parts:O.map(k=>SCORE[k]).join(" "),hyp:$("hyp").value.trim().slice(0,500),
+    t1:REC.t1,t2:REC.t2,t3:REC.t3,t4:REC.t4,t5:REC.t5,concl:$("concl").value.trim().slice(0,800),self:SELF};
+  try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec)});if(!r.ok)throw new Error(r.status);
+    sent=true;box.className="msg ok";box.textContent=`✓ Роботу отримано вчителем: ${fmt(sc)} / 12. Молодець!`;
+  }catch(e){$("submit").disabled=false;box.className="msg bad";box.textContent="Не вдалося надіслати. Перевір інтернет і натисни ще раз."} };
+$("startBtn").onclick=()=>{const nm=$("pname").value.trim().replace(/\s+/g," "),c=$("pcls").value;
+  if(nm.length<3||nm.split(" ").length<2||!c){$("startErr").hidden=false;return}
+  ME={name:nm.slice(0,60),cls:c};$("who").textContent=`👤 ${ME.name} · ${ME.cls}`;$("start").hidden=true};
+$("pname").addEventListener("keydown",e=>{if(e.key==="Enter")$("startBtn").click()});
+window.addEventListener("beforeunload",e=>{if(Object.keys(SCORE).length&&!sent){e.preventDefault();e.returnValue=""}});
+</script>
+</body>
+</html>
