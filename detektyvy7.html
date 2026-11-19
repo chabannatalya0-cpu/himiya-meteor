@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Хімічні детективи — інтерактивний аркуш, 7 клас</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1d2a3a;--ink2:#46556a;--muted:#6f7c8f;--bg:#f4f6f8;--paper:#fff;--line:#dfe5ec;
+  --mint:#e6f4ee;--teal:#0f7a63;--teal2:#14a083;--lav:#efebfb;--purp:#5b3fa6;--purp2:#7a5fd0;
+  --ok:#14864f;--ok-t:#e1f6ea;--bad:#d33a4a;--bad-t:#fde7e9;--warn:#a86a12;--warn-t:#fff4dc;--focus:#4f5cf0;
+  --sh:0 8px 24px rgba(29,42,58,.07),0 1px 3px rgba(29,42,58,.06)}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:'Noto Sans',system-ui,'Segoe UI',Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+[hidden]{display:none!important}
+.wrap{max-width:880px;margin:0 auto;padding:18px 14px 60px}
+.hero{background:var(--mint);border-radius:18px;padding:22px 24px;margin-bottom:14px}
+.kicker{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--teal);text-transform:uppercase}
+.hero h1{font-size:clamp(28px,5vw,40px);margin:4px 0 2px;font-weight:800}
+.hero p{margin:0;color:var(--ink2)}
+.who{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:14px;color:var(--ink2);margin:0 4px 14px}
+.who b{color:var(--ink)}
+.task{background:var(--paper);border-radius:18px;box-shadow:var(--sh);padding:20px 22px;margin:0 0 16px;position:relative}
+.task.p2{border-top:5px solid var(--purp2)} .task.p1{border-top:5px solid var(--teal2)}
+.th{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.num{flex:none;width:38px;height:32px;border-radius:9px;display:grid;place-items:center;color:#fff;font-weight:800;background:var(--teal)}
+.p2 .num{background:var(--purp)}
+.th h2{margin:0;font-size:21px;font-weight:800;flex:1}
+.pts{font-size:13px;font-weight:700;color:var(--muted);white-space:nowrap}
+.lead{margin:6px 0 12px;color:var(--ink2)}
+.box{background:var(--mint);border-radius:12px;padding:10px 14px;margin:8px 0 12px}
+.p2 .box{background:var(--lav)}
+.q{font-weight:700;margin:14px 0 8px}
+/* картки-записи (завдання 1) */
+.pool{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;min-height:52px;padding:10px;border-radius:12px;background:var(--mint)}
+.card{border:2px solid #b9dccf;background:#fff;border-radius:10px;padding:7px 14px;font-weight:800;font-size:18px;color:var(--teal);cursor:pointer;min-width:58px;transition:transform .1s}
+.card:hover{transform:translateY(-2px)}
+.card.sel{border-color:var(--ink);color:var(--ink);box-shadow:0 0 0 3px rgba(29,42,58,.15)}
+.card.right{border-color:var(--ok);background:var(--ok-t);color:var(--ok)}
+.card.wrong{border-color:var(--bad);background:var(--bad-t);color:var(--bad)}
+.card[disabled]{cursor:default;transform:none}
+.bins{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+@media(max-width:620px){.bins{grid-template-columns:1fr}}
+.bin{border:2px dashed #c9d3de;border-radius:14px;padding:10px;min-height:110px;cursor:pointer;transition:border-color .15s,background .15s}
+.bin.armed{border-color:var(--teal2);background:#f3fbf8}
+.bin h3{margin:0;font-size:16px}
+.bin small{display:block;color:var(--muted);margin-bottom:6px}
+.bin .in{display:flex;flex-wrap:wrap;gap:6px}
+.hint{font-size:13px;color:var(--muted);margin:8px 0 0}
+/* варіанти */
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;border:2px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;cursor:pointer;font-weight:600}
+.opt:hover{border-color:#b7c2d0}
+.opt .mk{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid #b7c2d0;margin-top:1px;display:grid;place-items:center;font-size:12px;font-weight:900}
+.opt.sq .mk{border-radius:6px}
+.opt.sel{border-color:var(--ink);background:#f2f4fb}
+.opt.sel .mk{background:var(--ink);border-color:var(--ink);color:#fff}
+.opt.sel .mk::after{content:"✓"}
+.opt.right{border-color:var(--ok);background:var(--ok-t)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-t)}
+.opt.miss{border-color:var(--ok);border-style:dashed}
+.opt[disabled]{cursor:default}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:620px){.row2{grid-template-columns:1fr}}
+.seg{display:flex;gap:8px;flex-wrap:wrap}
+.seg .opt{flex:1;justify-content:center;min-width:110px}
+.seg .opt .mk{display:none}
+.sample{border-radius:14px;padding:12px;background:#fafbfc;border:1px solid var(--line)}
+.sample .tag{font-weight:800;margin-bottom:6px}
+/* речення з помилкою */
+.sent{font-size:20px;line-height:2.1;background:var(--mint);border-radius:12px;padding:8px 14px}
+.frag{border:0;background:transparent;border-bottom:3px dotted #8fb9ab;padding:2px 4px;border-radius:6px;cursor:pointer;font-weight:600;font-size:inherit}
+.frag:hover{background:#d8efe6}
+.frag.sel{background:var(--ink);color:#fff;border-bottom-color:var(--ink)}
+.frag.right{background:var(--ok);color:#fff}
+.frag.wrong{background:var(--bad);color:#fff}
+/* молекули */
+.mols{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:620px){.mols{grid-template-columns:1fr}}
+.mol{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}
+.mol h3{margin:0 0 6px;font-size:16px;color:var(--purp)}
+.stage{height:110px;display:flex;align-items:center;justify-content:center;background:var(--lav);border-radius:10px}
+.stage svg{width:100%;height:100%}
+.ctr{display:flex;align-items:center;gap:10px;justify-content:center;margin-top:8px}
+.ctr button{width:40px;height:40px;border-radius:12px;border:2px solid var(--line);background:#fff;font-size:22px;font-weight:800;cursor:pointer}
+.ctr span{min-width:110px;text-align:center;font-weight:700}
+.mol.right{border-color:var(--ok);box-shadow:0 0 0 2px var(--ok-t)} .mol.wrong{border-color:var(--bad);box-shadow:0 0 0 2px var(--bad-t)}
+textarea{width:100%;min-height:84px;border:2px solid var(--line);border-radius:12px;padding:10px 12px;resize:vertical}
+textarea:focus{border-color:var(--ink);outline:none}
+/* кнопки, відгук */
+.act{display:flex;justify-content:flex-end;gap:10px;margin-top:14px;align-items:center;flex-wrap:wrap}
+.btn{border:0;border-radius:12px;padding:11px 20px;font-weight:800;cursor:pointer;background:var(--ink);color:#fff;box-shadow:0 3px 0 #0b1320}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 #0b1320}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+.btn.big{font-size:18px;padding:14px 28px}
+.need{font-size:13px;color:var(--muted)}
+.fb{margin-top:12px;border-radius:12px;padding:10px 14px;border-left:5px solid;font-size:15px}
+.fb.ok{background:var(--ok-t);border-color:var(--ok)} .fb.mid{background:var(--warn-t);border-color:#e0a530} .fb.bad{background:var(--bad-t);border-color:var(--bad)}
+.fb b.h{display:block;font-size:16px}
+.done-badge{position:absolute;right:16px;top:16px;font-weight:800;font-size:13px;border-radius:999px;padding:3px 10px;background:var(--soft,#eef1f6)}
+/* старт */
+.modal{position:fixed;inset:0;background:rgba(20,30,45,.55);display:grid;place-items:center;z-index:50;padding:14px}
+.dlg{background:#fff;border-radius:20px;max-width:440px;width:100%;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.dlg h2{margin:0 0 4px;font-size:24px}
+.dlg p{margin:0 0 14px;color:var(--ink2)}
+.inp{width:100%;font-size:17px;padding:11px 13px;border-radius:12px;border:2px solid var(--line);margin-bottom:10px;background:#fff}
+.inp:focus{border-color:var(--ink);outline:none}
+.err{color:var(--bad);font-weight:700;font-size:14px;margin:0 0 10px}
+.final{background:var(--paper);border-radius:18px;box-shadow:var(--sh);padding:22px;text-align:center}
+.final h2{margin:0 0 6px}
+.scoreline{font-size:15px;color:var(--ink2);margin:6px 0 12px}
+.selfq{text-align:left;margin:12px auto;max-width:560px}
+.msg{margin-top:12px;border-radius:12px;padding:10px 14px;font-weight:700}
+.msg.ok{background:var(--ok-t);color:var(--ok)} .msg.bad{background:var(--bad-t);color:var(--bad)} .msg.info{background:#eef2fb;color:var(--ink2)}
+.foot{text-align:center;color:var(--muted);font-size:13px;margin-top:20px}
+</style>
+</head>
+<body>
+
+<div class="modal" id="start">
+  <div class="dlg">
+    <div class="kicker">Робочий аркуш · Хімія · 7 клас</div>
+    <h2>Хімічні детективи 🔍</h2>
+    <p>Прості речовини. Метали та неметали. 6 справ, 12 балів. Бали зараховуються за першою перевіркою кожної справи.</p>
+    <input class="inp" id="pname" maxlength="60" placeholder="Прізвище та ім’я" autocomplete="name">
+    <select class="inp" id="pcls"><option value="">Обери клас</option><option>7-А</option><option>7-Б</option><option>Інший</option></select>
+    <p class="err" id="startErr" hidden>Впиши прізвище, ім’я та обери клас.</p>
+    <button class="btn big" id="startBtn" type="button" style="width:100%">Розпочати розслідування ▶</button>
+  </div>
+</div>
+
+<main class="wrap">
+  <header class="hero">
+    <div class="kicker">Робочий аркуш / Хімія / 7 клас</div>
+    <h1>Хімічні детективи</h1>
+    <p>Прості речовини. Метали та неметали</p>
+  </header>
+  <div class="who"><span id="who">👤 —</span><span>Набрано: <b id="sum">0</b> з 12 · перевірено справ: <b id="nDone">0</b> з 6</span></div>
+
+  <!-- 01 -->
+  <section class="task p1" id="t1">
+    <div class="th"><span class="num">01</span><h2>Шифр на контейнерах</h2><span class="pts">3 бали</span></div>
+    <p class="lead">Розподіли записи за трьома групами. Використай кожен запис один раз. <br><small class="need">Натисни на запис, а потім — на потрібну групу. Щоб повернути запис, натисни на нього в групі.</small></p>
+    <div class="pool" id="pool"></div>
+    <div class="bins">
+      <div class="bin" data-bin="m" role="button" tabindex="0"><h3>Метали</h3><small>прості речовини</small><div class="in"></div></div>
+      <div class="bin" data-bin="n" role="button" tabindex="0"><h3>Неметали</h3><small>прості речовини</small><div class="in"></div></div>
+      <div class="bin" data-bin="c" role="button" tabindex="0"><h3>Складні речовини</h3><small>&nbsp;</small><div class="in"></div></div>
+    </div>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <!-- 02 -->
+  <section class="task p1" id="t2">
+    <div class="th"><span class="num">02</span><h2>Справа про два зразки</h2><span class="pts">2 бали</span></div>
+    <p class="lead">У лабораторії переплутали етикетки «цинк» і «сірка». Детективи отримали результати перевірки двох зразків.</p>
+    <div class="box">А. Сірий зразок із блиском проводить електричний струм.<br>Б. Жовтий крихкий зразок не проводить електричного струму.</div>
+    <p class="q">Поверни етикетки на місце й обґрунтуй кожну відповідь.</p>
+    <div class="row2">
+      <div class="sample"><div class="tag">Зразок А</div><div class="seg" data-g="la"></div><p class="q" style="margin-top:10px">Чому?</p><div class="opts" data-g="ra"></div></div>
+      <div class="sample"><div class="tag">Зразок Б</div><div class="seg" data-g="lb"></div><p class="q" style="margin-top:10px">Чому?</p><div class="opts" data-g="rb"></div></div>
+    </div>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <!-- 03 -->
+  <section class="task p1" id="t3">
+    <div class="th"><span class="num">03</span><h2>Помилка в повідомленні</h2><span class="pts">2 бали</span></div>
+    <p class="lead">Детективи перехопили повідомлення з помилкою.</p>
+    <p class="q">1) Натисни на частину речення, у якій є помилка.</p>
+    <div class="sent" id="sent"></div>
+    <p class="q">2) Як правильно продовжити речення «У молекулі води H₂O є…»?</p>
+    <div class="opts" data-g="fix"></div>
+    <p class="q">3) Познач усі хімічні елементи, атоми яких є в молекулі води.</p>
+    <div class="opts" data-g="el" data-multi="1"></div>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <!-- 04 -->
+  <section class="task p2" id="t4">
+    <div class="th"><span class="num">04</span><h2>Замовлення для майстерні</h2><span class="pts">2 бали</span></div>
+    <p class="lead">Є три зразки: <b>мідь</b>, <b>алюміній</b> і <b>сірка</b>. Для кожного виробу вибери найдоречніший матеріал і поясни свій вибір.</p>
+    <div class="row2">
+      <div class="sample"><div class="tag">А. Жила кабелю, яка має якнайкраще проводити струм</div><div class="seg" data-g="ma"></div><p class="q" style="margin-top:10px">Чому?</p><div class="opts" data-g="wa"></div></div>
+      <div class="sample"><div class="tag">Б. Легка тонка фольга для пакування</div><div class="seg" data-g="mb"></div><p class="q" style="margin-top:10px">Чому?</p><div class="opts" data-g="wb"></div></div>
+    </div>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <!-- 05 -->
+  <section class="task p2" id="t5">
+    <div class="th"><span class="num">05</span><h2>Молекули під лупою</h2><span class="pts">2 бали</span></div>
+    <p class="lead">Побудуй моделі молекул. Одне коло позначає один атом.</p>
+    <div class="mols">
+      <div class="mol" id="molO2"><h3>Кисень O₂</h3><div class="stage"></div><div class="ctr"><button type="button" data-d="-1" aria-label="Прибрати атом">−</button><span>0 атомів</span><button type="button" data-d="1" aria-label="Додати атом">+</button></div></div>
+      <div class="mol" id="molO3"><h3>Озон O₃</h3><div class="stage"></div><div class="ctr"><button type="button" data-d="-1" aria-label="Прибрати атом">−</button><span>0 атомів</span><button type="button" data-d="1" aria-label="Додати атом">+</button></div></div>
+    </div>
+    <p class="q">Чим відрізняються ці молекули?</p>
+    <div class="opts" data-g="diff"></div>
+    <p class="q">Чому обидві речовини є простими?</p>
+    <div class="opts" data-g="why"></div>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <!-- 06 -->
+  <section class="task p2" id="t6">
+    <div class="th"><span class="num">06</span><h2>Міф чи факт?</h2><span class="pts">1 бал</span></div>
+    <div class="box">«Якщо речовина проводить електричний струм, то вона є металом».</div>
+    <p class="q">Чи погоджуєшся з твердженням?</p>
+    <div class="seg" data-g="agree"></div>
+    <p class="q">Який доказ найкраще підтверджує твою відповідь?</p>
+    <div class="opts" data-g="proof"></div>
+    <p class="q">Поясни своїми словами, використай графіт як приклад:</p>
+    <textarea id="myth" maxlength="600" placeholder="Я погоджуюся / не погоджуюся, тому що…"></textarea>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <section class="final" id="final">
+    <h2>Звіт детектива</h2>
+    <p class="scoreline" id="finalLine">Перевір усі 6 справ, щоб здати роботу.</p>
+    <div class="selfq">
+      <p class="q">Як ти оцінюєш себе? Я вмію відрізняти прості речовини металів і неметалів від складних речовин:</p>
+      <div class="seg" data-g="self"></div>
+    </div>
+    <button class="btn big" id="submit" type="button" disabled>Здати роботу вчителю</button>
+    <div class="msg" id="sendBox" hidden></div>
+  </section>
+  <p class="foot">Хімічні детективи · 7 клас</p>
+</main>
+
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="detektyvy7";
+const $=id=>document.getElementById(id);
+const shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const fmt=x=>String(Math.round(x*100)/100).replace(".",",");
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let ME=null, sent=false;
+const SCORE={}, REC={};
+
+/* ---------- універсальна група варіантів ---------- */
+function group(task, g, items, multi){
+  const box=$(task).querySelector(`[data-g="${g}"]`), isSeg=box.classList.contains("seg");
+  const st={box, val:multi?new Set():null, multi};
+  items.forEach(t=>{
+    const b=document.createElement("button"); b.type="button"; b.className="opt"+(multi?" sq":""); b.dataset.v=t;
+    b.innerHTML=(isSeg?"":'<span class="mk"></span>')+`<span>${esc(t)}</span>`;
+    b.onclick=()=>{ if(b.disabled) return;
+      if(multi){ st.val.has(t)?st.val.delete(t):st.val.add(t); b.classList.toggle("sel"); }
+      else { box.querySelectorAll(".opt").forEach(x=>x.classList.remove("sel")); b.classList.add("sel"); st.val=t; }
+      refresh(task); };
+    box.appendChild(b);
+  });
+  return st;
+}
+function mark(st, correct){ // correct: рядок або Set
+  st.box.querySelectorAll(".opt").forEach(b=>{ b.disabled=true; const v=b.dataset.v;
+    const isOk = correct instanceof Set ? correct.has(v) : v===correct;
+    const chosen = st.multi ? st.val.has(v) : st.val===v;
+    b.classList.remove("sel");
+    if(chosen && isOk) b.classList.add("right"); else if(chosen) b.classList.add("wrong"); else if(isOk) b.classList.add("miss"); });
+}
+const G={};
+const READY={};
+function refresh(task){ const sec=$(task), ok=READY[task]();
+  if(sec.dataset.done||!sec.querySelector(".chk")) return;
+  sec.querySelector(".chk").disabled=!ok;
+  sec.querySelector(".need").textContent=ok?"":"Дай відповідь на всі пункти";
+}
+function feedback(task, pts, max, html){
+  const sec=$(task), fb=sec.querySelector(".fb");
+  fb.hidden=false; fb.className="fb "+(pts>=max?"ok":pts>0?"mid":"bad");
+  fb.innerHTML=`<b class="h">${pts>=max?"✓ Справу розкрито!":pts>0?"◐ Частково розкрито":"✗ Слід хибний"} — ${fmt(pts)} з ${max}</b>${html}`;
+  sec.dataset.done="1"; sec.querySelector(".chk").hidden=true; sec.querySelector(".need").textContent="";
+  SCORE[task]=pts; updSum();
+}
+function updSum(){ const v=Object.values(SCORE); $("sum").textContent=fmt(v.reduce((s,x)=>s+x,0)); $("nDone").textContent=v.length; finalState(); }
+
+/* ---------- 01 Шифр на контейнерах ---------- */
+const T1={ "Mg":"m","Fe":"m","Cu":"m","Cl₂":"n","O₂":"n","H₂":"n","NaCl":"c","CO₂":"c","H₂O":"c" };
+const BIN_NM={m:"Метали",n:"Неметали",c:"Складні речовини"};
+let picked=null; const place={};
+(function(){
+  const pool=$("pool");
+  shuf(Object.keys(T1)).forEach(s=>{ const c=document.createElement("button"); c.type="button"; c.className="card"; c.textContent=s; c.dataset.v=s;
+    c.onclick=e=>{ e.stopPropagation(); if(c.disabled) return;
+      if(place[s]){ delete place[s]; pool.appendChild(c); c.classList.remove("sel"); picked=null; arm(); refresh("t1"); return; }
+      pool.querySelectorAll(".card").forEach(x=>x.classList.remove("sel"));
+      if(picked===c){ picked=null; } else { picked=c; c.classList.add("sel"); }
+      arm(); };
+    pool.appendChild(c); });
+  document.querySelectorAll("#t1 .bin").forEach(b=>{ const put=()=>{ if(!picked||$("t1").dataset.done) return;
+      place[picked.dataset.v]=b.dataset.bin; picked.classList.remove("sel"); b.querySelector(".in").appendChild(picked); picked=null; arm(); refresh("t1"); };
+    b.onclick=put; b.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); put(); } }; });
+})();
+function arm(){ document.querySelectorAll("#t1 .bin").forEach(b=>b.classList.toggle("armed",!!picked)); }
+READY.t1=()=>Object.keys(place).length===9;
+
+/* ---------- 02 Два зразки ---------- */
+G.la=group("t2","la",["цинк","сірка"]); G.lb=group("t2","lb",["цинк","сірка"]);
+const RA_OK="Металічний блиск і електропровідність — ознаки металу";
+const RB_OK="Крихкість і відсутність електропровідності — ознаки неметалу";
+G.ra=group("t2","ra",shuf([RA_OK,"Сірий колір мають лише метали","Блискучі речовини завжди є неметалами"]));
+G.rb=group("t2","rb",shuf([RB_OK,"Жовтий колір — ознака металу","Неметали завжди бувають рідинами"]));
+READY.t2=()=>G.la.val&&G.lb.val&&G.ra.val&&G.rb.val;
+
+/* ---------- 03 Помилка в повідомленні ---------- */
+const FRAGS=[["«У молекулі",0],["води H₂O",0],["є кисень O₂»",1]];
+let fragSel=null;
+FRAGS.forEach(([t,bad],i)=>{ const b=document.createElement("button"); b.type="button"; b.className="frag"; b.textContent=t; b.dataset.i=i;
+  b.onclick=()=>{ if(b.disabled) return; document.querySelectorAll("#sent .frag").forEach(x=>x.classList.remove("sel")); b.classList.add("sel"); fragSel=i; refresh("t3"); };
+  $("sent").appendChild(b); $("sent").append(" "); });
+const FIX_OK="атоми Гідрогену й Оксигену";
+G.fix=group("t3","fix",shuf([FIX_OK,"молекула кисню O₂ і два атоми водню","проста речовина кисень","молекули водню H₂ і кисню O₂"]));
+G.el=group("t3","el",shuf(["Гідроген (H)","Оксиген (O)","Карбон (C)","Гелій (He)","Натрій (Na)"]),true);
+const EL_OK=new Set(["Гідроген (H)","Оксиген (O)"]);
+READY.t3=()=>fragSel!==null&&G.fix.val&&G.el.val.size>0;
+
+/* ---------- 04 Майстерня ---------- */
+const MAT=["мідь","алюміній","сірка"];
+G.ma=group("t4","ma",MAT); G.mb=group("t4","mb",MAT);
+const WA_OK="Серед трьох зразків найкраще проводить електричний струм";
+const WB_OK="Легкий і пластичний метал — його можна розкатати в тонкий аркуш";
+G.wa=group("t4","wa",shuf([WA_OK,"Найлегший із трьох зразків","Крихкий, тому легко ріжеться"]));
+G.wb=group("t4","wb",shuf([WB_OK,"Найкраще проводить електричний струм","Крихкий, тому легко ламається на тонкі шари"]));
+READY.t4=()=>G.ma.val&&G.mb.val&&G.wa.val&&G.wb.val;
+
+/* ---------- 05 Молекули ---------- */
+const NAT={molO2:0,molO3:0};
+function drawMol(id){ const n=NAT[id], st=$(id).querySelector(".stage");
+  const word=n===1?"атом":(n>=2&&n<=4)?"атоми":"атомів";
+  $(id).querySelector(".ctr span").textContent=`${n} ${word}`;
+  if(!n){ st.innerHTML='<span class="need">Додай атоми кнопкою «+»</span>'; return; }
+  const r=22, pts=[];
+  if(n===3){ pts.push([110,62],[148,40],[186,62]); }
+  else { const w=(n-1)*38, x0=148-w/2; for(let i=0;i<n;i++) pts.push([x0+i*38,55]); }
+  st.innerHTML=`<svg viewBox="0 0 296 110" aria-hidden="true">${pts.map(([x,y])=>`<circle cx="${x}" cy="${y}" r="${r}" fill="#e2495b" stroke="#a62437" stroke-width="2"/><circle cx="${x-7}" cy="${y-8}" r="6" fill="#fff" opacity=".45"/><text x="${x}" y="${y+6}" text-anchor="middle" font-size="17" font-weight="800" fill="#fff" font-family="Noto Sans,Arial">O</text>`).join("")}</svg>`;
+}
+["molO2","molO3"].forEach(id=>{ $(id).querySelectorAll(".ctr button").forEach(b=>b.onclick=()=>{ if($("t5").dataset.done) return;
+  NAT[id]=Math.max(0,Math.min(6,NAT[id]+(+b.dataset.d))); drawMol(id); refresh("t5"); }); drawMol(id); });
+const DIFF_OK="Кількістю атомів Оксигену в молекулі: 2 і 3";
+const WHY_OK="Кожну утворено атомами лише одного хімічного елемента — Оксигену";
+G.diff=group("t5","diff",shuf([DIFF_OK,"Їх утворено атомами різних хімічних елементів","Озон — складна речовина, а кисень — проста"]));
+G.why=group("t5","why",shuf([WHY_OK,"Бо обидві речовини — гази","Бо обидві містяться у воді"]));
+READY.t5=()=>NAT.molO2>0&&NAT.molO3>0&&G.diff.val&&G.why.val;
+
+/* ---------- 06 Міф чи факт ---------- */
+G.agree=group("t6","agree",["Погоджуюся","Не погоджуюся"]);
+const PROOF_OK="Графіт — проста речовина неметалічного елемента Карбону, але проводить струм";
+G.proof=group("t6","proof",shuf([PROOF_OK,"Графіт — метал, тому й проводить струм","Графіт не проводить електричного струму"]));
+$("myth").oninput=()=>refresh("t6");
+READY.t6=()=>G.agree.val&&G.proof.val&&$("myth").value.trim().length>=15;
+
+/* ---------- самооцінка ---------- */
+G.self=group("final","self",["Так, упевнено","Частково","Поки що ні"]);
+READY.final=()=>true;
+
+/* ---------- перевірка ---------- */
+const CHECK={
+  t1(){ let ok=0; const wrong=[];
+    document.querySelectorAll("#t1 .card").forEach(c=>{ c.disabled=true; const v=c.dataset.v;
+      if(place[v]===T1[v]){ ok++; c.classList.add("right"); } else { c.classList.add("wrong"); wrong.push(`${v} → ${BIN_NM[place[v]]} (треба: ${BIN_NM[T1[v]]})`); } });
+    const pts=Math.round(ok/9*3*2)/2;
+    REC.t1=`${ok}/9`+(wrong.length?"; помилки: "+wrong.join("; "):"");
+    feedback("t1",pts,3,`<p>Правильно розподілено ${ok} з 9. <b>Метали</b> — Mg, Fe, Cu; <b>неметали</b> — Cl₂, O₂, H₂ (прості речовини, утворені атомами одного елемента); <b>складні речовини</b> — NaCl, CO₂, H₂O (утворені атомами різних елементів).</p>`); },
+  t2(){ let p=0; const a=G.la.val==="цинк", b=G.lb.val==="сірка", ra=G.ra.val===RA_OK, rb=G.rb.val===RB_OK;
+    p=(a?.5:0)+(b?.5:0)+(ra?.5:0)+(rb?.5:0);
+    mark(G.la,"цинк"); mark(G.lb,"сірка"); mark(G.ra,RA_OK); mark(G.rb,RB_OK);
+    REC.t2=`А: ${G.la.val}${a?"✓":"✗"}, обґр.${ra?"✓":"✗ «"+G.ra.val+"»"}; Б: ${G.lb.val}${b?"✓":"✗"}, обґр.${rb?"✓":"✗ «"+G.rb.val+"»"}`;
+    feedback("t2",p,2,"<p>Зразок А — <b>цинк</b>: металічний блиск і електропровідність — фізичні властивості металів. Зразок Б — <b>сірка</b>: жовтий колір, крихкість, речовина не проводить струм — це властивості неметалу.</p>"); },
+  t3(){ const f=fragSel===2, x=G.fix.val===FIX_OK, setOk=[...G.el.val].every(v=>EL_OK.has(v))&&G.el.val.size===2;
+    const p=(f?.5:0)+(x?.5:0)+(setOk?1:0);
+    document.querySelectorAll("#sent .frag").forEach((b,i)=>{ b.disabled=true; b.classList.remove("sel"); if(i===2) b.classList.add("right"); else if(i===fragSel) b.classList.add("wrong"); });
+    mark(G.fix,FIX_OK); mark(G.el,EL_OK);
+    REC.t3=`помилка: ${f?"✓":"✗ «"+FRAGS[fragSel][0]+"»"}; виправлення: ${x?"✓":"✗ «"+G.fix.val+"»"}; елементи: ${[...G.el.val].join(", ")}${setOk?" ✓":" ✗"}`;
+    feedback("t3",p,2,"<p>Правильно: «У молекулі води H₂O є <b>атоми Гідрогену й Оксигену</b>». Кисень O₂ — окрема проста речовина, у молекулі води її немає. Формула H₂O показує: два атоми Гідрогену та один атом Оксигену.</p>"); },
+  t4(){ const a=G.ma.val==="мідь", b=G.mb.val==="алюміній", wa=G.wa.val===WA_OK, wb=G.wb.val===WB_OK;
+    const p=(a?.5:0)+(b?.5:0)+(wa?.5:0)+(wb?.5:0);
+    mark(G.ma,"мідь"); mark(G.mb,"алюміній"); mark(G.wa,WA_OK); mark(G.wb,WB_OK);
+    REC.t4=`А: ${G.ma.val}${a?"✓":"✗"}, пояснення${wa?"✓":"✗ «"+G.wa.val+"»"}; Б: ${G.mb.val}${b?"✓":"✗"}, пояснення${wb?"✓":"✗ «"+G.wb.val+"»"}`;
+    feedback("t4",p,2,"<p>А — <b>мідь</b>: із трьох зразків найкраще проводить електричний струм, тому з неї роблять жили кабелів. Б — <b>алюміній</b>: легкий і пластичний метал, його розкатують у тонку фольгу. Сірка не підходить: вона крихка й не проводить струму.</p>"); },
+  t5(){ const o2=NAT.molO2===2, o3=NAT.molO3===3, d=G.diff.val===DIFF_OK, w=G.why.val===WHY_OK;
+    const p=(o2&&o3?.5:0)+(d?.5:0)+(w?1:0);
+    $("molO2").classList.add(o2?"right":"wrong"); $("molO3").classList.add(o3?"right":"wrong");
+    mark(G.diff,DIFF_OK); mark(G.why,WHY_OK);
+    REC.t5=`моделі: O₂=${NAT.molO2}${o2?"✓":"✗"}, O₃=${NAT.molO3}${o3?"✓":"✗"}; відмінність ${d?"✓":"✗ «"+G.diff.val+"»"}; прості, бо ${w?"✓":"✗ «"+G.why.val+"»"}`;
+    feedback("t5",p,2,"<p>Молекула кисню O₂ — з <b>двох</b> атомів Оксигену, молекула озону O₃ — з <b>трьох</b>. Обидві речовини прості, бо їх утворено атомами одного хімічного елемента — Оксигену.</p>"); },
+  t6(){ const a=G.agree.val==="Не погоджуюся", pr=G.proof.val===PROOF_OK;
+    const p=(a?.5:0)+(pr?.5:0);
+    mark(G.agree,"Не погоджуюся"); mark(G.proof,PROOF_OK); $("myth").readOnly=true;
+    REC.t6=`${G.agree.val}${a?"✓":"✗"}; доказ ${pr?"✓":"✗ «"+G.proof.val+"»"}`; REC.myth=$("myth").value.trim().slice(0,600);
+    feedback("t6",p,1,"<p>Це <b>міф</b>. Графіт — проста речовина неметалічного елемента Карбону, проте він проводить електричний струм (з нього роблять стрижні олівців і електроди). Отже, електропровідність ще не доводить, що речовина — метал. Твоє пояснення побачить учитель.</p>"); }
+};
+["t1","t2","t3","t4","t5","t6"].forEach(t=>{ $(t).querySelector(".chk").onclick=()=>{ if(!$(t).dataset.done&&READY[t]()) CHECK[t](); }; refresh(t); });
+
+/* ---------- здача ---------- */
+function finalState(){ const n=Object.keys(SCORE).length, total=Object.values(SCORE).reduce((s,x)=>s+x,0);
+  $("finalLine").innerHTML=n<6?`Перевірено ${n} з 6 справ. Перевір усі, щоб здати роботу.`:`Усі справи перевірено: <b>${fmt(total)} з 12 балів</b>. Оціни себе й здай роботу.`;
+  $("submit").disabled=sent||n<6||!G.self.val; }
+G.self.box.addEventListener("click",finalState);
+$("submit").onclick=async()=>{ if(sent) return; const box=$("sendBox"); $("submit").disabled=true; box.hidden=false; box.className="msg info"; box.textContent="Надсилаю…";
+  const ORDER=["t1","t2","t3","t4","t5","t6"], sc=Math.round(ORDER.reduce((s,k)=>s+SCORE[k],0)*100)/100;
+  const rec={name:ME.name,cls:ME.cls,score:sc,max:12,ts:{".sv":"timestamp"},parts:ORDER.map(k=>SCORE[k]).join(" "),
+    t1:REC.t1,t2:REC.t2,t3:REC.t3,t4:REC.t4,t5:REC.t5,t6:REC.t6,myth:REC.myth,self:G.self.val};
+  try{ const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec)}); if(!r.ok) throw new Error(r.status);
+    sent=true; box.className="msg ok"; box.textContent=`✓ Роботу отримано вчителем: ${fmt(sc)} / 12. Молодець, детективе!`;
+  }catch(e){ $("submit").disabled=false; box.className="msg bad"; box.textContent="Не вдалося надіслати. Перевір інтернет і натисни ще раз."; } };
+
+/* ---------- старт ---------- */
+$("startBtn").onclick=()=>{ const nm=$("pname").value.trim().replace(/\s+/g," "), c=$("pcls").value;
+  if(nm.length<3||nm.split(" ").length<2||!c){ $("startErr").hidden=false; return; }
+  ME={name:nm.slice(0,60),cls:c}; $("who").textContent=`👤 ${ME.name} · ${ME.cls}`; $("start").hidden=true; };
+$("pname").addEventListener("keydown",e=>{ if(e.key==="Enter") $("startBtn").click(); });
+window.addEventListener("beforeunload",e=>{ if(Object.keys(SCORE).length&&!sent){ e.preventDefault(); e.returnValue=""; } });
+</script>
+</body>
+</html>
