@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Неметали. Загальна характеристика, фізичні властивості — 11 клас</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1d2a3a;--ink2:#46556a;--muted:#6f7c8f;--bg:#f4f6f8;--line:#dfe5ec;--teal:#0f7a63;--teal2:#14a083;--mint:#e6f4ee;--blue:#2563eb;--sky:#e8f0fe;
+ --ok:#14864f;--ok-t:#e1f6ea;--bad:#d33a4a;--bad-t:#fde7e9;--warn-t:#fff4dc;--focus:#4f5cf0;--sh:0 8px 24px rgba(29,42,58,.07),0 1px 3px rgba(29,42,58,.06)}
+*{box-sizing:border-box}html,body{margin:0}
+body{font-family:'Noto Sans',system-ui,'Segoe UI',Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+button,input,select,textarea{font:inherit;color:inherit}
+button:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+[hidden]{display:none!important}
+.wrap{max-width:940px;margin:0 auto;padding:18px 14px 60px}
+.hero{background:linear-gradient(120deg,#e8f0fe,#e6f4ee);border-radius:18px;padding:22px 24px;margin-bottom:14px}
+.kicker{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--blue);text-transform:uppercase}
+.hero h1{font-size:clamp(24px,4.4vw,34px);margin:4px 0;font-weight:800;line-height:1.2}
+.hero p{margin:0;color:var(--ink2)}
+.who{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:14px;color:var(--ink2);margin:0 4px 14px}
+.task{background:#fff;border-radius:18px;box-shadow:var(--sh);padding:20px 22px;margin:0 0 16px;border-top:5px solid var(--blue)}
+.task.g{border-top-color:var(--teal2)} .task.n{border-top-color:#8aa0b8}
+.th{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.num{flex:none;min-width:36px;height:32px;padding:0 8px;border-radius:9px;display:grid;place-items:center;color:#fff;font-weight:800;background:var(--blue)}
+.g .num{background:var(--teal)} .n .num{background:#5d7189}
+.th h2{margin:0;font-size:20px;font-weight:800;flex:1}
+.pts{font-size:13px;font-weight:700;color:var(--muted);white-space:nowrap}
+.lead{margin:6px 0 12px;color:var(--ink2)}
+.box{background:var(--sky);border-radius:12px;padding:12px 14px;margin:8px 0 12px}
+.box.g{background:var(--mint)}
+.q{font-weight:700;margin:14px 0 8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:680px){.grid2{grid-template-columns:1fr}}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:560px}
+th,td{border:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:middle}
+th{background:#f3f6f9;font-size:14px}
+td select{width:100%;padding:7px 8px;border:2px solid var(--line);border-radius:9px;background:#fff}
+td select.right,input.right{border-color:var(--ok);background:var(--ok-t)} td select.wrong,input.wrong{border-color:var(--bad);background:var(--bad-t)}
+.corr{display:block;font-size:12px;color:var(--ok);font-weight:700;margin-top:3px}
+textarea{width:100%;min-height:76px;border:2px solid var(--line);border-radius:12px;padding:10px 12px;resize:vertical}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:2px solid var(--line);background:#fff;border-radius:12px;padding:8px 14px;font-weight:700;cursor:pointer}
+.chip.sel{border-color:var(--ink);background:var(--ink);color:#fff}
+.chip.done{border-color:var(--ok)}
+/* склянка */
+.bench{display:flex;gap:18px;align-items:flex-end;flex-wrap:wrap;justify-content:center;background:#f7f9fc;border-radius:14px;padding:14px}
+.beaker{width:130px;text-align:center}
+.beaker svg{width:130px;height:150px}
+.beaker .lbl{font-weight:700;font-size:14px;min-height:22px}
+.liq{transition:fill .9s ease}
+.phbadge{display:inline-block;margin-top:4px;font-weight:800;border-radius:999px;padding:2px 10px;background:#fff;border:2px solid var(--line);font-size:14px}
+.scale{display:flex;border-radius:10px;overflow:hidden;margin:10px 0 4px}
+.scale div{flex:1;text-align:center;font-size:12px;font-weight:800;padding:6px 0;color:#1d2a3a}
+.scale-cap{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-weight:700}
+.btn{border:0;border-radius:12px;padding:11px 20px;font-weight:800;cursor:pointer;background:var(--ink);color:#fff;box-shadow:0 3px 0 #0b1320}
+.btn.s{padding:8px 14px;font-size:14px;box-shadow:0 2px 0 #0b1320}
+.btn.lt{background:#fff;color:var(--ink);box-shadow:0 0 0 2px var(--ink) inset}
+.btn[disabled]{opacity:.4;cursor:not-allowed}.btn.big{font-size:18px;padding:14px 28px}
+.act{display:flex;justify-content:flex-end;gap:10px;margin-top:14px;align-items:center;flex-wrap:wrap}
+.need{font-size:13px;color:var(--muted)}
+.fb{margin-top:12px;border-radius:12px;padding:10px 14px;border-left:5px solid;font-size:15px}
+.fb.ok{background:var(--ok-t);border-color:var(--ok)}.fb.mid{background:var(--warn-t);border-color:#e0a530}.fb.bad{background:var(--bad-t);border-color:var(--bad)}
+.fb b.h{display:block;font-size:16px}
+.eq{font-size:20px;font-weight:700;display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:8px 0}
+.eq input{width:52px;text-align:center;padding:6px;border:2px solid var(--line);border-radius:9px;font-weight:800}
+.eq select{padding:6px 8px;border:2px solid var(--line);border-radius:9px;font-weight:700}
+.log{font-size:14px;color:var(--ink2);min-height:22px;margin-top:8px;text-align:center}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:10px;text-align:left;border:2px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;cursor:pointer;font-weight:600}
+.opt.sel{border-color:var(--ink);background:#f2f4fb}.opt.right{border-color:var(--ok);background:var(--ok-t)}.opt.wrong{border-color:var(--bad);background:var(--bad-t)}.opt.miss{border-color:var(--ok);border-style:dashed}
+.modal{position:fixed;inset:0;background:rgba(20,30,45,.55);display:grid;place-items:center;z-index:50;padding:14px}
+.dlg{background:#fff;border-radius:20px;max-width:460px;width:100%;padding:24px}
+.dlg h2{margin:4px 0;font-size:22px}.dlg p{margin:0 0 14px;color:var(--ink2)}
+.inp{width:100%;font-size:17px;padding:11px 13px;border-radius:12px;border:2px solid var(--line);margin-bottom:10px;background:#fff}
+.err{color:var(--bad);font-weight:700;font-size:14px;margin:0 0 10px}
+.final{background:#fff;border-radius:18px;box-shadow:var(--sh);padding:22px;text-align:center}
+.seg{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}.seg .opt{flex:1;justify-content:center;min-width:110px}
+.msg{margin-top:12px;border-radius:12px;padding:10px 14px;font-weight:700}
+.msg.ok{background:var(--ok-t);color:var(--ok)}.msg.bad{background:var(--bad-t);color:var(--bad)}.msg.info{background:#eef2fb;color:var(--ink2)}
+.sw{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;border:1px solid rgba(0,0,0,.15)}
+
+/* ===== яскрава тема ===== */
+body{background:radial-gradient(circle at 10% 0%,#ffe3f1 0,transparent 40%),radial-gradient(circle at 90% 10%,#dff6ff 0,transparent 40%),radial-gradient(circle at 50% 100%,#fff3c4 0,transparent 45%),#f7f5ff}
+.hero{background:linear-gradient(120deg,#ff3d7f 0%,#ff8a3d 35%,#ffd23d 55%,#2ec4b6 78%,#3d6bff 100%);color:#fff;box-shadow:0 12px 30px rgba(255,61,127,.25)}
+.hero .kicker,.hero p{color:#fff}.hero h1{text-shadow:0 2px 0 rgba(0,0,0,.15)}
+.task{border-top-width:7px}
+.task:nth-of-type(7n+1){border-top-color:#ff3d7f}.task:nth-of-type(7n+2){border-top-color:#ff8a3d}.task:nth-of-type(7n+3){border-top-color:#f5b800}
+.task:nth-of-type(7n+4){border-top-color:#2ec4b6}.task:nth-of-type(7n+5){border-top-color:#3d6bff}.task:nth-of-type(7n+6){border-top-color:#9b5de5}.task:nth-of-type(7n){border-top-color:#00b86b}
+.task:nth-of-type(7n+1) .num{background:#ff3d7f}.task:nth-of-type(7n+2) .num{background:#ff8a3d}.task:nth-of-type(7n+3) .num{background:#f5b800}
+.task:nth-of-type(7n+4) .num{background:#2ec4b6}.task:nth-of-type(7n+5) .num{background:#3d6bff}.task:nth-of-type(7n+6) .num{background:#9b5de5}.task:nth-of-type(7n) .num{background:#00b86b}
+.num{font-size:17px;box-shadow:0 3px 0 rgba(0,0,0,.15)}
+.box{background:linear-gradient(135deg,#ffe8f1,#fff1e3)}.box.g{background:linear-gradient(135deg,#dcfbf4,#e3f0ff)}
+.chip{border-color:#d9d2ff;background:#f4f1ff;color:#4a2fb0}
+.chip:nth-child(6n+1){background:#ffe6ef;border-color:#ffc0d5;color:#c2185b}.chip:nth-child(6n+2){background:#fff0e0;border-color:#ffd2a6;color:#c25a00}
+.chip:nth-child(6n+3){background:#fff8d6;border-color:#ffe48a;color:#8a6a00}.chip:nth-child(6n+4){background:#ddf8f3;border-color:#9ce8db;color:#0b7a6c}
+.chip:nth-child(6n+5){background:#e3ebff;border-color:#b3c6ff;color:#2443b8}.chip:nth-child(6n){background:#f0e6ff;border-color:#d4b8ff;color:#6a2fb8}
+.chip.sel{background:#1d2a3a!important;border-color:#1d2a3a!important;color:#fff!important;transform:translateY(-1px)}
+.chip.done::after{content:" ✓"}
+.btn{background:linear-gradient(135deg,#3d6bff,#9b5de5);box-shadow:0 4px 0 #2c3fa8}
+.btn.lt{background:#fff;color:#3d6bff;box-shadow:0 0 0 2px #3d6bff inset}
+.btn.big{background:linear-gradient(135deg,#ff3d7f,#ff8a3d);box-shadow:0 4px 0 #b8255a}
+.bench{background:linear-gradient(180deg,#f2f7ff,#fdf2ff)}
+th{background:linear-gradient(135deg,#eef3ff,#f7ecff);color:#2c3a6b}
+.who{background:#fff;border-radius:999px;padding:8px 16px;box-shadow:var(--sh)}
+.final{background:linear-gradient(135deg,#fff,#fff6e8)}
+.dlg{border-top:8px solid #ff3d7f}
+.modal{background:rgba(61,40,120,.55)}
+/* ===== неметали ===== */
+.pt{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:5px;max-width:620px;margin:6px auto 4px}
+.pt .gh{font-size:11px;font-weight:800;text-align:center;color:var(--muted)}
+.el{aspect-ratio:1/1;border:2px solid #d9d2ff;background:#fff;border-radius:10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0;line-height:1.05;transition:transform .12s}
+.el b{font-size:clamp(14px,3.4vw,20px)}.el small{font-size:10px;color:var(--muted)}
+.el:hover{transform:translateY(-2px)}
+.el.on{background:linear-gradient(135deg,#2ec4b6,#3d6bff);border-color:#2443b8;color:#fff}.el.on small{color:#e8f0ff}
+.el.right{outline:3px solid var(--ok);outline-offset:-1px}.el.wrong{outline:3px solid var(--bad);outline-offset:-1px;opacity:.85}
+.el.blank{visibility:hidden}
+.cnt{font-size:13px;color:var(--muted);text-align:center}
+.vit{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+.card{background:#fff;border:2px solid #e6e0ff;border-radius:16px;padding:10px;text-align:center;cursor:pointer}
+.card.seen{border-color:var(--ok)}
+.card svg{width:100%;height:96px}
+.card .nm{font-weight:800}.card .fm{font-size:13px;color:var(--muted)}
+.info{background:linear-gradient(135deg,#f4f1ff,#e3f0ff);border-radius:14px;padding:12px 14px;margin-top:12px;min-height:54px}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:620px){.cmp{grid-template-columns:1fr}}
+.cmp .box{text-align:center}
+.cmp svg{width:100%;max-width:220px;height:150px}
+</style>
+</head>
+<body>
+<div class="modal" id="start"><div class="dlg">
+  <div class="kicker">Супровід уроку · Хімія · 11 клас</div>
+  <h2>Неметали: загальна характеристика й фізичні властивості</h2>
+  <p>Знайди неметалічні елементи в періодичній системі, з'ясуй, як будова атома визначає їхні властивості, розглянь «вітрину» простих речовин і розгадай загадку двох облич Карбону. Бали (з 12) зараховуються за першою перевіркою кожного розділу.</p>
+  <input class="inp" id="pname" maxlength="60" placeholder="Прізвище та ім’я" autocomplete="name">
+  <select class="inp" id="pcls"><option value="">Обери клас</option><option>11-А</option><option>11-Б</option><option>Інший</option></select>
+  <p class="err" id="startErr" hidden>Впиши прізвище, ім’я та обери клас.</p>
+  <button class="btn big" id="startBtn" type="button" style="width:100%">Почати урок ▶</button>
+</div></div>
+
+<main class="wrap">
+  <header class="hero">
+    <div class="kicker">Хімія · 11 клас · супровід уроку</div>
+    <h1>Неметали. Загальна характеристика, фізичні властивості</h1>
+    <p>Де «живуть» неметалічні елементи, чому їхні атоми охоче приймають електрони і чому прості речовини неметалів такі різні: від газу, яким ми дихаємо, до найтвердішого мінералу.</p>
+  </header>
+  <div class="who"><span id="who">👤 —</span><span>Набрано: <b id="sum">0</b> з 12 · перевірено розділів: <b id="nDone">0</b> з 5</span></div>
+
+  <!-- 0 загадка -->
+  <section class="task n" id="s0">
+    <div class="th"><span class="num">💎</span><h2>Загадка: два обличчя Карбону</h2><span class="pts">без балів</span></div>
+    <div class="cmp">
+      <div class="box"><b>Алмаз</b><br><svg viewBox="0 0 200 150" aria-hidden="true"><polygon points="100,140 30,55 60,20 140,20 170,55" fill="#dff6ff" stroke="#3d6bff" stroke-width="3"/><path d="M30 55h140M60 20l20 35 20-35 20 35 20-35M80 55l20 85 20-85" stroke="#3d6bff" stroke-width="2" fill="none"/></svg><br>прозорий, найтвердший природний мінерал, ріже скло, не проводить електричний струм</div>
+      <div class="box g"><b>Графіт</b><br><svg viewBox="0 0 200 150" aria-hidden="true"><g fill="#4b5563"><rect x="40" y="30" width="120" height="16" rx="4"/><rect x="40" y="60" width="120" height="16" rx="4" transform="translate(10 0)"/><rect x="40" y="90" width="120" height="16" rx="4"/><rect x="40" y="120" width="120" height="16" rx="4" transform="translate(-10 0)"/></g></svg><br>сіро-чорний, м'який, жирний на дотик, лишає слід на папері, проводить струм</div>
+    </div>
+    <p class="q">Обидві речовини складаються лише з атомів Карбону. Як ти думаєш, чому вони такі різні? Запиши свою гіпотезу:</p>
+    <textarea id="hyp" maxlength="500" placeholder="Мені здається, що алмаз і графіт різні, тому що…"></textarea>
+    <p class="need">Наприкінці уроку ти перевіриш свою гіпотезу.</p>
+  </section>
+
+  <!-- теорія -->
+  <section class="task n">
+    <div class="th"><span class="num">📘</span><h2>Коротко про головне</h2></div>
+    <div class="grid2">
+      <div class="box"><b>Де розташовані</b><br>Неметалічні елементи розміщені в правому верхньому куті періодичної системи, над умовною діагоналлю <b>B — At</b>. До них належать також <b>Гідроген</b> і <b>інертні елементи</b> (He, Ne, Ar, Kr, Xe, Rn). Усього неметалічних елементів 22.</div>
+      <div class="box g"><b>Будова атомів</b><br>На зовнішньому енергетичному рівні в більшості атомів <b>4–8 електронів</b> (винятки: H, He, B). Радіуси атомів малі, тому атоми неметалічних елементів мають <b>високу електронегативність</b> і здатні приймати електрони. Найелектронегативніший елемент — <b>Флуор</b>.</div>
+    </div>
+    <p><b>Ступені окиснення.</b> Нижчий ступінь окиснення = номер групи − 8 (Cl⁻¹, S⁻², N⁻³, C⁻⁴). Його атоми виявляють у сполуках з Гідрогеном і металами. Вищий ступінь окиснення зазвичай дорівнює номеру групи (крім Флуору й Оксигену).</p>
+    <p><b>Прості речовини.</b> Більшість неметалів мають <b>молекулярні</b> кристалічні ґратки (H₂, N₂, O₂, O₃, F₂, Cl₂, Br₂, I₂, S₈, P₄). Між молекулами діють слабкі сили, тому такі речовини мають низькі температури плавлення й кипіння; за звичайних умов це гази, летка рідина (бром) або легкоплавкі тверді речовини. Деякі неметали мають <b>атомні</b> ґратки (алмаз, графіт, кремній, бор): атоми зв'язані міцними ковалентними зв'язками, тому ці речовини тверді й тугоплавкі. Інертні гази складаються з окремих атомів.</p>
+    <p><b>Алотропія</b> — здатність хімічного елемента існувати у вигляді кількох простих речовин: O₂ і O₃ (озон); алмаз, графіт, фулерен, графен; білий і червоний фосфор; ромбічна, моноклінна й пластична сірка.</p>
+    <p><b>Фізичні властивості</b> дуже різноманітні. Більшість неметалів погано проводять тепло й електричний струм (виняток — графіт, кремній — напівпровідник), не мають металічного блиску (крім йоду, графіту, кремнію), тверді неметали крихкі.</p>
+  </section>
+
+  <!-- 1 ПС -->
+  <section class="task" id="t1">
+    <div class="th"><span class="num">1</span><h2>Знайди неметалічні елементи</h2><span class="pts">3 бали</span></div>
+    <p class="lead">Перед тобою фрагмент періодичної системи (1–4 періоди, головні підгрупи). Натисни на <b>всі неметалічні елементи</b>, включно з інертними. Повторне натискання знімає вибір.</p>
+    <div class="pt" id="pt"></div>
+    <div class="cnt" id="ptCnt">Обрано: 0</div>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <!-- 2 будова атома -->
+  <section class="task g" id="t2">
+    <div class="th"><span class="num">2</span><h2>Будова атома → ступінь окиснення → формула</h2><span class="pts">3 бали</span></div>
+    <p class="lead">Визнач для кожного елемента кількість електронів на зовнішньому рівні, нижчий ступінь окиснення і формулу леткої сполуки з Гідрогеном. Підказка: подивись, у якій групі розташований елемент.</p>
+    <div class="tw"><table><thead><tr><th>Елемент</th><th>Електронів на зовнішньому рівні</th><th>Нижчий ступінь окиснення</th><th>Летка сполука з Гідрогеном</th></tr></thead><tbody id="tb2"></tbody></table></div>
+    <p class="q">Розташуй атоми в порядку <b>зменшення</b> електронегативності:</p>
+    <div class="eq" id="enRow"></div>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <!-- 3 вітрина -->
+  <section class="task" id="t3">
+    <div class="th"><span class="num">3</span><h2>Вітрина простих речовин</h2><span class="pts">3 бали</span></div>
+    <p class="lead">Натискай на кожен зразок, щоб розглянути його й прочитати опис. Потім заповни таблицю. Розглянь <b>усі</b> зразки.</p>
+    <div class="vit" id="vit"></div>
+    <div class="info" id="info">👆 Натисни на зразок.</div>
+    <p class="q">Таблиця. Фізичні властивості простих речовин (за звичайних умов)</p>
+    <div class="tw"><table><thead><tr><th>Речовина</th><th>Агрегатний стан</th><th>Тип кристалічних ґраток</th></tr></thead><tbody id="tb3"></tbody></table></div>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <!-- 4 алотропія -->
+  <section class="task g" id="t4">
+    <div class="th"><span class="num">4</span><h2>Алотропія й будова: аналізуємо</h2><span class="pts">2 бали</span></div>
+    <p class="q">Обери ВСІ пари, які є алотропними модифікаціями одного елемента:</p>
+    <div class="opts" id="allo"></div>
+    <p class="q">Йод, нагрітий у пробірці, перетворюється на фіолетову пару, минаючи рідкий стан (сублімація). Чому це можливо?</p>
+    <div class="opts" data-g="a"></div>
+    <p class="q">Кремній використовують для виготовлення сонячних батарей і мікросхем, бо він…</p>
+    <div class="opts" data-g="b"></div>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <!-- 5 висновки -->
+  <section class="task" id="t5">
+    <div class="th"><span class="num">5</span><h2>Висновки</h2><span class="pts">1 бал</span></div>
+    <p class="q">У періоді зліва направо неметалічні властивості елементів…</p><div class="opts" data-g="c"></div>
+    <p class="q">Більшість неметалів за звичайних умов — гази або легкоплавкі речовини, тому що…</p><div class="opts" data-g="d"></div>
+    <p class="q">Повернися до загадки. Поясни своїми словами, чому алмаз і графіт мають різні властивості, і зроби загальний висновок уроку про те, від чого залежать фізичні властивості неметалів:</p>
+    <textarea id="concl" maxlength="800" placeholder="Алмаз і графіт різні, тому що… Фізичні властивості неметалів залежать від…"></textarea>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <section class="final" id="fin">
+    <h2>Здати роботу</h2>
+    <p id="finalLine" class="need" style="font-size:15px">Перевір усі 5 розділів, щоб здати роботу.</p>
+    <p class="q">Як ти оцінюєш себе? Я вмію за положенням у періодичній системі характеризувати неметалічний елемент і пояснювати фізичні властивості простих речовин їхньою будовою:</p>
+    <div class="seg" id="selfSeg"></div>
+    <p style="margin-top:16px"><button class="btn big" id="submit" type="button" disabled>Здати роботу вчителю</button></p>
+    <div class="msg" id="sendBox" hidden></div>
+  </section>
+</main>
+
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="nemet11";
+const $=id=>document.getElementById(id);
+const shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const fmt=x=>String(Math.round(x*100)/100).replace(".",",");
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const half=x=>Math.floor(x*2+1e-9)/2;
+let ME=null,sent=false,SELF=null; const SCORE={},REC={},READY={};
+function sel(opts,attrs){return `<select ${attrs}><option value="">—</option>${opts.map(o=>`<option>${esc(o)}</option>`).join("")}</select>`}
+
+/* ---------- 1 ПС ---------- */
+const ROWS=[["H",1,"","","","","","","He",2],["Li",3,"Be",4,"B",5,"C",6,"N",7,"O",8,"F",9,"Ne",10],["Na",11,"Mg",12,"Al",13,"Si",14,"P",15,"S",16,"Cl",17,"Ar",18],["K",19,"Ca",20,"Ga",31,"Ge",32,"As",33,"Se",34,"Br",35,"Kr",36]];
+const NONMET=new Set(["H","He","B","C","N","O","F","Ne","Si","P","S","Cl","Ar","As","Se","Br","Kr"]);
+const picked=new Set();
+let ptHtml=["I","II","III","IV","V","VI","VII","VIII"].map(g=>`<div class="gh">${g}</div>`).join("");
+ROWS.forEach(r=>{for(let i=0;i<r.length;i+=2){const s=r[i];ptHtml+=s?`<button type="button" class="el" data-s="${s}"><small>${r[i+1]}</small><b>${s}</b></button>`:`<div class="el blank"></div>`}});
+$("pt").innerHTML=ptHtml;
+const ALL_EL=[...$("pt").querySelectorAll(".el[data-s]")];
+ALL_EL.forEach(b=>b.onclick=()=>{if($("t1").dataset.done)return;const s=b.dataset.s;picked.has(s)?picked.delete(s):picked.add(s);b.classList.toggle("on",picked.has(s));$("ptCnt").textContent=`Обрано: ${picked.size}`;refresh("t1")});
+READY.t1=()=>picked.size>=5;
+
+/* ---------- 2 будова ---------- */
+const AT=[["Карбон (C)","4","−4","CH₄"],["Нітроген (N)","5","−3","NH₃"],["Фосфор (P)","5","−3","PH₃"],["Сульфур (S)","6","−2","H₂S"],["Хлор (Cl)","7","−1","HCl"]];
+$("tb2").innerHTML=AT.map((a,i)=>`<tr><td><b>${a[0]}</b></td><td>${sel(["4","5","6","7"],`data-r="${i}" data-c="1"`)}</td><td>${sel(["−1","−2","−3","−4"],`data-r="${i}" data-c="2"`)}</td><td>${sel(["CH₄","NH₃","PH₃","H₂S","HCl"],`data-r="${i}" data-c="3"`)}</td></tr>`).join("");
+const EN_OK=["F","O","N","C"];
+$("enRow").innerHTML=EN_OK.map((_,i)=>`${sel(["C","N","O","F"],`data-en="${i}"`)}${i<3?" &gt; ":""}`).join("");
+READY.t2=()=>[...$("t2").querySelectorAll("select")].every(s=>s.value);
+
+/* ---------- 3 вітрина ---------- */
+const SUB=[
+ {n:"Азот",f:"N₂",st:"газ",lat:"молекулярні",c:"#eef2f7",shape:"gas",t:"Безбарвний газ без запаху. Становить приблизно 78 % об'єму повітря. Молекула N₂ дуже міцна (потрійний зв'язок), тому азот хімічно малоактивний."},
+ {n:"Хлор",f:"Cl₂",st:"газ",lat:"молекулярні",c:"#c9e86b",shape:"gas",t:"Жовто-зелений газ із різким задушливим запахом, отруйний. Важчий за повітря."},
+ {n:"Бром",f:"Br₂",st:"рідина",lat:"молекулярні",c:"#8b2d14",shape:"liq",t:"Червоно-бура важка рідина з неприємним запахом. Легко випаровується (пари теж бурі). Єдиний рідкий неметал."},
+ {n:"Йод",f:"I₂",st:"тверда",lat:"молекулярні",c:"#3b1f4f",shape:"cry",t:"Темно-фіолетові кристали з металічним блиском. Під час нагрівання сублімує — утворює фіолетову пару."},
+ {n:"Сірка",f:"S₈",st:"тверда",lat:"молекулярні",c:"#f5d000",shape:"pow",t:"Жовта крихка тверда речовина, не змочується водою (порошок плаває на поверхні). Плавиться вже за ~113 °C."},
+ {n:"Алмаз",f:"C",st:"тверда",lat:"атомні",c:"#dff6ff",shape:"gem",t:"Прозорі безбарвні кристали, найтвердший природний мінерал. Кожен атом Карбону міцно зв'язаний із чотирма сусідами в тривимірний каркас. Струм не проводить."},
+ {n:"Графіт",f:"C",st:"тверда",lat:"атомні",c:"#4b5563",shape:"cry",t:"Сіро-чорна м'яка речовина з металічним блиском, жирна на дотик. Атоми утворюють шари, які слабко зв'язані між собою і легко ковзають. Проводить струм."},
+ {n:"Кремній",f:"Si",st:"тверда",lat:"атомні",c:"#7d8897",shape:"cry",t:"Темно-сірі кристали з металічним блиском, тверді й тугоплавкі (плавиться за ~1415 °C). Напівпровідник."}];
+function subSVG(s){const c=s.c;
+ if(s.shape==="gas")return `<svg viewBox="0 0 100 100"><path d="M38 8h24v8h-3v18a30 30 0 1 1-18 0V16h-3z" fill="${c}" stroke="#8aa0b8" stroke-width="3"/><circle cx="40" cy="62" r="4" fill="#fff" opacity=".7"/></svg>`;
+ if(s.shape==="liq")return `<svg viewBox="0 0 100 100"><path d="M32 10h36v6h-3v62a12 12 0 0 1-12 12h-6a12 12 0 0 1-12-12V16h-3z" fill="#fff" stroke="#8aa0b8" stroke-width="3"/><path d="M38 40h24v38a8 8 0 0 1-8 8h-8a8 8 0 0 1-8-8z" fill="${c}"/><path d="M38 40h24v-14h-24z" fill="#c0603f" opacity=".35"/></svg>`;
+ if(s.shape==="pow")return `<svg viewBox="0 0 100 100"><ellipse cx="50" cy="78" rx="38" ry="12" fill="#e5e7eb"/><path d="M18 76q32-50 64 0z" fill="${c}"/></svg>`;
+ if(s.shape==="gem")return `<svg viewBox="0 0 100 100"><polygon points="50,90 14,40 30,14 70,14 86,40" fill="${c}" stroke="#3d6bff" stroke-width="3"/><path d="M14 40h72M30 14l10 26 10-26 10 26 10-26M40 40l10 50 10-50" stroke="#3d6bff" stroke-width="2" fill="none"/></svg>`;
+ return `<svg viewBox="0 0 100 100"><polygon points="20,70 35,30 60,22 82,48 70,82 36,86" fill="${c}"/><polygon points="35,30 60,22 52,50" fill="#fff" opacity=".25"/><polygon points="52,50 82,48 70,82" fill="#000" opacity=".15"/></svg>`;}
+const seenSub=new Set();
+$("vit").innerHTML=SUB.map((s,i)=>`<div class="card" data-i="${i}" role="button" tabindex="0">${subSVG(s)}<div class="nm">${s.n}</div><div class="fm">${s.f}</div></div>`).join("");
+$("vit").querySelectorAll(".card").forEach(c=>{const go=()=>{const s=SUB[+c.dataset.i];seenSub.add(+c.dataset.i);c.classList.add("seen");$("info").innerHTML=`<b>${s.n} ${s.f}.</b> ${s.t}`;refresh("t3")};c.onclick=go;c.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go()}}});
+$("tb3").innerHTML=SUB.map((s,i)=>`<tr><td><b>${s.n}</b> ${s.f}</td><td>${sel(["газ","рідина","тверда"],`data-r="${i}" data-c="st"`)}</td><td>${sel(["молекулярні","атомні","йонні","металічні"],`data-r="${i}" data-c="lat"`)}</td></tr>`).join("");
+READY.t3=()=>[...$("tb3").querySelectorAll("select")].every(s=>s.value)&&seenSub.size===SUB.length;
+
+/* ---------- 4 алотропія ---------- */
+const ALLO=[["O₂ і O₃",1],["алмаз і графіт",1],["білий і червоний фосфор",1],["ромбічна й моноклінна сірка",1],["H₂O і H₂O₂",0],["CO і CO₂",0],["N₂ і NH₃",0]];
+const alloSel=new Set();
+shuf(ALLO).forEach(([t])=>{const b=document.createElement("button");b.type="button";b.className="opt";b.dataset.v=t;b.textContent=t;b.onclick=()=>{if(b.disabled)return;alloSel.has(t)?alloSel.delete(t):alloSel.add(t);b.classList.toggle("sel",alloSel.has(t));refresh("t4")};$("allo").appendChild(b)});
+function group(id,g,items){ const box=document.querySelector(`#${id} [data-g="${g}"]`),st={box,val:null};
+  items.forEach(t=>{const b=document.createElement("button");b.type="button";b.className="opt";b.dataset.v=t;b.textContent=t;b.onclick=()=>{if(b.disabled)return;box.querySelectorAll(".opt").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");st.val=t;refresh(id)};box.appendChild(b)});
+  return st; }
+function mark(st,ok){ st.box.querySelectorAll(".opt").forEach(b=>{b.disabled=true;const v=b.dataset.v;b.classList.remove("sel");if(v===st.val&&v===ok)b.classList.add("right");else if(v===st.val)b.classList.add("wrong");else if(v===ok)b.classList.add("miss")}); }
+const OK={a:"Йод має молекулярні ґратки: між молекулами I₂ діють слабкі сили, які легко подолати",
+ b:"напівпровідник: його електропровідність зростає під час нагрівання й освітлення",
+ c:"посилюються",d:"більшість неметалів мають молекулярні ґратки зі слабкою взаємодією між молекулами"};
+const G={
+ a:group("t4","a",shuf([OK.a,"Йод має атомні ґратки, тому він дуже леткий","Молекули йоду розпадаються на атоми вже за кімнатної температури","Йод — метал, а метали легко випаровуються"])),
+ b:group("t4","b",shuf([OK.b,"добре проводить струм, як мідь","має молекулярні ґратки й легко плавиться","є найпоширенішим елементом у повітрі"])),
+ c:group("t5","c",shuf([OK.c,"послаблюються","не змінюються","спочатку послаблюються, а потім посилюються"])),
+ d:group("t5","d",shuf([OK.d,"атоми неметалів мають багато електронів на зовнішньому рівні","неметали мають металічні ґратки","неметали легші за метали"]))};
+READY.t4=()=>alloSel.size>0&&G.a.val&&G.b.val;
+READY.t5=()=>G.c.val&&G.d.val&&$("concl").value.trim().length>=20&&$("hyp").value.trim().length>=5;
+
+/* ---------- загальне ---------- */
+function refresh(t){ const sec=$(t); if(!sec||sec.dataset.done||!sec.querySelector(".chk"))return; const ok=READY[t](); sec.querySelector(".chk").disabled=!ok;
+  let hint="Заповни все, щоб перевірити"; if(t==="t1")hint="Обери неметалічні елементи";
+  if(t==="t3"&&seenSub.size<SUB.length)hint=`Розглянь усі зразки (${seenSub.size} з ${SUB.length}) і заповни таблицю`;
+  if(t==="t5"&&$("hyp").value.trim().length<5)hint="Не забудь записати гіпотезу в загадці про алмаз і графіт";
+  sec.querySelector(".need").textContent=ok?"":hint; }
+document.addEventListener("input",e=>{const s=e.target.closest(".task");if(s)refresh(s.id);if(e.target.id==="hyp")refresh("t5")});
+document.addEventListener("change",e=>{const s=e.target.closest(".task");if(s)refresh(s.id)});
+function markSel(s,ok){ s.disabled=true; const good=s.value===ok; s.classList.add(good?"right":"wrong"); if(!good){const c=document.createElement("span");c.className="corr";c.textContent="✓ "+ok;s.after(c)} return good; }
+function feedback(t,p,max,html){ const sec=$(t),fb=sec.querySelector(".fb"); fb.hidden=false; fb.className="fb "+(p>=max?"ok":p>0?"mid":"bad");
+  fb.innerHTML=`<b class="h">${p>=max?"✓ Чудово!":p>0?"◐ Частково правильно":"✗ Є помилки"} — ${fmt(p)} з ${max}</b>${html}`; sec.dataset.done="1"; sec.querySelector(".chk").hidden=true; sec.querySelector(".need").textContent="";
+  SCORE[t]=p; const v=Object.values(SCORE); $("sum").textContent=fmt(v.reduce((s,x)=>s+x,0)); $("nDone").textContent=v.length; finalState(); }
+
+const CHECK={
+ t1(){ let ok=0;const miss=[],extra=[]; ALL_EL.forEach(b=>{const s=b.dataset.s,isN=NONMET.has(s),p=picked.has(s);
+     if(isN===p)ok++; if(isN&&!p){miss.push(s);b.classList.add("wrong")} if(!isN&&p){extra.push(s);b.classList.add("wrong")} if(isN&&p)b.classList.add("right")});
+   const p=half(Math.max(0,(ok-(ALL_EL.length-12))/12)*3); REC.t1=`${ok}/${ALL_EL.length}`+(miss.length?`; не обрано: ${miss.join(", ")}`:"")+(extra.length?`; зайві: ${extra.join(", ")}`:"");
+   feedback("t1",p,3,`<p>Неметалічні елементи цього фрагмента: <b>H, He, B, C, N, O, F, Ne, Si, P, S, Cl, Ar, As, Se, Br, Kr</b> (17). Вони розташовані над діагоналлю B — Si — As — Te — At. Германій (Ge) розташований на межі, але в шкільному курсі його відносять до металічних елементів.${miss.length?`<br>Ти пропустив(-ла): ${miss.join(", ")}.`:""}${extra.length?`<br>Зайві (це металічні елементи): ${extra.join(", ")}.`:""}</p>`); },
+ t2(){ let ok=0;const e=[]; $("tb2").querySelectorAll("select").forEach(s=>{const a=AT[+s.dataset.r]; if(markSel(s,a[+s.dataset.c]))ok++; else e.push(`${a[0]}: «${s.value}»`)});
+   let en=0; $("enRow").querySelectorAll("select").forEach(s=>{if(markSel(s,EN_OK[+s.dataset.en]))en++});
+   const p=half(ok/15*2.5+(en===4?.5:0)); REC.t2=`${ok}/15; ЕН ${en===4?"✓":"✗"}`+(e.length?"; помилки: "+e.join("; "):"");
+   feedback("t2",p,3,"<p>Кількість електронів на зовнішньому рівні = номер групи: C — 4, N і P — 5, S — 6, Cl — 7. Атому бракує до октету (8 − N) електронів, тому <b>нижчий ступінь окиснення</b> = номер групи − 8: C⁻⁴ (CH₄), N⁻³ (NH₃), P⁻³ (PH₃), S⁻² (H₂S), Cl⁻¹ (HCl).<br>Електронегативність у періоді зростає зліва направо: <b>F &gt; O &gt; N &gt; C</b>. Флуор — найелектронегативніший елемент.</p>"); },
+ t3(){ let ok=0;const e=[]; $("tb3").querySelectorAll("select").forEach(s=>{const x=SUB[+s.dataset.r]; if(markSel(s,x[s.dataset.c]))ok++; else e.push(`${x.n}: «${s.value}»`)});
+   const p=half(ok/16*3); REC.t3=`${ok}/16`+(e.length?"; помилки: "+e.join("; "):"");
+   feedback("t3",p,3,"<p>Азот, хлор, бром, йод і сірка мають <b>молекулярні</b> ґратки: молекули слабко притягуються, тому ці речовини — гази, летка рідина або легкоплавкі тверді речовини. Алмаз, графіт і кремній мають <b>атомні</b> ґратки: атоми зв'язані міцними ковалентними зв'язками в єдиний каркас, тому вони тверді й тугоплавкі. Йонні й металічні ґратки для простих речовин неметалів не характерні.</p>"); },
+ t4(){ let good=0,bad=0; $("allo").querySelectorAll(".opt").forEach(b=>{b.disabled=true;const v=b.dataset.v,isA=ALLO.find(x=>x[0]===v)[1],s=alloSel.has(v);b.classList.remove("sel");
+     if(s&&isA){good++;b.classList.add("right")}else if(s){bad++;b.classList.add("wrong")}else if(isA)b.classList.add("miss")});
+   const pa=(good===4&&!bad)?1:(good-bad>=2?.5:0); const a=G.a.val===OK.a,b=G.b.val===OK.b; mark(G.a,OK.a); mark(G.b,OK.b);
+   const p=pa+(a?.5:0)+(b?.5:0); REC.t4=`алотропи ${good}/4, зайвих ${bad}; йод ${a?"✓":"✗"}; кремній ${b?"✓":"✗"}`;
+   feedback("t4",p,2,"<p><b>Алотропні модифікації</b> — різні прості речовини одного елемента: O₂ і O₃, алмаз і графіт, білий і червоний фосфор, ромбічна й моноклінна сірка. H₂O і H₂O₂, CO і CO₂, N₂ і NH₃ — це складні речовини або речовини з різних елементів, вони не є алотропами.<br>Йод сублімує, бо в молекулярних ґратках молекули I₂ утримуються слабкими силами. Кремній — <b>напівпровідник</b>: за нагрівання й освітлення його провідність зростає, тому з нього роблять сонячні батареї й мікросхеми.</p>"); },
+ t5(){ const c=G.c.val===OK.c,d=G.d.val===OK.d; mark(G.c,OK.c); mark(G.d,OK.d); $("concl").readOnly=true; $("hyp").readOnly=true;
+   const p=(c?.5:0)+(d?.5:0); REC.t5=`у періоді ${c?"✓":"✗ «"+G.c.val+"»"}; леткість ${d?"✓":"✗ «"+G.d.val+"»"}`;
+   feedback("t5",p,1,"<p>У періоді зліва направо заряд ядра зростає, радіус атома зменшується, тому неметалічні властивості <b>посилюються</b>.<br>Алмаз і графіт — алотропні модифікації Карбону з різною будовою ґраток: в алмазі кожен атом міцно зв'язаний із чотирма сусідами в тривимірний каркас (дуже твердий), у графіті атоми утворюють шари, які легко ковзають (м'який, лишає слід), а вільні електрони в шарах проводять струм. Головний висновок: <b>фізичні властивості неметалів залежать від будови речовини — типу кристалічних ґраток</b>. Твій висновок прочитає вчитель.</p>"); }
+};
+["t1","t2","t3","t4","t5"].forEach(t=>{$(t).querySelector(".chk").onclick=()=>{if(!$(t).dataset.done&&READY[t]())CHECK[t]()};refresh(t)});
+
+["Так, упевнено","Частково","Поки що ні"].forEach(t=>{const b=document.createElement("button");b.type="button";b.className="opt";b.textContent=t;b.onclick=()=>{$("selfSeg").querySelectorAll(".opt").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");SELF=t;finalState()};$("selfSeg").appendChild(b)});
+function finalState(){ const n=Object.keys(SCORE).length,tot=Object.values(SCORE).reduce((s,x)=>s+x,0);
+  $("finalLine").innerHTML=n<5?`Перевірено ${n} з 5 розділів. Перевір усі, щоб здати роботу.`:`Усі розділи перевірено: <b>${fmt(tot)} з 12 балів</b>. Оціни себе й здай роботу.`;
+  $("submit").disabled=sent||n<5||!SELF; }
+$("submit").onclick=async()=>{ if(sent)return; const box=$("sendBox"); $("submit").disabled=true; box.hidden=false; box.className="msg info"; box.textContent="Надсилаю…";
+  const O=["t1","t2","t3","t4","t5"],sc=Math.round(O.reduce((s,k)=>s+SCORE[k],0)*100)/100;
+  const rec={name:ME.name,cls:ME.cls,score:sc,max:12,ts:{".sv":"timestamp"},parts:O.map(k=>SCORE[k]).join(" "),hyp:$("hyp").value.trim().slice(0,500),
+    t1:REC.t1,t2:REC.t2,t3:REC.t3,t4:REC.t4,t5:REC.t5,concl:$("concl").value.trim().slice(0,800),self:SELF};
+  try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec)});if(!r.ok)throw new Error(r.status);
+    sent=true;box.className="msg ok";box.textContent=`✓ Роботу отримано вчителем: ${fmt(sc)} / 12. Молодець!`;
+  }catch(e){$("submit").disabled=false;box.className="msg bad";box.textContent="Не вдалося надіслати. Перевір інтернет і натисни ще раз."} };
+$("startBtn").onclick=()=>{const nm=$("pname").value.trim().replace(/\s+/g," "),c=$("pcls").value;
+  if(nm.length<3||nm.split(" ").length<2||!c){$("startErr").hidden=false;return}
+  ME={name:nm.slice(0,60),cls:c};$("who").textContent=`👤 ${ME.name} · ${ME.cls}`;$("start").hidden=true};
+$("pname").addEventListener("keydown",e=>{if(e.key==="Enter")$("startBtn").click()});
+window.addEventListener("beforeunload",e=>{if(Object.keys(SCORE).length&&!sent){e.preventDefault();e.returnValue=""}});
+</script>
+</body>
+</html>
