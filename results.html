@@ -118,6 +118,7 @@ const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.fireba
 const API_KEY="AIzaSyAGOncvJIlGaJu14uqEWy6rQxdF7-pQYUI";
 const STATIONS=["Обладнання","Ризики","Рівняння","Хід роботи","Збирання","Виявлення","Каталізатори","Висновок"];
 const WORKS=[
+  {id:"kr11",date:"2026-11-20",cls:"11",url:"kr11.html",type:"Контрольна робота",label:"11 кл. · КР «Хімічні реакції» (40 хв)",title:"Контрольна робота «Хімічні реакції» — 4 рівні Блума, таймер 40 хв (11 клас)",subject:"Хімія · 11 клас · контрольна робота"},
   {id:"formula10",date:"2026-11-20",cls:"10",url:"formula10.html",type:"Тренажер",label:"10 кл. · Формула за загальною формулою ряду та густиною",title:"Тренажер «Виведення молекулярної формули за загальною формулою ряду та густиною» (10 клас)",subject:"Хімія · 10 клас · розрахункові задачі"},
   {id:"phet9",date:"2026-11-20",cls:"9",url:"ph9-phet.html",type:"Інтерактивна робота",label:"9 кл. · pH і індикатори (PhET)",title:"Інтерактивна робота «Кислотність розчинів. Водневий показник pH. Дослідження індикаторами» (9 клас, PhET)",subject:"Хімія · 9 клас · pH"},
   {id:"sadph8",date:"2026-11-20",cls:"8",url:"sad-ph8.html",type:"Гра",label:"8 кл. · Гра «Чарівний сад pH»",title:"Гра «Чарівний сад pH» — кислоти, луги, індикатори, оксиди (8 клас)",subject:"Хімія · 8 клас · pH, індикатори"},
@@ -294,6 +295,20 @@ function render(){
         <div><b>Самооцінка</b>${esc(x.reflection||"—")}</div></div></details></td>
       <td class="muted">${when(x)}</td></tr>`}).join("")
       :'<tr><td colspan="7" class="muted">Ще ніхто не здав роботу. Коли учні натиснуть «Здати роботу», вони з\'являться тут.</td></tr>';
+  } else if(work.id==="kr11"){
+    const tot=x=>(+x.score||0)+(+x.teacher||0);
+    $("kAvg").textContent=best.length?(best.reduce((s,x)=>s+x.score,0)/best.length).toFixed(1):"0"; $("kAvgT").textContent="середній автобал (з 10)";
+    const sus=best.filter(x=>(x.exits||0)+(x.paste||0)+(x.reloads||0)>0).length;
+    $("kTop").textContent=sus; $("kTopT").textContent="учнів із порушеннями (виходи/вставлення)";
+    $("hardTitle").textContent="Контроль чесності"; $("hardHint").textContent="Виходи зі сторінки (час поза нею), спроби вставити текст, перезавантаження. Автобал — з 10; пояснення в завд. 13–14 (до 2 б.) оцініть самі.";
+    $("hard").innerHTML=best.length?best.map(x=>{const bad=(x.exits||0)+(x.paste||0)+(x.reloads||0);return `<span class="chip" style="${bad?"background:#ffe3e8":""}">${esc(x.name.split(" ")[0])} <small>🚪${x.exits||0}${x.awaySec?" ("+x.awaySec+" с)":""} · 📋${x.paste||0} · 🔄${x.reloads||0}</small></span>`}).join(""):'<span class="muted">Поки немає даних</span>';
+    $("th").innerHTML=`<tr><th data-k="name">Учень</th><th data-k="cls">Клас</th><th data-k="variant">Вар.</th><th data-k="score">Автобал</th><th data-k="exits">Виходи</th><th data-k="paste">Вставлення</th><th data-k="minutes">Час, хв</th><th>Робота учня</th><th data-k="ts">Коли</th></tr>`;
+    $("tb").innerHTML=out.length?out.map(x=>{const p=x.score>=8.5?"g":x.score>=6?"m":"b";const bad=(x.exits||0)+(x.paste||0)+(x.reloads||0);
+      return `<tr><td><strong>${esc(x.name)}</strong></td><td>${esc(x.cls)}</td><td>${esc(x.variant||"")}</td><td><span class="pill ${p}">${String(x.score).replace(".",",")} / 10</span></td>
+      <td class="mono" style="${x.exits?"color:#e2304a;font-weight:800":""}">${x.exits||0}${x.awaySec?` (${x.awaySec} с)`:""}${x.reloads?` · 🔄${x.reloads}`:""}</td><td class="mono" style="${x.paste?"color:#e2304a;font-weight:800":""}">${x.paste||0}</td>
+      <td class="mono">${esc(String(x.minutes??"").replace(".",","))}${x.autoSubmitted?" ⏱":""}</td>
+      <td><details><summary>Відкрити</summary><div class="work">${(x.detail||"").split(" | ").map(t=>`<div>${esc(t)}</div>`).join("")}<div><b>13. Пояснення (до 1 б.)</b>${esc(x.q13t||"—")}</div><div><b>14. Рекомендація (до 1 б.)</b>${esc(x.q14t||"—")}</div><div class="muted">Заповнено: ${esc(x.filled||"")} · натискань клавіш у текстах: ${x.keys||0} · різких вставок тексту: ${x.jumps||0}${x.fsExit?` · виходів з повного екрана: ${x.fsExit}`:""}</div></div></details></td><td class="muted">${when(x)}</td></tr>`}).join("")
+      :'<tr><td colspan="9" class="muted">Ще ніхто не здав.</td></tr>';
   } else if(work.id==="formula10"){
     $("kAvg").textContent=best.length?(best.reduce((s,x)=>s+x.score,0)/best.length).toFixed(1):"0"; $("kAvgT").textContent="середній бал (з 12)";
     $("kTop").textContent=best.filter(x=>x.score>=10).length; $("kTopT").textContent="учнів з балом 10–12";
@@ -806,6 +821,8 @@ function csv(){
     .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.detail,x.orders,x.weak,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="dys9"){lines=[["Учень","Клас","Бали (з 12)","Рівняння (з 6)","Визначення (з 2)","Ступінчаста (з 2)","Застосування (з 2)","Рівняння 1–6","Набір речовин","Помилки","Дата"]]
     .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.eq,x.set,x.weak,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
+  else if(work.id==="kr11"){lines=[["Учень","Клас","Варіант","Автобал (з 10)","Виходи","Секунд поза сторінкою","Спроби вставлення","Перезавантаження","Час, хв","Авто-здача","Завдання","13. Пояснення","14. Рекомендація","Дата"]]
+    .concat(out.map(x=>[x.name,x.cls,x.variant,x.score,x.exits,x.awaySec,x.paste,x.reloads,x.minutes,x.autoSubmitted?"так":"ні",x.detail,x.q13t,x.q14t,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="formula10"){lines=[["Учень","Клас","Бали (з 12)","Задачі 1–8 (по 1,5)","Підказок","Самооцінка","Розв'язання","Дата"]]
     .concat(out.map(x=>[x.name,x.cls,x.score,x.parts,x.hints,x.self,x.tasks,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="phet9"){lines=[["Учень","Клас","Бали (з 12)","Вимірювання (з 3)","Розбавлення (з 2)","pH і [H⁺] (з 3)","Індикатори (з 3)","Висновки (з 1)","Самооцінка","1. Вимірювання","2. Розбавлення","3. pH і [H⁺]","4. Індикатори","5. Висновки","Висновок учня","Дата"]]
