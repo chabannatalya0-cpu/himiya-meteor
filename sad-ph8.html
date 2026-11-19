@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Чарівний сад pH — гра, 8 клас</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#16324a;--ink2:#3b5670;--muted:#6b8196;--ok:#13a05f;--bad:#e2304a;--leaf:#2f9e57;--sun:#ffcf3f;--sh:0 10px 28px rgba(22,50,74,.14)}
+*{box-sizing:border-box}html,body{margin:0}
+body{font-family:'Nunito',system-ui,'Segoe UI',Roboto,Arial,sans-serif;color:var(--ink);background:linear-gradient(180deg,#d9f3e3,#eaf7ff);min-height:100vh}
+button{font:inherit;color:inherit}
+button:focus-visible{outline:3px solid #4f5cf0;outline-offset:2px}
+[hidden]{display:none!important}
+.app{max-width:1180px;margin:0 auto;padding:12px}
+.frame{border:6px solid #1f6b47;border-radius:28px;overflow:hidden;background:#fff;box-shadow:var(--sh)}
+.top{display:flex;align-items:center;gap:12px;padding:10px 14px;background:#fffbea;border-bottom:4px solid #1f6b47;flex-wrap:wrap}
+.logo{width:46px;height:46px;border-radius:14px;background:var(--sun);display:grid;place-items:center;font-weight:900;font-size:18px;border:3px solid #1f6b47}
+.title small{display:block;font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--leaf)}
+.title b{font-size:22px;font-weight:900}
+.mbar{display:flex;gap:6px;flex:1;justify-content:center;min-width:160px}
+.mbar i{width:44px;height:12px;border-radius:7px;background:#dfe9e2;border:2px solid #b9cfc0}
+.mbar i.on{background:var(--leaf);border-color:#1f6b47}.mbar i.done{background:#9fd8b4}
+.stats{display:flex;gap:8px}
+.stat{border:3px solid #1f6b47;border-radius:12px;background:#fff;padding:2px 12px;text-align:center;min-width:64px}
+.stat small{display:block;font-size:10px;font-weight:800;letter-spacing:.08em;color:var(--muted)}
+.stat b{font-size:20px}
+.snd{width:46px;height:46px;border-radius:14px;border:3px solid #1f6b47;background:#fff;font-size:20px;cursor:pointer}
+.scene{position:relative;background:#bfe6ff}
+.scene svg{display:block;width:100%;height:auto}
+.mission{position:absolute;left:14px;top:14px;background:var(--sun);border:4px solid #1f4d36;border-radius:16px;padding:6px 14px;box-shadow:0 5px 0 #1f4d36}
+.mission small{display:block;font-size:11px;font-weight:900;letter-spacing:.08em}
+.mission b{font-size:20px;font-weight:900}
+.indcard{position:absolute;right:14px;top:14px;background:#fff;border:4px solid #1f4d36;border-radius:16px;padding:6px 12px;display:flex;gap:10px;align-items:center;box-shadow:0 5px 0 #1f4d36}
+.indcard .sw{width:36px;height:36px;border-radius:10px;border:3px solid #1f4d36;transition:background .8s}
+.indcard small{display:block;font-size:10px;font-weight:900;letter-spacing:.08em;color:var(--muted)}
+.indcard b{font-size:16px}
+.bubble{position:absolute;left:12%;top:50%;max-width:260px;background:#fff;border:4px solid #1f4d36;border-radius:16px;padding:8px 12px;font-weight:800;font-size:15px;box-shadow:0 5px 0 #1f4d36}
+.scale{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);width:min(760px,86%);background:#fff;border:4px solid #1f4d36;border-radius:16px;padding:6px 14px 4px;box-shadow:0 5px 0 #1f4d36}
+.scale .lab{display:flex;justify-content:space-between;font-size:11px;font-weight:900;color:var(--ink2)}
+.grad{position:relative;height:22px;border-radius:11px;background:linear-gradient(90deg,#e32b3b,#f0632d,#f7a52b,#f5d33a,#b8d63a,#3fae49,#1f9e89,#2a8fc0,#2f5fb3,#4b3f9e,#6b1f78);border:2px solid #1f4d36;margin:18px 0 3px}
+.tgt{position:absolute;top:-3px;bottom:-3px;border:3px dashed #1f4d36;border-radius:8px;background:rgba(255,255,255,.35)}
+.marker{position:absolute;top:-16px;width:0;transition:left 1s cubic-bezier(.3,1.4,.5,1)}
+.marker span{position:absolute;left:-17px;top:-8px;width:34px;height:24px;border-radius:8px;background:#1f4d36;color:#fff;font-weight:900;font-size:14px;display:grid;place-items:center}
+.marker i{position:absolute;left:-2px;top:14px;width:4px;height:34px;background:#1f4d36}
+.marker b{position:absolute;left:-8px;top:44px;width:16px;height:16px;border-radius:50%;background:#1f4d36}
+.nums{display:flex;justify-content:space-between;font-size:11px;font-weight:800;color:var(--muted);margin-top:14px}
+.panel{display:grid;grid-template-columns:minmax(220px,1fr) 2.2fr;gap:14px;align-items:center;padding:16px;background:#fffbea;border-top:4px solid #1f6b47}
+@media(max-width:820px){.panel{grid-template-columns:1fr}}
+.q small{display:block;font-size:12px;font-weight:900;letter-spacing:.1em;color:var(--leaf)}
+.q h2{margin:2px 0;font-size:clamp(20px,2.6vw,28px);font-weight:900;line-height:1.15}
+.q p{margin:0;color:var(--ink2);font-size:14px}
+.answers{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.ans{display:flex;align-items:center;gap:10px;text-align:left;background:#fff;border:4px solid #1f4d36;border-radius:16px;padding:10px 12px;cursor:pointer;box-shadow:0 5px 0 #1f4d36;font-weight:900;font-size:16px;transition:transform .1s}
+.ans:hover{transform:translateY(-2px)}
+.ans:active{transform:translateY(3px);box-shadow:0 2px 0 #1f4d36}
+.ans .ic{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:20px;color:#fff;border:3px solid #1f4d36}
+.ans small{display:block;font-weight:700;color:var(--muted);font-size:12px}
+.ans.right{background:#dcf7e9;border-color:var(--ok)}.ans.wrong{background:#ffe3e8;border-color:var(--bad)}
+.ans[disabled]{cursor:default;transform:none}
+.tools{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.fbk{grid-column:1/-1;border-radius:14px;padding:10px 14px;font-weight:700;font-size:15px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.fbk.ok{background:#dcf7e9;border:3px solid var(--ok)}.fbk.bad{background:#ffe3e8;border:3px solid var(--bad)}
+.go{border:0;border-radius:14px;padding:10px 20px;font-weight:900;font-size:16px;cursor:pointer;color:#fff;background:linear-gradient(135deg,#2f9e57,#1f6b47);box-shadow:0 4px 0 #134430}
+.go.pink{background:linear-gradient(135deg,#ff3d7f,#ff8a3d);box-shadow:0 4px 0 #b8255a}
+.go[disabled]{opacity:.4;cursor:not-allowed}
+.can{cursor:pointer;transition:transform .2s}
+.can:hover{transform:translateY(-4px)}
+.pour{animation:pour 1s ease}
+@keyframes pour{0%{transform:rotate(0)}40%{transform:rotate(-28deg) translate(30px,-10px)}100%{transform:rotate(0)}}
+.flower{transform-origin:500px 330px;transition:transform .6s}
+.flower.sad{transform:rotate(-8deg) translateY(6px)}
+.flower.joy{animation:joy .7s ease 2}
+@keyframes joy{50%{transform:translateY(-14px) scale(1.04)}}
+.petal{transition:fill .9s}
+.drop{animation:drop 1s ease-in forwards}
+@keyframes drop{from{transform:translateY(0);opacity:1}to{transform:translateY(120px);opacity:0}}
+@media(max-width:760px){
+ .scene{display:flex;flex-direction:column;background:#7cc95a}
+ .scene svg{order:1}
+ .mission{order:0;position:static;margin:8px 8px 0;box-shadow:0 3px 0 #1f4d36}
+ .indcard{order:2;position:static;margin:8px 8px 0;box-shadow:0 3px 0 #1f4d36}
+ .bubble{order:3;position:static;max-width:none;margin:8px 8px 0;box-shadow:0 3px 0 #1f4d36}
+ .scale{order:4;position:static;transform:none;width:auto;margin:8px}
+ .top .mbar{order:5;flex-basis:100%}
+}
+.modal{position:fixed;inset:0;background:rgba(15,45,30,.6);display:grid;place-items:center;z-index:50;padding:14px}
+.dlg{background:#fffbea;border:6px solid #1f6b47;border-radius:26px;max-width:480px;width:100%;padding:24px;box-shadow:0 8px 0 #1f4d36}
+.dlg h2{margin:4px 0 6px;font-size:26px;font-weight:900}
+.dlg p{margin:0 0 12px;color:var(--ink2)}
+.inp{width:100%;font:inherit;font-size:17px;padding:11px 13px;border-radius:14px;border:3px solid #b9cfc0;margin-bottom:10px;background:#fff}
+.err{color:var(--bad);font-weight:800;font-size:14px;margin:0 0 10px}
+.rules{margin:0 0 14px;padding-left:20px;color:var(--ink2);font-weight:700}
+.endbig{font-size:64px;font-weight:900;text-align:center;line-height:1;color:#1f6b47}
+.msg{margin-top:12px;border-radius:12px;padding:10px 14px;font-weight:800;text-align:center}
+.msg.ok{background:#dcf7e9;color:var(--ok)}.msg.bad{background:#ffe3e8;color:var(--bad)}.msg.info{background:#eef2fb;color:var(--ink2)}
+.rev{list-style:none;padding:0;margin:12px 0;display:grid;gap:6px;max-height:260px;overflow:auto}
+.rev li{background:#fff;border-left:6px solid var(--ok);border-radius:10px;padding:6px 10px;font-size:14px}
+.rev li.bad{border-color:var(--bad)}
+</style>
+</head>
+<body>
+<div class="modal" id="start"><div class="dlg">
+  <small style="font-weight:900;letter-spacing:.1em;color:#2f9e57">ХІМІЯ · 8 КЛАС · ГРА</small>
+  <h2>🌸 Чарівний сад pH</h2>
+  <p>Квітка-індикатор змінює колір залежно від середовища. Допоможи садівниці Сонечку доглянути сад!</p>
+  <ol class="rules"><li>Куди рухається pH?</li><li>Підбери ґрунт для рослини</li><li>Розгадай колір індикатора</li><li>Оксид у поливі</li></ol>
+  <input class="inp" id="pname" maxlength="60" placeholder="Прізвище та ім’я" autocomplete="name">
+  <select class="inp" id="pcls"><option value="">Обери клас</option><option>8-А</option><option>8-Б</option><option>Інший</option></select>
+  <p class="err" id="startErr" hidden>Впиши прізвище, ім’я та обери клас.</p>
+  <button class="go pink" id="startBtn" type="button" style="width:100%;font-size:18px">Увійти в сад ▶</button>
+</div></div>
+
+<div class="app"><div class="frame">
+  <div class="top">
+    <div class="logo">pH</div>
+    <div class="title"><small>САДОВА ШКОЛА ХІМІКІВ</small><b>Чарівний сад pH</b></div>
+    <div class="mbar" id="mbar"><i></i><i></i><i></i><i></i></div>
+    <div class="stats"><div class="stat"><small>БАЛИ</small><b id="pts">0</b></div><div class="stat"><small>СЕРІЯ</small><b id="streak">0</b></div><div class="stat"><small>РЕКОРД</small><b id="best">0</b></div></div>
+    <button class="snd" id="snd" type="button" aria-label="Звук">🔊</button>
+  </div>
+
+  <div class="scene" id="scene">
+    <svg viewBox="0 0 1000 470" aria-hidden="true">
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9fdcff"/><stop offset="1" stop-color="#e3f6ff"/></linearGradient>
+        <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fd16a"/><stop offset="1" stop-color="#4fae4a"/></linearGradient>
+        <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d9f6ff" stop-opacity=".9"/><stop offset="1" stop-color="#9edcf0" stop-opacity=".7"/></linearGradient>
+      </defs>
+      <rect width="1000" height="470" fill="url(#sky)"/>
+      <circle cx="120" cy="70" r="40" fill="#ffe27a"/><circle cx="120" cy="70" r="56" fill="#ffe27a" opacity=".3"/>
+      <ellipse cx="260" cy="270" rx="300" ry="90" fill="#a9df8a"/><ellipse cx="780" cy="280" rx="320" ry="100" fill="#9bd77c"/>
+      <!-- оранжерея -->
+      <g transform="translate(700,120)">
+        <path d="M0 160 V70 Q0 0 70 0 H190 Q260 0 260 70 V160Z" fill="url(#glass)" stroke="#2f7a5a" stroke-width="6"/>
+        <path d="M65 160 V40 M130 160 V0 M195 160 V40 M0 90 H260" stroke="#2f7a5a" stroke-width="5"/>
+        <rect x="100" y="95" width="60" height="65" rx="8" fill="#3fbf9e" stroke="#2f7a5a" stroke-width="5"/>
+        <circle cx="35" cy="125" r="14" fill="#c86bfa"/><circle cx="225" cy="125" r="14" fill="#ff7aa8"/>
+      </g>
+      <!-- арка й кущі -->
+      <g transform="translate(150,150)">
+        <path d="M0 150 V70 Q70 -20 140 70 V150" fill="none" stroke="#3a9a4f" stroke-width="26" stroke-linecap="round"/>
+        <circle cx="20" cy="70" r="10" fill="#ff8fb3"/><circle cx="70" cy="22" r="10" fill="#ffd34d"/><circle cx="122" cy="62" r="10" fill="#ff8fb3"/>
+      </g>
+      <rect x="0" y="300" width="1000" height="170" fill="url(#grass)"/>
+      <path d="M0 300 Q250 280 500 300 T1000 300 V320 H0Z" fill="#7cc95a"/>
+      <!-- клумби -->
+      <g id="beds"></g>
+      <!-- лійки -->
+      <g class="can" id="canAcid" transform="translate(300,300)">
+        <path d="M10 30 h70 v60 a10 10 0 0 1 -10 10 h-50 a10 10 0 0 1 -10 -10z" fill="#ff5a6e" stroke="#7a1f2d" stroke-width="5"/>
+        <path d="M80 45 l45 -25" stroke="#7a1f2d" stroke-width="10" stroke-linecap="round"/>
+        <path d="M20 30 q25 -30 50 0" fill="none" stroke="#7a1f2d" stroke-width="7"/>
+        <circle cx="45" cy="62" r="13" fill="#ffe27a"/><text x="45" y="68" text-anchor="middle" font-size="15" font-weight="900" fill="#7a1f2d">H⁺</text>
+      </g>
+      <g class="can" id="canBase" transform="translate(600,300)">
+        <path d="M10 30 h70 v60 a10 10 0 0 1 -10 10 h-50 a10 10 0 0 1 -10 -10z" fill="#7a6bff" stroke="#2c2280" stroke-width="5"/>
+        <path d="M10 45 l-45 -25" stroke="#2c2280" stroke-width="10" stroke-linecap="round"/>
+        <path d="M20 30 q25 -30 50 0" fill="none" stroke="#2c2280" stroke-width="7"/>
+        <circle cx="45" cy="62" r="13" fill="#d9f6ff"/><text x="45" y="68" text-anchor="middle" font-size="13" font-weight="900" fill="#2c2280">OH⁻</text>
+      </g>
+      <!-- квітка-індикатор -->
+      <g class="flower" id="flower">
+        <path d="M500 330 C495 290 505 260 500 230" stroke="#2f8f3e" stroke-width="12" fill="none"/>
+        <path d="M500 300 q-40 -10 -55 -40 q40 0 55 30z" fill="#3fae49"/><path d="M500 285 q40 -10 55 -40 q-40 0 -55 30z" fill="#3fae49"/>
+        <g id="petals"></g>
+        <circle cx="500" cy="170" r="42" fill="#ffd34d" stroke="#e0a300" stroke-width="5"/>
+        <circle cx="486" cy="162" r="6" fill="#16324a"/><circle cx="514" cy="162" r="6" fill="#16324a"/>
+        <circle cx="488" cy="160" r="2" fill="#fff"/><circle cx="516" cy="160" r="2" fill="#fff"/>
+        <circle cx="474" cy="178" r="7" fill="#ff9db5" opacity=".7"/><circle cx="526" cy="178" r="7" fill="#ff9db5" opacity=".7"/>
+        <path id="mouth" d="M486 182 Q500 196 514 182" stroke="#16324a" stroke-width="5" fill="none" stroke-linecap="round"/>
+      </g>
+      <path d="M455 330 h90 l-10 50 h-70z" fill="#d9774a" stroke="#8a3f20" stroke-width="5"/>
+      <rect x="448" y="322" width="104" height="16" rx="6" fill="#e8895a" stroke="#8a3f20" stroke-width="5"/>
+      <!-- Сонечко-садівниця -->
+      <g transform="translate(70,330)">
+        <ellipse cx="50" cy="50" rx="46" ry="40" fill="#e2304a" stroke="#5a1220" stroke-width="5"/>
+        <path d="M50 12 V90" stroke="#5a1220" stroke-width="4"/>
+        <circle cx="30" cy="40" r="7" fill="#1d1d1d"/><circle cx="70" cy="40" r="7" fill="#1d1d1d"/><circle cx="30" cy="68" r="6" fill="#1d1d1d"/><circle cx="72" cy="66" r="6" fill="#1d1d1d"/>
+        <circle cx="50" cy="12" r="20" fill="#1d1d1d"/><circle cx="43" cy="8" r="5" fill="#fff"/><circle cx="57" cy="8" r="5" fill="#fff"/><circle cx="44" cy="9" r="2" fill="#1d1d1d"/><circle cx="58" cy="9" r="2" fill="#1d1d1d"/>
+        <path d="M42 -6 l-10 -16 M58 -6 l10 -16" stroke="#1d1d1d" stroke-width="4" stroke-linecap="round"/><circle cx="32" cy="-23" r="5" fill="#1d1d1d"/><circle cx="68" cy="-23" r="5" fill="#1d1d1d"/>
+        <rect x="88" y="10" width="14" height="40" rx="5" fill="#d9f6ff" stroke="#2f7a5a" stroke-width="3"/><rect x="88" y="32" width="14" height="18" rx="5" fill="#3fae49"/>
+      </g>
+      <g id="drops"></g>
+    </svg>
+    <div class="mission"><small id="mNo">МІСІЯ 1 З 4</small><b id="mName">Куди рухається pH?</b></div>
+    <div class="indcard"><div class="sw" id="sw"></div><div><small>ІНДИКАТОР</small><b id="indTxt">pH 7 · нейтральне</b></div></div>
+    <div class="bubble" id="bubble">Кожен колір — це підказка!</div>
+    <div class="scale">
+      <div class="lab"><span>КИСЛОТНЕ</span><span>НЕЙТРАЛЬНЕ 7</span><span>ЛУЖНЕ</span></div>
+      <div class="grad" id="grad"><div class="tgt" id="tgt" hidden></div><div class="marker" id="marker"><span id="mk">7</span><i></i><b></b></div></div>
+      <div class="nums"><span>0</span><span>2</span><span>4</span><span>6</span><span>8</span><span>10</span><span>12</span><span>14</span></div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel">
+    <div class="q"><small id="qKick">СПОЧАТКУ ПЕРЕДБАЧ</small><h2 id="qText">Що станеться з pH?</h2><p id="qSub"></p></div>
+    <div id="qArea"></div>
+    <div class="fbk" id="fbk" hidden></div>
+  </div>
+
+  <div class="panel" id="endPanel" hidden style="display:block">
+    <div class="endbig" id="endBig">0 / 12</div>
+    <h2 style="text-align:center;margin:6px 0" id="endTitle"></h2>
+    <p style="text-align:center;margin:0;color:var(--ink2)" id="endSub"></p>
+    <ul class="rev" id="rev"></ul>
+    <div style="text-align:center"><button class="go pink" id="submit" type="button">Надіслати результат учителю</button> <button class="go" id="again" type="button" hidden>Зіграти ще раз</button></div>
+    <div class="msg" id="sendBox" hidden></div>
+  </div>
+</div></div>
+
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="sadph8";
+const $=id=>document.getElementById(id);
+const shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const UNI=["#e32b3b","#e32b3b","#f0632d","#f7a52b","#f5c531","#f5d33a","#b8d63a","#3fae49","#1f9e89","#2a8fc0","#2a6fbf","#2f5fb3","#4b3f9e","#5e2c8c","#6b1f78"]; // pH 0..14
+const col=ph=>UNI[Math.max(0,Math.min(14,Math.round(ph)))];
+const env=ph=>ph<6.5?"кислотне":ph>7.5?"лужне":"нейтральне";
+
+/* пелюстки */
+(function(){let s="";for(let k=0;k<10;k++){const a=k*36*Math.PI/180,x=500+Math.cos(a)*62,y=170+Math.sin(a)*62;s+=`<ellipse class="petal" cx="${x}" cy="${y}" rx="34" ry="22" transform="rotate(${k*36} ${x} ${y})" stroke="#16324a" stroke-width="3"/>`}$("petals").innerHTML=s})();
+/* клумби */
+(function(){let s="";const fl=[[60,420,"#ff7aa8"],[180,440,"#ffd34d"],[250,410,"#c86bfa"],[760,430,"#ff8fb3"],[860,410,"#ffd34d"],[930,445,"#7ec8ff"],[680,450,"#ff7aa8"]];
+ fl.forEach(([x,y,c])=>{for(let k=0;k<5;k++){const a=k*72*Math.PI/180;s+=`<circle cx="${x+Math.cos(a)*10}" cy="${y+Math.sin(a)*10}" r="9" fill="${c}"/>`}s+=`<circle cx="${x}" cy="${y}" r="6" fill="#fff3a3"/>`});$("beds").innerHTML=s})();
+
+/* звук */
+let SND=true,AC=null;
+function tone(seq){if(!SND)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();let t=AC.currentTime+.01;seq.forEach(([f,d,ty="sine",v=.06])=>{const o=AC.createOscillator(),g=AC.createGain();o.type=ty;o.frequency.value=f;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g).connect(AC.destination);o.start(t);o.stop(t+d+.02);t+=d*.8})}catch(e){}}
+const sOk=()=>tone([[660,.1],[880,.1],[1320,.2]]),sBad=()=>tone([[260,.18,"sawtooth",.035],[180,.28,"sawtooth",.035]]),sDrip=()=>tone([[900,.06,"triangle",.04],[600,.08,"triangle",.04]]);
+$("snd").onclick=()=>{SND=!SND;$("snd").textContent=SND?"🔊":"🔇"};
+
+/* стан */
+let PH=7;
+function setPH(ph,label){PH=Math.max(0,Math.min(14,ph));$("marker").style.left=(PH/14*100)+"%";$("mk").textContent=Math.round(PH);
+  const c=col(PH);document.querySelectorAll(".petal").forEach(p=>p.setAttribute("fill",c));$("sw").style.background=c;
+  $("indTxt").textContent=label||`pH ${Math.round(PH)} · ${env(PH)}`;}
+function mood(m){const f=$("flower");f.classList.remove("sad","joy");void f.getBBox();
+  if(m==="joy"){f.classList.add("joy");$("mouth").setAttribute("d","M484 180 Q500 200 516 180")}
+  else if(m==="sad"){f.classList.add("sad");$("mouth").setAttribute("d","M486 192 Q500 180 514 192")}
+  else $("mouth").setAttribute("d","M486 182 Q500 196 514 182");}
+function say(t){$("bubble").textContent=t}
+function drops(color,fromX){const g=$("drops");g.innerHTML="";for(let k=0;k<4;k++){const c=document.createElementNS("http://www.w3.org/2000/svg","circle");c.setAttribute("cx",fromX+k*10);c.setAttribute("cy",240+k*6);c.setAttribute("r",6);c.setAttribute("fill",color);c.setAttribute("class","drop");c.style.animationDelay=(k*.12)+"s";g.appendChild(c)}sDrip()}
+function pourCan(id){const c=$(id);c.classList.remove("pour");void c.getBBox();c.classList.add("pour")}
+
+/* дані місій */
+const M1=[["Лимонний сік","down","містить лимонну кислоту"],["Розчин лугу NaOH","up","луг створює лужне середовище"],["Дистильована вода","still","вода нейтральна (pH 7)"],["Нашатирний спирт","up","розчин амоніаку — лужне середовище"],
+ ["Столовий оцет","down","містить оцтову кислоту"],["Розчин кухонної солі","still","розчин NaCl нейтральний"],["Мильна вода","up","мильний розчин має лужне середовище"],["Газована вода","down","CO₂ з водою утворює вугільну кислоту"]];
+const M2=[["Чорниця",4,5,"🫐","любить кислий ґрунт"],["Блакитна гортензія",5,6,"💠","блакитна лише в кислому ґрунті"],["Лаванда",7,8,"💜","любить нейтральний і слабколужний ґрунт"],["Капуста",7,8,"🥬","росте краще в нейтральному або слабколужному ґрунті"]];
+const M3=[["Фенолфталеїн","малиновий","#d6247e","лужне","Фенолфталеїн стає малиновим лише в лужному середовищі."],["Лакмус","червоний","#d7263d","кислотне","Лакмус червоніє в кислотному середовищі."],
+ ["Метилоранж","жовтий","#f2cd2e","лужне","Метилоранж жовтий у лужному середовищі."],["Універсальний індикатор","зелений","#3fae49","нейтральне","Зелений колір універсального індикатора — pH ≈ 7."],
+ ["Лакмус","синій","#2c5fb8","лужне","Лакмус синіє в лужному середовищі."],["Метилоранж","рожевий","#e8436a","кислотне","Метилоранж рожевий (червоний) у кислотному середовищі."],
+ ["Фенолфталеїн","безбарвний","#f1f5fb","кислотне або нейтральне","Фенолфталеїн безбарвний і в кислоті, і у воді: він «бачить» лише луги!"]];
+const ENVS=["кислотне","нейтральне","лужне","кислотне або нейтральне"];
+const M4=[["CO₂","down","CO₂ + H₂O → H₂CO₃ — утворюється вугільна кислота, pH знижується."],["SO₃","down","SO₃ + H₂O → H₂SO₄ — сульфатна кислота, pH різко знижується."],
+ ["CaO","up","CaO + H₂O → Ca(OH)₂ — гашене вапно (луг), pH зростає."],["Na₂O","up","Na₂O + H₂O → 2NaOH — луг, pH зростає."],
+ ["SiO₂","still","SiO₂ (пісок) з водою не реагує — pH не змінюється."],["P₂O₅","down","P₂O₅ + 3H₂O → 2H₃PO₄ — ортофосфатна кислота, pH знижується."]];
+const DIRS=[["still","pH не зміниться","без змін","#b8d63a","•"],["down","pH знизиться","до кислотного","#e8435a","↓"],["up","pH зросте","до лужного","#3d6bff","↑"]];
+
+let ROUNDS=[],ri=0,pts=0,streak=0,best=+localStorage.getItem("sadph8best")||0,LOG=[],ME=null,sent=false,locked=false;
+$("best").textContent=best;
+function build(){ROUNDS=[];
+  shuf(M1).slice(0,4).forEach(x=>ROUNDS.push({m:0,x}));
+  shuf(M2).slice(0,3).forEach(x=>ROUNDS.push({m:1,x}));
+  shuf(M3).slice(0,4).forEach(x=>ROUNDS.push({m:2,x}));
+  shuf(M4).slice(0,4).forEach(x=>ROUNDS.push({m:3,x}));}
+const MNAMES=["Куди рухається pH?","Підбери ґрунт","Розгадай колір","Оксид у поливі"];
+function bar(m){$("mbar").querySelectorAll("i").forEach((e,k)=>{e.className=k<m?"done":k===m?"on":""})}
+
+function answers(list,onPick){ $("qArea").innerHTML=`<div class="answers">${shuf(list).map(a=>`<button class="ans" type="button" data-v="${a[0]}"><span class="ic" style="background:${a[3]}">${a[4]}</span><span>${a[1]}<small>${a[2]}</small></span></button>`).join("")}</div>`;
+  $("qArea").querySelectorAll(".ans").forEach(b=>b.onclick=()=>{if(locked)return;onPick(b.dataset.v,b)}); }
+function result(ok,given,correct,text){ locked=true;
+  $("qArea").querySelectorAll(".ans").forEach(b=>{b.disabled=true;if(b.dataset.v===correct)b.classList.add("right");else if(b.dataset.v===given)b.classList.add("wrong")});
+  const r=ROUNDS[ri]; LOG.push({m:r.m,ok,q:$("qText").textContent,given,correct});
+  if(ok){streak++;pts+=100+(streak-1)*20;sOk();mood("joy");say(["Чудово! 🌟","Так тримати!","Ти справжній садівник-хімік!","Квітка щаслива!"][ri%4])}
+  else{streak=0;sBad();mood("sad");say("Ой… Подивись пояснення 👇")}
+  $("pts").textContent=pts;$("streak").textContent=streak;if(pts>best){best=pts;$("best").textContent=best;try{localStorage.setItem("sadph8best",best)}catch(e){}}
+  const f=$("fbk");f.hidden=false;f.className="fbk "+(ok?"ok":"bad");
+  f.innerHTML=`<span>${ok?"✓ Правильно!":"✗ Не зовсім."} ${text}</span><button class="go" id="nextBtn" type="button">${ri<ROUNDS.length-1?"Далі ▶":"Результати ▶"}</button>`;
+  $("nextBtn").onclick=next; }
+
+function show(){ locked=false; const r=ROUNDS[ri]; bar(r.m); $("mNo").textContent=`МІСІЯ ${r.m+1} З 4 · КРОК ${ROUNDS.filter((x,k)=>x.m===r.m&&k<=ri).length}`; $("mName").textContent=MNAMES[r.m];
+  $("fbk").hidden=true; $("tgt").hidden=true; mood(); $("qSub").textContent="";
+  if(r.m===0){ const [it,dir,why]=r.x; setPH(7); $("qKick").textContent="СПОЧАТКУ ПЕРЕДБАЧ"; $("qText").textContent=`Полив: «${it}». Що станеться з pH?`; $("qSub").textContent="Порядок відповідей щоразу інший — читай уважно.";
+    say(`У лійці — ${it.toLowerCase()}. Як зміниться колір квітки?`);
+    answers(DIRS,(v)=>{ const ok=v===dir; const can=dir==="down"?"canAcid":dir==="up"?"canBase":null; if(can)pourCan(can); drops(col(dir==="down"?3:dir==="up"?11:7),490);
+      setTimeout(()=>setPH(dir==="down"?3:dir==="up"?11:7),300); result(ok,v,dir,`${it}: ${why}.`); }); }
+  if(r.m===1){ const [pl,lo,hi,em,why]=r.x; let s=[3,4,5,6,7,8,9,10].filter(p=>p<lo-1||p>hi+1); setPH(s[Math.floor(Math.random()*s.length)]); const start=PH;
+    $("tgt").hidden=false; $("tgt").style.left=(lo/14*100)+"%"; $("tgt").style.width=((hi-lo)/14*100)+"%";
+    $("qKick").textContent="НАЛАШТУЙ ҐРУНТ"; $("qText").textContent=`${em} ${pl}: потрібен pH від ${lo} до ${hi}`; $("qSub").textContent=`${pl} ${why}. Додавай краплі й натисни «Готово», коли маркер у рамці.`;
+    say(`Зараз pH ${start}. Що додати: кислоту чи луг?`); let moves=0;
+    $("qArea").innerHTML=`<div class="tools"><button class="ans" type="button" id="addA"><span class="ic" style="background:#e8435a">H⁺</span><span>Краплі оцту<small>кислота: pH −1</small></span></button><button class="ans" type="button" id="addB"><span class="ic" style="background:#3d6bff">OH⁻</span><span>Вапняна вода<small>луг: pH +1</small></span></button><button class="go pink" type="button" id="done">Готово ✓</button></div>`;
+    $("addA").onclick=()=>{if(locked)return;moves++;pourCan("canAcid");drops(col(2),420);setPH(PH-1)};
+    $("addB").onclick=()=>{if(locked)return;moves++;pourCan("canBase");drops(col(12),560);setPH(PH+1)};
+    $("done").onclick=()=>{if(locked)return;const ok=PH>=lo&&PH<=hi; $("qArea").querySelectorAll("button").forEach(b=>b.disabled=true);
+      result(ok,`pH ${PH}`,`pH ${lo}–${hi}`,ok?`pH ${PH} — саме те, що треба! ${PH<start?"Ти додавав кислоту — pH знижувався.":"Ти додавав луг — pH зростав."}`:`Потрібно було pH ${lo}–${hi}, а вийшло ${PH}. ${start>hi?"Щоб знизити pH, додають кислоту.":"Щоб підвищити pH, додають луг."}`);}; }
+  if(r.m===2){ const [ind,cn,hex,ans,why]=r.x; setPH(7,`${ind} · ${cn}`); document.querySelectorAll(".petal").forEach(p=>p.setAttribute("fill",hex)); $("sw").style.background=hex;
+    $("qKick").textContent="КОЖЕН КОЛІР — ПІДКАЗКА"; $("qText").textContent=`${ind} став ${cn}. Яке середовище?`; say(`Квітку полили розчином з індикатором: ${ind.toLowerCase()}.`);
+    const L={"кислотне":["кислотне","Кислотне","pH < 7","#e8435a","H⁺"],"нейтральне":["нейтральне","Нейтральне","pH = 7","#3fae49","7"],"лужне":["лужне","Лужне","pH > 7","#3d6bff","OH⁻"],"кислотне або нейтральне":["кислотне або нейтральне","Кислотне або нейтральне","pH ≤ 7","#f5a52b","?"]};
+    answers(ENVS.map(e=>L[e]),(v)=>result(v===ans,v,ans,why)); }
+  if(r.m===3){ const [ox,dir,why]=r.x; setPH(7); $("qKick").textContent="ОКСИД У ПОЛИВІ"; $("qText").textContent=`У воду для поливу потрапив ${ox}. Що станеться з pH?`; say(`Обережно! У лійку потрапив оксид ${ox}…`);
+    answers(DIRS,(v)=>{ const ok=v===dir; if(dir!=="still")pourCan(dir==="down"?"canAcid":"canBase"); drops(col(dir==="down"?2:dir==="up"?12:7),490);
+      setTimeout(()=>setPH(dir==="down"?(ox==="CO₂"?5:2):dir==="up"?12:7),300); result(ok,v,dir,why); }); }
+}
+function next(){ if(ri<ROUNDS.length-1){ri++;show()} else finish(); }
+function finish(){ $("panel").hidden=true; $("endPanel").hidden=false; bar(4); mood("joy"); say("Сад розквітнув! Дякую за допомогу 🌸");
+  const ok=LOG.filter(l=>l.ok).length, g=Math.floor(ok/LOG.length*12*2+1e-9)/2;
+  $("endBig").textContent=`${String(g).replace(".",",")} / 12`; $("endTitle").textContent=g>=10?"Ти — головний садівник-хімік! 🏆":g>=7?"Сад у надійних руках! 🌷":"Сад ще потребує догляду — спробуй ще раз 🌱";
+  $("endSub").textContent=`Правильних відповідей: ${ok} з ${LOG.length} · Бали гри: ${pts}`;
+  $("rev").innerHTML=LOG.map(l=>`<li class="${l.ok?"":"bad"}">${l.ok?"✓":"✗"} ${l.q}${l.ok?"":` — правильно: <b>${({down:"pH знизиться",up:"pH зросте",still:"pH не зміниться"})[l.correct]||l.correct}</b>`}</li>`).join(""); }
+$("submit").onclick=async()=>{ if(sent)return; const box=$("sendBox"); $("submit").disabled=true; box.hidden=false; box.className="msg info"; box.textContent="Надсилаю…";
+  const ok=LOG.filter(l=>l.ok).length, g=Math.floor(ok/LOG.length*12*2+1e-9)/2;
+  const per=[0,1,2,3].map(m=>{const a=LOG.filter(l=>l.m===m);return `${a.filter(l=>l.ok).length}/${a.length}`}).join(" ");
+  const rec={name:ME.name,cls:ME.cls,score:g,max:12,ts:{".sv":"timestamp"},correct:ok,total:LOG.length,points:pts,missions:per,
+    mistakes:LOG.filter(l=>!l.ok).map(l=>`${l.q} → «${l.given}»`).join("; ")};
+  try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec)});if(!r.ok)throw new Error(r.status);
+    sent=true;box.className="msg ok";box.textContent=`✓ Результат отримано вчителем: ${String(g).replace(".",",")} / 12`;$("again").hidden=false;
+  }catch(e){$("submit").disabled=false;box.className="msg bad";box.textContent="Не вдалося надіслати. Перевір інтернет і натисни ще раз."} };
+$("again").onclick=()=>{ sent=false; $("submit").disabled=false; $("sendBox").hidden=true; $("again").hidden=true; begin(); };
+function begin(){ build(); ri=0; pts=0; streak=0; LOG=[]; $("pts").textContent=0; $("streak").textContent=0; $("panel").hidden=false; $("endPanel").hidden=true; show(); }
+$("startBtn").onclick=()=>{const nm=$("pname").value.trim().replace(/\s+/g," "),c=$("pcls").value;
+  if(nm.length<3||nm.split(" ").length<2||!c){$("startErr").hidden=false;return}
+  ME={name:nm.slice(0,60),cls:c};$("start").hidden=true;begin()};
+$("pname").addEventListener("keydown",e=>{if(e.key==="Enter")$("startBtn").click()});
+setPH(7);
+</script>
+</body>
+</html>
