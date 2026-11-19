@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>НД № 4 «Порівняння фізичних властивостей металів і неметалів» — 7 клас</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1d2a3a;--ink2:#46556a;--muted:#6f7c8f;--bg:#f4f6f8;--line:#dfe5ec;--mint:#e6f4ee;--teal:#0f7a63;--teal2:#14a083;--lav:#efebfb;--purp:#5b3fa6;
+  --ok:#14864f;--ok-t:#e1f6ea;--bad:#d33a4a;--bad-t:#fde7e9;--warn-t:#fff4dc;--focus:#4f5cf0;--sh:0 8px 24px rgba(29,42,58,.07),0 1px 3px rgba(29,42,58,.06)}
+*{box-sizing:border-box}html,body{margin:0}
+body{font-family:'Noto Sans',system-ui,'Segoe UI',Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+button,input,select,textarea{font:inherit;color:inherit}
+button:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+[hidden]{display:none!important}
+.wrap{max-width:900px;margin:0 auto;padding:18px 14px 60px}
+.hero{background:var(--mint);border-radius:18px;padding:22px 24px;margin-bottom:14px}
+.kicker{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--teal);text-transform:uppercase}
+.hero h1{font-size:clamp(24px,4.4vw,34px);margin:4px 0 4px;font-weight:800;line-height:1.2}
+.hero p{margin:0;color:var(--ink2)}
+.who{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:14px;color:var(--ink2);margin:0 4px 14px}
+.task{background:#fff;border-radius:18px;box-shadow:var(--sh);padding:20px 22px;margin:0 0 16px;border-top:5px solid var(--teal2)}
+.task.info{border-top-color:#8aa0b8}
+.th{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.num{flex:none;min-width:38px;height:32px;padding:0 8px;border-radius:9px;display:grid;place-items:center;color:#fff;font-weight:800;background:var(--teal)}
+.info .num{background:#5d7189}
+.th h2{margin:0;font-size:20px;font-weight:800;flex:1}
+.pts{font-size:13px;font-weight:700;color:var(--muted);white-space:nowrap}
+.lead{margin:6px 0 12px;color:var(--ink2)}
+.box{background:var(--mint);border-radius:12px;padding:10px 14px;margin:8px 0 12px}
+ul.safe{margin:6px 0;padding-left:20px}
+.q{font-weight:700;margin:14px 0 8px}
+.video{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#fff;text-decoration:none;border-radius:12px;padding:10px 16px;font-weight:800}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:520px}
+th,td{border:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:middle}
+th{background:#f3f6f9;font-size:14px}
+td select,td input{width:100%;padding:7px 8px;border:2px solid var(--line);border-radius:9px;background:#fff}
+td select.right,td input.right{border-color:var(--ok);background:var(--ok-t)}
+td select.wrong{border-color:var(--bad);background:var(--bad-t)}
+.corr{display:block;font-size:12px;color:var(--ok);font-weight:700;margin-top:3px}
+textarea{width:100%;min-height:80px;border:2px solid var(--line);border-radius:12px;padding:10px 12px;resize:vertical}
+textarea:focus{border-color:var(--ink);outline:none}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;border:2px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;cursor:pointer;font-weight:600}
+.opt .mk{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid #b7c2d0;display:grid;place-items:center;font-size:12px;font-weight:900}
+.opt.sq .mk{border-radius:6px}
+.opt.sel{border-color:var(--ink);background:#f2f4fb}.opt.sel .mk{background:var(--ink);border-color:var(--ink);color:#fff}.opt.sel .mk::after{content:"✓"}
+.opt.right{border-color:var(--ok);background:var(--ok-t)}.opt.wrong{border-color:var(--bad);background:var(--bad-t)}.opt.miss{border-color:var(--ok);border-style:dashed}
+.opt[disabled]{cursor:default}
+.act{display:flex;justify-content:flex-end;gap:10px;margin-top:14px;align-items:center;flex-wrap:wrap}
+.btn{border:0;border-radius:12px;padding:11px 20px;font-weight:800;cursor:pointer;background:var(--ink);color:#fff;box-shadow:0 3px 0 #0b1320}
+.btn[disabled]{opacity:.4;cursor:not-allowed}.btn.big{font-size:18px;padding:14px 28px}
+.need{font-size:13px;color:var(--muted)}
+.fb{margin-top:12px;border-radius:12px;padding:10px 14px;border-left:5px solid;font-size:15px}
+.fb.ok{background:var(--ok-t);border-color:var(--ok)}.fb.mid{background:var(--warn-t);border-color:#e0a530}.fb.bad{background:var(--bad-t);border-color:var(--bad)}
+.fb b.h{display:block;font-size:16px}
+.modal{position:fixed;inset:0;background:rgba(20,30,45,.55);display:grid;place-items:center;z-index:50;padding:14px}
+.dlg{background:#fff;border-radius:20px;max-width:460px;width:100%;padding:24px}
+.dlg h2{margin:4px 0;font-size:22px}.dlg p{margin:0 0 14px;color:var(--ink2)}
+.inp{width:100%;font-size:17px;padding:11px 13px;border-radius:12px;border:2px solid var(--line);margin-bottom:10px;background:#fff}
+.err{color:var(--bad);font-weight:700;font-size:14px;margin:0 0 10px}
+.final{background:#fff;border-radius:18px;box-shadow:var(--sh);padding:22px;text-align:center}
+.seg{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}.seg .opt{flex:1;justify-content:center;min-width:110px}.seg .opt .mk{display:none}
+.msg{margin-top:12px;border-radius:12px;padding:10px 14px;font-weight:700}
+.msg.ok{background:var(--ok-t);color:var(--ok)}.msg.bad{background:var(--bad-t);color:var(--bad)}.msg.info{background:#eef2fb;color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="modal" id="start"><div class="dlg">
+  <div class="kicker">Навчальне дослідження · Хімія · 7 клас</div>
+  <h2>НД № 4 «Порівняння фізичних властивостей металів і неметалів»</h2>
+  <p>Переглянь відео досліду й заповни інструктивну картку. Бали (з 12) зараховуються за першою перевіркою кожного кроку.</p>
+  <input class="inp" id="pname" maxlength="60" placeholder="Прізвище та ім’я" autocomplete="name">
+  <select class="inp" id="pcls"><option value="">Обери клас</option><option>7-А</option><option>7-Б</option><option>Інший</option></select>
+  <p class="err" id="startErr" hidden>Впиши прізвище, ім’я та обери клас.</p>
+  <button class="btn big" id="startBtn" type="button" style="width:100%">Почати дослідження ▶</button>
+</div></div>
+
+<main class="wrap">
+  <header class="hero">
+    <div class="kicker">Навчальне дослідження № 4 · 7 клас</div>
+    <h1>Порівняння фізичних властивостей металів і неметалів</h1>
+    <p>Інструктивна картка за § 8 підручника О. В. Григоровича</p>
+  </header>
+  <div class="who"><span id="who">👤 —</span><span>Набрано: <b id="sum">0</b> з 12 · перевірено кроків: <b id="nDone">0</b> з 5</span></div>
+
+  <section class="task info">
+    <div class="th"><span class="num">i</span><h2>Мета, обладнання й безпека</h2></div>
+    <p><b>Мета:</b> порівняти фізичні властивості металів і неметалів; навчитися спостерігати, описувати, робити висновки й оформлювати результати в таблиці.</p>
+    <p><b>Речовини:</b> залізо, алюміній, мідь, цинк (метали); сірка, графіт, активоване вугілля (неметали).<br><b>Обладнання:</b> спиртівка, металева стрічка, парафін (пластилін), металева, пластикова й дерев’яна палички, склянка з гарячою водою, прилад для визначення електропровідності.</p>
+    <div class="box"><b>⚠️ Правила безпеки:</b><ul class="safe"><li>зразки випробовують молотком обережно, руки — подалі від місця удару;</li><li>спиртівку запалюють сірником, гасять ковпачком, не нахиляються над полум’ям;</li><li>склянка з гарячою водою може бути гарячою;</li><li>речовини не куштують; після роботи миють руки.</li></ul></div>
+    <a class="video" href="https://ua.izzi.digital/DOS/1020067/1270458.html#block-15637197" target="_blank" rel="noopener">▶ Відкрити відео досліду</a>
+    <p class="need" style="margin-top:8px">Дивись відео й одночасно заповнюй картку. Відео можна зупиняти.</p>
+  </section>
+
+  <section class="task" id="s1">
+    <div class="th"><span class="num">1</span><h2>Гіпотеза</h2><span class="pts">без балів</span></div>
+    <p class="lead">Спираючись на власний досвід, сформулюй гіпотезу: які властивості можуть бути спільними для всіх металів, які — для неметалів і чим вони відрізняються?</p>
+    <textarea id="hyp" maxlength="600" placeholder="Я вважаю, що метали… а неметали…"></textarea>
+    <p class="need">Гіпотеза — це твоє припущення ДО досліду. Вона може не підтвердитися, і це нормально.</p>
+  </section>
+
+  <section class="task" id="t1">
+    <div class="th"><span class="num">2–4</span><h2>Зовнішній вигляд і крихкість</h2><span class="pts">4 бали</span></div>
+    <p class="lead">Розглянь зразки. Для кожного відзнач наявність металічного блиску, колір і те, як він поводиться під молотком.</p>
+    <p class="q">Таблиця 1. Характеристика речовин</p>
+    <div class="tw"><table><thead><tr><th>Речовина</th><th>Металічний блиск</th><th>Колір</th><th>Під молотком</th></tr></thead><tbody id="tb1"></tbody></table></div>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <section class="task" id="t2">
+    <div class="th"><span class="num">5</span><h2>Як поширюється теплота в металі</h2><span class="pts">1 бал</span></div>
+    <p class="lead">До металевої стрічки прикріпили шматочки парафіну (пластиліну) й нагрівали стрічку з одного кінця.</p>
+    <p class="q">Таблиця 2. Час відпадання шматочків (з відео, якщо видно; можна не заповнювати)</p>
+    <div class="tw"><table><thead><tr><th>Шматочок</th><th>1 (найближчий до полум’я)</th><th>2</th><th>3</th><th>4 (найдальший)</th></tr></thead>
+      <tbody><tr><td>Час, с</td><td><input type="number" min="0" data-tm="1"></td><td><input type="number" min="0" data-tm="2"></td><td><input type="number" min="0" data-tm="3"></td><td><input type="number" min="0" data-tm="4"></td></tr></tbody></table></div>
+    <p class="q">У якій послідовності відпадали шматочки?</p>
+    <div class="opts" data-g="order"></div>
+    <p class="q">Поясни своїми словами, чому саме в такій послідовності:</p>
+    <textarea id="seq" maxlength="500" placeholder="Шматочки відпадали… тому що теплота…"></textarea>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <section class="task" id="t3">
+    <div class="th"><span class="num">6</span><h2>Теплопровідність різних матеріалів</h2><span class="pts">3 бали</span></div>
+    <p class="lead">Металеву, пластикову й дерев’яну палички занурили в гарячу воду. Через 1 і через 5 хвилин перевірили, чи гарячі їхні верхні кінчики.</p>
+    <p class="q">Таблиця 3. Гарячий / не гарячий кінчик</p>
+    <div class="tw"><table><thead><tr><th>Матеріал</th><th>За 1 хвилину</th><th>За 5 хвилин</th></tr></thead><tbody id="tb3"></tbody></table></div>
+    <p class="q">Чи відрізнялися б спостереження, якби палички були із сірки або взяли графітовий стрижень олівця?</p>
+    <div class="opts" data-g="sg"></div>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <section class="task" id="t4">
+    <div class="th"><span class="num">7</span><h2>Електропровідність</h2><span class="pts">2 бали</span></div>
+    <p class="lead">Зразки перевіряли приладом для визначення електропровідності: якщо речовина проводить струм, лампочка світиться.</p>
+    <p class="q">Таблиця 4. Чи проводить речовина електричний струм</p>
+    <div class="tw"><table><thead><tr><th>Речовина</th><th>Проводить струм?</th></tr></thead><tbody id="tb4"></tbody></table></div>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <section class="task" id="t5">
+    <div class="th"><span class="num">✓</span><h2>Висновки</h2><span class="pts">2 бали</span></div>
+    <p class="q">Таблиця 5. Які ознаки спільні для металів, а які — для неметалів? Для кожної ознаки обери, що характерно для МЕТАЛІВ; для неметалів підставиться інше.</p>
+    <div class="tw"><table><thead><tr><th>Ознака</th><th>Метали</th><th>Неметали</th></tr></thead><tbody id="tb5"></tbody></table></div>
+    <p class="q">Загальний висновок своїми словами: чим відрізняються фізичні властивості металів і неметалів? Чи підтвердилася твоя гіпотеза?</p>
+    <textarea id="concl" maxlength="800" placeholder="Метали… Неметали… Моя гіпотеза…"></textarea>
+    <div class="fb" hidden></div>
+    <div class="act"><span class="need"></span><button class="btn chk" type="button" disabled>Перевірити</button></div>
+  </section>
+
+  <section class="final">
+    <h2>Здати роботу</h2>
+    <p id="finalLine" class="need" style="font-size:15px">Перевір усі 5 кроків, щоб здати роботу.</p>
+    <p class="q">Як ти оцінюєш свою роботу? Я вмію описувати фізичні властивості речовин і за ними відрізняти метали від неметалів:</p>
+    <div class="seg" data-g="self"></div>
+    <p style="margin-top:16px"><button class="btn big" id="submit" type="button" disabled>Здати роботу вчителю</button></p>
+    <div class="msg" id="sendBox" hidden></div>
+  </section>
+</main>
+
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="nd4metal7";
+const $=id=>document.getElementById(id);
+const shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const fmt=x=>String(Math.round(x*100)/100).replace(".",",");
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const half=x=>Math.floor(x*2+1e-9)/2;
+let ME=null,sent=false; const SCORE={},REC={},READY={};
+
+function sel(opts,attrs){ return `<select ${attrs}><option value="">—</option>${opts.map(o=>`<option>${esc(o)}</option>`).join("")}</select>`; }
+function group(sec,g,items,multi){ const box=document.querySelector(`#${sec} [data-g="${g}"]`),isSeg=box.classList.contains("seg"),st={box,val:multi?new Set():null,multi};
+  items.forEach(t=>{const b=document.createElement("button");b.type="button";b.className="opt"+(multi?" sq":"");b.dataset.v=t;b.innerHTML=(isSeg?"":'<span class="mk"></span>')+`<span>${esc(t)}</span>`;
+    b.onclick=()=>{if(b.disabled)return;if(multi){st.val.has(t)?st.val.delete(t):st.val.add(t);b.classList.toggle("sel")}else{box.querySelectorAll(".opt").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");st.val=t}refresh(sec);finalState()};box.appendChild(b)});
+  return st; }
+function mark(st,ok){ st.box.querySelectorAll(".opt").forEach(b=>{b.disabled=true;const v=b.dataset.v,isOk=v===ok,ch=st.val===v;b.classList.remove("sel");if(ch&&isOk)b.classList.add("right");else if(ch)b.classList.add("wrong");else if(isOk)b.classList.add("miss")}); }
+function markSel(s,okList,shown){ s.disabled=true; const good=okList.includes(s.value); s.classList.add(good?"right":"wrong");
+  if(!good){const c=document.createElement("span");c.className="corr";c.textContent="✓ "+(shown||okList[0]);s.after(c)} return good; }
+function refresh(t){ const sec=$(t); if(!sec||!READY[t]||sec.dataset.done||!sec.querySelector(".chk")) return; const ok=READY[t](); sec.querySelector(".chk").disabled=!ok; sec.querySelector(".need").textContent=ok?"":"Заповни все, щоб перевірити"; }
+function feedback(t,p,max,html){ const sec=$(t),fb=sec.querySelector(".fb"); fb.hidden=false; fb.className="fb "+(p>=max?"ok":p>0?"mid":"bad");
+  fb.innerHTML=`<b class="h">${p>=max?"✓ Чудово!":p>0?"◐ Частково правильно":"✗ Є помилки"} — ${fmt(p)} з ${max}</b>${html}`; sec.dataset.done="1"; sec.querySelector(".chk").hidden=true; sec.querySelector(".need").textContent="";
+  SCORE[t]=p; const v=Object.values(SCORE); $("sum").textContent=fmt(v.reduce((s,x)=>s+x,0)); $("nDone").textContent=v.length; finalState(); }
+document.addEventListener("input",e=>{const s=e.target.closest(".task");if(s)refresh(s.id);finalState()});
+document.addEventListener("change",e=>{const s=e.target.closest(".task");if(s)refresh(s.id)});
+
+/* ---- Таблиця 1 ---- */
+const COLORS=["сріблясто-сірий","червоно-коричневий","жовтий","темно-сірий","чорний"];
+const T1=[ // речовина, блиск, кольори (прийнятні), молоток (прийнятні)
+ ["Залізо","є",["сріблясто-сірий"],["пластичний (гнеться, плющиться)"]],
+ ["Алюміній","є",["сріблясто-сірий"],["пластичний (гнеться, плющиться)"]],
+ ["Мідь","є",["червоно-коричневий"],["пластичний (гнеться, плющиться)"]],
+ ["Цинк","є",["сріблясто-сірий"],["пластичний (гнеться, плющиться)","крихкий (кришиться, розпадається)"]],
+ ["Сірка","немає",["жовтий"],["крихкий (кришиться, розпадається)"]],
+ ["Графіт","є",["темно-сірий","чорний"],["крихкий (кришиться, розпадається)"]],
+ ["Активоване вугілля","немає",["чорний"],["крихкий (кришиться, розпадається)"]]];
+const HAM=["пластичний (гнеться, плющиться)","крихкий (кришиться, розпадається)"];
+$("tb1").innerHTML=T1.map((r,i)=>`<tr><td><b>${r[0]}</b></td><td>${sel(["є","немає"],`data-r="${i}" data-c="b"`)}</td><td>${sel(COLORS,`data-r="${i}" data-c="k"`)}</td><td>${sel(HAM,`data-r="${i}" data-c="h"`)}</td></tr>`).join("");
+READY.t1=()=>[...$("tb1").querySelectorAll("select")].every(s=>s.value);
+
+/* ---- Крок 5 ---- */
+const ORD_OK="Від найближчого до полум’я — до найдальшого";
+const G={};
+G.order=group("t2","order",shuf([ORD_OK,"Від найдальшого — до найближчого до полум’я","Усі шматочки відпали одночасно","У випадковому порядку"]));
+READY.t2=()=>G.order.val&&$("seq").value.trim().length>=10;
+
+/* ---- Таблиця 3 ---- */
+const T3=[["Метал","гарячий","гарячий"],["Пластик","не гарячий","не гарячий"],["Деревина","не гарячий","не гарячий"]];
+$("tb3").innerHTML=T3.map((r,i)=>`<tr><td><b>${r[0]}</b></td><td>${sel(["гарячий","не гарячий"],`data-r="${i}" data-c="1"`)}</td><td>${sel(["гарячий","не гарячий"],`data-r="${i}" data-c="5"`)}</td></tr>`).join("");
+const SG_OK="Так: графітовий стрижень нагрівся б (графіт добре проводить теплоту), а сірчана паличка — ні (сірка погано проводить теплоту)";
+G.sg=group("t3","sg",shuf([SG_OK,"Ні: сірка й графіт — неметали, тому обидва погано проводять теплоту","Так: обидві палички нагрілися б швидше за металеву"]));
+READY.t3=()=>[...$("tb3").querySelectorAll("select")].every(s=>s.value)&&G.sg.val;
+
+/* ---- Таблиця 4 ---- */
+const T4=[["Залізо","так"],["Алюміній","так"],["Мідь","так"],["Цинк","так"],["Сірка","ні"],["Графіт","так"]];
+$("tb4").innerHTML=T4.map((r,i)=>`<tr><td><b>${r[0]}</b></td><td>${sel(["так","ні"],`data-r="${i}"`)}</td></tr>`).join("");
+READY.t4=()=>[...$("tb4").querySelectorAll("select")].every(s=>s.value);
+
+/* ---- Таблиця 5 ---- */
+const T5=[["Агрегатний стан (за звичайних умов)","тверді (крім ртуті)","тверді, рідкі (бром) і гази"],
+ ["Блиск","мають металічний блиск","здебільшого без металічного блиску"],
+ ["Колір","переважно сріблясто-сірі","різноманітний"],
+ ["Під молотком","пластичні, ковкі","тверді неметали — крихкі"],
+ ["Теплопровідність","добра","погана"],
+ ["Електропровідність","добра","погана (графіт — виняток)"]];
+$("tb5").innerHTML=T5.map((r,i)=>`<tr><td><b>${r[0]}</b></td><td>${sel(shuf([r[1],r[2]]),`data-r="${i}"`)}</td><td class="nm" data-r="${i}">—</td></tr>`).join("");
+$("tb5").addEventListener("change",e=>{const s=e.target,r=T5[+s.dataset.r];$("tb5").querySelector(`.nm[data-r="${s.dataset.r}"]`).textContent=s.value?(s.value===r[1]?r[2]:r[1]):"—"});
+READY.t5=()=>[...$("tb5").querySelectorAll("select")].every(s=>s.value)&&$("concl").value.trim().length>=20;
+
+G.self={box:null,val:null};
+</script>
+<script>
+/* самооцінка + перевірки (окремо, щоб group() для фінального блоку мав контейнер) */
+document.querySelector(".final").id="fin";
+G.self.box=document.querySelector('#fin [data-g="self"]');
+["Так, упевнено","Частково","Поки що ні"].forEach(t=>{const b=document.createElement("button");b.type="button";b.className="opt";b.dataset.v=t;b.innerHTML=`<span>${t}</span>`;
+  b.onclick=()=>{G.self.box.querySelectorAll(".opt").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");G.self.val=t;finalState()};G.self.box.appendChild(b)});
+
+const CHECK={
+ t1(){ let ok=0; const errs=[];
+   $("tb1").querySelectorAll("select").forEach(s=>{const r=T1[+s.dataset.r],c=s.dataset.c,list=c==="b"?[r[1]]:c==="k"?r[2]:r[3];
+     if(markSel(s,list))ok++; else errs.push(`${r[0]} (${c==="b"?"блиск":c==="k"?"колір":"молоток"}): «${s.value}»`)});
+   const p=half(ok/21*4); REC.t1=`${ok}/21`+(errs.length?"; помилки: "+errs.join("; "):"");
+   feedback("t1",p,4,`<p>Правильно ${ok} з 21. Метали (залізо, алюміній, мідь, цинк) мають металічний блиск і під молотком плющаться, тобто пластичні. Сірка й активоване вугілля не блищать і кришаться. Графіт — неметал, але має металічний блиск, хоча теж крихкий. Цинк за кімнатної температури досить крихкий, тому для нього зараховано обидві відповіді.</p>`); },
+ t2(){ const o=G.order.val===ORD_OK; mark(G.order,ORD_OK); $("seq").readOnly=true;
+   const tm=[...document.querySelectorAll("[data-tm]")].map(i=>i.value||"–").join(" / ");
+   REC.t2=`послідовність ${o?"✓":"✗ «"+G.order.val+"»"}; час: ${tm}`; REC.seq=$("seq").value.trim().slice(0,500);
+   feedback("t2",o?1:0,1,"<p>Першим відпадає шматочок, найближчий до полум’я, останнім — найдальший. Метал добре проводить теплоту: тепло поступово «біжить» стрічкою від нагрітого кінця, і шматочки плавляться по черзі. Твоє пояснення прочитає вчитель.</p>"); },
+ t3(){ let ok=0; const errs=[];
+   $("tb3").querySelectorAll("select").forEach(s=>{const r=T3[+s.dataset.r],v=s.dataset.c==="1"?r[1]:r[2];if(markSel(s,[v]))ok++;else errs.push(`${r[0]} ${s.dataset.c} хв: «${s.value}»`)});
+   const g=G.sg.val===SG_OK; mark(G.sg,SG_OK);
+   const p=half(ok/6*2)+(g?1:0); REC.t3=`таблиця ${ok}/6`+(errs.length?" ("+errs.join("; ")+")":"")+`; сірка/графіт ${g?"✓":"✗"}`;
+   feedback("t3",p,3,"<p>Металева паличка швидко стає гарячою: метали добре проводять теплоту. Пластик і деревина погано проводять теплоту, тому їхні кінчики залишаються не гарячими. Графіт — неметал, але добре проводить теплоту й електричний струм; сірка погано проводить теплоту.</p>"); },
+ t4(){ let ok=0; const errs=[];
+   $("tb4").querySelectorAll("select").forEach(s=>{const r=T4[+s.dataset.r];if(markSel(s,[r[1]]))ok++;else errs.push(`${r[0]}: «${s.value}»`)});
+   const p=half(ok/6*2); REC.t4=`${ok}/6`+(errs.length?"; помилки: "+errs.join("; "):"");
+   feedback("t4",p,2,"<p>Усі випробувані метали проводять електричний струм. Сірка струму не проводить. Графіт — неметал, але проводить струм, тому його використовують для електродів.</p>"); },
+ t5(){ let ok=0; const errs=[];
+   $("tb5").querySelectorAll("select").forEach(s=>{const r=T5[+s.dataset.r];if(markSel(s,[r[1]]))ok++;else errs.push(r[0])});
+   $("concl").readOnly=true; const p=half(ok/6*2); REC.t5=`таблиця ${ok}/6`+(errs.length?"; помилки: "+errs.join(", "):""); REC.concl=$("concl").value.trim().slice(0,800);
+   feedback("t5",p,2,"<p>Метали — тверді (крім ртуті), мають металічний блиск, пластичні, добре проводять теплоту й електричний струм. Неметали бувають твердими, рідкими й газоподібними, здебільшого не блищать, тверді неметали крихкі, погано проводять теплоту й струм (графіт — виняток). Твій висновок прочитає вчитель.</p>"); }
+};
+["t1","t2","t3","t4","t5"].forEach(t=>{$(t).querySelector(".chk").onclick=()=>{if(!$(t).dataset.done&&READY[t]())CHECK[t]()};refresh(t)});
+
+function finalState(){ const n=Object.keys(SCORE).length,tot=Object.values(SCORE).reduce((s,x)=>s+x,0);
+  $("finalLine").innerHTML=n<5?`Перевірено ${n} з 5 кроків. Перевір усі, щоб здати роботу.`:`Усі кроки перевірено: <b>${fmt(tot)} з 12 балів</b>. `+($("hyp").value.trim().length<10?"Не забудь записати гіпотезу (крок 1). ":"")+"Оціни себе й здай роботу.";
+  $("submit").disabled=sent||n<5||!G.self.val||$("hyp").value.trim().length<10; }
+$("submit").onclick=async()=>{ if(sent)return;   const box=$("sendBox"); $("submit").disabled=true; box.hidden=false; box.className="msg info"; box.textContent="Надсилаю…";
+  const O=["t1","t2","t3","t4","t5"], sc=Math.round(O.reduce((s,k)=>s+SCORE[k],0)*100)/100;
+  const rec={name:ME.name,cls:ME.cls,score:sc,max:12,ts:{".sv":"timestamp"},parts:O.map(k=>SCORE[k]).join(" "),
+    hyp:$("hyp").value.trim().slice(0,600),t1:REC.t1,t2:REC.t2,seq:REC.seq,t3:REC.t3,t4:REC.t4,t5:REC.t5,concl:REC.concl,self:G.self.val};
+  try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec)});if(!r.ok)throw new Error(r.status);
+    sent=true;box.className="msg ok";box.textContent=`✓ Роботу отримано вчителем: ${fmt(sc)} / 12. Молодець!`;
+  }catch(e){$("submit").disabled=false;box.className="msg bad";box.textContent="Не вдалося надіслати. Перевір інтернет і натисни ще раз."} };
+$("startBtn").onclick=()=>{const nm=$("pname").value.trim().replace(/\s+/g," "),c=$("pcls").value;
+  if(nm.length<3||nm.split(" ").length<2||!c){$("startErr").hidden=false;return}
+  ME={name:nm.slice(0,60),cls:c};$("who").textContent=`👤 ${ME.name} · ${ME.cls}`;$("start").hidden=true};
+$("pname").addEventListener("keydown",e=>{if(e.key==="Enter")$("startBtn").click()});
+window.addEventListener("beforeunload",e=>{if(Object.keys(SCORE).length&&!sent){e.preventDefault();e.returnValue=""}});
+</script>
+</body>
+</html>
