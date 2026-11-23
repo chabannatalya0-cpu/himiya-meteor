@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Хімічна пошта — екран</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700;800&family=Caveat:wght@700&display=swap">
+<style>
+/* Projector board for the post office: live sorting table of telegrams; formulas stay sealed (🔒) until the receiver has answered. */
+:root{color-scheme:light;
+  --bg:#fff8f1;--ink:#2a1414;--muted:#7a5b55;--red:#ef4b5c;--red-d:#c9303f;--pink:#fde1e3;--ok:#16a34a;--bad:#dc2626;--line:#f3d9d2;
+  --f-display:"Rubik Mono One","Arial Black",system-ui,sans-serif;--f-body:"Golos Text",system-ui,sans-serif;--f-mono:"JetBrains Mono",ui-monospace,monospace;--f-hand:"Caveat","Comic Sans MS",cursive}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:clamp(15px,1.15vw,20px)}
+.top{display:flex;align-items:center;gap:1.4vw;flex-wrap:wrap;padding:1.6vh 2vw;background:var(--red);color:#fff;border-bottom:4px solid var(--ink)}
+.top h1{margin:0;font-family:var(--f-display);font-size:clamp(20px,2.4vw,42px);letter-spacing:.02em}
+.top .url{font:700 clamp(12px,.95vw,17px) var(--f-mono);background:#fff;color:var(--ink);border-radius:10px;padding:6px 10px}
+.cnts{display:flex;gap:1vw;margin-left:auto}
+.cnt{background:#fff;color:var(--ink);border:3px solid var(--ink);border-radius:14px;padding:.6vh 1vw;text-align:center;min-width:7vw}
+.cnt b{display:block;font:400 clamp(22px,2.4vw,44px) var(--f-display)}
+.cnt span{font-size:clamp(11px,.8vw,14px);font-weight:700}
+.ctrl{display:flex;gap:.6vw;flex-wrap:wrap;padding:1.2vh 2vw}
+.ctrl button{font:inherit;font-size:clamp(12px,.85vw,15px);font-weight:700;border:2px solid var(--ink);border-radius:10px;padding:6px 11px;background:#fff;cursor:pointer;color:var(--ink)}
+.ctrl button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.wrapT{padding:0 2vw 3vh}
+table{width:100%;border-collapse:separate;border-spacing:0 .8vh}
+th{font:800 clamp(11px,.8vw,14px) var(--f-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted);text-align:left;padding:0 .8vw}
+td{background:#fff;padding:1vh .8vw;border-top:2px solid var(--line);border-bottom:2px solid var(--line);vertical-align:middle}
+td:first-child{border-left:2px solid var(--line);border-radius:14px 0 0 14px}td:last-child{border-right:2px solid var(--line);border-radius:0 14px 14px 0}
+tr.ok td{background:#f0fdf4;border-color:#bbf7d0}tr.no td{background:#fef2f2;border-color:#fecaca}
+tr.new td{animation:flash 1.6s}
+@keyframes flash{from{background:#fef08a}}
+.code{font:800 clamp(14px,1.1vw,20px) var(--f-mono);background:var(--pink);border:2px solid var(--ink);border-radius:8px;padding:2px 8px;white-space:nowrap}
+.f{font:800 clamp(20px,1.9vw,34px) var(--f-mono);white-space:nowrap}.f sub{font-size:.55em}
+.tg{font-family:var(--f-hand);font-size:clamp(22px,1.9vw,34px);line-height:1.05;color:#1e3a8a}
+.nm{font-weight:700}.cl{display:block;font-size:.8em;color:var(--muted)}
+.res{font-size:clamp(20px,1.7vw,30px);white-space:nowrap}
+.wait{color:var(--muted);font-style:italic}
+.empty{text-align:center;color:var(--muted);padding:6vh 0;font-size:clamp(16px,1.4vw,24px)}
+.login{position:fixed;inset:0;z-index:50;background:rgba(42,20,20,.75);display:flex;align-items:center;justify-content:center;padding:16px}
+.login form{background:#fff;border-radius:20px;padding:22px;max-width:420px;width:100%;display:flex;flex-direction:column;gap:12px;border:3px solid var(--ink)}
+.login h2{margin:0;font-family:var(--f-display);font-size:24px;color:var(--red-d)}
+.login input{font:inherit;font-size:16px;padding:11px 13px;border-radius:12px;border:2px solid var(--ink);width:100%}
+.login button{font:inherit;font-weight:800;font-size:17px;border:0;border-radius:14px;padding:12px;background:var(--red);color:#fff;cursor:pointer}
+.login p{margin:0;color:var(--muted);font-size:14px}
+.err{color:#b91c1c;font-weight:700}
+@media (prefers-reduced-motion:reduce){tr.new td{animation:none}}
+@media (max-width:800px){table,tbody,tr,td{display:block}thead{display:none}tr{margin-bottom:10px}td,td:first-child,td:last-child{border:0;border-radius:0}tr td:first-child{border-radius:14px 14px 0 0}tr td:last-child{border-radius:0 0 14px 14px}}
+</style>
+</head>
+<body>
+<div class="top"><h1>📮 Хімічна пошта</h1><span class="url">chabannatalya0-cpu.github.io/himiya-meteor/poshta.html</span>
+  <div class="cnts"><div class="cnt"><b id="cS">0</b><span>📨 телеграм</span></div><div class="cnt"><b id="cOk">0</b><span>✅ доставлено</span></div><div class="cnt"><b id="cNo">0</b><span>❌ помилок</span></div></div></div>
+<div class="ctrl"><button type="button" id="bShow" aria-pressed="false">🔒 Формули сховані до відповіді</button><button type="button" id="bFull">⛶ На весь екран</button><button type="button" id="bReset">🧹 Нова сесія</button><button type="button" id="bAll">↺ Показати всі</button></div>
+<div class="wrapT"><table><thead><tr><th>Квиток</th><th>📨 Відправник</th><th>Формула</th><th>Телеграма</th><th>📬 Отримувач</th><th>Склав</th><th>Результат</th></tr></thead><tbody id="tb"></tbody></table><div class="empty" id="empty">Чекаємо на перші телеграми… Учні відкривають сторінку <b>poshta.html</b>, обирають роль і надсилають телеграми.</div></div>
+
+<div class="login" id="login"><form id="lf">
+  <h2>📮 Екран пошти</h2>
+  <p>Увійдіть тим самим email і паролем, що й у журналі «Результати учнів». Учням входити не потрібно.</p>
+  <input type="email" id="em" placeholder="Email" autocomplete="username" required>
+  <input type="password" id="pw" placeholder="Пароль" autocomplete="current-password" required>
+  <button type="submit">Відкрити пошту</button><div class="err" id="lerr"></div></form></div>
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const API_KEY="AIzaSyAGOncvJIlGaJu14uqEWy6rQxdF7-pQYUI";
+const WORK_ID="poshta";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const tok=f=>String(f||"").match(/[A-Z][a-z]?|\d+|[()]/g)||[];
+const html=f=>tok(f).map((t,i,a)=>/^\d+$/.test(t)&&i>0&&/[A-Za-z)]/.test(a[i-1])?`<sub>${t}</sub>`:esc(t)).join("");
+let token=null,refresh=null,DATA={},since=LS.get("poshta:since",0),seen=new Set(),first=true,SHOW=false;
+async function signIn(email,password){const r=await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password,returnSecureToken:true})});
+  const j=await r.json();if(!r.ok)throw new Error(j.error&&j.error.message||"LOGIN");token=j.idToken;refresh=j.refreshToken}
+async function renew(){try{const r=await fetch(`https://securetoken.googleapis.com/v1/token?key=${API_KEY}`,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:"grant_type=refresh_token&refresh_token="+encodeURIComponent(refresh)});const j=await r.json();if(j.id_token){token=j.id_token;refresh=j.refresh_token}}catch(e){}}
+async function ensureNode(){const r=await fetch(`${FIREBASE_URL}/worksheets/${WORK_ID}.json?auth=${token}`);const cur=await r.json();
+  if(!cur)await fetch(`${FIREBASE_URL}/worksheets/${WORK_ID}.json?auth=${token}`,{method:"PUT",body:JSON.stringify({title:"Хімічна пошта (читання формул)",subject:"Хімія · читання формул",open:true,game:true,created:Date.now(),exercises:[]})})}
+$("lf").onsubmit=async e=>{e.preventDefault();$("lerr").textContent="";try{await signIn($("em").value.trim(),$("pw").value);await ensureNode();$("login").hidden=true;poll();setInterval(poll,3000);setInterval(renew,45*60*1000)}
+  catch(err){$("lerr").textContent="Не вдалося увійти. Перевірте email і пароль."}};
+async function poll(){try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json?auth=${token}`);if(r.status===401){await renew();return}if(!r.ok)return;DATA=await r.json()||{};render()}catch(e){}}
+function render(){const all=Object.entries(DATA).map(([id,x])=>({id,...x})).filter(x=>(x.ts||0)>=since&&x.code);
+  const P={};all.forEach(x=>{const p=P[x.code]=P[x.code]||{code:x.code,ts:0};if(x.kind==="send"){p.s=x}else if(x.kind==="recv"){if(!p.r||(x.ts||0)>(p.r.ts||0))p.r=x}p.ts=Math.max(p.ts,x.ts||0)});
+  const rows=Object.values(P).sort((a,b)=>b.ts-a.ts);
+  $("cS").textContent=rows.filter(p=>p.s).length;$("cOk").textContent=rows.filter(p=>p.r&&p.r.ok).length;$("cNo").textContent=rows.filter(p=>p.r&&!p.r.ok).length;
+  $("empty").hidden=rows.length>0;
+  $("tb").innerHTML=rows.map(p=>{const s=p.s||{},r=p.r,f=s.f||(r&&r.f)||"",key=p.code+":"+(r?"r":"s");const nw=!first&&!seen.has(key);seen.add(key);
+    const fShow=(SHOW||r)?`<span class="f">${html(f)}</span>`:`<span class="wait">🔒 запечатано</span>`;
+    return `<tr class="${r?(r.ok?"ok":"no"):""} ${nw?"new":""}"><td><span class="code">№ ${esc(p.code)}</span></td>
+      <td><span class="nm">${esc(s.name||(r&&r.from)||"—")}</span><span class="cl">${esc(s.cls||"")}</span></td>
+      <td>${fShow}</td><td><span class="tg">${esc(s.text||(r&&r.text)||"")}</span></td>
+      <td>${r?`<span class="nm">${esc(r.name)}</span><span class="cl">${esc(r.cls||"")}</span>`:`<span class="wait">в дорозі… ✉️</span>`}</td>
+      <td>${r?`<span class="f">${html(r.built)}</span>`:""}</td>
+      <td class="res">${r?(r.ok?"✅"+(r.tries>1?" <small>(2-га спроба)</small>":""):"❌"):"⏳"}</td></tr>`}).join("");
+  first=false}
+$("bShow").onclick=()=>{SHOW=!SHOW;$("bShow").setAttribute("aria-pressed",SHOW);$("bShow").textContent=SHOW?"👁 Формули видно всім":"🔒 Формули сховані до відповіді";render()};
+$("bFull").onclick=()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}};
+$("bReset").onclick=()=>{since=Date.now();LS.set("poshta:since",since);seen=new Set();first=true;render()};
+$("bAll").onclick=()=>{since=0;LS.set("poshta:since",0);first=true;render()};
+</script>
+</body>
+</html>
