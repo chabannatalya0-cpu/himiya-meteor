@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Буряковий детектив</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700;800&display=swap">
+<style>
+/* Kitchen-lab worksheet: beet-magenta hero, white tile bench, plastic cups that change color; each step a chunky outlined card. */
+:root{color-scheme:light;
+  --bg:#fdf4f8;--card:#fff;--ink:#1f1029;--muted:#6b5b72;--line:#f1dbe7;
+  --beet:#9d174d;--beet2:#be185d;--sun:#facc15;--ok:#16a34a;--bad:#dc2626;--vio:#7c3aed;--vio-bg:#ede9fe;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;--f-body:"Golos Text",system-ui,sans-serif;--f-mono:"JetBrains Mono",ui-monospace,monospace}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16.5px;line-height:1.45;-webkit-user-select:none;user-select:none;
+  background-image:radial-gradient(circle at 0 0,#fbcfe8 0,transparent 35%),radial-gradient(circle at 100% 40%,#fef08a 0,transparent 30%),radial-gradient(circle at 30% 100%,#ddd6fe 0,transparent 40%);background-attachment:fixed}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+input,textarea{-webkit-user-select:text;user-select:text}
+.wrap{max-width:1000px;margin:0 auto;padding-block:16px 48px;padding-left:max(14px,env(safe-area-inset-left,0px));padding-right:max(14px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
+.hero{background:linear-gradient(125deg,#4a044e 0%,#9d174d 55%,#f472b6 120%);color:#fff;border-radius:26px;padding:20px;border:3px solid var(--ink);box-shadow:0 6px 0 var(--ink);position:relative;overflow:hidden;min-height:180px}
+.hero svg{position:absolute;right:8px;bottom:-4px;width:min(250px,42%);height:auto}
+.eyebrow{font:800 11px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;opacity:.9}
+h1{margin:6px 0;font-family:var(--f-display);font-size:clamp(22px,4.2vw,34px);line-height:1.12;max-width:64%}
+.hero p{margin:0;max-width:60%;opacity:.95}
+@media (max-width:640px){h1,.hero p{max-width:100%}.hero svg{opacity:.25}}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:#fff;border:3px solid var(--ink);border-radius:16px;padding:8px 14px;display:flex;gap:12px;align-items:center;justify-content:space-between;box-shadow:0 4px 0 var(--ink);flex-wrap:wrap}
+.bar b{font-family:var(--f-display);font-size:20px}
+.prog{flex:1;height:10px;background:#fce7f3;border-radius:99px;overflow:hidden;max-width:280px;min-width:80px}.prog i{display:block;height:100%;background:linear-gradient(90deg,#e11d48,#9d174d,#6d28d9,#ca8a04);width:0;transition:width .4s}
+.honest{font-size:13.5px;color:var(--muted);background:#fff;border:2px dashed var(--line);border-radius:12px;padding:8px 12px;margin:0}
+.card{background:var(--card);border:3px solid var(--ink);border-radius:22px;padding:16px;display:flex;flex-direction:column;gap:12px;box-shadow:0 5px 0 var(--ink);min-width:0}
+.card.done{border-color:var(--ok);box-shadow:0 5px 0 var(--ok)}
+.card h2{margin:0;font-size:19px;display:flex;gap:10px;align-items:flex-start}
+.card h2 .no{flex:none;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font:800 16px var(--f-mono);border:2px solid var(--ink);background:#fbcfe8}
+.card.done h2 .no{background:var(--ok);color:#fff;border-color:var(--ok)}
+.card h2 .pts{margin-left:auto;flex:none;font:800 12px var(--f-mono);background:var(--vio-bg);color:var(--vio);border-radius:99px;padding:4px 10px}
+.hint{margin:0;color:var(--muted);font-size:15px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{font-family:var(--f-display);font-size:13.5px;border:3px solid var(--ink);border-radius:14px;padding:9px 15px;cursor:pointer;color:var(--ink);background:var(--sun);box-shadow:0 4px 0 var(--ink)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.btn.beet{background:var(--beet2);color:#fff}.btn.green{background:var(--ok);color:#fff}.btn.ghost{background:#fff}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.fb{font-size:15px;border-radius:12px;padding:9px 12px;font-weight:600}
+.fb.ok{background:#dcfce7;color:#14532d}.fb.bad{background:#fee2e2;color:#7f1d1d}.fb.info{background:var(--vio-bg);color:#4c1d95}
+button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--vio);outline-offset:2px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.op{font:inherit;font-size:15.5px;text-align:left;border:2px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;cursor:pointer;color:var(--ink)}
+.op[aria-pressed="true"]{border-color:var(--vio);background:var(--vio-bg)}
+.op.ok{border-color:var(--ok);background:#dcfce7}.op.no{border-color:var(--bad);background:#fee2e2}.op.miss{border-color:var(--ok);border-style:dashed}
+.op[disabled]{cursor:default}
+textarea{font:inherit;font-size:16px;padding:10px 12px;border-radius:12px;border:2px solid var(--ink);width:100%;min-height:70px;resize:vertical;color:var(--ink);background:#fff}
+.equip{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media (max-width:640px){.equip{grid-template-columns:1fr}}
+.equip div{border:2px solid var(--line);border-radius:14px;padding:10px 12px;font-size:15px;background:#fffafc}
+.equip b{display:block;font:800 12px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--beet);margin-bottom:4px}
+/* prep */
+.prep{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:760px){.prep{grid-template-columns:1fr}}
+.stage{border:3px solid var(--ink);border-radius:18px;background:linear-gradient(#fff,#fdf2f8 70%,#e7e5e4 70%);overflow:hidden}
+.stage svg{width:100%;height:auto;display:block}
+.acts{display:flex;flex-direction:column;gap:8px}
+.act{font:inherit;font-size:15.5px;font-weight:700;text-align:left;border:3px solid var(--ink);background:#fff;border-radius:14px;padding:10px 12px;cursor:pointer;color:var(--ink);box-shadow:0 3px 0 var(--ink);display:flex;gap:10px;align-items:center}
+.act .n{flex:none;width:28px;height:28px;border-radius:50%;border:2px solid var(--ink);display:grid;place-items:center;font:800 13px var(--f-mono);background:#fff}
+.act.doneA{background:#dcfce7;border-color:var(--ok);box-shadow:0 3px 0 var(--ok)}.act.doneA .n{background:var(--ok);color:#fff;border-color:var(--ok)}
+.act.shake{animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+/* lab */
+.lab{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:14px;align-items:start}
+@media (max-width:760px){.lab{grid-template-columns:1fr}}
+.shelf{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.smp{font:inherit;font-size:14.5px;font-weight:700;text-align:left;border:2px solid var(--ink);border-radius:12px;padding:8px 10px;background:#fff;cursor:pointer;color:var(--ink);display:flex;gap:8px;align-items:center}
+.smp i{flex:none;width:18px;height:24px;border-radius:4px 4px 6px 6px;border:2px solid var(--ink)}
+.smp[aria-pressed="true"]{background:var(--sun)}
+.smp.tested{opacity:.65}
+.smp.tested::after{content:"✓";margin-left:auto;color:var(--ok);font-weight:800}
+.bench{border:3px solid var(--ink);border-radius:18px;background:linear-gradient(#ffffff,#fdf2f8 72%,#d6d3d1 72%);position:relative;overflow:hidden}
+.bench svg{width:100%;height:auto;display:block}
+.drop{transition:transform .5s ease-in,opacity .2s}
+.liq{transition:fill 1.6s ease}
+.strip{display:flex;gap:8px;flex-wrap:wrap}
+.mc{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11.5px;font-weight:700;width:74px;text-align:center;line-height:1.15}
+.mc svg{width:44px;height:52px}
+/* table */
+table.t{width:100%;border-collapse:separate;border-spacing:0 8px}
+table.t th{font:800 12px var(--f-mono);text-transform:uppercase;letter-spacing:.05em;color:var(--muted);text-align:left;padding:2px 6px}
+table.t td{padding:8px;background:#fffafc;border-top:2px solid var(--line);border-bottom:2px solid var(--line);vertical-align:middle}
+table.t td:first-child{border-left:2px solid var(--line);border-radius:14px 0 0 14px;font-weight:700}table.t td:last-child{border-right:2px solid var(--line);border-radius:0 14px 14px 0}
+.sw{display:flex;gap:6px;flex-wrap:wrap}
+.sw button{width:38px;height:38px;border-radius:50%;border:3px solid #fff;outline:2px solid var(--ink);cursor:pointer}
+.sw button[aria-pressed="true"]{outline:4px solid var(--ink);transform:scale(1.12)}
+.sw button.ok{outline:4px solid var(--ok)}.sw button.no{outline:4px solid var(--bad)}.sw button.miss{outline:3px dashed var(--ok)}
+.sw button[disabled]{cursor:default}
+.med{display:flex;gap:5px;flex-wrap:wrap}
+.med button{font:700 14px var(--f-body);border:2px solid var(--ink);border-radius:10px;padding:6px 9px;background:#fff;cursor:pointer;color:var(--ink)}
+.med button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.med button.ok{background:#bbf7d0;color:var(--ink)}.med button.no{background:#fecaca;color:var(--ink)}.med button.miss{border-style:dashed;border-color:var(--ok)}
+.med button[disabled]{cursor:default}
+.wait{color:var(--muted);font-style:italic;font-size:14px}
+td .lb{display:none}
+.swl{display:flex;gap:12px;flex-wrap:wrap;font-size:13.5px;font-weight:700}
+.swl i{display:inline-block;width:16px;height:16px;border-radius:50%;border:2px solid var(--ink);vertical-align:-3px;margin-right:4px}
+@media (max-width:760px){table.t thead{display:none}table.t,table.t tbody,table.t tr,table.t td{display:block}
+  table.t tr{border:2px solid var(--line);border-radius:16px;margin-bottom:10px;padding:10px;background:#fffafc;display:flex;flex-direction:column;gap:8px}
+  table.t td,table.t td:first-child,table.t td:last-child{border:0;border-radius:0;background:none;padding:0}
+  td .lb{display:block;font:800 11px var(--f-mono);color:var(--muted);margin-bottom:3px;text-transform:uppercase}}
+/* conclusions */
+.gap{border:2px solid var(--line);border-radius:14px;padding:10px 12px;line-height:2;background:#fffafc}
+.gap select{font:700 15px var(--f-body);border:2px solid var(--ink);border-radius:10px;padding:3px 6px;background:#fef9c3;color:var(--ink);max-width:100%}
+.gap select.ok-f{border-color:var(--ok);background:#dcfce7}.gap select.no-f{border-color:var(--bad);background:#fee2e2}
+.fix{font:800 13px var(--f-body);color:var(--ok)}
+.overlay{position:fixed;inset:0;z-index:30;background:rgba(31,16,41,.72);display:flex;align-items:center;justify-content:center;padding:20px max(16px,env(safe-area-inset-right,0px)) 20px max(16px,env(safe-area-inset-left,0px))}
+.overlay .card{max-width:540px;width:100%}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media (max-width:520px){.grid2{grid-template-columns:1fr}}
+.lbl{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--muted)}
+input[type=text],select.full{font:inherit;font-size:16px;padding:11px 13px;border-radius:12px;border:2px solid var(--ink);background:#fff;color:var(--ink);width:100%}
+.msg{font-weight:700;padding:9px 12px;border-radius:12px}
+.msg.ok{background:#e8f8ee;color:#166534}.msg.bad{background:#fdecec;color:#991b1b}.msg.info{background:var(--vio-bg);color:#4c1d95}
+.final{font-family:var(--f-display);font-size:38px;color:var(--ok)}
+.self{display:flex;gap:8px;flex-wrap:wrap}
+.self button{font:inherit;font-size:15px;border:2px solid var(--ink);border-radius:12px;padding:8px 12px;background:#fff;cursor:pointer;color:var(--ink)}
+.self button[aria-pressed="true"]{background:var(--sun)}
+.toast{position:fixed;left:50%;bottom:max(16px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:40;background:var(--ink);color:#fff;font-weight:700;border-radius:14px;padding:10px 16px;max-width:calc(100% - 32px);text-align:center}
+@media (prefers-reduced-motion:reduce){.liq,.drop{transition:none}.act.shake{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <svg viewBox="0 0 250 170" aria-hidden="true">
+      <path d="M150 40 q-8-30 6-38 q4 16 -2 38z" fill="#4ade80" stroke="#1f1029" stroke-width="3"/><path d="M160 42 q14-26 30-24 q-10 14 -26 26z" fill="#22c55e" stroke="#1f1029" stroke-width="3"/>
+      <path d="M155 44 q40 0 44 40 q2 40 -44 70 q-46 -30 -44 -70 q4 -40 44 -40z" fill="#9d174d" stroke="#1f1029" stroke-width="4"/>
+      <path d="M135 70 q20 -8 40 0M132 92 q24 -8 46 0M140 114 q16 -6 30 0" stroke="#f472b6" stroke-width="3" fill="none" opacity=".7"/>
+      <path d="M18 70 h44 l-6 90 h-32z" fill="#fff" stroke="#1f1029" stroke-width="3"/><path d="M22 110 h36 l-3 48 h-30z" fill="#e11d48"/>
+      <path d="M210 92 h34 l-5 68 h-24z" fill="#fff" stroke="#1f1029" stroke-width="3"/><path d="M213 122 h28 l-3 36 h-22z" fill="#ca8a04"/>
+    </svg>
+    <span class="eyebrow">Хімія · 8 клас · навчальне дослідження № 4</span>
+    <h1>Виявлення кислот і лугів у побутових хімікатах природними індикаторами</h1>
+    <p>Приготуй індикатор із буряку, дослідь засоби побутової хімії та продукти на кухні й визнач, де кисле, а де лужне середовище. Разом 12 балів.</p>
+  </section>
+  <div class="bar"><span id="who"></span><div class="prog"><i id="progI"></i></div><span>Бали: <b id="score">0</b> / 12</span></div>
+  <p class="honest">🔒 Самостійна робота: у кожного учня свій набір зразків. Копіювання й вставлення вимкнено, вихід зі сторінки фіксується в журналі вчителя.</p>
+
+  <section class="card" id="p1"></section>
+  <section class="card">
+    <h2><span class="no">🧰</span>Обладнання, речовини й матеріали</h2>
+    <div class="equip"><div><b>Обладнання</b>одноразові стаканчики, ніж, тертка, паперові рушники, марлева тканина, глибокі тарілки, склянка, піпетка, дерев'яні палички</div>
+    <div><b>Речовини та матеріали</b>буряк; харчові продукти (сік лимона, розчин лимонної кислоти, питна сода, столовий оцет, маринад, свіже молоко, йогурт, сметана); засоби побутової хімії (пральний порошок, рідке мило, засоби для чищення скла, унітазів, ванни та кахлю, кухонних плит, зубна паста)</div></div>
+  </section>
+  <section class="card" id="p2"></section>
+  <section class="card" id="p3"></section>
+  <section class="card" id="p4"></section>
+  <section class="card" id="p5"></section>
+  <section class="card" id="p6"></section>
+
+  <section class="card" id="fin">
+    <h2><span class="no" style="background:var(--vio);color:#fff">★</span>Самооцінка й здача</h2>
+    <p class="hint">Чи зможеш ти тепер удома визначити, кислий засіб чи лужний?</p>
+    <div class="self" id="self"><button type="button" data-v="🟢 Так, зможу й поясню">🟢 Так, зможу й поясню</button><button type="button" data-v="🟡 Зможу з підказкою">🟡 Зможу з підказкою</button><button type="button" data-v="🔴 Ще не впевнений(-а)">🔴 Ще не впевнений(-а)</button></div>
+    <p class="hint" id="finHint">Виконай усі кроки дослідження, тоді кнопка стане активною.</p>
+    <div class="row"><span>Результат: <span class="final" id="finScore">0</span> / 12</span></div>
+    <div class="row"><button class="btn green" type="button" id="submit" disabled>Надіслати вчителю</button></div>
+    <div id="sendMsg"></div>
+  </section>
+</div>
+
+<div class="overlay" id="start">
+  <div class="card">
+    <span class="lbl">Перед початком</span>
+    <h2 style="font-family:var(--f-display)">🔍 Буряковий детектив</h2>
+    <p style="margin:0">Звичайний буряк може «розповісти», кислий засіб чи лужний. Переглянь відео з дослідом, а потім виконай його тут, у віртуальній лабораторії.</p>
+    <div class="grid2">
+      <div><label class="lbl" for="pname">Прізвище та ім'я</label><input type="text" id="pname" maxlength="60" autocomplete="name" placeholder="Іваненко Олена"></div>
+      <div><label class="lbl" for="pcls">Клас</label><select class="full" id="pcls"><option value="">— обери —</option><option>8-А</option><option>8-Б</option><option>Інший</option></select></div>
+    </div>
+    <p class="msg bad" id="startErr" hidden>Впиши прізвище, ім'я та обери клас.</p>
+    <div class="row"><button class="btn beet" id="startBtn" type="button">Почати дослідження</button></div>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const WORK_ID="doslid8";
+const $=id=>document.getElementById(id);
+const fmt=x=>String(Math.round(x*100)/100).replace(".",",");
+const shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const SCORE={},REC={};
+/* антисписування */
+const AC={away:0,awayMs:0,leftAt:0,paste:0,copy:0,t0:0};
+function toast(t){const n=$("toast");n.textContent=t;n.hidden=false;clearTimeout(toast.k);toast.k=setTimeout(()=>n.hidden=true,2600)}
+["copy","cut"].forEach(ev=>document.addEventListener(ev,e=>{e.preventDefault();AC.copy++;toast("Копіювання вимкнено: це самостійна робота 🙂")}));
+document.addEventListener("paste",e=>{e.preventDefault();AC.paste++;toast("Вставлення вимкнено. Спроба зафіксована.")});
+document.addEventListener("contextmenu",e=>e.preventDefault());
+document.addEventListener("visibilitychange",()=>{if(!AC.t0)return;if(document.hidden){AC.leftAt=Date.now();AC.away++}else if(AC.leftAt){AC.awayMs+=Date.now()-AC.leftAt;AC.leftAt=0}});
+
+/* ---------- 1. Мета й гіпотеза ---------- */
+const GOALS=shuf([["Навчитися виготовляти природний індикатор із буряку та з його допомогою виявити кислоти й луги в побутових хімікатах і харчових продуктах.",1],
+ ["Визначити масу речовин, що входять до складу засобів побутової хімії.",0],["Довести, що всі засоби побутової хімії є лугами.",0]]);
+const U1={g:null,h:""};
+function R1(){const done="a" in SCORE,n=$("p1");n.classList.toggle("done",done);
+  n.innerHTML=`<h2><span class="no">1</span>Мета й гіпотеза<span class="pts">1 б.</span></h2>
+  <p class="hint">Обери мету дослідження й запиши свою гіпотезу: що станеться з кольором бурякового соку в різних засобах?</p>
+  <div class="opts">${GOALS.map(([t,k],i)=>{const c=done?(U1.g===i?(k?"ok":"no"):(k?"miss":"")):"";return `<button type="button" class="op ${c}" data-g="${i}" aria-pressed="${U1.g===i}" ${done?"disabled":""}>${t}</button>`}).join("")}</div>
+  <label class="lbl" for="hyp">Моя гіпотеза</label><textarea id="hyp" maxlength="300" ${done?"disabled":""} placeholder="Я припускаю, що…">${esc(U1.h)}</textarea>`+
+  (done?`<div class="fb ${SCORE.a===1?"ok":"info"}">+${fmt(SCORE.a)} б. Наприкінці перевіримо, чи підтвердилася твоя гіпотеза!</div>`:`<div class="row"><button class="btn" type="button" id="chk1">Зберегти й перевірити</button></div><div id="w1"></div>`);
+  if(done)return;
+  n.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{U1.h=$("hyp").value;U1.g=+b.dataset.g;R1()});
+  $("hyp").oninput=e=>U1.h=e.target.value;
+  $("chk1").onclick=()=>{U1.h=$("hyp").value.trim();if(U1.g==null||U1.h.length<10){$("w1").innerHTML=`<div class="fb bad">Обери мету й запиши гіпотезу (хоча б одне речення).</div>`;return}
+    SCORE.a=GOALS[U1.g][1]?1:0;REC.hyp=U1.h;REC.goal=GOALS[U1.g][1]?"✓":"✗";R1();upd()}}
+
+/* ---------- 2. Безпека ---------- */
+const SAFE=shuf([["Працювати в рукавичках; засоби побутової хімії не куштувати й не нюхати зблизька.",1],["Обережно користуватися ножем і тертою.",1],["Не змішувати між собою різні засоби для чищення.",1],["Після роботи вимити руки й посуд.",1],
+ ["Харчові продукти з дослідних стаканчиків можна куштувати.",0],["Залишки всіх засобів після досліду злити в одну склянку.",0]]);
+const U2=new Set();
+function R2(){const done="b" in SCORE,n=$("p2");n.classList.toggle("done",done);
+  n.innerHTML=`<h2><span class="no">2</span>Правила безпеки<span class="pts">1 б.</span></h2>
+  <p class="hint">Обери <b>всі</b> правильні правила безпечної роботи.</p>
+  <div class="opts">${SAFE.map(([t,k],i)=>{const v=U2.has(i);const c=done?(v?(k?"ok":"no"):(k?"miss":"")):"";return `<button type="button" class="op ${c}" data-s="${i}" aria-pressed="${v}" ${done?"disabled":""}>${v?"☑":"☐"} ${t}</button>`}).join("")}</div>`+
+  (done?`<div class="fb ${SCORE.b===1?"ok":"info"}">+${fmt(SCORE.b)} б. Засоби для чищення <b>не можна змішувати</b>: деякі суміші виділяють отруйні гази!</div>`:`<div class="row"><button class="btn" type="button" id="chk2">Перевірити</button></div><div id="w2"></div>`);
+  if(done)return;
+  n.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{const i=+b.dataset.s;U2.has(i)?U2.delete(i):U2.add(i);R2()});
+  $("chk2").onclick=()=>{if(!U2.size){$("w2").innerHTML=`<div class="fb bad">Обери правила.</div>`;return}
+    const err=SAFE.filter(([t,k],i)=>U2.has(i)!==!!k).length;SCORE.b=err===0?1:err===1?.5:0;REC.safe=`помилок: ${err}`;R2();upd()}}
+
+/* ---------- 3. Приготування індикатора ---------- */
+const PREP=["Натерти шматочок буряку на тертці","Залити тертий буряк гарячою водою й перемішати дерев'яною паличкою","Настояти 5–10 хвилин","Профільтрувати через марлю в чисту склянку"];
+const PORD=shuf([0,1,2,3]);let P3={step:0,err:0};
+function prepSVG(s){const juice=s>=1?"#9d174d":"#e0f2fe";
+  return `<svg viewBox="0 0 360 220" role="img" aria-label="Приготування індикатора">
+  <ellipse cx="70" cy="178" rx="58" ry="10" fill="#d6d3d1"/>
+  ${s<1?`<g><path d="M70 92 q-6-26 4-34 q3 14 -1 34z" fill="#4ade80" stroke="#1f1029" stroke-width="2.5"/><path d="M70 96 q34 0 36 32 q2 30 -36 50 q-38 -20 -36 -50 q2 -32 36 -32z" fill="#9d174d" stroke="#1f1029" stroke-width="3"/></g>`
+     :`<g>${Array.from({length:18},(_,i)=>`<rect x="${32+(i*13)%76}" y="${150+(i*7)%22}" width="9" height="4" rx="2" fill="#be185d" transform="rotate(${(i*37)%60-30} ${36+(i*13)%76} ${152+(i*7)%22})"/>`).join("")}</g>`}
+  <g transform="translate(118 60)"><rect x="0" y="0" width="26" height="110" rx="4" fill="#e5e7eb" stroke="#1f1029" stroke-width="3"/>${Array.from({length:8},(_,i)=>`<circle cx="13" cy="${14+i*12}" r="3" fill="#9ca3af"/>`).join("")}</g>
+  <g transform="translate(175 70)"><path d="M0 0 h70 l-8 110 h-54z" fill="#fff" fill-opacity=".7" stroke="#1f1029" stroke-width="3"/>
+   <path class="liq" d="M3 ${s>=1?34:200} h64 l-6 ${s>=1?74:0} h-52z" fill="${s>=2?"#9d174d":s>=1?"#f9a8d4":"#bae6fd"}"/>
+   ${s>=1&&s<4?Array.from({length:10},(_,i)=>`<rect x="${10+(i*11)%48}" y="${80+(i*9)%24}" width="7" height="3" fill="#831843"/>`).join(""):""}
+   ${s>=1&&s<3?`<line x1="40" y1="-30" x2="28" y2="96" stroke="#a16207" stroke-width="5" stroke-linecap="round"/>`:""}</g>
+  ${s===2?`<text x="210" y="50" text-anchor="middle" font-family="Golos Text" font-weight="800" font-size="16" fill="#9d174d">⏱ 10 хв</text>`:""}
+  <g transform="translate(270 96)"><path d="M0 0 h64 l-6 84 h-52z" fill="#fff" fill-opacity=".7" stroke="#1f1029" stroke-width="3"/>
+   ${s>=4?`<path d="M3 26 h58 l-5 56 h-48z" fill="#9d174d" class="liq"/><text x="32" y="-10" text-anchor="middle" font-family="Golos Text" font-weight="800" font-size="13" fill="#1f1029">індикатор</text>`:""}
+   ${s===3?`<path d="M-8 -6 q40 26 80 0" stroke="#e7e5e4" stroke-width="6" fill="none"/>`:""}</g>
+  ${s>=4?`<text x="180" y="210" text-anchor="middle" font-family="Golos Text" font-weight="800" font-size="15" fill="#166534">✓ Буряковий індикатор готовий!</text>`:""}
+  </svg>`}
+function R3(){const done="c" in SCORE,n=$("p3");n.classList.toggle("done",done);
+  n.innerHTML=`<h2><span class="no">3</span>Готуємо індикатор із буряку<span class="pts">1 б.</span></h2>
+  <p class="hint">Виконай дії <b>у правильному порядку</b>: натискай на крок, який треба зробити наступним. За кожну спробу не в тому порядку знімається частина бала.</p>
+  <div class="prep"><div class="stage" id="pstage">${prepSVG(P3.step)}</div>
+   <div class="acts">${PORD.map(i=>`<button type="button" class="act ${i<P3.step?"doneA":""}" data-p="${i}" ${done||i<P3.step?"disabled":""}><span class="n">${i<P3.step?i+1:"?"}</span>${PREP[i]}</button>`).join("")}</div></div>`+
+  (done?`<div class="fb ${SCORE.c===1?"ok":"info"}">+${fmt(SCORE.c)} б. (неправильних спроб: ${P3.err}). Отриманий бордово-фіолетовий розчин і є нашим індикатором. Збережи його колір як «еталон» для порівняння.</div>`:`<div id="w3"></div>`);
+  if(done)return;
+  n.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{const i=+b.dataset.p;
+    if(i===P3.step){P3.step++;if(P3.step===4){SCORE.c=P3.err===0?1:P3.err<=2?.5:0;REC.prep=`помилок порядку: ${P3.err}`;upd()}R3()}
+    else{P3.err++;b.classList.add("shake");setTimeout(()=>b.classList.remove("shake"),450);$("w3").innerHTML=`<div class="fb bad">Не зараз! Подумай, що треба зробити спочатку.</div>`}})}
+
+/* ---------- 4. Дослід ---------- */
+const CL=[["яскраво-червоний","#e11d48"],["малиново-рожевий","#db2777"],["бордовий (як індикатор)","#9d174d"],["синьо-фіолетовий","#5b21b6"],["жовто-бурий","#ca8a04"]];
+const cat=ph=>ph<3.5?0:ph<6.3?1:ph<7.8?2:ph<10?3:4;
+const medOf=ph=>ph<6.3?"кисле":ph<7.8?"нейтральне":"лужне";
+const SAMPLES=[["Сік лимона",2.3,"#fef9c3",0],["Розчин лимонної кислоти",2.2,"#f8fafc",0],["Столовий оцет",2.8,"#f8fafc",0],["Маринад від огірків",3.2,"#fef3c7",0],["Йогурт",4.3,"#fafaf9",1],["Сметана",4.5,"#fffbeb",1],
+ ["Свіже молоко",6.7,"#ffffff",1],["Розчин питної соди",8.3,"#f8fafc",0],["Зубна паста",8.6,"#f1f5f9",1],["Рідке мило",9.4,"#fef3c7",0],["Засіб для чищення скла",10.6,"#bae6fd",0],["Розчин прального порошку",10.8,"#e0f2fe",0],
+ ["Засіб для чищення кухонних плит",13,"#fef3c7",0],["Засіб для чищення унітазів",1.2,"#bfdbfe",0],["Засіб для ванни (від вапняного нальоту)",2.5,"#dbeafe",0]];
+/* персональний набір: 2 сильнокислі, 2 харчові кислі, 1 нейтральний, 3 лужні */
+const S4=(()=>{const by=f=>shuf(SAMPLES.filter(f));return shuf([...by(s=>s[1]<3.5).slice(0,2),...by(s=>s[1]>=3.5&&s[1]<6.3).slice(0,1),...by(s=>s[1]>=6.3&&s[1]<7.8).slice(0,1),...by(s=>s[1]>=7.8&&s[1]<10).slice(0,2),...by(s=>s[1]>=10).slice(0,2)])})();
+const T4=S4.map(()=>null);let SEL=null,pouring=false;
+function mixCol(s){const c=CL[cat(s[1])][1];return s[3]?blend(c,"#ffffff",.45):c}
+function blend(a,b,t){const p=x=>[1,3,5].map(i=>parseInt(x.slice(i,i+2),16));const A=p(a),B=p(b);return "#"+A.map((v,i)=>Math.round(v*(1-t)+B[i]*t).toString(16).padStart(2,"0")).join("")}
+function cupSVG(fill,big){return big?`<svg viewBox="0 0 320 230" role="img" aria-label="Стаканчик зі зразком">
+  <g id="pip" transform="translate(196 6)"><rect x="-7" y="0" width="14" height="34" rx="6" fill="#1f2937"/><path d="M-6 34 h12 l-3 64 h-6z" fill="#e0f2fe" stroke="#1f1029" stroke-width="2"/><path d="M-4 60 h8 l-1.5 36 h-5z" fill="#9d174d"/></g>
+  <circle class="drop" id="d1" cx="196" cy="104" r="5" fill="#9d174d" opacity="0"/><circle class="drop" id="d2" cx="196" cy="104" r="5" fill="#9d174d" opacity="0"/><circle class="drop" id="d3" cx="196" cy="104" r="5" fill="#9d174d" opacity="0"/>
+  <path d="M98 100 h124 l-12 116 h-100z" fill="#fff" fill-opacity=".6" stroke="#1f1029" stroke-width="4"/>
+  <path class="liq" id="liq" d="M102 140 h116 l-8 72 h-100z" fill="${fill}"/><path d="M106 140 h108" stroke="#fff" stroke-width="3" opacity=".6"/>
+  <path d="M110 108 l-4 96" stroke="#fff" stroke-width="5" opacity=".55"/>
+  <g transform="translate(20 120)"><path d="M0 0 h50 l-5 82 h-40z" fill="#fff" fill-opacity=".7" stroke="#1f1029" stroke-width="3"/><path d="M3 24 h44 l-4 56 h-36z" fill="#9d174d"/><text x="25" y="-8" text-anchor="middle" font-family="Golos Text" font-weight="800" font-size="12" fill="#1f1029">індикатор</text></g>
+  </svg>`:`<svg viewBox="0 0 44 52"><path d="M4 4 h36 l-4 44 h-28z" fill="#fff" stroke="#1f1029" stroke-width="2.5"/><path d="M6 16 h32 l-3 30 h-26z" fill="${fill}"/></svg>`}
+function R4(){const done="d" in SCORE,n=$("p4");const tested=T4.filter(Boolean).length;n.classList.toggle("done",tested===S4.length);
+  n.innerHTML=`<h2><span class="no">4</span>Дослід: додаємо індикатор до зразків<span class="pts">→ табл.</span></h2>
+  <p class="hint">Обери зразок на полиці, і його наллють у стаканчик. Потім натисни «Додати індикатор» і уважно поспостерігай за кольором. Досліди всі ${S4.length} зразків. Ліворуч у склянці стоїть еталон: колір самого індикатора.</p>
+  <div class="lab"><div class="shelf">${S4.map((s,i)=>`<button type="button" class="smp ${T4[i]?"tested":""}" data-i="${i}" aria-pressed="${SEL===i}"><i style="background:${s[2]}"></i>${s[0]}</button>`).join("")}</div>
+   <div style="display:flex;flex-direction:column;gap:8px"><div class="bench" id="bench">${cupSVG(SEL==null?"#ffffff00":T4[SEL]?mixCol(S4[SEL]):S4[SEL][2],true)}</div>
+    <div class="row"><button class="btn beet" type="button" id="pour" ${SEL==null||(SEL!=null&&T4[SEL])?"disabled":""}>💧 Додати 5 крапель індикатора</button><span id="cap" class="hint">${SEL==null?"Обери зразок ліворуч":esc(S4[SEL][0])}</span></div></div></div>
+  <span class="lbl">Мої стаканчики</span>
+  <div class="strip"><div class="mc">${cupSVG("#9d174d")}еталон (індикатор)</div>${S4.map((s,i)=>T4[i]?`<div class="mc">${cupSVG(mixCol(s))}${esc(s[0])}</div>`:"").join("")}</div>`+
+  (tested===S4.length?`<div class="fb ok">✓ Усі зразки досліджено! Тепер заповни таблицю спостережень нижче.</div>`:"");
+  n.querySelectorAll("[data-i]").forEach(b=>b.onclick=()=>{if(pouring)return;SEL=+b.dataset.i;R4()});
+  const pb=$("pour");if(pb)pb.onclick=()=>{if(SEL==null||T4[SEL]||pouring)return;pouring=true;pb.disabled=true;const s=S4[SEL],i=SEL;
+    ["d1","d2","d3"].forEach((d,k)=>setTimeout(()=>{const e=$(d);if(!e)return;e.style.opacity=1;e.style.transform="translateY(0)";requestAnimationFrame(()=>{e.style.transform="translateY(60px)"});setTimeout(()=>{e.style.opacity=0},480)},k*260));
+    setTimeout(()=>{const l=$("liq");if(l)l.setAttribute("fill",mixCol(s))},800);
+    setTimeout(()=>{T4[i]=true;pouring=false;R4();R5();upd()},2500)}}
+
+/* ---------- 5. Таблиця спостережень ---------- */
+const U5=S4.map(()=>({c:null,m:null}));let D5=null;
+function R5(){const done="e" in SCORE,n=$("p5");n.classList.toggle("done",done);const all=T4.every(Boolean);
+  n.innerHTML=`<h2><span class="no">5</span>Таблиця спостережень<span class="pts">6 б.</span></h2>
+  <p class="hint">Для кожного дослідженого зразка обери колір, якого набув індикатор, і визнач середовище.</p>
+  <div class="swl">${CL.map(c=>`<span><i style="background:${c[1]}"></i>${c[0]}</span>`).join("")}</div>
+  <table class="t"><thead><tr><th>Зразок</th><th>Забарвлення індикатора</th><th>Середовище</th></tr></thead><tbody>
+  ${S4.map((s,i)=>{const d=D5&&D5[i]||{},u=U5[i],k=cat(s[1]),m=medOf(s[1]);if(!T4[i])return `<tr><td>${esc(s[0])}</td><td colspan="2"><span class="wait">спершу досліди цей зразок ⬆</span></td></tr>`;
+    return `<tr><td>${esc(s[0])}</td><td><span class="lb">Забарвлення</span><div class="sw">${CL.map((c,j)=>{const cc=done?(u.c===j?(j===k?"ok":"no"):(j===k?"miss":"")):"";return `<button type="button" class="${cc}" style="background:${c[1]}" data-r="${i}" data-c="${j}" aria-pressed="${u.c===j}" aria-label="${c[0]}" title="${c[0]}" ${done?"disabled":""}></button>`}).join("")}</div></td>
+     <td><span class="lb">Середовище</span><div class="med">${["кисле","нейтральне","лужне"].map(x=>{const cc=done?(u.m===x?(x===m?"ok":"no"):(x===m?"miss":"")):"";return `<button type="button" class="${cc}" data-r="${i}" data-m="${x}" aria-pressed="${u.m===x}" ${done?"disabled":""}>${x}</button>`}).join("")}</div></td></tr>`}).join("")}
+  </tbody></table>`+
+  (done?`<div class="fb ${SCORE.e===6?"ok":"info"}">+${fmt(SCORE.e)} б. Пунктирною рамкою позначено правильні відповіді там, де ти помилився.</div>`:`<div class="row"><button class="btn" type="button" id="chk5" ${all?"":"disabled"}>Перевірити таблицю</button></div><div id="w5"></div>`);
+  if(done)return;
+  n.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{U5[+b.dataset.r].c=+b.dataset.c;R5()});
+  n.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{U5[+b.dataset.r].m=b.dataset.m;R5()});
+  const c5=$("chk5");if(c5)c5.onclick=()=>{if(U5.some(u=>u.c==null||!u.m)){$("w5").innerHTML=`<div class="fb bad">Заповни колір і середовище для всіх зразків.</div>`;return}
+    D5=S4.map((s,i)=>({c:U5[i].c===cat(s[1]),m:U5[i].m===medOf(s[1])}));const c=D5.reduce((a,d)=>a+d.c+d.m,0);SCORE.e=Math.round(c/(S4.length*2)*6*4)/4;
+    REC.table=S4.map((s,i)=>`${s[0]}: ${CL[U5[i].c][0].split(" ")[0]}${D5[i].c?"✓":"✗"}, ${U5[i].m}${D5[i].m?"✓":"✗"}`).join("; ");R5();upd()}}
+
+/* ---------- 6. Висновки ---------- */
+const CON=[
+ {pre:"У кислому середовищі буряковий індикатор набуває",post:"забарвлення.",o:["червоного або малинового","жовтого","синього"],k:0},
+ {pre:"У лужному середовищі індикатор стає",post:".",o:["червоним","фіолетовим, а в сильно лужному — жовто-бурим","безбарвним"],k:1},
+ {pre:"У нейтральному середовищі колір індикатора",post:".",o:["стає червоним","не змінюється","стає жовтим"],k:1},
+ {pre:"Кисле середовище мають, наприклад,",post:".",o:["сік лимона, оцет, засіб для унітазів","розчин соди, мило, засіб для плит","вода й молоко"],k:0},
+ {pre:"Лужне середовище мають, наприклад,",post:".",o:["оцет і йогурт","розчин соди, рідке мило, засіб для чищення плит","сік лимона й маринад"],k:1},
+ {pre:"Природні індикатори — це речовини рослинного походження, які",post:".",o:["змінюють забарвлення залежно від середовища","нейтралізують кислоти","розчиняють жири"],k:0}];
+const U6=CON.map(()=>"");
+function R6(){const done="f" in SCORE,n=$("p6");n.classList.toggle("done",done);
+  n.innerHTML=`<h2><span class="no">6</span>Висновки<span class="pts">3 б.</span></h2>
+  <p class="hint">Заверши речення висновку. Порівняй їх зі своєю гіпотезою з кроку 1.</p>
+  ${CON.map((g,i)=>{const c=done?(+U6[i]===g.k?"ok-f":"no-f"):"";return `<div class="gap">${g.pre} <select data-g="${i}" class="${c}" ${done?"disabled":""} aria-label="Пропуск ${i+1}"><option value="">— обери —</option>${g.o.map((o,j)=>`<option value="${j}" ${U6[i]===String(j)?"selected":""}>${o}</option>`).join("")}</select> ${g.post}${done&&+U6[i]!==g.k?` <span class="fix">✓ ${g.o[g.k]}</span>`:""}</div>`}).join("")}`+
+  (done?`<div class="fb ${SCORE.f===3?"ok":"info"}">+${fmt(SCORE.f)} б. Твоя гіпотеза була: «${esc(REC.hyp||"")}». Чи підтвердилася вона?</div>`:`<div class="row"><button class="btn" type="button" id="chk6">Перевірити висновки</button></div><div id="w6"></div>`);
+  if(done)return;
+  n.querySelectorAll("[data-g]").forEach(s=>s.onchange=()=>{U6[+s.dataset.g]=s.value});
+  $("chk6").onclick=()=>{if(U6.some(x=>x==="")){$("w6").innerHTML=`<div class="fb bad">Заповни всі пропуски.</div>`;return}
+    const c=CON.filter((g,i)=>+U6[i]===g.k).length;SCORE.f=c/2;REC.con=`${c} з 6`;R6();upd()}}
+
+/* ---------- здача ---------- */
+const ORDER=["a","b","c","e","f"];
+let ME={},sent=false,SELF="";
+document.querySelectorAll("#self button").forEach(b=>b.onclick=()=>{SELF=b.dataset.v;document.querySelectorAll("#self button").forEach(x=>x.setAttribute("aria-pressed",x===b))});
+const total=()=>ORDER.reduce((a,k)=>a+(SCORE[k]||0),0);
+function upd(){const sc=total(),n=ORDER.filter(k=>k in SCORE).length+T4.filter(Boolean).length/S4.length;
+  $("score").textContent=fmt(sc);$("finScore").textContent=fmt(sc);$("progI").style.width=n/6*100+"%";
+  if(ORDER.every(k=>k in SCORE)){$("submit").disabled=sent;$("finHint").textContent="Дослідження завершено! Обери самооцінку й надішли роботу вчителю."}}
+$("submit").onclick=async()=>{const box=$("sendMsg");if(sent)return;if(!SELF){box.className="msg bad";box.textContent="Обери самооцінку вище.";return}
+  $("submit").disabled=true;box.className="msg info";box.textContent="Надсилаю…";const sc=total();
+  const awayMs=AC.awayMs+(AC.leftAt?Date.now()-AC.leftAt:0);
+  const rec={name:ME.name,cls:ME.cls,score:sc,max:12,ts:{".sv":"timestamp"},parts:ORDER.map(k=>SCORE[k]).join(" "),
+    hyp:REC.hyp||"",goal:REC.goal||"",safe:REC.safe||"",prep:REC.prep||"",table:REC.table||"",con:REC.con||"",self:SELF,
+    away:AC.away,awaySec:Math.round(awayMs/1000),paste:AC.paste,copy:AC.copy,durSec:Math.round((Date.now()-AC.t0)/1000)};
+  try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json`,{method:"POST",body:JSON.stringify(rec)});if(!r.ok)throw new Error(r.status);
+    sent=true;box.className="msg ok";box.textContent=`✓ Роботу отримано вчителем: ${fmt(sc)} / 12. Молодець!`;
+  }catch(e){$("submit").disabled=false;box.className="msg bad";box.textContent="Не вдалося надіслати. Перевір інтернет і натисни ще раз."}};
+$("startBtn").onclick=()=>{const nm=$("pname").value.trim(),c=$("pcls").value;if(nm.length<3||!c){$("startErr").hidden=false;return}
+  ME={name:nm.slice(0,60),cls:c};$("who").textContent=`👤 ${ME.name} · ${ME.cls}`;$("start").hidden=true;AC.t0=Date.now()};
+R1();R2();R3();R4();R5();R6();
+</script>
+</body>
+</html>
