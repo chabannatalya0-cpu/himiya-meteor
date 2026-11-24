@@ -118,6 +118,7 @@ const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.fireba
 const API_KEY="AIzaSyAGOncvJIlGaJu14uqEWy6rQxdF7-pQYUI";
 const STATIONS=["Обладнання","Ризики","Рівняння","Хід роботи","Збирання","Виявлення","Каталізатори","Висновок"];
 const WORKS=[
+  {id:"vodenj8",date:"2026-11-24",cls:"8",url:"vodenj8.html",type:"Робочий аркуш",label:"8 кл. · Гідроген. Водень",title:"Робочий аркуш «Гідроген. Водень: властивості та одержання» (8 клас, § 15)",subject:"Хімія · 8 клас · водень"},
   {id:"doslid8",date:"2026-11-24",cls:"8",url:"doslid8.html",type:"Навчальне дослідження",label:"8 кл. · НД №4 Індикатори",title:"Навчальне дослідження № 4 «Виявлення кислот і лугів у побутових хімікатах природними індикаторами» (8 клас)",subject:"Хімія · 8 клас · індикатори"},
   {id:"skladni7",date:"2026-11-24",cls:"7",url:"skladni7.html",type:"Робочий аркуш",label:"7 кл. · Складні речовини",title:"Робочий аркуш «Складні речовини» — прості й складні речовини, склад за формулою, моделі молекул (7 клас)",subject:"Хімія · 7 клас · складні речовини"},
   {id:"zastos10",date:"2026-11-22",cls:"10",url:"zastosuvannya10.html",type:"Робочий аркуш",label:"10 кл. · Вуглеводні працюють",title:"Робочий аркуш «Вуглеводні працюють» — застосування вуглеводнів, таблиця (10 клас)",subject:"Хімія · 10 клас · застосування вуглеводнів"},
@@ -299,6 +300,23 @@ function render(){
         <div><b>Самооцінка</b>${esc(x.reflection||"—")}</div></div></details></td>
       <td class="muted">${when(x)}</td></tr>`}).join("")
       :'<tr><td colspan="7" class="muted">Ще ніхто не здав роботу. Коли учні натиснуть «Здати роботу», вони з\'являться тут.</td></tr>';
+  } else if(work.id==="vodenj8"){
+    const NM=["Паспорт елемента","Фізичні властивості","Лабораторія","Хімічні властивості","Застосування"],MX=[2,2,3,3,2];
+    $("kAvg").textContent=best.length?(best.reduce((s,x)=>s+x.score,0)/best.length).toFixed(1):"0"; $("kAvgT").textContent="середній бал (з 12)";
+    $("kTop").textContent=best.filter(x=>(x.away||0)>=3||(x.paste||0)>0).length; $("kTopT").textContent="учнів з ⚠️ (виходи / вставлення)";
+    const sum=Array(5).fill(0);best.forEach(x=>(x.parts||"").split(" ").forEach((v,i)=>sum[i]+=(+v||0)));
+    $("hardTitle").textContent="Завдання, з якими клас впорався найгірше"; $("hardHint").textContent="Частка набраних балів (найкращі спроби учнів).";
+    $("hard").innerHTML=best.length?NM.map((n,i)=>[n,Math.round(sum[i]/(MX[i]*best.length)*100)]).sort((a,b)=>a[1]-b[1]).map(([n,p])=>`<span class="chip">${esc(n)} <small>${p}%</small></span>`).join(""):'<span class="muted">Поки немає даних</span>';
+    const mm=s=>s==null?"—":`${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;
+    $("th").innerHTML=`<tr><th data-k="name">Учень</th><th data-k="cls">Клас</th><th data-k="score">Бали</th><th>Завдання 1–5</th><th>Самостійність</th><th>Самооцінка</th><th>Помилки</th><th data-k="ts">Коли</th></tr>`;
+    $("tb").innerHTML=out.length?out.map(x=>{const p=x.score>=10?"g":x.score>=7?"m":"b";
+      const warn=(x.away||0)>=3||(x.paste||0)>0;
+      const ac=`${warn?"⚠️ ":"✅ "}виходів: ${x.away||0} (${mm(x.awaySec||0)}) · вставлень: ${x.paste||0} · час: ${mm(x.durSec)}`;
+      return `<tr><td><strong>${esc(x.name)}</strong></td><td>${esc(x.cls)}</td><td><span class="pill ${p}">${String(x.score).replace(".",",")} / 12</span></td>
+      <td class="mono">${esc((x.parts||"").replace(/\./g,","))}</td><td style="font-size:13px;${warn?"color:#b91c1c;font-weight:700":""}">${esc(ac)}</td><td>${esc(x.self||"")}</td>
+      <td><details><summary>Відкрити</summary><div class="work">
+        <div><b>Паспорт</b>${esc(x.pass||"—")}</div><div><b>Фіз. властивості</b>${esc(x.phys||"—")}</div><div><b>Лабораторія</b>${esc(x.lab||"—")}</div><div><b>Хім. властивості</b>${esc(x.chem||"—")}</div><div><b>Застосування</b>${esc(x.app||"—")}</div></div></details></td><td class="muted">${when(x)}</td></tr>`}).join("")
+      :'<tr><td colspan="8" class="muted">Ще ніхто не здав.</td></tr>';
   } else if(work.id==="doslid8"){
     const NM=["Мета","Безпека","Індикатор","Таблиця","Висновки"],MX=[1,1,1,6,3];
     $("kAvg").textContent=best.length?(best.reduce((s,x)=>s+x.score,0)/best.length).toFixed(1):"0"; $("kAvgT").textContent="середній бал (з 12)";
@@ -873,6 +891,8 @@ function csv(){
   const {out}=rows(); let lines;
   if(work.id==="rozchyny9"){const t=ts=>ts?new Date(ts).toLocaleString("uk-UA"):"";
     lines=[["Учень","Клас","Почав","Завершив","Тривалість, хв","Виходів","Поза тестом, с","Перезавантажень","Статус"]].concat(sessions().map(r=>[r.name,r.cls,t(r.start),t(r.end),r.minutes??"",r.exits,r.away,r.reloads,!r.end?"не завершив":r.reason==="timeout"?"час вийшов":"завершив"]));}
+  else if(work.id==="vodenj8"){lines=[["Учень","Клас","Бали (з 12)","Паспорт (з 2)","Фіз. власт. (з 2)","Лабораторія (з 3)","Хім. власт. (з 3)","Застосування (з 2)","Виходів зі сторінки","Поза сторінкою, с","Спроб вставлення","Тривалість, с","Самооцінка","Паспорт","Фіз. властивості","Лабораторія","Хім. властивості","Застосування","Дата"]]
+    .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.away||0,x.awaySec||0,x.paste||0,x.durSec||"",x.self,x.pass,x.phys,x.lab,x.chem,x.app,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="doslid8"){lines=[["Учень","Клас","Бали (з 12)","Мета (з 1)","Безпека (з 1)","Індикатор (з 1)","Таблиця (з 6)","Висновки (з 3)","Виходів зі сторінки","Поза сторінкою, с","Спроб вставлення","Тривалість, с","Самооцінка","Гіпотеза","Таблиця спостережень","Висновки","Дата"]]
     .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.away||0,x.awaySec||0,x.paste||0,x.durSec||"",x.self,x.hyp,x.table,x.con,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="skladni7"){lines=[["Учень","Клас","Бали (з 12)","Проста/складна (з 3)","Склад (з 3)","Моделі (з 3)","Правда/міф (з 3)","Виходів зі сторінки","Поза сторінкою, с","Спроб вставлення","Тривалість, с","Самооцінка","Помилки проста/складна","Помилки склад","Помилки моделі","Помилки правда/міф","Дата"]]
