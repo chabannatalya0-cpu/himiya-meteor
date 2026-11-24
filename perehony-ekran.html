@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Хімічні перегони — траса</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Golos+Text:wght@400;600;700;800&family=JetBrains+Mono:wght@700;800&display=swap">
+<style>
+/* Projector race track: grass verge, dark asphalt lanes with dashed lines, checkered finish column; leaderboard rail on the right; podium overlay with confetti. */
+:root{color-scheme:dark;--bg:#14532d;--ink:#f9fafb;--muted:#cbd5e1;--sun:#facc15;--road:#2b2f38;--road2:#33373f;
+  --f-display:"Bungee","Arial Black",system-ui,sans-serif;--f-body:"Golos Text",system-ui,sans-serif;--f-mono:"JetBrains Mono",ui-monospace,monospace}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0;height:100%}
+body{background:repeating-linear-gradient(90deg,#166534 0 60px,#15803d 60px 120px);color:var(--ink);font-family:var(--f-body);overflow:hidden}
+.screen{height:100vh;display:grid;grid-template-rows:auto minmax(0,1fr);}
+.top{display:flex;align-items:center;gap:1.4vw;padding:1.2vh 1.6vw;background:#111827;border-bottom:4px solid #000;flex-wrap:wrap}
+.top h1{margin:0;font-family:var(--f-display);font-weight:400;font-size:clamp(20px,2.4vw,44px);color:var(--sun);text-shadow:3px 3px 0 #b45309}
+.url{font:800 clamp(12px,1vw,18px) var(--f-mono);background:#fff;color:#111;border-radius:10px;padding:6px 10px}
+.goal{font:800 clamp(12px,1vw,18px) var(--f-body);color:var(--muted)}
+.ctrl{display:flex;gap:.5vw;margin-left:auto;flex-wrap:wrap}
+.ctrl button{font:inherit;font-size:clamp(12px,.85vw,15px);font-weight:800;border:2px solid #000;border-radius:10px;padding:6px 11px;background:var(--sun);cursor:pointer;color:#111}
+.ctrl button.g{background:#fff}
+.main{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,19vw);gap:1vw;padding:1.2vh 1.2vw;min-height:0}
+.track{position:relative;background:var(--road);border:5px solid #f9fafb;border-radius:18px;overflow:hidden;display:flex;flex-direction:column;min-height:0;box-shadow:0 0 0 5px #b91c1c}
+.lane{position:relative;flex:1;min-height:0;border-bottom:3px dashed rgba(255,255,255,.45);background:var(--road)}
+.lane:nth-child(even){background:var(--road2)}
+.lane:last-child{border-bottom:0}
+.startl{position:absolute;left:0;top:0;bottom:0;width:7px;background:#fff;z-index:1}
+.finish{position:absolute;right:0;top:0;bottom:0;width:4.2%;background:repeating-conic-gradient(#fff 0 25%,#111 0 50%) 0 0/26px 26px;z-index:1}
+.racer{position:absolute;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:.5vw;transition:left 1s cubic-bezier(.3,1.3,.5,1);z-index:2;white-space:nowrap}
+.racer svg{height:100%;width:auto;display:block;filter:drop-shadow(0 3px 2px rgba(0,0,0,.6))}
+.racer .nm{font-weight:800;background:rgba(0,0,0,.65);border-radius:8px;padding:1px 8px;line-height:1.2}
+.racer .nm small{color:var(--sun);font-family:var(--f-mono);margin-left:6px}
+.racer.fin .nm{background:var(--sun);color:#111}
+.racer .medal{font-size:1.3em}
+.empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;font-family:var(--f-display);font-size:clamp(20px,2.4vw,40px);color:#fff;padding:4vw;z-index:3}
+.rail{background:#111827;border:4px solid #000;border-radius:18px;padding:1vw;display:flex;flex-direction:column;gap:.8vh;min-height:0;overflow:hidden}
+.rail h2{margin:0;font-family:var(--f-display);font-weight:400;font-size:clamp(14px,1.3vw,24px);color:var(--sun)}
+.lb{display:flex;flex-direction:column;gap:.6vh;overflow:auto}
+.lb div{display:grid;grid-template-columns:2.2em minmax(0,1fr) auto;gap:.5vw;align-items:center;background:#1f2937;border-radius:10px;padding:.5vh .6vw;font-size:clamp(13px,1vw,18px)}
+.lb b{font-family:var(--f-display);font-weight:400;color:var(--sun);text-align:center}
+.lb span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}
+.lb em{font:800 .9em var(--f-mono);font-style:normal;color:var(--muted)}
+.lb .f{background:#422006}
+.cnt{display:flex;gap:.6vw;font:800 clamp(12px,.9vw,16px) var(--f-body);color:var(--muted)}
+.banner{position:fixed;left:50%;top:14vh;transform:translateX(-50%);z-index:30;background:var(--sun);color:#111;font-family:var(--f-display);font-size:clamp(22px,3vw,54px);padding:1.2vh 2.4vw;border:5px solid #000;border-radius:20px;box-shadow:0 8px 0 #000;animation:pop .5s cubic-bezier(.3,1.7,.5,1);text-align:center}
+@keyframes pop{from{transform:translateX(-50%) scale(.2)}to{transform:translateX(-50%) scale(1)}}
+.podium{position:fixed;inset:0;z-index:40;background:rgba(17,24,39,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3vh}
+.podium h2{margin:0;font-family:var(--f-display);font-weight:400;font-size:clamp(30px,4vw,72px);color:var(--sun);text-shadow:4px 4px 0 #b45309}
+.steps{display:flex;align-items:flex-end;gap:1.6vw}
+.step{display:flex;flex-direction:column;align-items:center;gap:1vh;width:clamp(140px,17vw,300px)}
+.step .who{font-weight:800;font-size:clamp(16px,1.6vw,28px);text-align:center}
+.step .who small{display:block;color:var(--muted);font-size:.7em}
+.step .blk{width:100%;border:5px solid #000;border-radius:14px 14px 0 0;display:flex;align-items:flex-start;justify-content:center;font-family:var(--f-display);font-size:clamp(40px,5vw,90px);color:#111;padding-top:1vh}
+.step svg{width:80%;height:auto}
+.s1 .blk{height:28vh;background:#facc15}.s2 .blk{height:20vh;background:#e5e7eb}.s3 .blk{height:14vh;background:#f59e0b}
+.podium button{color:#111;font:inherit;font-weight:800;font-size:18px;border:3px solid #000;border-radius:14px;padding:10px 18px;background:#fff;cursor:pointer}
+.confetti{position:fixed;top:-20px;width:12px;height:18px;z-index:41;animation:fall linear forwards;pointer-events:none}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.login{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.8);display:flex;align-items:center;justify-content:center;padding:16px}
+.login form{background:#fff;color:#111;border-radius:20px;padding:22px;max-width:420px;width:100%;display:flex;flex-direction:column;gap:12px;border:4px solid #000}
+.login h2{margin:0;font-family:var(--f-display);font-weight:400;font-size:26px;color:#b91c1c}
+.login input{font:inherit;font-size:16px;padding:11px 13px;border-radius:12px;border:2px solid #111;width:100%}
+.login button{font:inherit;font-weight:800;font-size:17px;border:3px solid #000;border-radius:14px;padding:12px;background:var(--sun);cursor:pointer}
+.login p{margin:0;color:#555;font-size:14px}.err{color:#b91c1c;font-weight:700}
+@media (prefers-reduced-motion:reduce){.racer{transition:none}.confetti{display:none}}
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="top"><h1>🏁 Хімічні перегони</h1><span class="url">chabannatalya0-cpu.github.io/himiya-meteor/perehony.html</span><span class="goal">Фініш — 15 правильних відповідей</span>
+    <div class="ctrl"><button type="button" id="bPod">🏆 П'єдестал</button><button type="button" class="g" id="bFull">⛶ Весь екран</button><button type="button" class="g" id="bNew">🧹 Нова гонка</button></div></div>
+  <div class="main">
+    <div class="track" id="track"><div class="startl"></div><div class="finish"></div><div class="empty" id="empty">Відкрийте сторінку гри, оберіть болід — і ваша машинка з'явиться на старті! 🚗</div></div>
+    <aside class="rail"><h2>🏆 Таблиця лідерів</h2><div class="cnt"><span>🚗 <b id="cAll">0</b></span><span>🏁 <b id="cFin">0</b></span></div><div class="lb" id="lb"></div></aside>
+  </div>
+</div>
+<div class="podium" id="podium" hidden></div>
+<div class="login" id="login"><form id="lf">
+  <h2>🏁 Траса перегонів</h2>
+  <p>Увійдіть тим самим email і паролем, що й у журналі «Результати учнів». Учням входити не потрібно.</p>
+  <input type="email" id="em" placeholder="Email" autocomplete="username" required>
+  <input type="password" id="pw" placeholder="Пароль" autocomplete="current-password" required>
+  <button type="submit">Відкрити трасу</button><div class="err" id="lerr"></div></form></div>
+<script>
+const FIREBASE_URL="https://batareya-znan-daa00-default-rtdb.europe-west1.firebasedatabase.app";
+const API_KEY="AIzaSyAGOncvJIlGaJu14uqEWy6rQxdF7-pQYUI";
+const WORK_ID="perehony",GOAL=15;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const COLORS=["#ef4444","#f97316","#facc15","#22c55e","#06b6d4","#3b82f6","#8b5cf6","#ec4899"];
+function carSVG(col,num){return `<svg viewBox="0 0 124 52" aria-hidden="true"><rect x="2" y="12" width="12" height="5" rx="1" fill="#111"/><rect x="7" y="16" width="3" height="12" fill="#111"/>
+ <path d="M4 34 L12 24 L44 21 L58 10 L84 10 L98 21 L114 25 Q121 27 121 35 L121 40 L4 40 Z" fill="${col}" stroke="#000" stroke-width="3" stroke-linejoin="round"/>
+ <path d="M62 14 L82 14 L91 21 L58 21Z" fill="#bae6fd" stroke="#000" stroke-width="2"/>
+ <circle cx="40" cy="30" r="8" fill="#fff" stroke="#000" stroke-width="2"/><text x="40" y="34" text-anchor="middle" font-family="JetBrains Mono,monospace" font-weight="800" font-size="10" fill="#000">${num}</text>
+ <circle cx="28" cy="41" r="10" fill="#111"/><circle cx="28" cy="41" r="4" fill="#9ca3af"/><circle cx="98" cy="41" r="10" fill="#111"/><circle cx="98" cy="41" r="4" fill="#9ca3af"/></svg>`}
+let token=null,refresh=null,DATA={},since=LS.get("perehony:since",0),announced=new Set(),first=true,podShown=false;
+async function signIn(email,password){const r=await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password,returnSecureToken:true})});
+  const j=await r.json();if(!r.ok)throw new Error(j.error&&j.error.message||"LOGIN");token=j.idToken;refresh=j.refreshToken}
+async function renew(){try{const r=await fetch(`https://securetoken.googleapis.com/v1/token?key=${API_KEY}`,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:"grant_type=refresh_token&refresh_token="+encodeURIComponent(refresh)});const j=await r.json();if(j.id_token){token=j.id_token;refresh=j.refresh_token}}catch(e){}}
+async function ensureNode(){const r=await fetch(`${FIREBASE_URL}/worksheets/${WORK_ID}.json?auth=${token}`);const cur=await r.json();
+  if(!cur)await fetch(`${FIREBASE_URL}/worksheets/${WORK_ID}.json?auth=${token}`,{method:"PUT",body:JSON.stringify({title:"Хімічні перегони (прості й складні речовини)",subject:"Хімія · 7 клас",open:true,game:true,created:Date.now(),exercises:[]})})}
+$("lf").onsubmit=async e=>{e.preventDefault();$("lerr").textContent="";try{await signIn($("em").value.trim(),$("pw").value);await ensureNode();$("login").hidden=true;poll();setInterval(poll,2000);setInterval(renew,45*60*1000)}
+  catch(err){$("lerr").textContent="Не вдалося увійти. Перевірте email і пароль."}};
+async function poll(){try{const r=await fetch(`${FIREBASE_URL}/results/${WORK_ID}.json?auth=${token}`);if(r.status===401){await renew();return}if(!r.ok)return;DATA=await r.json()||{};render()}catch(e){}}
+function racers(){const R={};Object.values(DATA).forEach(x=>{if(x.kind!=="race"||!x.rid||(x.ts||0)<since)return;const r=R[x.rid]=R[x.rid]||{rid:x.rid,name:x.name,cls:x.cls,car:x.car,num:x.num,join:x.ts||0,pos:0,wrong:0,t:0,finTs:0};
+  r.join=Math.min(r.join,x.ts||0);if((x.pos||0)>=r.pos){r.pos=x.pos||0}r.wrong=Math.max(r.wrong,x.wrong||0);r.t=Math.max(r.t,x.t||0);if(x.done){r.finTs=r.finTs?Math.min(r.finTs,x.ts||0):(x.ts||Date.now());r.finT=x.t}});
+  return Object.values(R)}
+const rank=list=>[...list].sort((a,b)=>(b.finTs?1:0)-(a.finTs?1:0)||(a.finTs&&b.finTs?a.finTs-b.finTs:0)||b.pos-a.pos||a.wrong-b.wrong);
+const MED=["🥇","🥈","🥉"];
+function render(){const L=racers().sort((a,b)=>a.join-b.join),R=rank(L),fins=R.filter(r=>r.finTs);
+  $("cAll").textContent=L.length;$("cFin").textContent=fins.length;$("empty").hidden=L.length>0;
+  const tr=$("track");const keep=new Set(L.map(r=>r.rid));
+  tr.querySelectorAll(".lane").forEach(n=>{if(!keep.has(n.dataset.rid))n.remove()});
+  const h=tr.clientHeight/Math.max(L.length,1);const carH=Math.max(16,Math.min(70,h*.72)),fs=Math.max(11,Math.min(22,h*.32));
+  L.forEach(r=>{let lane=tr.querySelector(`.lane[data-rid="${r.rid}"]`);
+    if(!lane){lane=document.createElement("div");lane.className="lane";lane.dataset.rid=r.rid;lane.innerHTML=`<div class="racer" style="left:10px">${carSVG(COLORS[r.car]||"#fff",r.num||"")}<span class="nm"></span></div>`}
+    tr.appendChild(lane);
+    const place=fins.indexOf(r),x=r.pos/GOAL,el=lane.firstChild,nm=el.querySelector(".nm");
+    el.classList.toggle("fin",!!r.finTs);el.style.height=carH+"px";el.style.fontSize=fs+"px";
+    el.style.left=`calc(${x*100}% - ${x*(carH*2.4+8)}px + 10px)`;
+    nm.innerHTML=`${place>=0&&place<3?`<span class="medal">${MED[place]}</span> `:""}${esc(r.name)}<small>${r.pos}/${GOAL}</small>`;
+    const rev=x>.55;el.style.flexDirection=rev?"row-reverse":"row";if(rev)el.style.left=`calc(${x*100}% - ${x*(carH*2.4+8)}px + 10px - ${nm.offsetWidth+8}px)`});
+  $("lb").innerHTML=R.map((r,i)=>`<div class="${r.finTs?"f":""}"><b>${i<3&&r.finTs?MED[i]:i+1}</b><span>${esc(r.name)}</span><em>${r.finTs?"🏁 "+fmtT(r.finT):r.pos+"/"+GOAL}${r.wrong?` · ❌${r.wrong}`:""}</em></div>`).join("");
+  fins.forEach((r,i)=>{if(!announced.has(r.rid)){announced.add(r.rid);if(!first)banner(`🏁 ${r.name} фінішує ${i+1}-м!`)}});
+  if(!first&&!podShown&&fins.length>=3){podShown=true;setTimeout(showPodium,2500)}
+  first=false}
+const fmtT=s=>s==null?"":`${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;
+function banner(t){const b=document.createElement("div");b.className="banner";b.textContent=t;document.body.appendChild(b);setTimeout(()=>b.remove(),3200)}
+function showPodium(){const R=rank(racers()).slice(0,3);const P=$("podium");
+  const step=(r,i)=>r?`<div class="step s${i+1}"><div class="who">${MED[i]} ${esc(r.name)}<small>${esc(r.cls||"")} · ${r.finTs?"🏁 "+fmtT(r.finT):r.pos+"/"+GOAL} · ❌${r.wrong}</small></div>${carSVG(COLORS[r.car]||"#fff",r.num||"")}<div class="blk">${i+1}</div></div>`:`<div class="step s${i+1}"><div class="who">—</div><div class="blk">${i+1}</div></div>`;
+  P.innerHTML=`<h2>🏆 Переможці перегонів!</h2><div class="steps">${step(R[1],1)}${step(R[0],0)}${step(R[2],2)}</div><button type="button" id="pClose">Повернутися до траси</button>`;P.hidden=false;
+  $("pClose").onclick=()=>P.hidden=true;
+  for(let i=0;i<120;i++){const c=document.createElement("div");c.className="confetti";c.style.left=Math.random()*100+"vw";c.style.background=COLORS[i%8];c.style.animationDuration=2+Math.random()*3+"s";c.style.animationDelay=Math.random()*1.5+"s";document.body.appendChild(c);setTimeout(()=>c.remove(),6000)}}
+$("bPod").onclick=showPodium;
+$("bFull").onclick=()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}};
+$("bNew").onclick=()=>{since=Date.now();LS.set("perehony:since",since);announced=new Set();first=true;podShown=false;$("podium").hidden=true;render()};
+window.addEventListener("resize",()=>render());
+</script>
+</body>
+</html>
