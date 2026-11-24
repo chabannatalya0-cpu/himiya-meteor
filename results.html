@@ -270,6 +270,7 @@ function rows(){
   let out;
   if($("fview").value==="best"){const best={};list.forEach(x=>{const k=key(x),b=best[k];if(!b||x.score>b.score||(x.score===b.score&&x.acc>b.acc))best[k]=x});out=Object.values(best)}
   else out=list.slice();
+  list.forEach(x=>{if(x.triesRaw===undefined)x.triesRaw=(typeof x.tries==="string")?x.tries:"";});
   out.forEach(x=>x.tries=tries[key(x)]);
   out.sort((a,b)=>{const A=a[sortK],B=b[sortK];return (typeof A==="number"?A-B:String(A||"").localeCompare(String(B||""),"uk"))*sortDir});
   return {list,out};
@@ -646,13 +647,13 @@ function render(){
     const SN=["читаю формулу","індекс/коефіцієнт","склад за формулою","прості/складні"];
     $("kAvg").textContent=best.length?(best.reduce((s,x)=>s+x.score,0)/best.length).toFixed(1):"0"; $("kAvgT").textContent="середній бал (з 12)";
     $("kTop").textContent=best.filter(x=>(x.self||"").includes("🔴")).length; $("kTopT").textContent="учнів позначили 🔴 хоча б одне вміння";
-    const miss=NM.map((n,i)=>[n,best.filter(x=>((x.tries||"").split(" ")[i]||"1")!=="1").length]);
+    const miss=NM.map((n,i)=>[n,best.filter(x=>((x.triesRaw||"").split(" ")[i]||"1")!=="1").length]);
     $("hardTitle").textContent="Завдання, які не вдалося виконати з першої спроби"; $("hardHint").textContent="Скільки учнів виправляли відповідь або переглядали правильну (👀). Самооцінка учня — у колонці «Самооцінка» в порядку: "+SN.join(", ")+".";
     $("hard").innerHTML=best.length?miss.sort((a,b)=>b[1]-a[1]).map(([n,k])=>`<span class="chip">${esc(n)} <small>${k} уч.</small></span>`).join(""):'<span class="muted">Поки немає даних</span>';
     $("th").innerHTML=`<tr><th data-k="name">Учень</th><th data-k="cls">Клас</th><th data-k="score">Бали</th><th>За завданнями 1–6</th><th>Спроби</th><th>Самооцінка</th><th>Рефлексія</th><th data-k="ts">Коли</th></tr>`;
     $("tb").innerHTML=out.length?out.map(x=>{const p=x.score>=10?"g":x.score>=7?"m":"b";
       return `<tr><td><strong>${esc(x.name)}</strong></td><td>${esc(x.cls)}</td><td><span class="pill ${p}">${String(x.score).replace(".",",")} / 12</span></td>
-      <td class="mono">${esc((x.parts||"").replace(/\./g,","))}</td><td class="mono">${esc(x.tries||"")}</td><td style="font-size:18px;letter-spacing:2px">${esc(x.self||"")}</td><td style="font-size:13px;max-width:260px">${esc(x.refl||"")}</td><td class="muted">${when(x)}</td></tr>`}).join("")
+      <td class="mono">${esc((x.parts||"").replace(/\./g,","))}</td><td class="mono">${esc(x.triesRaw||"")}</td><td style="font-size:18px;letter-spacing:2px">${esc(x.self||"")}</td><td style="font-size:13px;max-width:260px">${esc(x.refl||"")}</td><td class="muted">${when(x)}</td></tr>`}).join("")
       :'<tr><td colspan="8" class="muted">Ще ніхто не здав.</td></tr>';
   } else if(work.id==="pstable7"){
     $("kAvg").textContent=best.length?(best.reduce((s,x)=>s+x.score,0)/best.length).toFixed(1):"0"; $("kAvgT").textContent="середній бал (з 12)";
@@ -741,7 +742,7 @@ function render(){
     $("th").innerHTML=`<tr><th data-k="name">Учень</th><th data-k="cls">Клас</th><th data-k="score">Бали</th><th>Лабораторія (1–3)</th><th>Задачі (1–6)</th><th>Спроб на задачу</th><th>Варіант учня</th><th data-k="ts">Коли</th></tr>`;
     $("tb").innerHTML=out.length?out.map(x=>{const p=x.score>=10?"g":x.score>=7?"m":"b";
       return `<tr><td><strong>${esc(x.name)}</strong></td><td>${esc(x.cls)}</td><td><span class="pill ${p}">${String(x.score).replace(".",",")} / 12</span></td>
-      <td class="mono">${esc((x.lab||"").replace(/\./g,","))}</td><td class="mono">${esc((x.parts||"").replace(/\./g,","))}</td><td class="mono">${esc(x.tries||"")}</td>
+      <td class="mono">${esc((x.lab||"").replace(/\./g,","))}</td><td class="mono">${esc((x.parts||"").replace(/\./g,","))}</td><td class="mono">${esc(x.triesRaw||"")}</td>
       <td><details><summary>Числа</summary><div class="work mono" style="font-size:13px">${esc(x.variant||"")}</div></details></td><td class="muted">${when(x)}</td></tr>`}).join("")
       :'<tr><td colspan="8" class="muted">Ще ніхто не здав.</td></tr>';
   } else if(work.id==="ps7"){
@@ -904,7 +905,7 @@ function csv(){
   else if(work.id==="sklad7"){lines=[["Учень","Клас","Бали (з 12)","Ф.1","Ф.2","Ф.3","Ф.4","Ф.5","Ф.6","Формули","З помилками","Дата"]]
     .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.formulas,x.weak,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="formuly7"){lines=[["Учень","Клас","Бали (з 12)","З.1","З.2","З.3","З.4","З.5","З.6","Спроби","Самооцінка (читаю / індекс-коеф. / склад / прості-складні)","Рефлексія","Дата"]]
-    .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.tries,x.self,x.refl,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
+    .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.triesRaw,x.self,x.refl,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="pstable7"){lines=[["Учень","Клас","Бали (з 12)","За типами","Серія","Час, с","Не з першої спроби","Дата"]]
     .concat(out.map(x=>[x.name,x.cls,x.score,x.byType,x.streak,x.sec,x.miss,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="benzenexp10"){lines=[["Учень","Клас","Бали (з 12)","Час, с","Автоздача","Виходів зі сторінки","Відповів","Помилки (№)","Дата"]]
@@ -956,7 +957,7 @@ function csv(){
   else if(work.id==="nd8el9"){lines=[["Учень","Клас","Бали (з 12)","Мета","Гіпотеза","Обладнання","Безпека","Схема","Хід роботи","Результати (з 4)","Висновок (з 2)","Текст гіпотези","Результати","Текст висновку","Дата"]]
     .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.hypothesis,x.observations,x.conclusion,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="molvol8"){lines=[["Учень","Клас","Бали (з 12)","Лаб.1 (з 1)","Лаб.2 (з 2)","Лаб.3 (з 1)","З.1 (з 1)","З.2 (з 1)","З.3 (з 2)","З.4 (з 1)","З.5 (з 2)","З.6 (з 1)","Спроби","Варіант","Дата"]]
-    .concat(out.map(x=>[x.name,x.cls,x.score,...(x.lab||"").split(" "),...(x.parts||"").split(" "),x.tries,x.variant,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
+    .concat(out.map(x=>[x.name,x.cls,x.score,...(x.lab||"").split(" "),...(x.parts||"").split(" "),x.triesRaw,x.variant,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="ps7"){lines=[["Учень","Клас","Бали (з 12)","З.1 (з 2)","З.2 (з 3)","З.3 (з 2)","З.4 (з 2)","З.5 (з 2)","З.6 (з 1)","Правильних відповідей","Дата"]]
     .concat(out.map(x=>[x.name,x.cls,x.score,...(x.parts||"").split(" "),x.detail,x.ts?new Date(x.ts).toLocaleString("uk-UA"):""]))}
   else if(work.id==="ionlab9"){lines=[["Учень","Клас","Бали (з 12)","З.1","З.2","З.3","З.4","З.5","З.6","З.7","Дослідів","Розчин X","Дата"]]
